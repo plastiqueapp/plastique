@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="deviations_list_min_cell_size">140dp</dimen>
+    <dimen name="deviations_list_min_width">284dp</dimen>
+</resources>

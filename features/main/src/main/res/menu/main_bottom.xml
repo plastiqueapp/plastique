@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:bbn_itemColorActive="?colorAccent"
+    app:bbn_itemColorInactive="?android:textColorSecondary">
+
+    <item
+        android:id="@+id/main_tab_browse"
+        android:icon="@drawable/ic_tab_home_24dp"
+        android:title="@string/main_tab_browse" />
+
+    <item
+        android:id="@+id/main_tab_collections"
+        android:icon="@drawable/ic_tab_collections_24dp"
+        android:title="@string/main_tab_collections" />
+
+    <item
+        android:id="@+id/main_tab_gallery"
+        android:icon="@drawable/ic_tab_gallery_24dp"
+        android:title="@string/main_tab_gallery" />
+
+    <item
+        android:id="@+id/main_tab_profile"
+        android:icon="@drawable/ic_tab_profile_24dp"
+        android:title="@string/main_tab_profile" />
+
+    <item
+        android:id="@+id/main_tab_notifications"
+        android:icon="@drawable/ic_tab_notifications_24dp"
+        android:title="@string/main_tab_notifications" />
+</menu>

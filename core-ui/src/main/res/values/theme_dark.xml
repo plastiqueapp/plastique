@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="dark_window_background">#333333</color>
+
+    <style name="Base.Theme.App.Dark" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="Theme.App.Dark" parent="Base.Theme.App.Dark">
+        <item name="android:listDivider">@drawable/list_divider</item>
+        <item name="android:textColorHint">#80ffffff</item>
+        <item name="android:windowBackground">@color/dark_window_background</item>
+
+        <item name="colorPrimary">#333333</item>
+        <item name="colorPrimaryDark">#222222</item>
+        <item name="colorAccent">#42A5F5</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.App.Dark.BottomSheetDialog</item>
+        <item name="preferenceTheme">@style/App.PreferenceThemeOverlay</item>
+        <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+
+        <item name="appBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="dividerColor">#33ffffff</item>
+        <item name="emptyViewStyle">@style/Widget.App.EmptyView</item>
+        <item name="imageButtonTint">@color/dark_image_button_tint</item>
+        <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+    </style>
+
+    <style name="Theme.App.Dark.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetDialogStyle">@style/Base.Widget.App.BottomSheetDialog</item>
+        <item name="bottomSheetDialogTitleStyle">@style/Widget.App.Dark.BottomSheetDialog.Title</item>
+        <item name="bottomSheetDialogListItemStyle">@style/Widget.App.Dark.BottomSheetDialog.ListItem</item>
+        <item name="bottomSheetDialogDividerStyle">@style/Widget.App.Dark.BottomSheetDialog.Divider</item>
+    </style>
+
+    <style name="Widget.App.Dark.BottomSheetDialog.Title" parent="Base.Widget.App.BottomSheetDialog.Title">
+        <item name="android:textColor">#8affffff</item>
+    </style>
+
+    <style name="Widget.App.Dark.BottomSheetDialog.ListItem" parent="Base.Widget.App.BottomSheetDialog.ListItem">
+        <item name="android:textColor">#deffffff</item>
+    </style>
+
+    <style name="Widget.App.Dark.BottomSheetDialog.Divider" parent="Base.Widget.App.BottomSheetDialog.Divider" />
+
+</resources>

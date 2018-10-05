@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.plastique.settings">
+
+    <application>
+        <activity
+            android:name=".about.AboutActivity"
+            android:label="@string/about_title"
+            android:parentActivityName=".SettingsActivity" />
+
+        <activity
+            android:name=".about.licenses.LicensesActivity"
+            android:label="@string/licenses_title"
+            android:parentActivityName=".about.AboutActivity" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings_title" />
+    </application>
+</manifest>

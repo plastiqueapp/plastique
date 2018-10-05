@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="deviationTitleBackground" format="reference" />
+    <attr name="deviationTitleTextColor" format="color" />
+    <attr name="browse_literatureDeviationBackground" format="color|reference" />
+    <attr name="tagsViewStyle" format="reference" />
+
+    <declare-styleable name="TagsView">
+        <attr name="tagBackground" format="reference" />
+        <attr name="tagTextAppearance" format="reference" />
+        <attr name="tagMargin" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="Theme.App.Deviation.Viewer">
+        <attr name="deviationViewerTitleTextColor" format="color" />
+        <attr name="deviationViewerAuthorTextColor" format="color" />
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <dimen name="bbn_top_shadow_height" tools:ignore="UnusedResources">0dp</dimen>
+
+</resources>

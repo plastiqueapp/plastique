@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.Light.Categories">
+        <item name="breadcrumbsStyle">@style/Base.Widget.App.Breadcrumbs</item>
+    </style>
+
+    <style name="Theme.App.Dark.Categories">
+        <item name="breadcrumbsStyle">@style/Base.Widget.App.Breadcrumbs</item>
+    </style>
+
+    <style name="Theme.App.Light.DeviationViewer">
+        <item name="android:windowBackground">@color/light_deviation_viewer_background</item>
+        <item name="appBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="colorPrimaryDark">@color/light_deviation_viewer_status_bar_background</item>
+        <item name="deviationViewerTitleTextColor">@color/light_deviation_viewer_title_text</item>
+        <item name="deviationViewerAuthorTextColor">@color/light_deviation_viewer_author_text</item>
+        <item name="emptyViewStyle">@style/Widget.App.Light.EmptyView.DeviationViewer</item>
+    </style>
+
+    <style name="Theme.App.Dark.DeviationViewer">
+        <item name="android:windowBackground">@color/dark_deviation_viewer_background</item>
+        <item name="colorPrimaryDark">@color/dark_deviation_viewer_status_bar_background</item>
+        <item name="deviationViewerTitleTextColor">@color/dark_deviation_viewer_title_text</item>
+        <item name="deviationViewerAuthorTextColor">@color/dark_deviation_viewer_author_text</item>
+    </style>
+
+    <style name="Base.Widget.App.Breadcrumbs" parent="">
+        <item name="breadcrumbLayoutId">@layout/item_breadcrumb</item>
+        <item name="separatorDrawable">@drawable/ic_arrow_right_white_24dp</item>
+    </style>
+
+    <style name="Base.Widget.App.Tags" parent="">
+        <item name="android:padding">6dp</item>
+        <item name="tagMargin">6dp</item>
+    </style>
+
+    <style name="Widget.App.Light.EmptyView.DeviationViewer" parent="Widget.App.EmptyView">
+        <item name="android:textAppearance">?android:textAppearanceSmallInverse</item>
+    </style>
+
+</resources>

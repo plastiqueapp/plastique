@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="light_deviation_title_text">#ffffff</color>
+    <color name="light_deviation_title_background">#80000000</color>
+    <color name="light_deviation_viewer_background">#333333</color>
+    <color name="light_deviation_viewer_status_bar_background">#141414</color>
+    <color name="light_deviation_viewer_title_text">#ffffff</color>
+    <color name="light_deviation_viewer_author_text">#d06666</color>
+
+    <color name="dark_deviation_title_text">#ffffff</color>
+    <color name="dark_deviation_title_background">#80000000</color>
+    <color name="dark_deviation_viewer_background">#333333</color>
+    <color name="dark_deviation_viewer_status_bar_background">#141414</color>
+    <color name="dark_deviation_viewer_title_text">#ffffff</color>
+    <color name="dark_deviation_viewer_author_text">#d06666</color>
+
+</resources>

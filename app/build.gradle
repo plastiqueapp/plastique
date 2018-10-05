@@ -1,0 +1,140 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-kapt"
+}
+
+def publishKeysFile = file("publish-keys.json")
+if (publishKeysFile.exists()) {
+    apply plugin: "com.github.triplet.play"
+
+    play {
+        serviceAccountCredentials publishKeysFile
+        track = "internal"
+    }
+}
+
+def googleServicesEnabled = file("google-services.json").exists()
+if (googleServicesEnabled) {
+    apply plugin: "io.fabric"
+}
+
+android {
+    defaultConfig {
+        applicationId "io.plastique.android"
+        versionCode buildConfig.versionCode
+        versionName buildConfig.versionName
+        multiDexEnabled true
+        resConfigs "en"
+
+        buildConfigField "int", "DB_VERSION", "$buildConfig.dbVersion"
+        buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
+
+        if (rootProject.ext.ci) {
+            resValue "string", "api_client_id", "42"
+            resValue "string", "api_client_secret", "42"
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile rootProject.file("signing/debug.jks")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+        release.initWith(debug)
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            ext.alwaysUpdateBuildId = false
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard.cfg"
+            signingConfig signingConfigs.release
+        }
+    }
+
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        prod {
+            dimension "environment"
+        }
+    }
+
+    dexOptions {
+        preDexLibraries !rootProject.ext.ci
+    }
+
+    packagingOptions {
+        exclude "META-INF/*.kotlin_module"
+        exclude "META-INF/*.version"
+        exclude "META-INF/rxjava.properties"
+        exclude "META-INF/proguard/*"
+        exclude "**/*.kotlin_builtins"
+        exclude "/*.properties"
+        exclude "/fabric/*.properties"
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "plastique-${variant.flavorName}-${variant.buildType.name}-${variant.versionName}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation project(":api")
+    implementation project(":features:auth")
+    implementation project(":features:collections")
+    implementation project(":features:comments")
+    implementation project(":features:deviations")
+    implementation project(":features:gallery")
+    implementation project(":features:main")
+    implementation project(":features:notifications")
+    implementation project(":features:profile")
+    implementation project(":features:settings")
+    implementation project(":features:users")
+
+    implementation "android.arch.work:work-runtime:$versions.androidx.work"
+    implementation "android.arch.work:work-firebase:$versions.androidx.work"
+    implementation "com.google.firebase:firebase-core:$versions.firebase.core"
+    implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
+    implementation "io.requery:sqlite-android:$versions.sqlite"
+
+    debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
+    debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
+    debugImplementation "com.sch.stetho:stetho-timber:$versions.stethoTimber"
+    debugImplementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
+
+    kapt "androidx.room:room-compiler:$versions.androidx.room"
+    kapt "com.google.dagger:dagger-compiler:$versions.dagger"
+}
+
+def signingPropertiesFile = rootProject.file("signing/signing.properties")
+if (signingPropertiesFile.exists()) {
+    def signingProperties = new Properties()
+    signingPropertiesFile.withInputStream signingProperties.&load
+
+    android.signingConfigs.release.storeFile = rootProject.file(signingProperties.getProperty("store.file"))
+    android.signingConfigs.release.storePassword = signingProperties.getProperty("store.password")
+    android.signingConfigs.release.keyAlias = signingProperties.getProperty("key.alias")
+    android.signingConfigs.release.keyPassword = signingProperties.getProperty("key.password")
+}
+
+if (googleServicesEnabled) {
+    apply plugin: "com.google.gms.google-services"
+}

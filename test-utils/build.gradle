@@ -1,0 +1,11 @@
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+}
+
+dependencies {
+    api "org.junit.jupiter:junit-jupiter-api:$versions.junit.jupiter"
+    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+}

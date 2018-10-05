@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Widget.App.BottomSheetDialog" parent="">
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="Base.Widget.App.BottomSheetDialog.Title" parent="">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Base.Widget.App.BottomSheetDialog.ListItem" parent="">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Base.Widget.App.BottomSheetDialog.Divider" parent="">
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">#f0f0f0</item>
+    </style>
+
+    <style name="Widget.App.Button.Inline" parent="">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored</item>
+    </style>
+
+    <style name="Widget.App.EmptyView" parent="">
+        <item name="android:text">@string/common_message_load_failed</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:layout">@layout/view_empty</item>
+        <item name="buttonText">@string/common_button_try_again</item>
+        <item name="buttonTextAppearance">@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored</item>
+        <item name="showButton">true</item>
+    </style>
+
+    <style name="Widget.App.ProgressBar.Medium" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:maxWidth">@dimen/common_progress_bar_size_medium</item>
+        <item name="android:maxHeight">@dimen/common_progress_bar_size_medium</item>
+        <item name="android:minWidth">@dimen/common_progress_bar_size_medium</item>
+        <item name="android:minHeight">@dimen/common_progress_bar_size_medium</item>
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Title</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Subtitle</item>
+    </style>
+
+    <style name="TextAppearance.Widget.App.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.Widget.App.Toolbar.Subtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:fontFamily">@font/roboto_light</item>
+    </style>
+
+    <style name="App.PreferenceThemeOverlay" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceCategoryStyle">@style/App.Preference.Category</item>
+        <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment</item>
+    </style>
+
+    <style name="App.PreferenceFragment" parent="PreferenceFragment.Material">
+        <item name="android:divider">@drawable/preference_list_divider</item>
+        <item name="allowDividerAfterLastItem">false</item>
+    </style>
+
+    <style name="App.Preference.Category" parent="Preference.Category.Material">
+        <item name="android:layout">@layout/item_preference_category</item>
+    </style>
+
+</resources>

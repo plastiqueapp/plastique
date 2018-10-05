@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/deviations_action_filters"
+        android:icon="@drawable/ic_filters_expand_24dp"
+        android:title="@string/deviations_action_filters"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deviations_action_switch_layout"
+        android:icon="@drawable/ic_layout_grid_24dp"
+        android:title="@string/deviations_action_switch_layout"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/deviations_action_switch_layout_grid"
+                android:icon="@drawable/ic_layout_grid_24dp"
+                android:title="@string/deviations_action_switch_layout_grid" />
+
+            <item
+                android:id="@+id/deviations_action_switch_layout_flex"
+                android:icon="@drawable/ic_layout_flex_24dp"
+                android:title="@string/deviations_action_switch_layout_flex"
+                android:visible="false" />
+
+            <item
+                android:id="@+id/deviations_action_switch_layout_list"
+                android:icon="@drawable/ic_layout_list_24dp"
+                android:title="@string/deviations_action_switch_layout_list" />
+        </menu>
+    </item>
+</menu>

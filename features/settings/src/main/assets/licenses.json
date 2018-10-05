@@ -1,0 +1,103 @@
+[
+  {
+    "name": "Android Support Library",
+    "license": "Apache License 2.0",
+    "url": "https://developer.android.com/topic/libraries/support-library/index.html"
+  },
+  {
+    "name": "Dagger 2",
+    "description": "A fast dependency injector for Android and Java.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/google/dagger"
+  },
+  {
+    "name": "FlexboxLayout",
+    "description": "Flexbox for Android.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/google/flexbox-layout"
+  },
+  {
+    "name": "Glide",
+    "description": "An image loading and caching library for Android focused on smooth scrolling.",
+    "license": "BSD, MIT and Apache License 2.0",
+    "url": "https://github.com/bumptech/glide"
+  },
+  {
+    "name": "Gson",
+    "description": "A Java serialization/deserialization library to convert Java Objects into JSON and back.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/google/gson"
+  },
+  {
+    "name": "Kotlin",
+    "description": "The Kotlin Programming Language.",
+    "license": "Apache License 2.0",
+    "url": "https://kotlinlang.org"
+  },
+  {
+    "name": "Material Bottom Navigation",
+    "description": "Bottom Navigation widget component inspired by the Google Material Design Guidelines.",
+    "license": "MIT License",
+    "url": "https://github.com/sephiroth74/Material-BottomNavigation"
+  },
+  {
+    "name": "OkHttp",
+    "description": "An HTTP+HTTP/2 client for Android and Java applications.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/square/okhttp"
+  },
+  {
+    "name": "PermissionsDispatcher",
+    "description": "Simple annotation-based API to handle runtime permissions.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/permissions-dispatcher/PermissionsDispatcher"
+  },
+  {
+    "name": "PhotoView",
+    "description": "Implementation of ImageView for Android that supports zooming, by various touch gestures.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/chrisbanes/PhotoView"
+  },
+  {
+    "name": "Retrofit",
+    "description": "Type-safe HTTP client for Android and Java.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/square/retrofit"
+  },
+  {
+    "name": "Room",
+    "description": "SQLite object mapping library.",
+    "license": "Apache License 2.0",
+    "url": "https://developer.android.com/topic/libraries/architecture/room.html"
+  },
+  {
+    "name": "RxAndroid",
+    "description": "RxJava bindings for Android.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/ReactiveX/RxAndroid"
+  },
+  {
+    "name": "RxJava",
+    "description": "Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/ReactiveX/RxJava"
+  },
+  {
+    "name": "ThreetenABP",
+    "description": "An adaptation of the JSR-310 backport for Android.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/JakeWharton/ThreetenABP"
+  },
+  {
+    "name": "ThreetenBP",
+    "description": "Backport of functionality based on JSR-310 to Java SE 6 and 7.",
+    "license": "BSD 3-clause",
+    "url": "https://github.com/ThreeTen/threetenbp"
+  },
+  {
+    "name": "Timber",
+    "description": "A logger with a small, extensible API which provides utility on top of Android's normal Log class.",
+    "license": "Apache License 2.0",
+    "url": "https://github.com/JakeWharton/timber"
+  }
+]

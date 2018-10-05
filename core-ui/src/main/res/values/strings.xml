@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="common_button_ok">OK</string>
+    <string name="common_button_cancel">Cancel</string>
+    <string name="common_button_try_again">Try again</string>
+    <string name="common_error">Error</string>
+
+    <string name="common_message_link_copied">Link copied to clipboard</string>
+    <string name="common_message_load_failed">Cannot load data. Please check your internet connection and try again.</string>
+    <string name="common_message_no_internet_connection">No internet connection</string>
+    <string name="common_message_please_wait">Please wait…</string>
+    <string name="common_message_user_not_found">User &lt;b&gt;%1$s&lt;/b&gt; not found</string>
+
+    <string name="common_just_now">just now</string>
+    <string name="common_abbr_seconds">%ds</string>
+    <string name="common_abbr_minutes">%dm</string>
+    <string name="common_abbr_hours">%dh</string>
+    <string name="common_abbr_days">%dd</string>
+
+    <!-- Analytics -->
+    <string name="analytics_property_database_size" translatable="false">%s MB</string>
+
+</resources>

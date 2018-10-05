@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="comments_title">Comments</string>
+    <string name="comments_button_sign_in">Sign in</string>
+    <string name="comments_compose_hint">Add a comment…</string>
+    <string name="comments_replying_to">Replying to %1$s</string>
+    <string name="comments_sign_in_to_post">to post a comment</string>
+    <string name="comments_compose_replying_to">Replying to &lt;b&gt;%1$s&lt;/b&gt;</string>
+
+    <string name="comments_message_empty">No comments yet</string>
+    <string name="comments_message_load_error">Unable to load comments</string>
+    <string name="comments_message_post_error">An error occurred while posting comment</string>
+
+</resources>

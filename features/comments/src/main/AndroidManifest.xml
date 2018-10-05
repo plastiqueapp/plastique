@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.plastique.comments">
+
+    <application>
+        <activity
+            android:name=".list.CommentListActivity"
+            android:label="@string/comments_title"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+    </application>
+</manifest>

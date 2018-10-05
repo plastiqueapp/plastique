@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/users_action_view_collections"
+        android:title="@string/users_action_view_collections"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/users_action_view_gallery"
+        android:title="@string/users_action_view_gallery"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/users_action_view_comments"
+        android:title="@string/users_action_view_comments"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/users_action_copy_profile_link"
+        android:title="@string/users_action_copy_profile_link"
+        app:showAsAction="never" />
+</menu>

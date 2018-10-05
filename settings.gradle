@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url "https://dl.bintray.com/sch/maven" }
+    }
+}
+
+include ":core"
+include ":core-ui"
+include ":api"
+include ":app"
+include ":test-utils"
+
+include ":features:auth"
+include ":features:collections"
+include ":features:comments"
+include ":features:deviations"
+include ":features:gallery"
+include ":features:main"
+include ":features:notifications"
+include ":features:profile"
+include ":features:settings"
+include ":features:users"

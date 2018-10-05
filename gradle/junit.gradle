@@ -1,0 +1,23 @@
+dependencies {
+    testCompileOnly "junit:junit:$versions.junit.fourth"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit.jupiter"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.junit.jupiter"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit.jupiter"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$versions.junit.vintage"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$versions.junit.platform"
+}
+
+android {
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+
+            all {
+                useJUnitPlatform()
+
+                minHeapSize = "128m"
+                maxHeapSize = "256m"
+            }
+        }
+    }
+}

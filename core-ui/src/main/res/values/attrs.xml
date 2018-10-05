@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="breadcrumbsStyle" format="reference" />
+    <attr name="emptyViewStyle" format="reference" />
+    <attr name="progressBarStyleMedium" format="reference" />
+
+    <declare-styleable name="Theme.App">
+        <attr name="appBarTheme" format="reference" />
+        <attr name="dividerColor" format="color" />
+        <attr name="imageButtonTint" format="color" />
+        <attr name="inlineButtonStyle" format="reference" />
+        <attr name="toolbarPopupTheme" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="BottomSheetDialog">
+        <attr name="bottomSheetDialogStyle" format="reference" />
+        <attr name="bottomSheetDialogTitleStyle" format="reference" />
+        <attr name="bottomSheetDialogListItemStyle" format="reference" />
+        <attr name="bottomSheetDialogDividerStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="BreadcrumbsView">
+        <attr name="breadcrumbLayoutId" format="reference" />
+        <attr name="separatorDrawable" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="EmptyView">
+        <attr name="android:text" />
+        <attr name="android:textAppearance" />
+        <attr name="android:layout" />
+        <attr name="buttonText" format="string" />
+        <attr name="buttonTextAppearance" format="reference" />
+        <attr name="showButton" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableToolbarLayout">
+        <attr name="expanded" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableToolbarLayout_Layout">
+        <attr name="layout_pin" format="boolean" />
+    </declare-styleable>
+
+</resources>

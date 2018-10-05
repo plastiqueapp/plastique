@@ -1,0 +1,33 @@
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+    id "kotlin-android-extensions"
+}
+apply from: "$rootDir/gradle/junit.gradle"
+
+dependencies {
+    implementation project(":api")
+
+    api "androidx.room:room-runtime:$versions.androidx.room"
+    api "androidx.room:room-rxjava2:$versions.androidx.room"
+    api "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
+    api "com.google.dagger:dagger:$versions.dagger"
+    implementation "com.google.firebase:firebase-core:$versions.firebase.core"
+    implementation "com.google.firebase:firebase-config:$versions.firebase.config"
+    api "com.jakewharton.timber:timber:$versions.timber"
+    api "com.squareup.moshi:moshi:$versions.moshi"
+    api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+
+    api "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+    api "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    api "io.reactivex.rxjava2:rxkotlin:$versions.rxkotlin"
+    api "com.github.akarnokd:rxjava2-extensions:$versions.rxjava2Extensions"
+    api "com.sch.rxjava:rxjava2-extensions:$versions.rxJava2ExtensionsSch"
+
+    api "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
+
+    testImplementation "org.robolectric:robolectric:$versions.robolectric"
+}

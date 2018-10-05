@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>feedback_email</key>
+        <value>plastiqueapp@gmail.com</value>
+    </entry>
+    <entry>
+        <key>feedback_subject</key>
+        <value>Feedback on Plastique</value>
+    </entry>
+    <entry>
+        <key>privacy_policy_url</key>
+        <value>https://plastiqueapp.github.io/privacy-policy</value>
+    </entry>
+    <entry>
+        <key>deviantart_privacy_policy_url</key>
+        <value>https://about.deviantart.com/policy/privacy/</value>
+    </entry>
+    <entry>
+        <key>deviantart_terms_of_service_url</key>
+        <value>https://about.deviantart.com/policy/service/</value>
+    </entry>
+</defaultsMap>

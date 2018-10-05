@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="deviations_message_empty">No deviations</string>
+    <string name="deviations_message_load_error">Unable to load deviations</string>
+
+    <string name="deviations_action_filters">Filters</string>
+    <string name="deviations_action_switch_layout">Switch layout</string>
+    <string name="deviations_action_switch_layout_grid">Grid</string>
+    <string name="deviations_action_switch_layout_list">List</string>
+    <string name="deviations_action_switch_layout_flex">Flex</string>
+
+    <string name="deviations_browse_title">Browse art</string>
+    <string name="deviations_browse_page_hot">Hot</string>
+    <string name="deviations_browse_page_popular">Popular</string>
+    <string name="deviations_browse_page_undiscovered">Undiscovered</string>
+    <string name="deviations_browse_page_daily">Daily</string>
+
+    <string name="deviations_popular_time_range_dialog_title">Select time range</string>
+    <string name="deviations_popular_time_range_8_hours">Popular 8 hours</string>
+    <string name="deviations_popular_time_range_24_hours">Popular 24 hours</string>
+    <string name="deviations_popular_time_range_3_days">Popular 3 days</string>
+    <string name="deviations_popular_time_range_1_week">Popular 1 week</string>
+    <string name="deviations_popular_time_range_1_month">Popular 1 month</string>
+    <string name="deviations_popular_time_range_all_time">Popular all time</string>
+
+    <string name="deviations_categories_title">Select category</string>
+    <string name="deviations_categories_see_all_in">See all in %1$s</string>
+    <string name="deviations_categories_load_error">Error loading category</string>
+
+    <string name="deviations_viewer_title" />
+    <string name="deviations_viewer_action_add_to_favorites">Add to favorites</string>
+    <string name="deviations_viewer_action_remove_from_favorites">Remove from favorites</string>
+    <string name="deviations_viewer_action_download">Download</string>
+    <string name="deviations_viewer_action_open_in_browser">Open in Browser</string>
+    <string name="deviations_viewer_action_copy_link">Copy link</string>
+    <string name="deviations_viewer_button_view_comments">View comments</string>
+    <string name="deviations_viewer_message_download_error">Unable to download image</string>
+    <string name="deviations_viewer_message_no_apps_to_open_url">No apps can open the URL</string>
+
+</resources>

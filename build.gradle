@@ -1,0 +1,128 @@
+buildscript {
+    apply from: "gradle/versions.gradle"
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://maven.fabric.io/public" }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:3.2.0"
+        classpath "com.google.gms:google-services:4.1.0"
+        classpath "io.fabric.tools:gradle:1.26.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+    }
+}
+
+plugins {
+    id "com.gradle.build-scan" version "1.16"
+    id "com.github.ben-manes.versions" version "0.20.0"
+    id "com.github.triplet.play" version "2.0.0b" apply false
+}
+
+ext.ci = System.getenv("CI") == "true"
+ext.buildConfig = [
+        compileSdk : 28,
+        minSdk     : 21,
+        targetSdk  : 28,
+
+        versionCode: 3,
+        versionName: "0.1",
+        dbVersion  : 2,
+]
+
+subprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://dl.bintray.com/sch/maven" }
+    }
+
+    configurations.all { config ->
+        exclude group: "com.google.code.findbugs", module: "jsr305"
+
+        resolutionStrategy.eachDependency { details ->
+            if (config.name.contains("UnitTest") && details.requested.group == "com.squareup.leakcanary" && details.requested.name == "leakcanary-android") {
+                details.useTarget(group: details.requested.group, name: "leakcanary-android-no-op", version: details.requested.version)
+            }
+        }
+    }
+
+    afterEvaluate {
+        if (plugins.hasPlugin("kotlin-android")) {
+            android {
+                sourceSets {
+                    main.java.srcDirs += "src/main/kotlin"
+                    debug.java.srcDirs += "src/debug/kotlin"
+                    release.java.srcDirs += "src/release/kotlin"
+                    test.java.srcDirs += "src/test/kotlin"
+                }
+            }
+
+            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+                kotlinOptions {
+                    jvmTarget = "1.8"
+
+                    if (name.toLowerCase().contains("release")) {
+                        freeCompilerArgs = ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
+                    }
+                }
+            }
+        }
+
+        if (plugins.hasPlugin("com.android.application") ||
+                plugins.hasPlugin("com.android.library") ||
+                plugins.hasPlugin("com.android.feature") ||
+                plugins.hasPlugin("com.android.dynamic-feature")) {
+            android {
+                compileSdkVersion buildConfig.compileSdk
+
+                defaultConfig {
+                    minSdkVersion buildConfig.minSdk
+                    targetSdkVersion buildConfig.targetSdk
+
+                    vectorDrawables.useSupportLibrary = true
+                }
+
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+
+                lintOptions {
+                    warningsAsErrors true
+                    lintConfig rootProject.file("config/lint.xml")
+
+                    textReport true
+                    textOutput "stdout"
+                    explainIssues false
+                }
+            }
+        }
+
+        if (plugins.hasPlugin("kotlin-android-extensions")) {
+            androidExtensions {
+                experimental = true
+                defaultCacheImplementation = "NONE"
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+
+    if (ext.ci) {
+        tag "CI"
+        publishAlways()
+    }
+}

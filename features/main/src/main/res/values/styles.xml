@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.Light.Main">
+        <item name="activeTabColor">#ffffff</item>
+        <item name="inactiveTabColor">#b3ffffff</item>
+
+        <item name="deviationTitleBackground">@color/light_deviation_title_background</item>
+        <item name="deviationTitleTextColor">@color/light_deviation_title_text</item>
+        <item name="browse_literatureDeviationBackground">#ffffff</item>
+        <item name="tagsViewStyle">@style/Widget.App.Light.Tags</item>
+    </style>
+
+    <style name="Theme.App.Dark.Main">
+        <item name="activeTabColor">#ffffff</item>
+        <item name="inactiveTabColor">#b3ffffff</item>
+
+        <item name="deviationTitleBackground">@color/dark_deviation_title_background</item>
+        <item name="deviationTitleTextColor">@color/dark_deviation_title_text</item>
+        <item name="browse_literatureDeviationBackground">#666666</item>
+        <item name="tagsViewStyle">@style/Widget.App.Dark.Tags</item>
+    </style>
+
+    <style name="Widget.App.Light.Tags" parent="Base.Widget.App.Tags">
+        <item name="tagBackground">@drawable/tag_background_light</item>
+        <item name="tagTextAppearance">?android:textAppearanceSmallInverse</item>
+    </style>
+
+    <style name="Widget.App.Dark.Tags" parent="Base.Widget.App.Tags">
+        <item name="tagBackground">@drawable/tag_background_dark</item>
+        <item name="tagTextAppearance">?android:textAppearanceSmall</item>
+    </style>
+
+</resources>

@@ -1,0 +1,17 @@
+.gradle/
+build/
+captures/
+local.properties
+
+.idea/caches/
+.idea/libraries/
+.idea/shelf/
+.idea/assetWizardSettings.xml
+.idea/gradle.xml
+.idea/modules.xml
+.idea/tasks.xml
+.idea/workspace.xml
+*.iml
+
+signing/release.jks
+signing/signing.properties
