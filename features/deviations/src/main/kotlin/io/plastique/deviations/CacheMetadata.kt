@@ -2,6 +2,7 @@ package io.plastique.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import io.plastique.core.adapters.DateCursorAdapter
 import io.plastique.core.adapters.DerivedClassAdapterFactory
@@ -33,8 +34,10 @@ class DeviationCacheMetadataSerializer(
     private val adapter
         get() = moshi.adapter<DeviationCacheMetadata>()
 
-    fun deserialize(metadata: String): DeviationCacheMetadata? {
-        return adapter.fromJson(metadata)
+    fun deserialize(metadata: String): DeviationCacheMetadata? = try {
+        adapter.fromJson(metadata)
+    } catch (e: JsonDataException) {
+        null
     }
 
     fun serialize(metadata: DeviationCacheMetadata): String {
