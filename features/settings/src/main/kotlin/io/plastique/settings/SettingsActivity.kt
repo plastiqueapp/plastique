@@ -3,11 +3,11 @@ package io.plastique.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartScreenCallback
 import androidx.preference.PreferenceScreen
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
 import io.plastique.settings.about.AboutActivity
 
@@ -15,10 +15,9 @@ class SettingsActivity : BaseActivity(), OnPreferenceStartScreenCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
     }
 
     override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean {

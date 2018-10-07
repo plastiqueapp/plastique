@@ -3,12 +3,12 @@ package io.plastique.settings.about.licenses
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.plastique.core.BrowserLauncher
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
@@ -22,10 +22,9 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_licenses)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         adapter = LicensesAdapter()
         adapter.onLicenseClickListener = { license -> BrowserLauncher(this).openUrl(license.url) }

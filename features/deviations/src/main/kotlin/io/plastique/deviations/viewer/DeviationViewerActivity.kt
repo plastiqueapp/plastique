@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import com.github.chrisbanes.photoview.PhotoView
@@ -22,6 +21,7 @@ import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.getLayoutBehavior
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
@@ -75,7 +75,9 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deviation_viewer)
-        initToolbar()
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         rootView = findViewById(android.R.id.content)
         appBar = findViewById(R.id.appbar)
@@ -212,12 +214,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private fun copyLinkToClipboard() {
         clipboard.setText(state!!.deviation!!.url)
         Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initBottomSheet() {

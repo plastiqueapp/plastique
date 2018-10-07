@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -15,6 +14,7 @@ import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.getLayoutBehavior
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.deviations.BrowseDeviationsFragment
 import io.plastique.gallery.GalleryFragment
@@ -40,6 +40,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setActionBar(R.id.toolbar)
 
         expandableToolbarLayout = findViewById(R.id.expandable_toolbar)
 
@@ -47,8 +48,6 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemS
         val appBarBehavior = appBar.getLayoutBehavior<AppBarLayout.Behavior>()
         appBarBehavior.setDragCallback(DragDisabledCallback)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         val bottomNavigation = findViewById<BottomNavigation>(R.id.bottom_navigation)

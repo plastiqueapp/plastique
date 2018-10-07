@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +13,7 @@ import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.R
@@ -38,10 +38,9 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_list)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         breadcrumbsView = findViewById(R.id.breadcrumbs)
         breadcrumbsView.setOnBreadcrumbClickListener { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }

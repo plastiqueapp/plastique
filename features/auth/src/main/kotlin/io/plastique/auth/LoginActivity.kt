@@ -9,13 +9,13 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
 import io.plastique.core.MvvmActivity
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.showAllowingStateLoss
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
@@ -30,8 +30,9 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        initToolbar()
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         progressBar = findViewById(R.id.progress)
         webView = findViewById(R.id.webview)
@@ -94,12 +95,6 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
 
     override fun injectDependencies() {
         getComponent<AuthActivityComponent>().inject(this)
-    }
-
-    private fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun setLoadProgress(progress: Int) {

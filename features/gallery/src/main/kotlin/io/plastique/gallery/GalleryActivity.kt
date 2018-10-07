@@ -3,8 +3,8 @@ package io.plastique.gallery
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
 
 class GalleryActivity : BaseActivity() {
@@ -13,10 +13,10 @@ class GalleryActivity : BaseActivity() {
         setContentView(R.layout.activity_gallery)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.subtitle = username
+        setActionBar(R.id.toolbar) {
+            subtitle = username
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()

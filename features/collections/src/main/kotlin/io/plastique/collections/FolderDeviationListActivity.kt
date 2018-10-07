@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.inject.getComponent
@@ -34,9 +34,7 @@ class FolderDeviationListActivity : BaseActivity() {
     }
 
     private fun initToolbar(username: String?, folderName: String) {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.apply {
+        val toolbar = setActionBar(R.id.toolbar) {
             title = folderName
             subtitle = username
             setDisplayHomeAsUpEnabled(true)

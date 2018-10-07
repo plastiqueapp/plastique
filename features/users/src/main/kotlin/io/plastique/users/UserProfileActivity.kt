@@ -8,12 +8,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
@@ -44,10 +44,9 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setActionBar(R.id.toolbar) {
+            setDisplayHomeAsUpEnabled(true)
+        }
 
         rootView = findViewById(android.R.id.content)
         avatarView = findViewById(R.id.user_avatar)
