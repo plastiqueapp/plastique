@@ -33,7 +33,7 @@ data class HotParams(
 class HotDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<HotParams, OffsetCursor> {
-    override fun getCacheKey(params: HotParams): String = "hot"
+    override fun getCacheKey(params: HotParams): String = "hot-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = HotParams::class.java, cursorType = OffsetCursor::class.java)

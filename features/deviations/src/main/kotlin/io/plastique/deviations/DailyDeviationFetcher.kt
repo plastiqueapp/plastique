@@ -33,7 +33,7 @@ data class DailyParams(
 class DailyDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<DailyParams, DateCursor> {
-    override fun getCacheKey(params: DailyParams): String = "daily"
+    override fun getCacheKey(params: DailyParams): String = "daily-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = DailyParams::class.java, cursorType = DateCursor::class.java)

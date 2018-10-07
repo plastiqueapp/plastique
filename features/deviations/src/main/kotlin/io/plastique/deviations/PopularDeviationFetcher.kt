@@ -36,7 +36,7 @@ data class PopularParams(
 class PopularDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<PopularParams, OffsetCursor> {
-    override fun getCacheKey(params: PopularParams): String = "popular"
+    override fun getCacheKey(params: PopularParams): String = "popular-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = PopularParams::class.java, cursorType = OffsetCursor::class.java)

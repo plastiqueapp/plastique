@@ -33,7 +33,7 @@ data class UndiscoveredParams(
 class UndiscoveredDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<UndiscoveredParams, OffsetCursor> {
-    override fun getCacheKey(params: UndiscoveredParams): String = "undiscovered"
+    override fun getCacheKey(params: UndiscoveredParams): String = "undiscovered-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = UndiscoveredParams::class.java, cursorType = OffsetCursor::class.java)
