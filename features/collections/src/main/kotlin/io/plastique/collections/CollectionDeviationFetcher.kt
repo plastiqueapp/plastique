@@ -9,8 +9,10 @@ import io.plastique.deviations.DeviationFetcher
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.FetchResult
 import io.reactivex.Single
+import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class CollectionDeviationParams(
     @Json(name = "folder_id")

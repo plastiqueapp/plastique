@@ -5,12 +5,14 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.core.paging.DateCursor
 import io.reactivex.Single
+import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class DailyParams(
     @Json(name = "show_mature")

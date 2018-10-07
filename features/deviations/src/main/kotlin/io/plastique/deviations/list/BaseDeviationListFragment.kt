@@ -112,7 +112,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         deviationsView.adapter = adapter
 
         @Suppress("UNCHECKED_CAST")
-        params = savedInstanceState?.getSerializable(STATE_PARAMS) as ParamsType? ?: defaultParams
+        params = savedInstanceState?.getParcelable(STATE_PARAMS) ?: defaultParams
 
         if (visibleToUser) {
             initTags()
@@ -198,7 +198,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(STATE_PARAMS, params)
+        outState.putParcelable(STATE_PARAMS, params)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

@@ -1,14 +1,14 @@
 package io.plastique.deviations
 
+import android.os.Parcelable
 import io.plastique.api.deviations.Deviation
 import io.plastique.core.paging.Cursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
-import java.io.Serializable
 import javax.inject.Inject
 import javax.inject.Provider
 
-interface FetchParams : Serializable {
+interface FetchParams : Parcelable {
     val showMatureContent: Boolean
     val showLiterature: Boolean
 

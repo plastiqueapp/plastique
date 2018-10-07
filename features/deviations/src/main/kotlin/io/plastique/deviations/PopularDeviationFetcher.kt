@@ -7,8 +7,10 @@ import io.plastique.api.deviations.TimeRange
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
+import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class PopularParams(
     @Json(name = "show_mature")
