@@ -3,10 +3,16 @@ package io.plastique.collections
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.setSubtitleOnClickListener
+import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.inject.getComponent
 
 class FolderDeviationListActivity : BaseActivity() {
+    private lateinit var contentFragment: FolderDeviationListFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_collection_folder_deviations)
@@ -15,12 +21,30 @@ class FolderDeviationListActivity : BaseActivity() {
         val folderId = intent.getStringExtra(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+        initToolbar(username, folderName)
+
+        if (savedInstanceState == null) {
+            contentFragment = FolderDeviationListFragment.newInstance(username, folderId)
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.deviations_container, contentFragment)
+                    .commit()
+        } else {
+            contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as FolderDeviationListFragment
+        }
+    }
+
+    private fun initToolbar(username: String?, folderName: String) {
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.apply {
             title = folderName
             subtitle = username
             setDisplayHomeAsUpEnabled(true)
         }
+
+        val listener = View.OnClickListener { contentFragment.scrollToTop() }
+        toolbar.setTitleOnClickListener(listener)
+        toolbar.setSubtitleOnClickListener(listener)
     }
 
     override fun injectDependencies() {
