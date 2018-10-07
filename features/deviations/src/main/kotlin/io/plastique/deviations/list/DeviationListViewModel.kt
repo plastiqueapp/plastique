@@ -85,6 +85,7 @@ class DeviationListViewModel @Inject constructor(
         val loadEvents = effects.ofType<LoadDeviationsEffect>()
                 .switchMap { effect ->
                     dataSource.getData(effect.params)
+                            .bindToLifecycle()
                             .map<DeviationListEvent> { data ->
                                 ItemsChangedEvent(items = createItems(data.value, effect.params is DailyParams), hasMore = data.hasMore)
                             }

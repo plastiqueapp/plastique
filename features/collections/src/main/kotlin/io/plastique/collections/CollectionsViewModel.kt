@@ -86,6 +86,7 @@ class CollectionsViewModel @Inject constructor(
         val loadCollectionsEvent = effects.ofType<LoadCollectionsEffect>()
                 .switchMap { effect ->
                     dataSource.items(effect.params)
+                            .bindToLifecycle()
                             .map<CollectionsEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(getErrorState(error, username = effect.params.username)) }

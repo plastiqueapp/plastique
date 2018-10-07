@@ -87,6 +87,7 @@ class CommentListViewModel @Inject constructor(
         val loadCommentsEvents = effects.ofType<LoadCommentsEffect>()
                 .switchMap { effect ->
                     commentDataSource.getData(effect.target)
+                            .bindToLifecycle()
                             .map<CommentListEvent> { data ->
                                 CommentsChangedEvent(comments = mapComments(data.value), hasMore = data.hasMore)
                             }
