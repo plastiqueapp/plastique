@@ -5,13 +5,9 @@ import io.plastique.core.flow.Event
 import io.plastique.core.session.Session
 
 sealed class CommentListEvent : Event() {
-    data class CommentsChangedEvent(
-        val comments: List<CommentUiModel>,
-        val hasMore: Boolean
-    ) : CommentListEvent() {
-        override fun toString(): String {
-            return "CommentsChangedEvent(items=${comments.size}, hasMore=$hasMore)"
-        }
+    data class CommentsChangedEvent(val comments: List<CommentUiModel>, val hasMore: Boolean) : CommentListEvent() {
+        override fun toString(): String =
+                "CommentsChangedEvent(items=${comments.size}, hasMore=$hasMore)"
     }
 
     data class LoadErrorEvent(val emptyState: EmptyState) : CommentListEvent()

@@ -6,7 +6,11 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.session.Session
 
 sealed class CollectionsEvent : Event() {
-    data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : CollectionsEvent()
+    data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : CollectionsEvent() {
+        override fun toString(): String =
+                "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
+    }
+
     data class LoadErrorEvent(val errorState: EmptyState) : CollectionsEvent()
 
     object LoadMoreEvent : CollectionsEvent()

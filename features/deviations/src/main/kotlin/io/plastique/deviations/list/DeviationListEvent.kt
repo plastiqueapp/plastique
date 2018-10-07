@@ -7,12 +7,8 @@ import io.plastique.deviations.FetchParams
 
 sealed class DeviationListEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : DeviationListEvent() {
-        override fun toString(): String {
-            return "ItemsChangedEvent(" +
-                    "items=${items.size}, " +
-                    "hasMore=$hasMore, " +
-                    ")"
-        }
+        override fun toString(): String =
+                "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
     }
 
     data class LoadErrorEvent(val emptyState: EmptyState) : DeviationListEvent()
