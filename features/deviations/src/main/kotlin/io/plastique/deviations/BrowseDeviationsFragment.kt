@@ -122,7 +122,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
         })
     }
 
-    override fun getTagManager(): TagManager = tagsView
+    override val tagManager: TagManager get() = tagsView
 
     override fun injectDependencies() {
         getComponent<DeviationsFragmentComponent>().inject(this)

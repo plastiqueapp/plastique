@@ -52,23 +52,16 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private lateinit var contentViewController: ContentViewController
     private lateinit var adapter: DeviationsAdapter
     private lateinit var onScrollListener: EndlessScrollListener
-    private lateinit var tagManagerProvider: TagManagerProvider
 
     protected lateinit var params: ParamsType
     protected abstract val defaultParams: ParamsType
-    private val tagManager: TagManager
-        get() = tagManagerProvider.getTagManager()
     private var activityCreated: Boolean = false
     private var visibleToUser: Boolean = false
     private var tags: List<Tag> = emptyList()
+    private val tagManager: TagManager? get() = (parentFragment as? TagManagerProvider)?.tagManager
     private lateinit var gridParams: GridParams
     private lateinit var state: DeviationListViewState
     @Inject lateinit var navigator: DeviationsNavigator
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        tagManagerProvider = parentFragment as TagManagerProvider
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deviations, container, false)
@@ -171,7 +164,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 .subscribe { tags ->
                     this.tags = tags
                     if (visibleToUser) {
-                        tagManager.setTags(tags, true)
+                        tagManager?.setTags(tags, true)
                     }
                 }
                 .disposeOnDestroy()
@@ -229,8 +222,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     }
 
     private fun initTags() {
-        tagManager.setTags(tags, false)
-        tagManager.onTagClickListener = this
+        tagManager?.setTags(tags, false)
+        tagManager?.onTagClickListener = this
     }
 
     private fun createLayoutManager(context: Context, layoutMode: LayoutMode): RecyclerView.LayoutManager = when (layoutMode) {
