@@ -13,11 +13,8 @@ import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
 data class CollectionDeviationParams(
-    @Json(name = "username")
-    val username: String?,
-
     @Json(name = "folder_id")
-    val folderId: String,
+    val folderId: CollectionFolderId,
 
     @Json(name = "show_mature")
     override val showMatureContent: Boolean = false
@@ -26,8 +23,7 @@ data class CollectionDeviationParams(
 
     override fun isSameAs(params: FetchParams): Boolean {
         if (params !is CollectionDeviationParams) return false
-        return username == params.username &&
-                folderId == params.folderId &&
+        return folderId == params.folderId &&
                 showMatureContent == params.showMatureContent
     }
 
@@ -39,7 +35,8 @@ data class CollectionDeviationParams(
 class CollectionDeviationFetcher @Inject constructor(
     private val collectionService: CollectionService
 ) : DeviationFetcher<CollectionDeviationParams, OffsetCursor> {
-    override fun getCacheKey(params: CollectionDeviationParams): String = "collection-folder-deviations-${params.folderId}"
+    override fun getCacheKey(params: CollectionDeviationParams): String =
+            "collection-folder-deviations-${params.folderId.id}"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = CollectionDeviationParams::class.java, cursorType = OffsetCursor::class.java)
@@ -47,8 +44,8 @@ class CollectionDeviationFetcher @Inject constructor(
     override fun fetch(params: CollectionDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return collectionService.getFolderContents(
-                username = params.username,
-                folderId = params.folderId,
+                username = params.folderId.username,
+                folderId = params.folderId.id,
                 matureContent = params.showMatureContent,
                 offset = offset,
                 limit = 24)

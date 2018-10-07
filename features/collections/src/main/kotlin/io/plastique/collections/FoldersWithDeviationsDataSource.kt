@@ -36,8 +36,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
                                 when (featuredFolder) {
                                     is Optional.Some -> {
                                         val folderParams = CollectionDeviationParams(
-                                                folderId = featuredFolder.value.id,
-                                                username = params.username,
+                                                folderId = CollectionFolderId(id = featuredFolder.value.id, username = params.username),
                                                 showMatureContent = params.matureContent)
                                         deviationDataSource.getData(folderParams)
                                                 .map { pagedData ->

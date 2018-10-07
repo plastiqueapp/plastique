@@ -81,7 +81,9 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
             }
         })
 
-        adapter.onFolderClickListener = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) }
+        adapter.onFolderClickListener = { item ->
+            navigator.openCollectionFolder(navigationContext, CollectionFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
+        }
         adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
         onScrollListener = EndlessScrollListener(4, enabled = false) { viewModel.dispatch(LoadMoreEvent) }
 

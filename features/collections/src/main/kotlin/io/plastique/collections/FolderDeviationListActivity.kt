@@ -17,14 +17,13 @@ class FolderDeviationListActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_collection_folder_deviations)
 
-        val username = intent.getStringExtra(EXTRA_USERNAME)
-        val folderId = intent.getStringExtra(EXTRA_FOLDER_ID)!!
+        val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
 
-        initToolbar(username, folderName)
+        initToolbar(folderId.username, folderName)
 
         if (savedInstanceState == null) {
-            contentFragment = FolderDeviationListFragment.newInstance(username, folderId)
+            contentFragment = FolderDeviationListFragment.newInstance(folderId)
             supportFragmentManager.beginTransaction()
                     .add(R.id.deviations_container, contentFragment)
                     .commit()
@@ -50,13 +49,11 @@ class FolderDeviationListActivity : BaseActivity() {
     }
 
     companion object {
-        private const val EXTRA_USERNAME = "username"
         private const val EXTRA_FOLDER_ID = "folder_id"
         private const val EXTRA_FOLDER_NAME = "folder_name"
 
-        fun createIntent(context: Context, username: String?, folderId: String, folderName: String): Intent {
+        fun createIntent(context: Context, folderId: CollectionFolderId, folderName: String): Intent {
             return Intent(context, FolderDeviationListActivity::class.java).apply {
-                putExtra(EXTRA_USERNAME, username)
                 putExtra(EXTRA_FOLDER_ID, folderId)
                 putExtra(EXTRA_FOLDER_NAME, folderName)
             }

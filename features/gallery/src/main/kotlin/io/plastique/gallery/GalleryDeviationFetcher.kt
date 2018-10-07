@@ -13,11 +13,8 @@ import javax.inject.Inject
 
 @JsonClass(generateAdapter = true)
 data class GalleryDeviationParams(
-    @Json(name = "username")
-    val username: String?,
-
     @Json(name = "folder_id")
-    val folderId: String,
+    val folderId: GalleryFolderId,
 
     @Json(name = "show_mature")
     override val showMatureContent: Boolean = false
@@ -26,8 +23,7 @@ data class GalleryDeviationParams(
 
     override fun isSameAs(params: FetchParams): Boolean {
         if (params !is GalleryDeviationParams) return false
-        return username == params.username &&
-                folderId == params.folderId &&
+        return folderId == params.folderId &&
                 showMatureContent == params.showMatureContent
     }
 
@@ -39,7 +35,8 @@ data class GalleryDeviationParams(
 class GalleryDeviationFetcher @Inject constructor(
     private val galleryService: GalleryService
 ) : DeviationFetcher<GalleryDeviationParams, OffsetCursor> {
-    override fun getCacheKey(params: GalleryDeviationParams): String = "gallery-deviations-${params.folderId}"
+    override fun getCacheKey(params: GalleryDeviationParams): String =
+            "gallery-deviations-${params.folderId.id}"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
             DeviationCacheMetadataSerializer(paramsType = GalleryDeviationParams::class.java, cursorType = OffsetCursor::class.java)
@@ -47,8 +44,8 @@ class GalleryDeviationFetcher @Inject constructor(
     override fun fetch(params: GalleryDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolderContents(
-                username = params.username,
-                folderId = params.folderId,
+                username = params.folderId.username,
+                folderId = params.folderId.id,
                 matureContent = params.showMatureContent,
                 offset = offset,
                 limit = 24)

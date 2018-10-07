@@ -1,6 +1,7 @@
 package io.plastique
 
 import io.plastique.auth.LoginActivity
+import io.plastique.collections.CollectionFolderId
 import io.plastique.collections.CollectionsActivity
 import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentTarget
@@ -10,6 +11,7 @@ import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.gallery.GalleryActivity
+import io.plastique.gallery.GalleryFolderId
 import io.plastique.gallery.GalleryNavigator
 import io.plastique.main.MainNavigator
 import io.plastique.profile.ProfileNavigator
@@ -38,8 +40,8 @@ class Navigator @Inject constructor() :
         navigationContext.startActivity(CollectionsActivity.createIntent(navigationContext.context, username))
     }
 
-    override fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String) {
-        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, username, folderId, folderName))
+    override fun openCollectionFolder(navigationContext: NavigationContext, folderId: CollectionFolderId, folderName: String) {
+        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, folderId, folderName))
     }
 
     override fun openCommentsForDeviation(navigationContext: NavigationContext, deviationId: String) {
@@ -58,8 +60,8 @@ class Navigator @Inject constructor() :
         navigationContext.startActivity(GalleryActivity.createIntent(navigationContext.context, username))
     }
 
-    override fun openGalleryFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String) {
-        navigationContext.startActivity(GalleryFolderDeviationListActivity.createIntent(navigationContext.context, username, folderId, folderName))
+    override fun openGalleryFolder(navigationContext: NavigationContext, folderId: GalleryFolderId, folderName: String) {
+        navigationContext.startActivity(GalleryFolderDeviationListActivity.createIntent(navigationContext.context, folderId, folderName))
     }
 
     override fun openLogin(navigationContext: NavigationContext) {
