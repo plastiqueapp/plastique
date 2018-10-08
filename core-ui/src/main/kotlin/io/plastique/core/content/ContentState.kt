@@ -13,5 +13,5 @@ sealed class ContentState {
         override fun toString(): String = "Loading"
     }
 
-    data class Empty(val emptyState: EmptyState, val isError: Boolean = false) : ContentState()
+    data class Empty(val emptyState: EmptyState, val isError: Boolean = false, val error: Throwable? = null) : ContentState()
 }

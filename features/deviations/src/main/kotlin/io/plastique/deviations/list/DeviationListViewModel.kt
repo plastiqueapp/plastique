@@ -6,6 +6,7 @@ import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
+import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -25,6 +26,7 @@ import io.plastique.deviations.UndiscoveredParams
 import io.plastique.deviations.list.DeviationListEffect.LoadDeviationsEffect
 import io.plastique.deviations.list.DeviationListEffect.LoadMoreEffect
 import io.plastique.deviations.list.DeviationListEffect.RefreshEffect
+import io.plastique.deviations.list.DeviationListEvent.ConnectionStateChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.ItemsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.LayoutModeChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.LoadErrorEvent
@@ -41,6 +43,7 @@ import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShown
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
+import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import org.threeten.bp.LocalDate
@@ -49,10 +52,10 @@ import javax.inject.Inject
 
 class DeviationListViewModel @Inject constructor(
     stateReducer: StateReducer,
+    private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
     private val dataSource: DeviationDataSource,
-    private val tagFactory: TagFactory,
-    private val errorMessageProvider: ErrorMessageProvider
+    private val tagFactory: TagFactory
 ) : ViewModel() {
 
     lateinit var state: Observable<DeviationListViewState>
@@ -90,7 +93,7 @@ class DeviationListViewModel @Inject constructor(
                                 ItemsChangedEvent(items = createItems(data.value, effect.params is DailyParams), hasMore = data.hasMore)
                             }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(errorMessageProvider.getErrorState(error, R.string.deviations_message_load_error)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         // TODO: Cancel on new LoadDeviationsEffect
@@ -99,7 +102,7 @@ class DeviationListViewModel @Inject constructor(
                     dataSource.loadMore()
                             .toSingleDefault<DeviationListEvent>(LoadMoreFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.deviations_message_load_error)) }
+                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
                 }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
@@ -107,7 +110,7 @@ class DeviationListViewModel @Inject constructor(
                     dataSource.refresh()
                             .toSingleDefault<DeviationListEvent>(RefreshFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.deviations_message_load_error)) }
+                            .onErrorReturn { error -> RefreshErrorEvent(error) }
                 }
 
         return Observable.merge(loadEvents, loadMoreEvents, refreshEvents)
@@ -115,6 +118,9 @@ class DeviationListViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<DeviationListEvent> {
         return Observable.merge(
+                connectivityMonitor.connectionState
+                        .bindToLifecycle()
+                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
                 contentSettings.showLiteratureChanges
                         .bindToLifecycle()
                         .map { showLiterature -> ShowLiteratureChangedEvent(showLiterature) },
@@ -134,6 +140,7 @@ class DeviationListViewModel @Inject constructor(
 
 class StateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,
     private val tagFactory: TagFactory
 ) : Reducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
@@ -152,8 +159,9 @@ class StateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
+            val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
             next(state.copy(
-                    contentState = ContentState.Empty(event.emptyState, isError = true),
+                    contentState = ContentState.Empty(errorState, isError = true, error = event.error),
                     items = emptyList(),
                     deviationItems = emptyList()))
         }
@@ -175,7 +183,7 @@ class StateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.deviationItems, snackbarMessage = event.errorMessage))
+            next(state.copy(loadingMore = false, items = state.deviationItems, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error)))
         }
 
         RefreshEvent -> {
@@ -187,7 +195,7 @@ class StateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = event.errorMessage))
+            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error)))
         }
 
         is ParamsChangedEvent -> {
@@ -208,6 +216,18 @@ class StateReducer @Inject constructor(
 
         SnackbarShown -> {
             next(state.copy(snackbarMessage = null))
+        }
+
+        is ConnectionStateChangedEvent -> {
+            if (event.connectionState === NetworkConnectionState.Connected &&
+                    state.contentState is ContentState.Empty &&
+                    state.contentState.error is NoNetworkConnectionException) {
+                next(state.copy(
+                        contentState = ContentState.Loading),
+                        LoadDeviationsEffect(state.params))
+            } else {
+                next(state)
+            }
         }
     }
 
