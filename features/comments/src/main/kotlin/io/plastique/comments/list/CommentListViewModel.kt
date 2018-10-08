@@ -44,7 +44,7 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.ActivityScope
-import io.plastique.util.NetworkConnectivityChecker
+import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.Single
 import timber.log.Timber
@@ -157,7 +157,7 @@ class CommentListViewModel @Inject constructor(
 }
 
 class StateReducer @Inject constructor(
-    private val networkConnectivityChecker: NetworkConnectivityChecker,
+    private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CommentListEvent, CommentListViewState, CommentListEffect> {
     override fun invoke(state: CommentListViewState, event: CommentListEvent): Next<CommentListViewState, CommentListEffect> = when (event) {
@@ -188,7 +188,7 @@ class StateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && networkConnectivityChecker.isConnectedToNetwork()) {
+            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
                 next(state.copy(loadingMore = true, items = mergeItems(state.commentItems, true)), LoadMoreEffect)
             } else {
                 next(state)

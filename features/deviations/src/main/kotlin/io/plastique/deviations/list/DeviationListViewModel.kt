@@ -41,7 +41,7 @@ import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShown
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
-import io.plastique.util.NetworkConnectivityChecker
+import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import org.threeten.bp.LocalDate
 import timber.log.Timber
@@ -133,7 +133,7 @@ class DeviationListViewModel @Inject constructor(
 }
 
 class StateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
+    private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider,
     private val tagFactory: TagFactory
 ) : Reducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
@@ -163,7 +163,7 @@ class StateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && connectivityChecker.isConnectedToNetwork()) {
+            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
                 next(state.copy(loadingMore = true, items = state.deviationItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)

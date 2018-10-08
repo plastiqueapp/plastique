@@ -34,7 +34,7 @@ import io.plastique.core.session.SessionManager
 import io.plastique.deviations.ContentSettings
 import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.HtmlCompat
-import io.plastique.util.NetworkConnectivityChecker
+import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
@@ -133,7 +133,7 @@ class CollectionsViewModel @Inject constructor(
 }
 
 class StateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
+    private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {
     override fun invoke(state: CollectionsViewState, event: CollectionsEvent): Next<CollectionsViewState, CollectionsEffect> = when (event) {
@@ -165,7 +165,7 @@ class StateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && connectivityChecker.isConnectedToNetwork()) {
+            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
                 next(state.copy(loadingMore = true, items = state.collectionItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)

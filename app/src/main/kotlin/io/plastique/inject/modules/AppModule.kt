@@ -24,9 +24,9 @@ import io.plastique.core.session.SessionManager
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.users.UserRepository
 import io.plastique.users.UserRepositoryImpl
-import io.plastique.util.NetworkConnectivityChecker
+import io.plastique.util.NetworkConnectivityMonitor
+import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
-import io.plastique.util.SimpleNetworkConnectivityChecker
 import javax.inject.Singleton
 
 @Module
@@ -38,7 +38,7 @@ abstract class AppModule {
     abstract fun bindSessionManager(impl: SessionManagerImpl): SessionManager
 
     @Binds
-    abstract fun bindNetworkConnectivityChecker(impl: SimpleNetworkConnectivityChecker): NetworkConnectivityChecker
+    abstract fun bindNetworkConnectivityMonitor(impl: NetworkConnectivityMonitorImpl): NetworkConnectivityMonitor
 
     @Binds
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
