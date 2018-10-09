@@ -48,6 +48,7 @@ class CollectionsViewModel @Inject constructor(
     private val dataSource: FoldersWithDeviationsDataSource,
     private val contentSettings: ContentSettings
 ) : ViewModel() {
+
     lateinit var state: Observable<CollectionsViewState>
     private val loop = MainLoop(
             reducer = stateReducer,

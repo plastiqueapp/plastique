@@ -20,11 +20,14 @@ import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.categories.CategoryEntity
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.deviations.download.DownloadInfoEntity
+import io.plastique.gallery.GalleryDao
 import io.plastique.users.UserDao
 import io.plastique.users.UserEntity
 import io.plastique.users.UserProfileEntity
 import io.plastique.collections.FolderEntity as CollectionFolderEntity
 import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
+import io.plastique.gallery.FolderEntity as GalleryFolderEntity
+import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
 @Database(entities = [
     CacheEntry::class,
@@ -40,6 +43,9 @@ import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
     DeviationLinkage::class,
     DeviationMetadataEntity::class,
     DownloadInfoEntity::class,
+
+    GalleryFolderEntity::class,
+    GalleryFolderLinkage::class,
 
     UserEntity::class,
     UserProfileEntity::class
@@ -59,6 +65,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun deviationMetadataDao(): DeviationMetadataDao
 
     abstract fun downloadInfoDao(): DownloadInfoDao
+
+    abstract fun galleryDao(): GalleryDao
 
     abstract fun userDao(): UserDao
 }

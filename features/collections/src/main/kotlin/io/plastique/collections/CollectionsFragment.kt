@@ -108,6 +108,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val username = args.getString(ARG_USERNAME)
         viewModel.init(username)
         observeState()

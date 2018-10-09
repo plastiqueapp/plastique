@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.gallery
 
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ListItem
