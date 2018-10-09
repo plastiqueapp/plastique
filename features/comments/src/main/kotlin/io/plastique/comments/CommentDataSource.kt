@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 class CommentDataSource @Inject constructor(
     private val commentRepository: CommentRepository
-) : PagedDataSource<List<Comment>, CommentTarget> {
-    private val params = AtomicReference<CommentTarget>()
+) : PagedDataSource<List<Comment>, CommentThreadId> {
+    private val params = AtomicReference<CommentThreadId>()
     private val nextCursor = AtomicReference<OffsetCursor>()
 
-    override fun getData(params: CommentTarget): Observable<out PagedData<List<Comment>, *>> {
+    override fun getData(params: CommentThreadId): Observable<out PagedData<List<Comment>, *>> {
         this.params.set(params)
         return commentRepository.getComments(params)
                 .doOnNext { data -> nextCursor.set(data.nextCursor) }

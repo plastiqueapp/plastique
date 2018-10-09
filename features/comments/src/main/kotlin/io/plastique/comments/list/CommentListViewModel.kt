@@ -4,7 +4,7 @@ import com.sch.rxjava2.extensions.ofType
 import io.plastique.comments.Comment
 import io.plastique.comments.CommentDataSource
 import io.plastique.comments.CommentSender
-import io.plastique.comments.CommentTarget
+import io.plastique.comments.CommentThreadId
 import io.plastique.comments.R
 import io.plastique.comments.list.CommentListEffect.LoadCommentsEffect
 import io.plastique.comments.list.CommentListEffect.LoadMoreEffect
@@ -71,15 +71,15 @@ class CommentListViewModel @Inject constructor(
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
-    fun init(target: CommentTarget) {
+    fun init(threadId: CommentThreadId) {
         if (::state.isInitialized) return
 
         val initialState = CommentListViewState(
-                target = target,
+                threadId = threadId,
                 contentState = ContentState.Loading,
                 signedIn = sessionManager.session is Session.User)
 
-        state = loop.loop(initialState, LoadTitleEffect(target), LoadCommentsEffect(target)).disposeOnDestroy()
+        state = loop.loop(initialState, LoadTitleEffect(threadId), LoadCommentsEffect(threadId)).disposeOnDestroy()
     }
 
     fun dispatch(event: CommentListEvent) {
@@ -89,7 +89,7 @@ class CommentListViewModel @Inject constructor(
     private fun effectHandler(effects: Observable<CommentListEffect>): Observable<CommentListEvent> {
         val loadCommentsEvents = effects.ofType<LoadCommentsEffect>()
                 .switchMap { effect ->
-                    commentDataSource.getData(effect.target)
+                    commentDataSource.getData(effect.threadId)
                             .bindToLifecycle()
                             .map<CommentListEvent> { data ->
                                 CommentsChangedEvent(comments = mapComments(data.value), hasMore = data.hasMore)
@@ -116,7 +116,7 @@ class CommentListViewModel @Inject constructor(
 
         val loadTitleEvents = effects.ofType<LoadTitleEffect>()
                 .flatMapMaybe { effect ->
-                    loadTitle(effect.target)
+                    loadTitle(effect.threadId)
                             .toMaybe()
                             .doOnError(Timber::e)
                             .onErrorComplete()
@@ -125,7 +125,7 @@ class CommentListViewModel @Inject constructor(
 
         val postCommentEvents = effects.ofType<PostCommentEffect>()
                 .flatMapSingle { effect ->
-                    commentSender.sendComment(effect.target, effect.text, effect.parentCommentId)
+                    commentSender.sendComment(effect.threadId, effect.text, effect.parentCommentId)
                             .map<CommentListEvent> { CommentPostedEvent }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> PostCommentErrorEvent(error) }
@@ -134,10 +134,10 @@ class CommentListViewModel @Inject constructor(
         return Observable.merge(listOf(loadTitleEvents, loadCommentsEvents, loadMoreEvents, refreshEvents, postCommentEvents))
     }
 
-    private fun loadTitle(target: CommentTarget): Single<String> = when (target) {
-        is CommentTarget.Deviation -> deviationRepository.getDeviationTitleById(target.deviationId)
-        is CommentTarget.Profile -> Single.just(target.username)
-        is CommentTarget.Status -> TODO("Not implemented yet")
+    private fun loadTitle(threadId: CommentThreadId): Single<String> = when (threadId) {
+        is CommentThreadId.Deviation -> deviationRepository.getDeviationTitleById(threadId.deviationId)
+        is CommentThreadId.Profile -> Single.just(threadId.username)
+        is CommentThreadId.Status -> TODO("Not implemented yet")
     }
 
     private fun externalEvents(): Observable<CommentListEvent> {
@@ -193,7 +193,7 @@ class StateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadCommentsEffect(state.target))
+            next(state.copy(contentState = ContentState.Loading), LoadCommentsEffect(state.threadId))
         }
 
         LoadMoreEvent -> {
@@ -226,7 +226,7 @@ class StateReducer @Inject constructor(
 
         is PostCommentEvent -> {
             next(state.copy(postingComment = true, commentDraft = event.text),
-                    PostCommentEffect(target = state.target, text = event.text, parentCommentId = state.replyComment?.id))
+                    PostCommentEffect(threadId = state.threadId, text = event.text, parentCommentId = state.replyComment?.id))
         }
 
         CommentPostedEvent -> {
@@ -256,7 +256,7 @@ class StateReducer @Inject constructor(
                     state.contentState.error is NoNetworkConnectionException) {
                 next(state.copy(
                         contentState = ContentState.Loading),
-                        LoadCommentsEffect(state.target))
+                        LoadCommentsEffect(state.threadId))
             } else {
                 next(state)
             }

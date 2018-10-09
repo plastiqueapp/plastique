@@ -38,21 +38,21 @@ class CommentRepository @Inject constructor(
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(CACHE_DURATION))
 
-    fun getComments(target: CommentTarget): Observable<PagedData<List<Comment>, OffsetCursor>> {
-        val cacheKey = target.key
+    fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
+        val cacheKey = threadId.key
         return cacheHelper.createObservable(
                 cacheKey = cacheKey,
                 cachedData = getCommentsFromDb(cacheKey),
-                updater = fetchComments(target))
+                updater = fetchComments(threadId))
     }
 
-    fun fetchComments(target: CommentTarget, cursor: OffsetCursor? = null): Completable {
+    fun fetchComments(threadId: CommentThreadId, cursor: OffsetCursor? = null): Completable {
         val offset = cursor?.offset ?: 0
-        return getCommentList(target, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
+        return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
                 .map { commentList ->
                     val nextCursor = if (commentList.hasMore) OffsetCursor(commentList.nextOffset!!) else null
                     val metadata = CommentCacheMetadata(nextCursor)
-                    persistComments(target.key, commentList, Instant.now(), metadata, offset == 0)
+                    persistComments(threadId.key, commentList, Instant.now(), metadata, offset == 0)
                 }
                 .ignoreElement()
 
@@ -84,10 +84,10 @@ class CommentRepository @Inject constructor(
         return metadata?.nextCursor
     }
 
-    private fun getCommentList(target: CommentTarget, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> = when (target) {
-        is CommentTarget.Deviation -> commentService.getCommentsOnDeviation(target.deviationId, parentCommentId, maxDepth, offset, pageSize)
-        is CommentTarget.Profile -> commentService.getCommentsOnProfile(target.username, parentCommentId, maxDepth, offset, pageSize)
-        is CommentTarget.Status -> commentService.getCommentsOnStatus(target.statusId, parentCommentId, maxDepth, offset, pageSize)
+    private fun getCommentList(threadId: CommentThreadId, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> = when (threadId) {
+        is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
+        is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
+        is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
     }
 
     private fun persistComments(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {

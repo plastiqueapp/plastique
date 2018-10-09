@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import io.plastique.comments.CommentTarget
+import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.R
@@ -77,7 +77,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
 
-        viewModel.init(intent.getParcelableExtra(EXTRA_TARGET))
+        viewModel.init(intent.getParcelableExtra(EXTRA_THREAD_ID))
         observeState()
     }
 
@@ -198,11 +198,11 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
     }
 
     companion object {
-        private const val EXTRA_TARGET = "target"
+        private const val EXTRA_THREAD_ID = "thread_id"
 
-        fun createIntent(context: Context, target: CommentTarget): Intent {
+        fun createIntent(context: Context, threadId: CommentThreadId): Intent {
             return Intent(context, CommentListActivity::class.java).apply {
-                putExtra(EXTRA_TARGET, target)
+                putExtra(EXTRA_THREAD_ID, threadId)
             }
         }
     }

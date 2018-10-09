@@ -1,11 +1,11 @@
 package io.plastique.comments.list
 
-import io.plastique.comments.CommentTarget
+import io.plastique.comments.CommentThreadId
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
 
 data class CommentListViewState(
-    val target: CommentTarget,
+    val threadId: CommentThreadId,
 
     val title: String = "",
     val contentState: ContentState = ContentState.None,
@@ -30,7 +30,7 @@ data class CommentListViewState(
 
     override fun toString(): String {
         return "CommentListViewState(" +
-                "target=$target, " +
+                "threadId=$threadId, " +
                 "title='$title', " +
                 "contentState=$contentState, " +
                 "comments=${comments.size}, " +

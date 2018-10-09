@@ -4,7 +4,7 @@ import io.plastique.auth.LoginActivity
 import io.plastique.collections.CollectionFolderId
 import io.plastique.collections.CollectionsActivity
 import io.plastique.collections.CollectionsNavigator
-import io.plastique.comments.CommentTarget
+import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.list.CommentListActivity
 import io.plastique.core.navigation.NavigationContext
@@ -45,11 +45,11 @@ class Navigator @Inject constructor() :
     }
 
     override fun openCommentsForDeviation(navigationContext: NavigationContext, deviationId: String) {
-        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentTarget.Deviation(deviationId)))
+        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentThreadId.Deviation(deviationId)))
     }
 
     override fun openCommentsForUserProfile(navigationContext: NavigationContext, username: String) {
-        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentTarget.Profile(username)))
+        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentThreadId.Profile(username)))
     }
 
     override fun openDeviation(navigationContext: NavigationContext, deviationId: String) {
