@@ -14,6 +14,7 @@ import io.plastique.comments.list.CommentListEffect.RefreshEffect
 import io.plastique.comments.list.CommentListEvent.CancelReplyClickEvent
 import io.plastique.comments.list.CommentListEvent.CommentPostedEvent
 import io.plastique.comments.list.CommentListEvent.CommentsChangedEvent
+import io.plastique.comments.list.CommentListEvent.ConnectionStateChangedEvent
 import io.plastique.comments.list.CommentListEvent.LoadErrorEvent
 import io.plastique.comments.list.CommentListEvent.LoadMoreErrorEvent
 import io.plastique.comments.list.CommentListEvent.LoadMoreEvent
@@ -33,6 +34,7 @@ import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
+import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -44,6 +46,7 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.ActivityScope
+import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -56,8 +59,8 @@ class CommentListViewModel @Inject constructor(
     private val commentMapper: CommentMapper,
     private val commentDataSource: CommentDataSource,
     private val commentSender: CommentSender,
+    private val connectivityMonitor: NetworkConnectivityMonitor,
     private val deviationRepository: DeviationRepository,
-    private val errorMessageProvider: ErrorMessageProvider,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
@@ -92,7 +95,7 @@ class CommentListViewModel @Inject constructor(
                                 CommentsChangedEvent(comments = mapComments(data.value), hasMore = data.hasMore)
                             }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(errorMessageProvider.getErrorState(error, R.string.comments_message_load_error)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
@@ -100,7 +103,7 @@ class CommentListViewModel @Inject constructor(
                     commentDataSource.loadMore()
                             .toSingleDefault<CommentListEvent>(LoadMoreFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.comments_message_load_error)) }
+                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
                 }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
@@ -108,7 +111,7 @@ class CommentListViewModel @Inject constructor(
                     commentDataSource.refresh()
                             .toSingleDefault<CommentListEvent>(RefreshFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.comments_message_load_error)) }
+                            .onErrorReturn { error -> RefreshErrorEvent(error) }
                 }
 
         val loadTitleEvents = effects.ofType<LoadTitleEffect>()
@@ -125,7 +128,7 @@ class CommentListViewModel @Inject constructor(
                     commentSender.sendComment(effect.target, effect.text, effect.parentCommentId)
                             .map<CommentListEvent> { CommentPostedEvent }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> PostCommentErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.comments_message_post_error)) }
+                            .onErrorReturn { error -> PostCommentErrorEvent(error) }
                 }
 
         return Observable.merge(listOf(loadTitleEvents, loadCommentsEvents, loadMoreEvents, refreshEvents, postCommentEvents))
@@ -138,9 +141,13 @@ class CommentListViewModel @Inject constructor(
     }
 
     private fun externalEvents(): Observable<CommentListEvent> {
-        return sessionManager.sessionChanges
-                .bindToLifecycle()
-                .map { session -> SessionChangedEvent(session) }
+        return Observable.merge(
+                connectivityMonitor.connectionState
+                        .bindToLifecycle()
+                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+                sessionManager.sessionChanges
+                        .bindToLifecycle()
+                        .map { session -> SessionChangedEvent(session) })
     }
 
     private fun mapComments(comments: List<Comment>): List<CommentUiModel> {
@@ -158,6 +165,7 @@ class CommentListViewModel @Inject constructor(
 
 class StateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CommentListEvent, CommentListViewState, CommentListEffect> {
     override fun invoke(state: CommentListViewState, event: CommentListEvent): Next<CommentListViewState, CommentListEffect> = when (event) {
@@ -177,8 +185,9 @@ class StateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
+            val errorState = errorMessageProvider.getErrorState(event.error, R.string.comments_message_load_error)
             next(state.copy(
-                    contentState = ContentState.Empty(event.emptyState, isError = true),
+                    contentState = ContentState.Empty(errorState, isError = true, error = event.error),
                     items = emptyList(),
                     commentItems = emptyList()))
         }
@@ -200,7 +209,7 @@ class StateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.commentItems, snackbarMessage = event.errorMessage))
+            next(state.copy(loadingMore = false, items = state.commentItems, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error)))
         }
 
         RefreshEvent -> {
@@ -212,7 +221,7 @@ class StateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = event.errorMessage))
+            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error)))
         }
 
         is PostCommentEvent -> {
@@ -225,7 +234,7 @@ class StateReducer @Inject constructor(
         }
 
         is PostCommentErrorEvent -> {
-            next(state.copy(postingComment = false, snackbarMessage = event.errorMessage))
+            next(state.copy(postingComment = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error)))
         }
 
         is ReplyClickEvent -> {
@@ -239,6 +248,18 @@ class StateReducer @Inject constructor(
 
         is TitleLoadedEvent -> {
             next(state.copy(title = event.title))
+        }
+
+        is ConnectionStateChangedEvent -> {
+            if (event.connectionState === NetworkConnectionState.Connected &&
+                    state.contentState is ContentState.Empty &&
+                    state.contentState.error is NoNetworkConnectionException) {
+                next(state.copy(
+                        contentState = ContentState.Loading),
+                        LoadCommentsEffect(state.target))
+            } else {
+                next(state)
+            }
         }
 
         is SessionChangedEvent -> {
