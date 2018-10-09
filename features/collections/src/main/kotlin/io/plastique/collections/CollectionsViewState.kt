@@ -19,4 +19,18 @@ data class CollectionsViewState(
 ) {
     val pagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !loadingMore && !refreshing
+
+    override fun toString(): String {
+        return "CollectionsViewState(" +
+                "params=$params," +
+                "contentState=$contentState," +
+                "signInNeeded=$signInNeeded," +
+                "collectionItems=$collectionItems," +
+                "items=${items.size}," +
+                "snackbarMessage=$snackbarMessage," +
+                "hasMore=$hasMore," +
+                "loadingMore=$loadingMore," +
+                "refreshing=$refreshing" +
+                ")"
+    }
 }
