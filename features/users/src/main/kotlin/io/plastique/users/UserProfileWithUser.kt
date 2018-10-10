@@ -3,10 +3,10 @@ package io.plastique.users
 import androidx.room.Embedded
 import androidx.room.Relation
 
-class UserProfileWithUser {
+data class UserProfileWithUser(
     @Embedded
-    lateinit var userProfile: UserProfileEntity
+    val userProfile: UserProfileEntity,
 
     @Relation(parentColumn = "user_id", entityColumn = "id")
-    var user: List<UserEntity> = emptyList()
-}
+    val user: List<UserEntity>
+)

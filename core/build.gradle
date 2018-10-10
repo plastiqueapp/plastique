@@ -30,5 +30,6 @@ dependencies {
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
 
+    testImplementation "androidx.test:core:$versions.androidx.testCore"
     testImplementation "org.robolectric:robolectric:$versions.robolectric"
 }

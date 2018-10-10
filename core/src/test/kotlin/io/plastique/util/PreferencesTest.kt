@@ -1,13 +1,13 @@
 package io.plastique.util
 
 import android.preference.PreferenceManager
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import java.util.Date
 
 class PreferencesBuilderTest {
@@ -26,7 +26,7 @@ class MutablePreferencesTest {
 
     @Before
     fun setUp() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
         preferences = Preferences.Builder()
                 .sharedPreferences(sharedPreferences)
                 .addConverter(Foo::class.java, FooConverter)
@@ -98,7 +98,7 @@ class ObservablePreferencesTest {
 
     @Before
     fun setUp() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
         preferences = Preferences.Builder()
                 .sharedPreferences(sharedPreferences)
                 .addConverter(Foo::class.java, FooConverter)

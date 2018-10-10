@@ -1,11 +1,11 @@
 package io.plastique.util
 
+import androidx.test.core.app.ApplicationProvider
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.ParameterizedRobolectricTestRunner.Parameters
-import org.robolectric.RuntimeEnvironment
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -17,7 +17,7 @@ class ElapsedTimeFormatterTest(
 ) {
     @Test
     fun format() {
-        val result = ElapsedTimeFormatter.format(RuntimeEnvironment.application, from, to)
+        val result = ElapsedTimeFormatter.format(ApplicationProvider.getApplicationContext(), from, to)
         assertEquals(expected, result)
     }
 
