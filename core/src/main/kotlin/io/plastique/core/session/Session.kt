@@ -6,7 +6,8 @@ sealed class Session {
     data class User(
         val accessToken: String,
         val refreshToken: String,
-        val userId: String
+        val userId: String,
+        val username: String
     ) : Session()
 
     object None : Session() {

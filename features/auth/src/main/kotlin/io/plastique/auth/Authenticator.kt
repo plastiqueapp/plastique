@@ -62,7 +62,8 @@ class Authenticator @Inject constructor(
                                 Session.User(
                                         accessToken = tokenResult.accessToken,
                                         refreshToken = tokenResult.refreshToken!!,
-                                        userId = user.id)
+                                        userId = user.id,
+                                        username = user.name)
                             }
                 }
                 .doOnSuccess { session -> sessionManager.session = session }

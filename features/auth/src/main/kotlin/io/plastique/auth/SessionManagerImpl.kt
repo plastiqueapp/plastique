@@ -62,7 +62,7 @@ class SessionManagerImpl @Inject constructor(
 
     private fun refreshAccessToken(session: Session): Single<Session> = when (session) {
         is Session.User -> authService.refreshAccessToken(apiConfig.clientId, apiConfig.clientSecret, session.refreshToken)
-                .map { result -> Session.User(accessToken = result.accessToken, refreshToken = result.refreshToken!!, userId = session.userId) }
+                .map { result -> session.copy(accessToken = result.accessToken, refreshToken = result.refreshToken!!) }
 
         else -> authService.requestAccessToken(apiConfig.clientId, apiConfig.clientSecret)
                 .map { result -> Session.Anonymous(accessToken = result.accessToken) }
