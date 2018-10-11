@@ -13,8 +13,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun updateSummaries(preferenceGroup: PreferenceGroup) {
         for (i in 0 until preferenceGroup.preferenceCount) {
-            val preference = preferenceGroup.getPreference(i)
-            when (preference) {
+            when (val preference = preferenceGroup.getPreference(i)) {
                 is PreferenceGroup -> updateSummaries(preference)
                 is ListPreference -> preference.summary = preference.entry
             }
