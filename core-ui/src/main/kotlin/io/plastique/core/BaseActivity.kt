@@ -52,14 +52,12 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
         disposables.dispose()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        android.R.id.home -> {
+            finish()
+            true
         }
+        else -> super.onOptionsItemSelected(item)
     }
 
     protected fun <T : Disposable> T.disposeOnDestroy(): T {
