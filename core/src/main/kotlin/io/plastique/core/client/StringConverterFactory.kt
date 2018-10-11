@@ -7,7 +7,7 @@ import java.lang.reflect.Type
 
 class StringConverterFactory : Converter.Factory() {
     override fun stringConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<*, String>? {
-        val rawType = Converter.Factory.getRawType(type)
+        val rawType = getRawType(type)
         return when {
             StringEnum::class.java.isAssignableFrom(rawType) -> StringEnumConverter
             else -> null
