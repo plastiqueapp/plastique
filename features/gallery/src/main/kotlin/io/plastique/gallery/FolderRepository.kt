@@ -17,7 +17,6 @@ import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
@@ -38,22 +37,23 @@ class FolderRepository @Inject constructor(
             metadata?.params == params
         }
         val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
-        return Single.fromCallable { params.username ?: sessionManager.currentUsername }
-                .flatMapObservable { username ->
-                    val cacheKey = getCacheKey(username)
-                    cacheHelper.createObservable(
-                            cacheKey = cacheKey,
-                            cachedData = getFoldersFromDb(cacheKey),
-                            updater = fetchFolders(params, cacheKey, null))
-                }
+        return Observable.defer {
+            val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
+            cacheHelper.createObservable(
+                    cacheKey = cacheKey,
+                    cachedData = getFoldersFromDb(cacheKey),
+                    updater = fetchFolders(params, null, cacheKey))
+        }
     }
 
     fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor? = null): Completable {
-        return Single.fromCallable { params.username ?: sessionManager.currentUsername }
-                .flatMapCompletable { username -> fetchFolders(params, getCacheKey(username), cursor) }
+        return Completable.defer {
+            val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
+            fetchFolders(params, cursor, cacheKey)
+        }
     }
 
-    private fun fetchFolders(params: FolderLoadParams, cacheKey: String, cursor: OffsetCursor?): Completable {
+    private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Completable {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolders(
                 username = params.username,
