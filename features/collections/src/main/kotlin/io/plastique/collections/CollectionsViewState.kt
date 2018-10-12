@@ -25,7 +25,7 @@ data class CollectionsViewState(
                 "params=$params," +
                 "contentState=$contentState," +
                 "signInNeeded=$signInNeeded," +
-                "collectionItems=$collectionItems," +
+                "collectionItems=${collectionItems.size}," +
                 "items=${items.size}," +
                 "snackbarMessage=$snackbarMessage," +
                 "hasMore=$hasMore," +
