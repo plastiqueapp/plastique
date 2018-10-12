@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?browse_literatureDeviationBackground"
+    android:background="?deviations_literatureBackground"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="8dp">

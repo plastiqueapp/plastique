@@ -24,6 +24,7 @@
         <item name="imageButtonTint">@color/dark_image_button_tint</item>
         <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="deviations_literatureBackground">#666666</item>
     </style>
 
     <style name="Theme.App.Dark.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">

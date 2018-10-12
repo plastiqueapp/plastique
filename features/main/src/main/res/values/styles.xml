@@ -7,7 +7,6 @@
 
         <item name="deviationTitleBackground">@color/light_deviation_title_background</item>
         <item name="deviationTitleTextColor">@color/light_deviation_title_text</item>
-        <item name="browse_literatureDeviationBackground">#ffffff</item>
         <item name="tagsViewStyle">@style/Widget.App.Light.Tags</item>
     </style>
 
@@ -17,7 +16,6 @@
 
         <item name="deviationTitleBackground">@color/dark_deviation_title_background</item>
         <item name="deviationTitleTextColor">@color/dark_deviation_title_text</item>
-        <item name="browse_literatureDeviationBackground">#666666</item>
         <item name="tagsViewStyle">@style/Widget.App.Dark.Tags</item>
     </style>
 

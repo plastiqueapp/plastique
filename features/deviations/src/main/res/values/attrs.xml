@@ -3,7 +3,6 @@
 
     <attr name="deviationTitleBackground" format="reference" />
     <attr name="deviationTitleTextColor" format="color" />
-    <attr name="browse_literatureDeviationBackground" format="color|reference" />
     <attr name="tagsViewStyle" format="reference" />
 
     <declare-styleable name="TagsView">
