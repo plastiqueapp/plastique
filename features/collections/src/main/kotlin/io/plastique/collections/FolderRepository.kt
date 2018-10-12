@@ -11,9 +11,8 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
-import io.plastique.users.UserRepository
+import io.plastique.core.session.currentUsername
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -31,25 +30,10 @@ class FolderRepository @Inject constructor(
     private val cacheEntryRepository: CacheEntryRepository,
     private val folderMapper: FolderMapper,
     private val folderEntityMapper: FolderEntityMapper,
-    private val userRepository: UserRepository,
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider
 ) {
-
-    private fun getUserIdByUsername(username: String?): Single<String> {
-        return Single.defer {
-            if (username == null) {
-                val session = sessionManager.session
-                // TODO: UserNotAuthenticatedException or something, depending on how normal this outcome is
-                val userId = if (session is Session.User) session.userId else throw IllegalStateException("User is not authenticated")
-                Single.just(userId)
-            } else {
-                userRepository.getUserByName(username)
-                        .map { user -> user.id }
-            }
-        }
-    }
 
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
         val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
@@ -57,21 +41,20 @@ class FolderRepository @Inject constructor(
             metadata?.params == params
         }
         val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
-        return getUserIdByUsername(params.username)
-                .flatMapObservable { userId ->
-                    val cacheKey = getCacheKey(userId)
+        return Single.fromCallable { params.username ?: sessionManager.currentUsername }
+                .flatMapObservable { username ->
+                    val cacheKey = getCacheKey(username)
                     cacheHelper.createObservable(
                             cacheKey = cacheKey,
-                            cachedData = getFoldersFromDb(userId),
-                            updater = getFoldersFromServer(params, userId))
+                            cachedData = getFoldersFromDb(cacheKey),
+                            updater = fetchFolders(params, cacheKey, null))
                 }
     }
 
-    private fun getFoldersFromDb(userId: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        // TODO: Consider using cache key instead
+    private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("collection_folders", "user_collection_folders")) {
-            val folders = collectionDao.getFolders(userId).map { folderMapper.map(it) }
-            val nextCursor = getNextCursor(userId)
+            val folders = collectionDao.getFoldersByKey(cacheKey).map { folderMapper.map(it) }
+            val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
         }
     }
@@ -82,46 +65,48 @@ class FolderRepository @Inject constructor(
         return metadata?.nextCursor
     }
 
-    fun getFoldersFromServer(params: FolderLoadParams, cursor: OffsetCursor? = null): Completable {
-        // TODO: Get rid of this
-        return getUserIdByUsername(params.username)
-                .flatMapCompletable { userId -> getFoldersFromServer(params, userId, cursor) }
+    fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor? = null): Completable {
+        return Single.fromCallable { params.username ?: sessionManager.currentUsername }
+                .flatMapCompletable { username -> fetchFolders(params, getCacheKey(username), cursor) }
     }
 
-    private fun getFoldersFromServer(params: FolderLoadParams, userId: String, cursor: OffsetCursor? = null): Completable {
+    private fun fetchFolders(params: FolderLoadParams, cacheKey: String, cursor: OffsetCursor?): Completable {
         val offset = cursor?.offset ?: 0
-        val cacheKey = getCacheKey(userId)
-
-        return collectionService.getFolders(username = params.username, preload = true, matureContent = params.matureContent, offset = offset, limit = FOLDERS_PER_PAGE)
+        return collectionService.getFolders(
+                username = params.username,
+                matureContent = params.matureContent,
+                preload = true,
+                offset = offset,
+                limit = FOLDERS_PER_PAGE)
                 .map { folderList ->
                     val nextCursor = if (folderList.hasMore) OffsetCursor(folderList.nextOffset!!) else null
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     val entities = folderList.folders.map { folderEntityMapper.map(it) }
-                    persist(userId = userId, folders = entities, cacheEntry = cacheEntry, replaceExisting = offset == 0)
+                    persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
                 }
                 .ignoreElement()
     }
 
-    private fun persist(userId: String, folders: List<FolderEntity>, cacheEntry: CacheEntry, replaceExisting: Boolean) {
+    private fun persist(cacheEntry: CacheEntry, folders: List<FolderEntity>, replaceExisting: Boolean) {
         database.runInTransaction {
             var order = if (replaceExisting) {
-                collectionDao.deleteFoldersByUserId(userId)
+                collectionDao.deleteFoldersByKey(cacheEntry.key)
                 1
             } else {
-                collectionDao.maxOrder(userId) + 1
+                collectionDao.maxOrder(cacheEntry.key) + 1
             }
 
             collectionDao.insertOrUpdateFolders(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            val userFolders = folders.map { FolderLinkage(userId = userId, folderId = it.id, order = order++) }
-            collectionDao.insertLinks(userFolders) // TODO: Make sure the user is in cache
+            val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
+            collectionDao.insertLinks(userFolders)
         }
     }
 
-    private fun getCacheKey(userId: String): String {
-        return "collection-folders-$userId"
+    private fun getCacheKey(username: String): String {
+        return "collection-folders-$username"
     }
 
     companion object {

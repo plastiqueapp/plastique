@@ -9,11 +9,8 @@ import androidx.room.Update
 
 @Dao
 interface CollectionDao {
-    @Query("SELECT cf.* FROM collection_folders cf " +
-            "INNER JOIN user_collection_folders ucf ON cf.id = ucf.folder_id " +
-            "WHERE ucf.user_id = :userId " +
-            "ORDER BY ucf.`order`")
-    fun getFolders(userId: String): List<FolderEntity>
+    @Query("SELECT cf.* FROM collection_folders cf INNER JOIN user_collection_folders ucf ON cf.id = ucf.folder_id WHERE ucf.`key` = :key ORDER BY ucf.`order`")
+    fun getFoldersByKey(key: String): List<FolderEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertFolders(folders: List<FolderEntity>)
@@ -27,11 +24,11 @@ interface CollectionDao {
         insertFolders(folders)
     }
 
-    @Query("SELECT max(`order`) FROM user_collection_folders WHERE user_id = :userId")
-    fun maxOrder(userId: String): Int
+    @Query("SELECT max(`order`) FROM user_collection_folders WHERE `key` = :key")
+    fun maxOrder(key: String): Int
 
-    @Query("DELETE FROM collection_folders WHERE id IN (SELECT folder_id FROM user_collection_folders WHERE user_id = :userId)")
-    fun deleteFoldersByUserId(userId: String)
+    @Query("DELETE FROM collection_folders WHERE id IN (SELECT folder_id FROM user_collection_folders WHERE `key` = :key)")
+    fun deleteFoldersByKey(key: String)
 
     @Insert
     fun insertLinks(links: List<FolderLinkage>)

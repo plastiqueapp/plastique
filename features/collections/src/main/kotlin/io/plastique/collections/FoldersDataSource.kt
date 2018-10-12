@@ -21,10 +21,10 @@ class FoldersDataSource @Inject constructor(
     }
 
     override fun loadMore(): Completable {
-        return folderRepository.getFoldersFromServer(params.get(), cursor = nextCursor.get()!!)
+        return folderRepository.fetchFolders(params.get(), nextCursor.get()!!)
     }
 
     override fun refresh(): Completable {
-        return folderRepository.getFoldersFromServer(params.get(), cursor = null)
+        return folderRepository.fetchFolders(params.get())
     }
 }
