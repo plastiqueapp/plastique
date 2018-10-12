@@ -18,6 +18,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/users_action_view_watchers"
+        android:title="@string/users_action_view_watchers"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/users_action_copy_profile_link"
         android:title="@string/users_action_copy_profile_link"
         app:showAsAction="never" />

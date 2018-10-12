@@ -2,6 +2,9 @@ package io.plastique.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -18,6 +21,11 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
     private lateinit var loginButton: Button
     @Inject lateinit var navigator: ProfileNavigator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -30,6 +38,19 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeState()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_profile, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.profile_action_view_watchers -> {
+            navigator.openWatchers(navigationContext, null)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun observeState() {

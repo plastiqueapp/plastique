@@ -2,5 +2,6 @@
 <resources>
 
     <string name="profile_title">Profile</string>
+    <string name="profile_action_view_watchers">Watchers</string>
 
 </resources>

@@ -8,4 +8,6 @@ interface UsersNavigator {
     fun openGallery(navigationContext: NavigationContext, username: String)
 
     fun openCommentsForUserProfile(navigationContext: NavigationContext, username: String)
+
+    fun openWatchers(navigationContext: NavigationContext, username: String?)
 }

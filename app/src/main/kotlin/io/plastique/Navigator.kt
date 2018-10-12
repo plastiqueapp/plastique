@@ -20,6 +20,8 @@ import io.plastique.settings.SettingsNavigator
 import io.plastique.users.UserProfileActivity
 import io.plastique.users.UsersNavigator
 import io.plastique.util.Intents
+import io.plastique.watch.WatchNavigator
+import io.plastique.watch.WatcherListActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 import io.plastique.collections.FolderDeviationListActivity as CollectionFolderDeviationListActivity
@@ -34,7 +36,8 @@ class Navigator @Inject constructor() :
         MainNavigator,
         ProfileNavigator,
         SettingsNavigator,
-        UsersNavigator {
+        UsersNavigator,
+        WatchNavigator {
 
     override fun openCollections(navigationContext: NavigationContext, username: String) {
         navigationContext.startActivity(CollectionsActivity.createIntent(navigationContext.context, username))
@@ -78,5 +81,9 @@ class Navigator @Inject constructor() :
 
     override fun openUserProfile(navigationContext: NavigationContext, username: String) {
         navigationContext.startActivity(UserProfileActivity.createIntent(navigationContext.context, username))
+    }
+
+    override fun openWatchers(navigationContext: NavigationContext, username: String?) {
+        navigationContext.startActivity(WatcherListActivity.createIntent(navigationContext.context, username))
     }
 }

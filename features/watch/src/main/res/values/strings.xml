@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="watch_watchers_title">Watchers</string>
+    <string name="watch_watchers_title_current_user">Your watchers</string>
+    <string name="watch_message_empty">Nobody is watching &lt;b&gt;%1$s&lt;/b&gt;</string>
+    <string name="watch_message_empty_current_user">Nobody is watching you</string>
+    <string name="watch_message_login">Login to see who\'s watching you</string>
+
+</resources>

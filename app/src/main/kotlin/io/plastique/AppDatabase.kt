@@ -3,6 +3,8 @@ package io.plastique
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import io.plastique.watch.WatchDao
+import io.plastique.watch.WatcherEntity
 import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.comments.CommentEntity
@@ -48,7 +50,8 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     GalleryFolderLinkage::class,
 
     UserEntity::class,
-    UserProfileEntity::class
+    UserProfileEntity::class,
+    WatcherEntity::class
 ], version = BuildConfig.DB_VERSION, exportSchema = false)
 @TypeConverters(InstantConverter::class, ZonedDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -69,4 +72,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun galleryDao(): GalleryDao
 
     abstract fun userDao(): UserDao
+
+    abstract fun watchDao(): WatchDao
 }

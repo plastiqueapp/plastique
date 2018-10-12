@@ -10,6 +10,7 @@ import io.plastique.api.comments.CommentService
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.users.UserService
+import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
 import io.plastique.core.client.ApiClient
@@ -57,6 +58,13 @@ object ApiModule {
     @JvmStatic
     fun provideUserService(apiClient: ApiClient): UserService {
         return apiClient.getService(UserService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    @JvmStatic
+    fun provideWatchService(apiClient: ApiClient): WatchService {
+        return apiClient.getService(WatchService::class.java)
     }
 
     @Provides

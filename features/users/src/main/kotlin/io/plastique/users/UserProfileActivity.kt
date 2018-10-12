@@ -134,6 +134,10 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             viewModel.dispatch(CopyProfileLinkClickEvent)
             true
         }
+        R.id.users_action_view_watchers -> {
+            navigator.openWatchers(navigationContext, username)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 

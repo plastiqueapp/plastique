@@ -12,6 +12,7 @@ import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.gallery.GalleryDao
 import io.plastique.users.UserDao
+import io.plastique.watch.WatchDao
 
 @Module
 object DaoModule {
@@ -50,4 +51,8 @@ object DaoModule {
     @Provides
     @JvmStatic
     fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
+
+    @Provides
+    @JvmStatic
+    fun provideWatchDao(database: AppDatabase): WatchDao = database.watchDao()
 }

@@ -12,6 +12,7 @@ import io.plastique.inject.scopes.ActivityScope
 import io.plastique.main.MainActivityComponent
 import io.plastique.settings.SettingsActivityComponent
 import io.plastique.users.UsersActivityComponent
+import io.plastique.watch.WatchActivityComponent
 
 @ActivityScope
 @Subcomponent(modules = [NavigationModule::class])
@@ -24,7 +25,8 @@ interface ModuleActivityComponent :
         GalleryActivityComponent,
         MainActivityComponent,
         SettingsActivityComponent,
-        UsersActivityComponent {
+        UsersActivityComponent,
+        WatchActivityComponent {
 
     override fun createFragmentComponent(): ModuleFragmentComponent
 }

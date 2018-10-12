@@ -8,7 +8,7 @@ data class PagedData<T : Any, out Cursor : Any>(val value: T, val nextCursor: Cu
         get() = nextCursor != null
 }
 
-interface PagedDataSource<T : Any, in Params : Any> {
+interface PagedDataSource<T : Any, in Params : Any?> {
     fun getData(params: Params): Observable<out PagedData<T, Any>>
 
     fun loadMore(): Completable

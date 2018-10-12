@@ -105,6 +105,7 @@ dependencies {
     implementation project(":features:profile")
     implementation project(":features:settings")
     implementation project(":features:users")
+    implementation project(":features:watch")
 
     implementation "android.arch.work:work-runtime:$versions.androidx.work"
     implementation "android.arch.work:work-firebase:$versions.androidx.work"
