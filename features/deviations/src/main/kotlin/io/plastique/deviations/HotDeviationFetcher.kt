@@ -20,13 +20,6 @@ data class HotParams(
 
     val category: Category = Category.ALL // TODO: Persist only path
 ) : FetchParams {
-    override fun isSameAs(params: FetchParams): Boolean {
-        if (params !is HotParams) return false
-        return showMatureContent == params.showMatureContent &&
-                showLiterature == params.showLiterature &&
-                category == params.category
-    }
-
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {
         return copy(showMatureContent = showMatureContent, showLiterature = showLiterature)
     }

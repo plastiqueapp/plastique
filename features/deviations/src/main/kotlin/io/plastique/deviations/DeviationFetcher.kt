@@ -12,8 +12,6 @@ interface FetchParams : Parcelable {
     val showMatureContent: Boolean
     val showLiterature: Boolean
 
-    fun isSameAs(params: FetchParams): Boolean
-
     fun with(showMatureContent: Boolean = this.showMatureContent, showLiterature: Boolean = this.showLiterature): FetchParams
 }
 

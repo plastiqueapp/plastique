@@ -31,7 +31,7 @@ class DeviationCacheEntryChecker(
 ) : CacheEntryChecker {
     override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
         val metadata = cacheEntry.metadata?.let { metadataSerializer.deserialize(it) }
-        return if (metadata != null && metadata.params.isSameAs(params)) {
+        return if (metadata?.params == params) {
             if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
                 CacheStatus.Actual
             } else {

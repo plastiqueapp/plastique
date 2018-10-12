@@ -23,12 +23,6 @@ data class GalleryDeviationParams(
 ) : FetchParams {
     override val showLiterature: Boolean get() = true
 
-    override fun isSameAs(params: FetchParams): Boolean {
-        if (params !is GalleryDeviationParams) return false
-        return folderId == params.folderId &&
-                showMatureContent == params.showMatureContent
-    }
-
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {
         return copy(showMatureContent = showMatureContent)
     }

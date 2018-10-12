@@ -22,14 +22,6 @@ data class PopularParams(
     val category: Category = Category.ALL,
     val timeRange: TimeRange = TimeRange.Days3
 ) : FetchParams {
-    override fun isSameAs(params: FetchParams): Boolean {
-        if (params !is PopularParams) return false
-        return showMatureContent == params.showMatureContent &&
-                showLiterature == params.showLiterature &&
-                category == params.category &&
-                timeRange == params.timeRange
-    }
-
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {
         return copy(showMatureContent = showMatureContent, showLiterature = showLiterature)
     }

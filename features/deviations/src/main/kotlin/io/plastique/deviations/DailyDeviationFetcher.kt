@@ -21,12 +21,6 @@ data class DailyParams(
     @Json(name = "show_literature")
     override val showLiterature: Boolean = false
 ) : FetchParams {
-    override fun isSameAs(params: FetchParams): Boolean {
-        if (params !is DailyParams) return false
-        return showMatureContent == params.showMatureContent &&
-                showLiterature == params.showLiterature
-    }
-
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {
         return copy(showMatureContent = showMatureContent, showLiterature = showLiterature)
     }
