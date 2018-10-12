@@ -29,20 +29,17 @@ class FoldersWithDeviationsDataSource @Inject constructor(
                             .doOnNext { hasMoreFolders = it.hasMore }
 
                     val deviationItems = folders
-                            .filter { pagedData -> !pagedData.hasMore }
-                            .map { pagedData -> pagedData.value.find { folder -> folder.name == FEATURED_FOLDER_NAME }.toOptional() }
+                            .map { pagedData ->
+                                if (!pagedData.hasMore) {
+                                    pagedData.value.find { folder -> folder.name == FEATURED_FOLDER_NAME }.toOptional()
+                                } else {
+                                    Optional.None
+                                }
+                            }
                             .distinctUntilChanged()
                             .switchMap { featuredFolder ->
                                 when (featuredFolder) {
-                                    is Optional.Some -> {
-                                        val folderParams = CollectionDeviationParams(
-                                                folderId = CollectionFolderId(id = featuredFolder.value.id, username = params.username),
-                                                showMatureContent = params.matureContent)
-                                        deviationDataSource.getData(folderParams)
-                                                .map { pagedData ->
-                                                    ItemsData(items = createDeviationItems(featuredFolder.value, pagedData.value), hasMore = pagedData.hasMore)
-                                                }
-                                    }
+                                    is Optional.Some -> getDeviationItems(params, featuredFolder.value)
                                     else -> Observable.just(ItemsData(items = emptyList()))
                                 }
                             }
@@ -71,6 +68,16 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     private fun createFolderItems(folders: List<Folder>): List<FolderItem> {
         var index = 0
         return folders.map { folder -> FolderItem(folder).also { it.index = index++ } }
+    }
+
+    private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
+        val folderParams = CollectionDeviationParams(
+                folderId = CollectionFolderId(id = featuredFolder.id, username = params.username),
+                showMatureContent = params.matureContent)
+        return deviationDataSource.getData(folderParams)
+                .map { pagedData ->
+                    ItemsData(items = createDeviationItems(featuredFolder, pagedData.value), hasMore = pagedData.hasMore)
+                }
     }
 
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
