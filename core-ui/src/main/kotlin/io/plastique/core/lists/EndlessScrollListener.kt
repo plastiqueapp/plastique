@@ -27,7 +27,7 @@ class EndlessScrollListener(
         }
     }
 
-    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) = Unit
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
 
     private fun RecyclerView.LayoutManager.findLastVisibleItemPosition(): Int = when (this) {
         is FlexboxLayoutManager -> findLastVisibleItemPosition()

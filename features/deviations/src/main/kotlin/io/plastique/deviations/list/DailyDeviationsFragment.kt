@@ -5,7 +5,7 @@ import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.inject.getComponent
 
 class DailyDeviationsFragment : BaseDeviationListFragment<DailyParams>() {
-    override val defaultParams get() = DailyParams()
+    override val defaultParams: DailyParams get() = DailyParams()
 
     override fun injectDependencies() {
         getComponent<DeviationsFragmentComponent>().inject(this)

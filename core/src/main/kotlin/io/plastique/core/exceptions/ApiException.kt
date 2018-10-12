@@ -10,7 +10,7 @@ open class ApiException : IOException {
 }
 
 open class ApiHttpException(response: Response<*>) : ApiException("HTTP error " + response.code()) {
-    val responseCode = response.code()
+    val responseCode: Int = response.code()
 }
 
 class ApiResponseException(response: Response<*>, val errorResponse: ErrorResponse) : ApiHttpException(response)

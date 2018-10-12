@@ -25,8 +25,8 @@ class ContentViewController(
     private var setStateRunnable: Runnable? = null
     private var lastSwitchTime: Long = 0
 
-    var minProgressDisplayTime = 500
-    var progressShowDelay = 200
+    var minProgressDisplayTime: Int = 500
+    var progressShowDelay: Int = 200
 
     constructor(activity: Activity, @IdRes contentViewId: Int, @IdRes progressViewId: Int = View.NO_ID, @IdRes emptyViewId: Int = View.NO_ID)
             : this(activity.window.decorView, contentViewId, progressViewId, emptyViewId)

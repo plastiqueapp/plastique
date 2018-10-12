@@ -11,7 +11,7 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.inject.getComponent
 
 class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), OnTimeRangeSelectedListener {
-    override val defaultParams get() = PopularParams()
+    override val defaultParams: PopularParams get() = PopularParams()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

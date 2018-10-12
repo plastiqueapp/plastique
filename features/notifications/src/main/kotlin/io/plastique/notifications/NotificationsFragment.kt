@@ -13,7 +13,7 @@ class NotificationsFragment : Fragment(), MainPage {
         return inflater.inflate(R.layout.fragment_notifications, container, false)
     }
 
-    override fun getTitle() = R.string.notifications_title
+    override fun getTitle(): Int = R.string.notifications_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }

@@ -58,7 +58,7 @@ class CategoriesAdapter : BaseListAdapter<CategoryItem, CategoriesAdapter.ViewHo
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val textView: TextView = itemView.findViewById(R.id.text)
         val progressSwitcher: ViewSwitcher = itemView.findViewById(R.id.progress_switcher)
-        val showProgressCallback = Runnable { progressSwitcher.displayedChild = 1 }
+        val showProgressCallback: Runnable = Runnable { progressSwitcher.displayedChild = 1 }
 
         init {
             itemView.setOnClickListener(this)

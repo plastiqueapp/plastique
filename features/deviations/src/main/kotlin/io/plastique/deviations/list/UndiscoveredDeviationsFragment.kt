@@ -10,7 +10,7 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.inject.getComponent
 
 class UndiscoveredDeviationsFragment : BaseDeviationListFragment<UndiscoveredParams>() {
-    override val defaultParams get() = UndiscoveredParams()
+    override val defaultParams: UndiscoveredParams get() = UndiscoveredParams()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

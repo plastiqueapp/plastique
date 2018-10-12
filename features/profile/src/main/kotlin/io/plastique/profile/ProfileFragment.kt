@@ -41,7 +41,7 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
                 .disposeOnDestroy()
     }
 
-    override fun getTitle() = R.string.profile_title
+    override fun getTitle(): Int = R.string.profile_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }

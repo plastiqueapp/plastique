@@ -162,7 +162,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 .disposeOnDestroy()
     }
 
-    override fun getTitle() = R.string.collections_title
+    override fun getTitle(): Int = R.string.collections_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }

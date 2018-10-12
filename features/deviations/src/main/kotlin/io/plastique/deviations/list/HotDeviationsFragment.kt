@@ -10,7 +10,7 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.inject.getComponent
 
 class HotDeviationsFragment : BaseDeviationListFragment<HotParams>() {
-    override val defaultParams get() = HotParams()
+    override val defaultParams: HotParams get() = HotParams()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

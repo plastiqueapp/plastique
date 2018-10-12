@@ -95,7 +95,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun getTitle() = R.string.deviations_browse_title
+    override fun getTitle(): Int = R.string.deviations_browse_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
         expandableToolbarLayout = parent
