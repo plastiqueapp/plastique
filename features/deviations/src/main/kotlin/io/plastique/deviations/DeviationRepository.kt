@@ -13,17 +13,18 @@ import io.plastique.core.paging.PagedData
 import io.plastique.users.UserDao
 import io.plastique.users.UserMapper
 import io.plastique.util.RxRoom
+import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import java.util.concurrent.Callable
 import javax.inject.Inject
 import io.plastique.api.deviations.Deviation as DeviationDto
 
 class DeviationCacheEntryChecker(
+    private val timeProvider: TimeProvider,
     private val metadataSerializer: DeviationCacheMetadataSerializer,
     private val params: FetchParams,
     private val cacheDuration: Duration
@@ -31,7 +32,7 @@ class DeviationCacheEntryChecker(
     override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
         val metadata = cacheEntry.metadata?.let { metadataSerializer.deserialize(it) }
         return if (metadata != null && metadata.params.isSameAs(params)) {
-            if (cacheEntry.isActual(Instant.now(), cacheDuration)) {
+            if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
                 CacheStatus.Actual
             } else {
                 CacheStatus.Outdated
@@ -52,13 +53,14 @@ class DeviationRepository @Inject constructor(
     private val deviationMapper: DeviationMapper,
     private val deviationEntityMapper: DeviationEntityMapper,
     private val deviationMetadataMapper: DeviationMetadataMapper,
+    private val timeProvider: TimeProvider,
     private val userDao: UserDao,
     private val userMapper: UserMapper
 ) {
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
         val metadataSerializer = fetcher.createMetadataSerializer()
-        val cacheHelper = CacheHelper(cacheEntryRepository, DeviationCacheEntryChecker(metadataSerializer, params, CACHE_DURATION))
+        val cacheHelper = CacheHelper(cacheEntryRepository, DeviationCacheEntryChecker(timeProvider, metadataSerializer, params, CACHE_DURATION))
         val cacheKey = fetcher.getCacheKey(params)
         return cacheHelper.createObservable(
                 cacheKey = cacheKey,
@@ -76,7 +78,7 @@ class DeviationRepository @Inject constructor(
                 .doOnSuccess { fetchResult ->
                     val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
                     val metadataSerializer = fetcher.createMetadataSerializer()
-                    val cacheEntry = CacheEntry(cacheKey, Instant.now(), metadataSerializer.serialize(cacheMetadata))
+                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataSerializer.serialize(cacheMetadata))
                     persist(cacheEntry, fetchResult.deviations, fetchResult.replaceExisting)
                 }
                 .ignoreElement()

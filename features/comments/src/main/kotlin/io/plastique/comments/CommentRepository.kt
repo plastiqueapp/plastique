@@ -16,6 +16,7 @@ import io.plastique.core.paging.PagedData
 import io.plastique.users.UserDao
 import io.plastique.users.UserMapper
 import io.plastique.util.RxRoom
+import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -33,10 +34,11 @@ class CommentRepository @Inject constructor(
     private val metadataConverter: NullFallbackConverter,
     private val commentMapper: CommentMapper,
     private val commentEntityMapper: CommentEntityMapper,
+    private val timeProvider: TimeProvider,
     private val userDao: UserDao,
     private val userMapper: UserMapper
 ) {
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
         val cacheKey = threadId.key
@@ -52,7 +54,7 @@ class CommentRepository @Inject constructor(
                 .map { commentList ->
                     val nextCursor = if (commentList.hasMore) OffsetCursor(commentList.nextOffset!!) else null
                     val metadata = CommentCacheMetadata(nextCursor)
-                    persistComments(threadId.key, commentList, Instant.now(), metadata, offset == 0)
+                    persistComments(threadId.key, commentList, timeProvider.currentInstant, metadata, offset == 0)
                 }
                 .ignoreElement()
 
@@ -128,9 +130,9 @@ class CommentRepository @Inject constructor(
             comment.hidden == HideReason.HIDDEN_AS_SPAM && comment.numReplies == 0
 
     companion object {
+        private val CACHE_DURATION = Duration.ofHours(1)
         private const val COMMENTS_PER_PAGE = 50
         private const val COMMENTS_MAX_DEPTH = 5
-        private val CACHE_DURATION = Duration.ofHours(1)
     }
 }
 

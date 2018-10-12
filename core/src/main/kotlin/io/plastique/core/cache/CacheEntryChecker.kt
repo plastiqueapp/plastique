@@ -1,7 +1,7 @@
 package io.plastique.core.cache
 
+import io.plastique.util.TimeProvider
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 
 enum class CacheStatus {
     Actual,
@@ -14,11 +14,11 @@ interface CacheEntryChecker {
 }
 
 class DurationBasedCacheEntryChecker(
-    private val cacheDuration: Duration,
-    private val currentTimeProvider: () -> Instant = Instant::now
+    private val timeProvider: TimeProvider,
+    private val cacheDuration: Duration
 ) : CacheEntryChecker {
     override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
-        return if (cacheEntry.isActual(currentTimeProvider(), cacheDuration)) {
+        return if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
             CacheStatus.Actual
         } else {
             CacheStatus.Outdated

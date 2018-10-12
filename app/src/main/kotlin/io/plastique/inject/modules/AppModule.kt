@@ -27,6 +27,8 @@ import io.plastique.users.UserRepositoryImpl
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
+import io.plastique.util.SystemTimeProvider
+import io.plastique.util.TimeProvider
 import javax.inject.Singleton
 
 @Module
@@ -45,6 +47,10 @@ abstract class AppModule {
 
     @Module
     companion object {
+        @Provides
+        @JvmStatic
+        fun provideTimeProvider(): TimeProvider = SystemTimeProvider
+
         @Provides
         @Singleton
         @JvmStatic

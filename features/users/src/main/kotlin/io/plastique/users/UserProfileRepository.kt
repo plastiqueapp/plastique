@@ -8,11 +8,11 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import javax.inject.Inject
 import io.plastique.api.users.UserProfile as UserProfileDto
 
@@ -21,11 +21,12 @@ class UserProfileRepository @Inject constructor(
     private val userDao: UserDao,
     private val userService: UserService,
     private val cacheEntryRepository: CacheEntryRepository,
+    private val timeProvider: TimeProvider,
     private val userMapper: UserMapper,
     private val userProfileMapper: UserProfileMapper,
     private val userProfileEntityMapper: UserProfileEntityMapper
 ) {
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getUserProfileByName(username: String): Observable<UserProfile> {
         val cacheKey = getCacheKey(username)
@@ -44,7 +45,10 @@ class UserProfileRepository @Inject constructor(
 
     private fun refreshUserProfile(username: String, cacheKey: String): Completable {
         return userService.getUserProfile(username)
-                .doOnSuccess { userProfile -> persistUserProfile(userProfile, cacheKey, Instant.now()) }
+                .doOnSuccess { userProfile ->
+                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
+                    persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
+                }
                 .onErrorResumeNext { error ->
                     if (error is ApiResponseException && error.errorResponse.errorType == ErrorType.InvalidRequest) {
                         deleteUser(username, cacheKey)
@@ -56,13 +60,13 @@ class UserProfileRepository @Inject constructor(
                 .ignoreElement()
     }
 
-    private fun persistUserProfile(userProfile: UserProfileDto, cacheKey: String, timestamp: Instant) {
+    private fun persistUserProfile(cacheEntry: CacheEntry, userProfile: UserProfileDto) {
         val entity = userProfileMapper.map(userProfile)
         val user = userMapper.map(userProfile.user)
         database.runInTransaction {
             userDao.insertOrUpdate(user)
             userDao.insertOrUpdate(entity)
-            cacheEntryRepository.setEntry(CacheEntry(cacheKey, timestamp))
+            cacheEntryRepository.setEntry(cacheEntry)
         }
     }
 

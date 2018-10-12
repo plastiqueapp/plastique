@@ -16,11 +16,11 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.users.UserRepository
 import io.plastique.util.RxRoom
+import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import javax.inject.Inject
 import io.plastique.api.collections.Folder as FolderDto
 import io.plastique.api.deviations.Deviation as DeviationDto
@@ -34,7 +34,8 @@ class FolderRepository @Inject constructor(
     private val folderEntityMapper: FolderEntityMapper,
     private val userRepository: UserRepository,
     private val metadataConverter: NullFallbackConverter,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val timeProvider: TimeProvider
 ) {
 
     private fun getUserIdByUsername(username: String?): Single<String> {
@@ -52,7 +53,7 @@ class FolderRepository @Inject constructor(
     }
 
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        val cacheHelper = CacheHelper(cacheEntryRepository, CacheEntryCheckerImpl(params, Duration.ofHours(2)))
+        val cacheHelper = CacheHelper(cacheEntryRepository, CacheEntryCheckerImpl(timeProvider, params, CACHE_DURATION))
         return getUserIdByUsername(params.username)
                 .flatMapObservable { userId ->
                     val cacheKey = getCacheKey(userId)
@@ -92,7 +93,7 @@ class FolderRepository @Inject constructor(
                 .map { folderList ->
                     val nextCursor = if (folderList.hasMore) OffsetCursor(folderList.nextOffset!!) else null
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = nextCursor)
-                    val cacheEntry = CacheEntry(cacheKey, Instant.now(), metadataConverter.toJson(cacheMetadata))
+                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     val entities = folderList.folders.map { folderEntityMapper.map(it) }
                     persist(userId = userId, folders = entities, cacheEntry = cacheEntry, replaceExisting = offset == 0)
                 }
@@ -121,17 +122,19 @@ class FolderRepository @Inject constructor(
     }
 
     companion object {
+        private val CACHE_DURATION = Duration.ofHours(2)
         private const val FOLDERS_PER_PAGE = 50
     }
 
     private inner class CacheEntryCheckerImpl(
+        private val timeProvider: TimeProvider,
         private val params: FolderLoadParams,
         private val cacheDuration: Duration
     ) : CacheEntryChecker {
         override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
             val metadata = cacheEntry.metadata?.let { metadataConverter.fromJson<FolderCacheMetadata>(it) }
             return if (metadata != null && metadata.params == params) {
-                if (cacheEntry.isActual(Instant.now(), cacheDuration)) {
+                if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
                     CacheStatus.Actual
                 } else {
                     CacheStatus.Outdated
