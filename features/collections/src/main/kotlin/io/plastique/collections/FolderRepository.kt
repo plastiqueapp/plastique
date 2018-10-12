@@ -5,10 +5,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.CollectionService
 import io.plastique.core.cache.CacheEntry
-import io.plastique.core.cache.CacheEntryChecker
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
-import io.plastique.core.cache.CacheStatus
+import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
@@ -53,7 +52,11 @@ class FolderRepository @Inject constructor(
     }
 
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        val cacheHelper = CacheHelper(cacheEntryRepository, CacheEntryCheckerImpl(timeProvider, params, CACHE_DURATION))
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+            val metadata = metadataConverter.fromJson<FolderCacheMetadata>(serializedMetadata)
+            metadata?.params == params
+        }
+        val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
         return getUserIdByUsername(params.username)
                 .flatMapObservable { userId ->
                     val cacheKey = getCacheKey(userId)
@@ -124,25 +127,6 @@ class FolderRepository @Inject constructor(
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)
         private const val FOLDERS_PER_PAGE = 50
-    }
-
-    private inner class CacheEntryCheckerImpl(
-        private val timeProvider: TimeProvider,
-        private val params: FolderLoadParams,
-        private val cacheDuration: Duration
-    ) : CacheEntryChecker {
-        override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
-            val metadata = cacheEntry.metadata?.let { metadataConverter.fromJson<FolderCacheMetadata>(it) }
-            return if (metadata != null && metadata.params == params) {
-                if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
-                    CacheStatus.Actual
-                } else {
-                    CacheStatus.Outdated
-                }
-            } else {
-                CacheStatus.Absent
-            }
-        }
     }
 }
 

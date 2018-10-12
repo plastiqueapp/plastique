@@ -25,3 +25,23 @@ class DurationBasedCacheEntryChecker(
         }
     }
 }
+
+typealias MetadataValidator = (serializedMetadata: String) -> Boolean
+
+class MetadataValidatingCacheEntryChecker(
+    private val timeProvider: TimeProvider,
+    private val cacheDuration: Duration,
+    private val metadataValidator: MetadataValidator
+) : CacheEntryChecker {
+    override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
+        return if (cacheEntry.metadata != null && metadataValidator(cacheEntry.metadata)) {
+            if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
+                CacheStatus.Actual
+            } else {
+                CacheStatus.Outdated
+            }
+        } else {
+            CacheStatus.Absent
+        }
+    }
+}

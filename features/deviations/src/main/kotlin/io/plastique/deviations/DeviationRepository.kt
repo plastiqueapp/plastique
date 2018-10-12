@@ -4,10 +4,9 @@ import androidx.room.RoomDatabase
 import io.plastique.api.deviations.DeviationMetadata
 import io.plastique.api.deviations.DeviationService
 import io.plastique.core.cache.CacheEntry
-import io.plastique.core.cache.CacheEntryChecker
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
-import io.plastique.core.cache.CacheStatus
+import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserDao
@@ -22,26 +21,6 @@ import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
 import io.plastique.api.deviations.Deviation as DeviationDto
-
-class DeviationCacheEntryChecker(
-    private val timeProvider: TimeProvider,
-    private val metadataSerializer: DeviationCacheMetadataSerializer,
-    private val params: FetchParams,
-    private val cacheDuration: Duration
-) : CacheEntryChecker {
-    override fun getCacheStatus(cacheEntry: CacheEntry): CacheStatus {
-        val metadata = cacheEntry.metadata?.let { metadataSerializer.deserialize(it) }
-        return if (metadata?.params == params) {
-            if (cacheEntry.isActual(timeProvider.currentInstant, cacheDuration)) {
-                CacheStatus.Actual
-            } else {
-                CacheStatus.Outdated
-            }
-        } else {
-            CacheStatus.Absent
-        }
-    }
-}
 
 class DeviationRepository @Inject constructor(
     private val database: RoomDatabase,
@@ -60,9 +39,12 @@ class DeviationRepository @Inject constructor(
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
         val metadataSerializer = fetcher.createMetadataSerializer()
-        val cacheHelper = CacheHelper(cacheEntryRepository, DeviationCacheEntryChecker(timeProvider, metadataSerializer, params, CACHE_DURATION))
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+            val metadata = metadataSerializer.deserialize(serializedMetadata)
+            metadata?.params == params
+        }
         val cacheKey = fetcher.getCacheKey(params)
-        return cacheHelper.createObservable(
+        return CacheHelper(cacheEntryRepository, cacheEntryChecker).createObservable(
                 cacheKey = cacheKey,
                 cachedData = getDeviationsFromDb(cacheKey, params, metadataSerializer),
                 updater = fetch(fetcher, cacheKey, params))
