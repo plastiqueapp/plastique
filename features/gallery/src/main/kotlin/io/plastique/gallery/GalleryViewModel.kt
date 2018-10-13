@@ -68,7 +68,7 @@ class GalleryViewModel @Inject constructor(
                     params = params,
                     contentState = ContentState.Empty(EmptyState(
                             message = resourceProvider.getString(R.string.gallery_message_login),
-                            button = resourceProvider.getString(R.string.gallery_button_login))),
+                            button = resourceProvider.getString(R.string.common_button_login))),
                     signInNeeded = signInNeeded))
         } else {
             next(GalleryViewState(
@@ -210,7 +210,7 @@ class StateReducer @Inject constructor(
                     next(state.copy(
                             contentState = ContentState.Empty(EmptyState(
                                     message = resourceProvider.getString(R.string.gallery_message_login),
-                                    button = resourceProvider.getString(R.string.gallery_button_login))),
+                                    button = resourceProvider.getString(R.string.common_button_login))),
                             signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(

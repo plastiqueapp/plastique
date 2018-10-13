@@ -2,7 +2,6 @@
 <resources>
 
     <string name="collections_title">Collections</string>
-    <string name="collections_button_login">Login</string>
     <string name="collections_message_login">Login to see your collections</string>
     <string name="collections_message_empty_collection">Your collection is empty</string>
     <string name="collections_message_empty_user_collection">&lt;b&gt;%1$s&lt;/b&gt; collection is empty</string>

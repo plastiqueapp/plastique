@@ -2,7 +2,6 @@
 <resources>
 
     <string name="gallery_title">Gallery</string>
-    <string name="gallery_button_login">Login</string>
     <string name="gallery_message_login">Login to see your gallery</string>
     <string name="gallery_message_empty_collection">Your gallery is empty</string>
     <string name="gallery_message_empty_user_collection">&lt;b&gt;%1$s&lt;/b&gt; gallery is empty</string>
