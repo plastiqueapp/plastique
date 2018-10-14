@@ -9,6 +9,7 @@ if (publishKeysFile.exists()) {
     apply plugin: "com.github.triplet.play"
 
     play {
+        defaultToAppBundles = true
         serviceAccountCredentials publishKeysFile
         track = "internal"
     }
