@@ -46,9 +46,9 @@ class CommentItemDelegate(
         holder.replyButton.isVisible = item.showReplyButton
 
         GlideApp.with(holder.avatarView)
-                .asBitmap()
                 .load(item.comment.author.avatarUrl)
                 .circleCrop()
+                .dontAnimate()
                 .into(holder.avatarView)
     }
 
