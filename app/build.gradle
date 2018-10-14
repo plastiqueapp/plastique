@@ -13,6 +13,12 @@ if (publishKeysFile.exists()) {
         serviceAccountCredentials publishKeysFile
         track = "internal"
     }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name.startsWith("publishDevRelease")) {
+            task.enabled = false
+        }
+    }
 }
 
 def googleServicesEnabled = file("google-services.json").exists()
