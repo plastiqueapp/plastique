@@ -39,9 +39,9 @@ class FolderDeviationListActivity : BaseActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val listener = View.OnClickListener { contentFragment.scrollToTop() }
-        toolbar.setTitleOnClickListener(listener)
-        toolbar.setSubtitleOnClickListener(listener)
+        val onClickListener = View.OnClickListener { contentFragment.scrollToTop() }
+        toolbar.setTitleOnClickListener(onClickListener)
+        toolbar.setSubtitleOnClickListener(onClickListener)
     }
 
     override fun injectDependencies() {

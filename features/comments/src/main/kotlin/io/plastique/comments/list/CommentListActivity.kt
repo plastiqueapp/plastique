@@ -188,13 +188,13 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val toolbarClickListener = View.OnClickListener {
+        val onClickListener = View.OnClickListener {
             if (adapter.itemCount > 0) {
                 commentsView.smartScrollToPosition(0, 10)
             }
         }
-        toolbar.setTitleOnClickListener(toolbarClickListener)
-        toolbar.setSubtitleOnClickListener(toolbarClickListener)
+        toolbar.setTitleOnClickListener(onClickListener)
+        toolbar.setSubtitleOnClickListener(onClickListener)
     }
 
     companion object {
