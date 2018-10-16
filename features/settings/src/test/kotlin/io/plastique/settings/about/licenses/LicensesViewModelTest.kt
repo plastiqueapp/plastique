@@ -17,7 +17,7 @@ import java.io.IOException
 class LicensesViewModelTest {
     private val licenseRepository = mock<LicenseRepository>()
     private val errorMessageProvider = mock<ErrorMessageProvider>()
-    private val viewModel = LicensesViewModel(StateReducer(), licenseRepository, errorMessageProvider)
+    private val viewModel = LicensesViewModel(LicensesStateReducer(), licenseRepository, errorMessageProvider)
 
     @AfterEach
     fun tearDown() {

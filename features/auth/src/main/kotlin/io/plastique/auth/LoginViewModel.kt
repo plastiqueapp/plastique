@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class LoginViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: LoginStateReducer,
     private val authenticator: Authenticator,
     private val cookieManager: CookieManager
 ) : ViewModel() {
@@ -76,7 +76,7 @@ class LoginViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<LoginEvent, LoginViewState, LoginEffect> {
+class LoginStateReducer @Inject constructor() : Reducer<LoginEvent, LoginViewState, LoginEffect> {
     override fun invoke(state: LoginViewState, event: LoginEvent): Next<LoginViewState, LoginEffect> = when (event) {
         is AuthRedirectEvent -> {
             next(state.copy(authInProgress = true), AuthenticateEffect(event.redirectUri))

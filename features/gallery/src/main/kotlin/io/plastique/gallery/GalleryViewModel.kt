@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @FragmentScope
 class GalleryViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: GalleryStateReducer,
     private val dataSource: FoldersWithDeviationsDataSource,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager,
@@ -129,7 +129,7 @@ class GalleryViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor(
+class GalleryStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider

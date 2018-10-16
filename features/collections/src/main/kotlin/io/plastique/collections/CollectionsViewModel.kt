@@ -41,7 +41,7 @@ import javax.inject.Inject
 
 @FragmentScope
 class CollectionsViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: CollectionsStateReducer,
     private val sessionManager: SessionManager,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,
@@ -133,7 +133,7 @@ class CollectionsViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor(
+class CollectionsStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {

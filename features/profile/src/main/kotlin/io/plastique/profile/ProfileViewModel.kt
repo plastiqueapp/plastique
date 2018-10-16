@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @FragmentScope
 class ProfileViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: ProfileStateReducer,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     private val loop = MainLoop(
@@ -38,7 +38,7 @@ class ProfileViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<ProfileEvent, ProfileViewState, ProfileEffect> {
+class ProfileStateReducer @Inject constructor() : Reducer<ProfileEvent, ProfileViewState, ProfileEffect> {
     override fun invoke(state: ProfileViewState, event: ProfileEvent): Next<ProfileViewState, ProfileEffect> = when (event) {
         is SessionChangedEvent -> {
             next(state.copy(showLoginButton = event.session !is Session.User))

@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class UserProfileViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: UserProfileStateReducer,
     private val clipboard: Clipboard,
     private val userProfileRepository: UserProfileRepository,
     private val errorMessageProvider: ErrorMessageProvider,
@@ -90,7 +90,7 @@ class UserProfileViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
+class UserProfileStateReducer @Inject constructor() : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
     override fun invoke(state: UserProfileViewState, event: UserProfileEvent): Next<UserProfileViewState, UserProfileEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(state.copy(

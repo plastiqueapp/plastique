@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class DeviationViewerViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: DeviationViewerStateReducer,
     private val deviationRepository: DeviationRepository,
     private val downloadInfoRepository: DownloadInfoRepository,
     private val downloader: FileDownloader,
@@ -96,7 +96,7 @@ class DeviationViewerViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
+class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
     override fun invoke(state: DeviationViewerViewState, event: DeviationViewerEvent): Next<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
         is DeviationLoadedEvent -> {
             val menuState = MenuState(

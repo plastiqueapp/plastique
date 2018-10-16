@@ -53,7 +53,7 @@ import javax.inject.Inject
 
 @FragmentScope
 class DeviationListViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: DeviationListStateReducer,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
     private val dataSource: DeviationDataSource,
@@ -140,7 +140,7 @@ class DeviationListViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor(
+class DeviationListStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,

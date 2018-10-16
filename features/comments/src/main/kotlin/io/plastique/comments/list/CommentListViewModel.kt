@@ -55,7 +55,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class CommentListViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: CommentListStateReducer,
     private val commentDataSource: CommentDataSource,
     private val commentSender: CommentSender,
     private val connectivityMonitor: NetworkConnectivityMonitor,
@@ -162,7 +162,7 @@ class CommentListViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor(
+class CommentListStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider

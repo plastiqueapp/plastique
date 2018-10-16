@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class LicensesViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: LicensesStateReducer,
     private val licenseRepository: LicenseRepository,
     private val errorMessageProvider: ErrorMessageProvider
 ) : ViewModel() {
@@ -57,7 +57,7 @@ class LicensesViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<LicensesEvent, LicensesViewState, LicensesEffect> {
+class LicensesStateReducer @Inject constructor() : Reducer<LicensesEvent, LicensesViewState, LicensesEffect> {
     override fun invoke(state: LicensesViewState, event: LicensesEvent): Next<LicensesViewState, LicensesEffect> = when (event) {
         is LoadFinishedEvent -> {
             next(state.copy(contentState = ContentState.Content, items = event.items))

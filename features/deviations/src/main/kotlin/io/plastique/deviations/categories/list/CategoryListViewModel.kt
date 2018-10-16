@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class CategoryListViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: CategoryListStateReducer,
     private val categoryRepository: CategoryRepository,
     private val errorMessageProvider: ErrorMessageProvider
 ) : ViewModel() {
@@ -69,7 +69,7 @@ class CategoryListViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor() : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
+class CategoryListStateReducer @Inject constructor() : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
     override fun invoke(state: CategoryListViewState, event: CategoryListEvent): Next<CategoryListViewState, CategoryListEffect> = when (event) {
         is ItemClickEvent -> {
             if (event.item.parent || !event.item.category.hasChildren) {

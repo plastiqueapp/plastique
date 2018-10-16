@@ -42,7 +42,7 @@ import javax.inject.Inject
 
 @ActivityScope
 class WatcherListViewModel @Inject constructor(
-    stateReducer: StateReducer,
+    stateReducer: WatcherListStateReducer,
     private val dataSource: WatcherDataSource,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider,
@@ -132,7 +132,7 @@ class WatcherListViewModel @Inject constructor(
     }
 }
 
-class StateReducer @Inject constructor(
+class WatcherListStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
