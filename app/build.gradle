@@ -34,6 +34,8 @@ android {
         multiDexEnabled true
         resConfigs "en"
 
+        archivesBaseName = "$archivesBaseName-$versionName"
+
         buildConfigField "int", "DB_VERSION", "$buildConfig.dbVersion"
         buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
 
