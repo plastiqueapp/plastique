@@ -12,6 +12,7 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.inject.scopes.ActivityScope
 import io.plastique.users.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.UserProfileEffect.LoadUserProfileEffect
 import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
@@ -25,6 +26,7 @@ import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
+@ActivityScope
 class UserProfileViewModel @Inject constructor(
     stateReducer: StateReducer,
     private val clipboard: Clipboard,

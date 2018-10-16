@@ -17,6 +17,7 @@ import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.HtmlCompat
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
@@ -39,6 +40,7 @@ import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 
+@ActivityScope
 class WatcherListViewModel @Inject constructor(
     stateReducer: StateReducer,
     private val dataSource: WatcherDataSource,

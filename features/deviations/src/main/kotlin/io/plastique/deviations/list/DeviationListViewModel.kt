@@ -43,6 +43,7 @@ import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShown
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
+import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
@@ -50,6 +51,7 @@ import org.threeten.bp.LocalDate
 import timber.log.Timber
 import javax.inject.Inject
 
+@FragmentScope
 class DeviationListViewModel @Inject constructor(
     stateReducer: StateReducer,
     private val connectivityMonitor: NetworkConnectivityMonitor,
