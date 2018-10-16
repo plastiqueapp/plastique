@@ -34,7 +34,7 @@ android {
         multiDexEnabled true
         resConfigs "en"
 
-        archivesBaseName = "$archivesBaseName-$versionName"
+        archivesBaseName = "plastique-$versionName"
 
         buildConfigField "int", "DB_VERSION", "$buildConfig.dbVersion"
         buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
@@ -97,7 +97,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "plastique-${variant.flavorName}-${variant.buildType.name}-${variant.versionName}.apk"
+            outputFileName = "plastique-${variant.versionName}-${variant.buildType.name}.apk"
         }
     }
 }
