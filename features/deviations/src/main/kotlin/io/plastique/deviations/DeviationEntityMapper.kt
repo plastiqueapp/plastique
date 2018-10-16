@@ -4,7 +4,6 @@ import io.plastique.images.Image
 import io.plastique.images.ImageEntity
 import io.plastique.users.UserEntity
 import io.plastique.users.UserEntityMapper
-import io.plastique.util.Size
 import javax.inject.Inject
 
 class DeviationEntityMapper @Inject constructor(
@@ -37,9 +36,7 @@ class DeviationEntityMapper @Inject constructor(
     }
 
     private fun map(image: ImageEntity): Image {
-        return Image(
-                size = Size.of(image.width, image.height),
-                url = image.url)
+        return Image(size = image.size, url = image.url)
     }
 
     private fun map(dailyDeviation: DailyDeviationEntity, giver: UserEntity): DailyDeviation {

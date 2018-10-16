@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import io.plastique.deviations.DeviationEntity
+import io.plastique.util.Size
 
 @Entity(tableName = "deviation_download",
         foreignKeys = [
@@ -18,11 +19,8 @@ data class DownloadInfoEntity(
     @ColumnInfo(name = "url")
     val downloadUrl: String,
 
-    @ColumnInfo(name = "width")
-    val width: Int,
-
-    @ColumnInfo(name = "height")
-    val height: Int,
+    @ColumnInfo(name = "size")
+    val size: Size,
 
     @ColumnInfo(name = "file_size")
     val fileSize: Int

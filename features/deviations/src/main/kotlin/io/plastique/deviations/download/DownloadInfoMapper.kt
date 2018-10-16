@@ -1,6 +1,7 @@
 package io.plastique.deviations.download
 
 import io.plastique.api.deviations.DownloadInfo
+import io.plastique.util.Size
 import javax.inject.Inject
 
 class DownloadInfoMapper @Inject constructor() {
@@ -8,8 +9,7 @@ class DownloadInfoMapper @Inject constructor() {
         return DownloadInfoEntity(
                 deviationId = deviationId,
                 downloadUrl = downloadInfo.url,
-                width = downloadInfo.width,
-                height = downloadInfo.height,
+                size = Size.of(downloadInfo.width, downloadInfo.height),
                 fileSize = downloadInfo.fileSize)
     }
 }

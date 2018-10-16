@@ -3,8 +3,6 @@ package io.plastique
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import io.plastique.watch.WatchDao
-import io.plastique.watch.WatcherEntity
 import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.comments.CommentEntity
@@ -12,6 +10,7 @@ import io.plastique.comments.CommentLinkage
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryDao
 import io.plastique.core.converters.InstantConverter
+import io.plastique.core.converters.SizeConverter
 import io.plastique.core.converters.ZonedDateTimeConverter
 import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationEntity
@@ -26,6 +25,8 @@ import io.plastique.gallery.GalleryDao
 import io.plastique.users.UserDao
 import io.plastique.users.UserEntity
 import io.plastique.users.UserProfileEntity
+import io.plastique.watch.WatchDao
+import io.plastique.watch.WatcherEntity
 import io.plastique.collections.FolderEntity as CollectionFolderEntity
 import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
 import io.plastique.gallery.FolderEntity as GalleryFolderEntity
@@ -53,7 +54,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     UserProfileEntity::class,
     WatcherEntity::class
 ], version = BuildConfig.DB_VERSION, exportSchema = false)
-@TypeConverters(InstantConverter::class, ZonedDateTimeConverter::class)
+@TypeConverters(InstantConverter::class, SizeConverter::class, ZonedDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cacheEntryDao(): CacheEntryDao
 
