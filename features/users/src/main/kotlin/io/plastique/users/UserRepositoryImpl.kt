@@ -1,40 +1,34 @@
 package io.plastique.users
 
-import androidx.room.RoomDatabase
 import io.plastique.api.users.UserService
 import io.reactivex.Single
 import javax.inject.Inject
 import io.plastique.api.users.User as UserDto
 
 class UserRepositoryImpl @Inject constructor(
-    private val database: RoomDatabase,
     private val userDao: UserDao,
-    private val userService: UserService,
-    private val userMapper: UserMapper,
-    private val userEntityMapper: UserEntityMapper
+    private val userService: UserService
 ) : UserRepository {
 
     override fun getCurrentUser(accessToken: String): Single<User> {
         return userService.whoami(accessToken)
-                .map { user -> persistUser(userMapper.map(user)) }
-                .map { userEntity -> userEntityMapper.map(userEntity) }
+                .map { user -> persistUser(user.toUserEntity()) }
+                .map { userEntity -> userEntity.toUser() }
     }
 
     override fun getUserByName(username: String): Single<User> {
         return userDao.getUserByName(username)
                 .switchIfEmpty(getUserByNameFromServer(username))
-                .map { userEntity -> userEntityMapper.map(userEntity) }
+                .map { userEntity -> userEntity.toUser() }
     }
 
     private fun getUserByNameFromServer(username: String): Single<UserEntity> {
         return userService.getUserProfile(username)
-                .map { userProfile -> persistUser(userMapper.map(userProfile.user)) }
+                .map { userProfile -> persistUser(userProfile.user.toUserEntity()) }
     }
 
     private fun persistUser(userEntity: UserEntity): UserEntity {
-        database.runInTransaction {
-            userDao.insertOrUpdate(userEntity)
-        }
+        userDao.insertOrUpdate(userEntity)
         return userEntity
     }
 }

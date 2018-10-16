@@ -10,7 +10,7 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserDao
-import io.plastique.users.UserMapper
+import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -29,12 +29,8 @@ class DeviationRepository @Inject constructor(
     private val deviationService: DeviationService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val fetcherFactory: DeviationFetcherFactory,
-    private val deviationMapper: DeviationMapper,
-    private val deviationEntityMapper: DeviationEntityMapper,
-    private val deviationMetadataMapper: DeviationMetadataMapper,
     private val timeProvider: TimeProvider,
-    private val userDao: UserDao,
-    private val userMapper: UserMapper
+    private val userDao: UserDao
 ) {
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
@@ -86,7 +82,7 @@ class DeviationRepository @Inject constructor(
     private fun combineAndFilter(deviationsWithUsers: List<DeviationWithUsers>, params: FetchParams): List<Deviation> {
         return deviationsWithUsers
                 .asSequence()
-                .map { deviationEntityMapper.map(it) }
+                .map { deviationWithUsers -> deviationWithUsers.toDeviation() }
                 .filter { deviation -> matchesParams(deviation, params) }
                 .toList()
     }
@@ -97,7 +93,7 @@ class DeviationRepository @Inject constructor(
     }
 
     private fun persist(cacheEntry: CacheEntry, deviations: List<DeviationDto>, replaceExisting: Boolean) {
-        val entities = deviations.map { deviation -> deviationMapper.map(deviation) }
+        val entities = deviations.map { deviation -> deviation.toDeviationEntity() }
         val users = deviations.asSequence()
                 .flatMap { deviation ->
                     val dailyDeviation = deviation.dailyDeviation
@@ -108,7 +104,7 @@ class DeviationRepository @Inject constructor(
                     }
                 }
                 .distinctBy { user -> user.id }
-                .map { user -> userMapper.map(user) }
+                .map { user -> user.toUserEntity() }
                 .toList()
 
         database.runInTransaction {
@@ -141,7 +137,7 @@ class DeviationRepository @Inject constructor(
             deviationDao.getDeviationWithUsersById(deviationId)
         }
                 .takeWhile { it.isNotEmpty() }
-                .map { deviationEntityMapper.map(it.first()) }
+                .map { it.first().toDeviation() }
     }
 
     private fun getDeviationByIdFromServer(deviationId: String): Single<DeviationDto> {
@@ -163,19 +159,17 @@ class DeviationRepository @Inject constructor(
     }
 
     private fun persistDeviation(deviation: DeviationDto) {
-        val entity = deviationMapper.map(deviation)
-        val author = userMapper.map(deviation.author)
         database.runInTransaction {
-            userDao.insertOrUpdate(author)
+            userDao.insertOrUpdate(deviation.author.toUserEntity())
             deviation.dailyDeviation?.run {
-                userDao.insertOrUpdate(userMapper.map(giver))
+                userDao.insertOrUpdate(giver.toUserEntity())
             }
-            deviationDao.insertOrUpdate(entity)
+            deviationDao.insertOrUpdate(deviation.toDeviationEntity())
         }
     }
 
-    private fun persist(metadata: List<DeviationMetadata>) {
-        val entities = metadata.map { deviationMetadataMapper.map(it) }
+    private fun persist(metadataList: List<DeviationMetadata>) {
+        val entities = metadataList.map { metadata -> metadata.toDeviationMetadataEntity() }
         deviationMetadataDao.insertOrUpdate(entities)
     }
 

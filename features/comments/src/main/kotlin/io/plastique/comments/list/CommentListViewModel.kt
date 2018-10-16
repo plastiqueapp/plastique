@@ -56,7 +56,6 @@ import javax.inject.Inject
 @ActivityScope
 class CommentListViewModel @Inject constructor(
     stateReducer: StateReducer,
-    private val commentMapper: CommentMapper,
     private val commentDataSource: CommentDataSource,
     private val commentSender: CommentSender,
     private val connectivityMonitor: NetworkConnectivityMonitor,
@@ -154,7 +153,7 @@ class CommentListViewModel @Inject constructor(
         val commentsById = comments.associateBy { comment -> comment.id }
         return comments.map { comment ->
             val parent = comment.parentId?.let { commentsById[it] }
-            commentMapper.map(comment, parent)
+            comment.toCommentUiModel(parent)
         }
     }
 

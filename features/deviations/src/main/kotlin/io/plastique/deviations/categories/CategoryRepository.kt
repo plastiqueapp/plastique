@@ -9,9 +9,7 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor(
     private val categoryDao: CategoryDao,
-    private val deviationService: DeviationService,
-    private val categoryMapper: CategoryMapper,
-    private val categoryEntityMapper: CategoryEntityMapper
+    private val deviationService: DeviationService
 ) {
     fun getCategories(parent: Category): Single<List<Category>> {
         if (!parent.hasChildren) {
@@ -20,7 +18,7 @@ class CategoryRepository @Inject constructor(
         return getCategoriesFromDb(parent.path)
                 .switchIfEmpty(getCategoriesFromServer(parent.path))
                 .flattenAsObservable(Functions.identity())
-                .map { category -> categoryEntityMapper.map(category, parent) }
+                .map { categoryEntity -> categoryEntity.toCategory(parent) }
                 .toList()
     }
 
@@ -35,7 +33,7 @@ class CategoryRepository @Inject constructor(
     }
 
     private fun persistCategories(categoryList: CategoryList): List<CategoryEntity> {
-        val categories = categoryList.categories.map { category -> categoryMapper.map(category) }
+        val categories = categoryList.categories.map { category -> category.toCategoryEntity() }
         categoryDao.insertOrUpdate(categories)
         return categories
     }

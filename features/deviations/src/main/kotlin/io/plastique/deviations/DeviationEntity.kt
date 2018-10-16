@@ -6,7 +6,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.plastique.api.deviations.Deviation
 import io.plastique.images.ImageEntity
+import io.plastique.images.toImageEntity
 import io.plastique.users.UserEntity
 
 @Entity(tableName = "deviations",
@@ -51,8 +53,18 @@ class DeviationEntity(
     val dailyDeviation: DailyDeviationEntity? = null,
 
     @ColumnInfo(name = "author_id")
-    val authorId: String) {
+    val authorId: String
+)
 
-    val isLiterature: Boolean
-        get() = excerpt != null
-}
+fun Deviation.toDeviationEntity(): DeviationEntity = DeviationEntity(
+        id = id,
+        title = title,
+        url = url,
+        authorId = author.id,
+        isDownloadable = isDownloadable,
+        isFavorite = isFavorite,
+        isMature = isMature,
+        content = content?.toImageEntity(),
+        preview = preview?.toImageEntity(),
+        excerpt = excerpt,
+        dailyDeviation = dailyDeviation?.toDailyDeviationEntity())

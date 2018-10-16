@@ -8,14 +8,12 @@ import io.plastique.api.deviations.DownloadInfo as DownloadInfoDto
 
 class DownloadInfoRepository @Inject constructor(
     private val downloadInfoDao: DownloadInfoDao,
-    private val deviationService: DeviationService,
-    private val downloadInfoMapper: DownloadInfoMapper,
-    private val downloadInfoEntityMapper: DownloadInfoEntityMapper
+    private val deviationService: DeviationService
 ) {
     fun getDownloadInfo(deviationId: String): Single<DownloadInfo> {
         return getDownloadInfoFromDb(deviationId)
                 .switchIfEmpty(getDownloadInfoFromServer(deviationId))
-                .map { downloadInfoEntityMapper.map(it) }
+                .map { downloadInfoEntity -> downloadInfoEntity.toDownloadInfo() }
     }
 
     private fun getDownloadInfoFromDb(deviationId: String): Maybe<DownloadInfoEntity> {
@@ -28,7 +26,7 @@ class DownloadInfoRepository @Inject constructor(
     }
 
     private fun persist(deviationId: String, downloadInfo: DownloadInfoDto): DownloadInfoEntity {
-        val entity = downloadInfoMapper.map(deviationId, downloadInfo)
+        val entity = downloadInfo.toDownloadInfoEntity(deviationId)
         downloadInfoDao.insertOrUpdate(entity)
         return entity
     }

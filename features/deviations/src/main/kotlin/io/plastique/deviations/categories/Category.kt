@@ -17,3 +17,10 @@ data class Category(
         val ALL = Category("/", "All categories", null, true)
     }
 }
+
+fun CategoryEntity.toCategory(parentCategory: Category): Category {
+    if (parentCategory.path != parent) {
+        throw IllegalArgumentException("Expected Category with id $parent but got ${parentCategory.path}")
+    }
+    return Category(path = path, title = title, parent = parentCategory, hasChildren = hasChildren)
+}

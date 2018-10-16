@@ -6,3 +6,5 @@ data class Image(
     val size: Size,
     val url: String
 )
+
+fun ImageEntity.toImage(): Image = Image(size = size, url = url)

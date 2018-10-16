@@ -14,7 +14,7 @@ import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserDao
-import io.plastique.users.UserMapper
+import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -32,11 +32,8 @@ class CommentRepository @Inject constructor(
     private val commentService: CommentService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val metadataConverter: NullFallbackConverter,
-    private val commentMapper: CommentMapper,
-    private val commentEntityMapper: CommentEntityMapper,
     private val timeProvider: TimeProvider,
-    private val userDao: UserDao,
-    private val userMapper: UserMapper
+    private val userDao: UserDao
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
@@ -76,7 +73,7 @@ class CommentRepository @Inject constructor(
     private fun combineAndFilter(commentsWithAuthors: List<CommentWithAuthor>): List<Comment> {
         return commentsWithAuthors.asSequence()
                 .filter { commentWithAuthor -> !isIgnoredComment(commentWithAuthor.comment) }
-                .map { commentWithAuthor -> commentEntityMapper.map(commentWithAuthor) }
+                .map { commentWithAuthor -> commentWithAuthor.toComment() }
                 .toList()
     }
 
@@ -94,11 +91,11 @@ class CommentRepository @Inject constructor(
 
     private fun persistComments(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {
         val users = commentList.comments.asSequence()
-                .map { comment -> userMapper.map(comment.author) }
+                .map { comment -> comment.author.toUserEntity() }
                 .distinctBy { user -> user.id }
                 .toList()
 
-        val comments = commentList.comments.map { comment -> commentMapper.map(comment) }
+        val comments = commentList.comments.map { comment -> comment.toCommentEntity() }
         database.runInTransaction {
             userDao.insertOrUpdate(users)
             commentDao.insertOrUpdate(comments)
@@ -117,13 +114,13 @@ class CommentRepository @Inject constructor(
     }
 
     fun persistComment(comment: CommentDto): Comment {
-        val entity = commentMapper.map(comment)
-        val author = userMapper.map(comment.author)
+        val commentEntity = comment.toCommentEntity()
+        val authorEntity = comment.author.toUserEntity()
         database.runInTransaction {
-            userDao.insertOrUpdate(author)
-            commentDao.insertOrUpdate(entity)
+            userDao.insertOrUpdate(authorEntity)
+            commentDao.insertOrUpdate(commentEntity)
         }
-        return commentEntityMapper.map(entity, author)
+        return commentEntity.toComment(authorEntity)
     }
 
     private fun isIgnoredComment(comment: CommentEntity): Boolean =

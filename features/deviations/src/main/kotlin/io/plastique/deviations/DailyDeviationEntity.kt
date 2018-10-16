@@ -1,6 +1,7 @@
 package io.plastique.deviations
 
 import androidx.room.ColumnInfo
+import io.plastique.api.deviations.DailyDeviation
 import org.threeten.bp.ZonedDateTime
 
 data class DailyDeviationEntity(
@@ -13,3 +14,6 @@ data class DailyDeviationEntity(
     @ColumnInfo(name = "giver_id")
     val giverId: String
 )
+
+fun DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
+        DailyDeviationEntity(body = body, date = date, giverId = giver.id)

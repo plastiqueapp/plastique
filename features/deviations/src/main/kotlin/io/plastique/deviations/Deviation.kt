@@ -1,7 +1,9 @@
 package io.plastique.deviations
 
 import io.plastique.images.Image
+import io.plastique.images.toImage
 import io.plastique.users.User
+import io.plastique.users.toUser
 
 data class Deviation(
     val id: String,
@@ -23,3 +25,17 @@ data class Deviation(
         val isMature: Boolean
     )
 }
+
+fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
+        id = deviation.id,
+        title = deviation.title,
+        url = deviation.url,
+        content = deviation.content?.toImage(),
+        preview = deviation.preview?.toImage(),
+        excerpt = deviation.excerpt,
+        author = author.first().toUser(),
+        properties = Deviation.Properties(
+                isDownloadable = deviation.isDownloadable,
+                isFavorite = deviation.isFavorite,
+                isMature = deviation.isMature),
+        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))

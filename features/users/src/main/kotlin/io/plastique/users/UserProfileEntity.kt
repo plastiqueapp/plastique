@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import io.plastique.api.users.UserProfile
 
 @Entity(tableName = "user_profiles",
         foreignKeys = [
@@ -20,3 +21,6 @@ data class UserProfileEntity(
     @ColumnInfo(name = "real_name")
     val realName: String?
 )
+
+fun UserProfile.toUserProfileEntity(): UserProfileEntity =
+        UserProfileEntity(userId = user.id, profileUrl = profileUrl, realName = realName)

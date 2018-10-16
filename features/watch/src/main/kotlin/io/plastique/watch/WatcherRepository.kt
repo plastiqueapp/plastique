@@ -15,7 +15,7 @@ import io.plastique.core.paging.PagedData
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.users.UserDao
-import io.plastique.users.UserMapper
+import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -28,13 +28,11 @@ class WatcherRepository @Inject constructor(
     private val database: RoomDatabase,
     private val watchService: WatchService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val userMapper: UserMapper,
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider,
     private val userDao: UserDao,
-    private val watchDao: WatchDao,
-    private val watcherMapper: WatcherMapper
+    private val watchDao: WatchDao
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
@@ -74,7 +72,7 @@ class WatcherRepository @Inject constructor(
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("watchers")) {
             database.runInTransaction(Callable {
-                val watchers = watchDao.getWatchers(cacheKey).map { watcherMapper.map(it) }
+                val watchers = watchDao.getWatchers(cacheKey).map { watcherWithUser -> watcherWithUser.toWatcher() }
                 val nextCursor = getNextCursor(cacheKey)
                 PagedData(watchers, nextCursor)
             })
@@ -82,7 +80,7 @@ class WatcherRepository @Inject constructor(
     }
 
     private fun persist(cacheEntry: CacheEntry, watcherList: WatcherList, replaceExisting: Boolean) {
-        val users = watcherList.watchers.map { watcher -> userMapper.map(watcher.user) }
+        val users = watcherList.watchers.map { watcher -> watcher.user.toUserEntity() }
 
         database.runInTransaction {
             userDao.insertOrUpdate(users)

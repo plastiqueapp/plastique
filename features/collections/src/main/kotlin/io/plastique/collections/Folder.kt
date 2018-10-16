@@ -6,3 +6,6 @@ data class Folder(
     val size: Int,
     val thumbnailUrl: String?
 )
+
+fun FolderEntity.toFolder(): Folder =
+        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

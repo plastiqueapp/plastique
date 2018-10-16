@@ -21,10 +21,7 @@ class UserProfileRepository @Inject constructor(
     private val userDao: UserDao,
     private val userService: UserService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val timeProvider: TimeProvider,
-    private val userMapper: UserMapper,
-    private val userProfileMapper: UserProfileMapper,
-    private val userProfileEntityMapper: UserProfileEntityMapper
+    private val timeProvider: TimeProvider
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
@@ -38,7 +35,7 @@ class UserProfileRepository @Inject constructor(
 
     private fun getUserProfileFromDb(username: String): Observable<UserProfile> {
         return userDao.getProfileByName(username)
-                .map { userProfileWithUser -> userProfileEntityMapper.map(userProfileWithUser) }
+                .map { userProfileWithUser -> userProfileWithUser.toUserProfile() }
                 .distinctUntilChanged()
                 .toObservable()
     }
@@ -61,11 +58,9 @@ class UserProfileRepository @Inject constructor(
     }
 
     private fun persistUserProfile(cacheEntry: CacheEntry, userProfile: UserProfileDto) {
-        val entity = userProfileMapper.map(userProfile)
-        val user = userMapper.map(userProfile.user)
         database.runInTransaction {
-            userDao.insertOrUpdate(user)
-            userDao.insertOrUpdate(entity)
+            userDao.insertOrUpdate(userProfile.user.toUserEntity())
+            userDao.insertOrUpdate(userProfile.toUserProfileEntity())
             cacheEntryRepository.setEntry(cacheEntry)
         }
     }

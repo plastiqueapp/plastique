@@ -25,8 +25,6 @@ class FolderRepository @Inject constructor(
     private val galleryDao: GalleryDao,
     private val galleryService: GalleryService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val folderMapper: FolderMapper,
-    private val folderEntityMapper: FolderEntityMapper,
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider
@@ -65,7 +63,7 @@ class FolderRepository @Inject constructor(
                     val nextCursor = if (folderList.hasMore) OffsetCursor(folderList.nextOffset!!) else null
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    val entities = folderList.folders.map { folderEntityMapper.map(it) }
+                    val entities = folderList.folders.map { folder -> folder.toFolderEntity() }
                     persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
                 }
                 .ignoreElement()
@@ -73,7 +71,7 @@ class FolderRepository @Inject constructor(
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders")) {
-            val folders = galleryDao.getFolders(cacheKey).map { folderMapper.map(it) }
+            val folders = galleryDao.getFolders(cacheKey).map { folderEntity -> folderEntity.toFolder() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
         }

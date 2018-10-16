@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.plastique.api.comments.Comment
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
@@ -40,3 +41,12 @@ class CommentEntity(
     @ColumnInfo(name = "text")
     val text: String
 )
+
+fun Comment.toCommentEntity(): CommentEntity = CommentEntity(
+        id = id,
+        parentId = parentId,
+        authorId = author.id,
+        datePosted = datePosted,
+        numReplies = numReplies,
+        hidden = hidden,
+        text = text)

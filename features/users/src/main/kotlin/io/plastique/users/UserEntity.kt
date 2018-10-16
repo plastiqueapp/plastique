@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import io.plastique.api.users.User
 
 @Entity(tableName = "users",
         indices = [
@@ -23,3 +24,9 @@ data class UserEntity(
     @ColumnInfo(name = "avatar_url")
     val avatarUrl: String
 )
+
+fun User.toUserEntity(): UserEntity =
+        UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)
+
+fun UserEntity.toUser(): io.plastique.users.User =
+        io.plastique.users.User(id = id, name = name, type = type, avatarUrl = avatarUrl)
