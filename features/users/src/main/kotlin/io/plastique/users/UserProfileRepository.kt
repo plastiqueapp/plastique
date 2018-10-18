@@ -37,7 +37,6 @@ class UserProfileRepository @Inject constructor(
         return userDao.getProfileByName(username)
                 .map { userProfileWithUser -> userProfileWithUser.toUserProfile() }
                 .distinctUntilChanged()
-                .toObservable()
     }
 
     private fun refreshUserProfile(username: String, cacheKey: String): Completable {

@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 
 @Dao
 interface UserDao {
@@ -44,7 +44,7 @@ interface UserDao {
 
     @Transaction
     @Query("SELECT up.* FROM user_profiles up INNER JOIN users u ON up.user_id = u.id WHERE u.name = :username")
-    fun getProfileByName(username: String): Flowable<UserProfileWithUser>
+    fun getProfileByName(username: String): Observable<UserProfileWithUser>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(userProfile: UserProfileEntity): Long
