@@ -17,12 +17,6 @@ fun <T : CoordinatorLayout.Behavior<*>> View.getLayoutBehavior(): T {
 
 private var METHOD_INVALIDATE_SCROLL_RANGES: Method? = null
 
-var View.isVisible: Boolean
-    get() = visibility == View.VISIBLE
-    set(value) {
-        visibility = if (value) View.VISIBLE else View.GONE
-    }
-
 fun AppBarLayout.invalidateScrollRanges() {
     if (METHOD_INVALIDATE_SCROLL_RANGES == null) {
         try {
