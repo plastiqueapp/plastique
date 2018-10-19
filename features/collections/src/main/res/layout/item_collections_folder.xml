@@ -5,8 +5,7 @@
     android:layout_width="@dimen/collections_folder_min_width"
     android:layout_height="90dp">
 
-    <ImageView
-        android:id="@+id/folder_thumbnail"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:foreground="@drawable/folder_foreground"
@@ -14,7 +13,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        tools:ignore="UnusedAttribute">
+
+        <ImageView
+            android:id="@+id/folder_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/folder_name"

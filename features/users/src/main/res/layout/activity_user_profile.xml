@@ -48,7 +48,8 @@
         android:id="@+id/profile_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="user_avatar, user_real_name" />
+        app:constraint_referenced_ids="user_avatar, user_real_name"
+        tools:ignore="MissingConstraints" />
 
     <ProgressBar
         android:id="@android:id/progress"
