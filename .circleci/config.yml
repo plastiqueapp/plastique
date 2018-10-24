@@ -19,6 +19,10 @@ jobs:
             yes | sdkmanager --licenses || true
             sdkmanager "platform-tools" "platforms;android-28"
 
+      - run:
+          name: Check Environment
+          command: java -version
+
       - restore_cache:
           keys:
             - v1-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
