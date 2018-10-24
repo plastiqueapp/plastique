@@ -20,7 +20,7 @@ ext.versions = [
                 core     : "16.0.4",
         ],
 
-        kotlin               : "1.3.0-rc-190",
+        kotlin               : "1.3.0-rc-198",
         dagger               : "2.18",
         flexboxLayout        : "1.1.0",
         materialComponents   : "1.0.0",
@@ -32,12 +32,12 @@ ext.versions = [
         adapterDelegates     : "4.0.0",
         bottomNavigation     : "2.0.2",
         crashlytics          : "2.9.5",
-        permissionsDispatcher: "4.0.0-alpha1",
+        permissionsDispatcher: "4.0.0",
         photoView            : "2.2.0",
-        rxjava               : "2.2.2",
+        rxjava               : "2.2.3",
         rxandroid            : "2.1.0",
         rxkotlin             : "2.3.0",
-        rxjava2Extensions    : "0.20.3",
+        rxjava2Extensions    : "0.20.4",
         rxJava2ExtensionsSch : "0.0.3",
         sqlite               : "3.25.2",
         stetho               : "1.5.0",
@@ -55,5 +55,5 @@ ext.versions = [
 
         mockito              : "2.23.0",
         mockitoKotlin        : "2.0.0-alpha03",
-        robolectric          : "4.0-beta-1",
+        robolectric          : "4.0-beta-2",
 ]
