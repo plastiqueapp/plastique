@@ -13,7 +13,7 @@ import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.users.UserDao
+import io.plastique.users.UserRepository
 import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -33,7 +33,7 @@ class CommentRepository @Inject constructor(
     private val cacheEntryRepository: CacheEntryRepository,
     private val metadataConverter: NullFallbackConverter,
     private val timeProvider: TimeProvider,
-    private val userDao: UserDao
+    private val userRepository: UserRepository
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
@@ -97,7 +97,7 @@ class CommentRepository @Inject constructor(
 
         val comments = commentList.comments.map { comment -> comment.toCommentEntity() }
         database.runInTransaction {
-            userDao.insertOrUpdate(users)
+            userRepository.put(users)
             commentDao.insertOrUpdate(comments)
             cacheEntryRepository.setEntry(CacheEntry(key, timestamp, metadataConverter.toJson(metadata)))
 
@@ -117,7 +117,7 @@ class CommentRepository @Inject constructor(
         val commentEntity = comment.toCommentEntity()
         val authorEntity = comment.author.toUserEntity()
         database.runInTransaction {
-            userDao.insertOrUpdate(authorEntity)
+            userRepository.put(authorEntity)
             commentDao.insertOrUpdate(commentEntity)
         }
         return commentEntity.toComment(authorEntity)

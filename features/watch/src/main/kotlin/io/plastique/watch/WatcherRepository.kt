@@ -14,7 +14,7 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
-import io.plastique.users.UserDao
+import io.plastique.users.UserRepository
 import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -31,7 +31,7 @@ class WatcherRepository @Inject constructor(
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider,
-    private val userDao: UserDao,
+    private val userRepository: UserRepository,
     private val watchDao: WatchDao
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
@@ -83,7 +83,7 @@ class WatcherRepository @Inject constructor(
         val users = watcherList.watchers.map { watcher -> watcher.user.toUserEntity() }
 
         database.runInTransaction {
-            userDao.insertOrUpdate(users)
+            userRepository.put(users)
             cacheEntryRepository.setEntry(cacheEntry)
 
             var order = if (replaceExisting) {

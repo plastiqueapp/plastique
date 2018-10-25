@@ -9,7 +9,7 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
-import io.plastique.users.UserDao
+import io.plastique.users.UserRepository
 import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -30,7 +30,7 @@ class DeviationRepository @Inject constructor(
     private val cacheEntryRepository: CacheEntryRepository,
     private val fetcherFactory: DeviationFetcherFactory,
     private val timeProvider: TimeProvider,
-    private val userDao: UserDao
+    private val userRepository: UserRepository
 ) {
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
@@ -108,7 +108,7 @@ class DeviationRepository @Inject constructor(
                 .toList()
 
         database.runInTransaction {
-            userDao.insertOrUpdate(users)
+            userRepository.put(users)
             deviationDao.insertOrUpdate(entities)
             cacheEntryRepository.setEntry(cacheEntry)
 
@@ -160,9 +160,9 @@ class DeviationRepository @Inject constructor(
 
     private fun persistDeviation(deviation: DeviationDto) {
         database.runInTransaction {
-            userDao.insertOrUpdate(deviation.author.toUserEntity())
+            userRepository.put(deviation.author.toUserEntity())
             deviation.dailyDeviation?.run {
-                userDao.insertOrUpdate(giver.toUserEntity())
+                userRepository.put(giver.toUserEntity())
             }
             deviationDao.insertOrUpdate(deviation.toDeviationEntity())
         }

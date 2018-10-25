@@ -25,8 +25,4 @@ data class UserEntity(
     val avatarUrl: String
 )
 
-fun User.toUserEntity(): UserEntity =
-        UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)
-
-fun UserEntity.toUser(): io.plastique.users.User =
-        io.plastique.users.User(id = id, name = name, type = type, avatarUrl = avatarUrl)
+fun User.toUserEntity(): UserEntity = UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)

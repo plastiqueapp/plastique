@@ -6,3 +6,5 @@ data class User(
     val type: String,
     val avatarUrl: String
 )
+
+fun UserEntity.toUser(): User = User(id = id, name = name, type = type, avatarUrl = avatarUrl)

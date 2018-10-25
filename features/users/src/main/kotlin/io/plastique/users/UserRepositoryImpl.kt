@@ -12,8 +12,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getCurrentUser(accessToken: String): Single<User> {
         return userService.whoami(accessToken)
-                .map { user -> persistUser(user.toUserEntity()) }
-                .map { userEntity -> userEntity.toUser() }
+                .map { user -> user.toUserEntity().also { put(it) }.toUser() }
     }
 
     override fun getUserByName(username: String): Single<User> {
@@ -24,11 +23,14 @@ class UserRepositoryImpl @Inject constructor(
 
     private fun getUserByNameFromServer(username: String): Single<UserEntity> {
         return userService.getUserProfile(username)
-                .map { userProfile -> persistUser(userProfile.user.toUserEntity()) }
+                .map { userProfile -> userProfile.user.toUserEntity().also { put(it) } }
     }
 
-    private fun persistUser(userEntity: UserEntity): UserEntity {
-        userDao.insertOrUpdate(userEntity)
-        return userEntity
+    override fun put(user: UserEntity) {
+        userDao.insertOrUpdate(user)
+    }
+
+    override fun put(users: Collection<UserEntity>) {
+        userDao.insertOrUpdate(users)
     }
 }
