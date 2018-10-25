@@ -102,6 +102,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
     implementation project(":api")
     implementation project(":features:auth")
@@ -116,8 +120,6 @@ dependencies {
     implementation project(":features:users")
     implementation project(":features:watch")
 
-    implementation "android.arch.work:work-runtime:$versions.androidx.work"
-    implementation "android.arch.work:work-firebase:$versions.androidx.work"
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     implementation "io.requery:sqlite-android:$versions.sqlite"

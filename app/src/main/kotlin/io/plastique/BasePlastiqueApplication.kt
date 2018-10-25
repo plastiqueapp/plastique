@@ -2,6 +2,9 @@ package io.plastique
 
 import android.app.Application
 import android.os.Looper
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import androidx.work.WorkerFactory
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -22,6 +25,7 @@ import javax.inject.Inject
 
 abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, ActivityComponent.Factory {
     @Inject lateinit var analytics: Analytics
+    @Inject lateinit var workerFactory: WorkerFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -41,8 +45,9 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
         }
 
         LeakCanary.install(this)
-        initRxJava()
         injectDependencies()
+        initRxJava()
+        initWorkManager()
 
         analytics.initUserProperties()
     }
@@ -69,6 +74,12 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
                 Timber.e(error)
             }
         }
+    }
+
+    private fun initWorkManager() {
+        WorkManager.initialize(this, Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .build())
     }
 
     private fun injectDependencies() {

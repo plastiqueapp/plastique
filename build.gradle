@@ -84,6 +84,12 @@ subprojects {
                     targetSdkVersion buildConfig.targetSdk
 
                     vectorDrawables.useSupportLibrary = true
+
+                    javaCompileOptions {
+                        annotationProcessorOptions {
+                            includeCompileClasspath = false
+                        }
+                    }
                 }
 
                 compileOptions {

@@ -31,7 +31,7 @@ import io.plastique.util.SystemTimeProvider
 import io.plastique.util.TimeProvider
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [WorkerModule::class])
 abstract class AppModule {
     @Binds
     abstract fun bindContext(application: Application): Context
