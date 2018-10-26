@@ -11,7 +11,7 @@ ext.versions = [
                 work            : "1.0.0-alpha10",
                 preference      : "1.0.0",
                 preferenceV14   : "1.0.0",
-                testCore        : "1.0.0-beta02",
+                testCore        : "1.0.0",
         ],
 
         firebase             : [
@@ -57,5 +57,5 @@ ext.versions = [
 
         mockito              : "2.23.0",
         mockitoKotlin        : "2.0.0-alpha03",
-        robolectric          : "4.0-beta-2",
+        robolectric          : "4.0",
 ]
