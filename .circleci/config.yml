@@ -37,6 +37,7 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
+            - ~/.m2/repository
           key: v1-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
 
       - store_artifacts:
