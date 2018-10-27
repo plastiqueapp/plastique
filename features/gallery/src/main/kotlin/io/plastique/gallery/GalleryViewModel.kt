@@ -8,13 +8,11 @@ import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.exceptions.ApiResponseException
-import io.plastique.core.flow.Effect
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
-import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
@@ -236,33 +234,4 @@ class GalleryStateReducer @Inject constructor(
             }
         }
     }
-}
-
-sealed class GalleryEvent : Effect() {
-    data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : GalleryEvent() {
-        override fun toString(): String =
-                "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
-    }
-
-    data class LoadErrorEvent(val error: Throwable, val username: String?) : GalleryEvent()
-
-    object LoadMoreEvent : GalleryEvent()
-    object LoadMoreFinishedEvent : GalleryEvent()
-    data class LoadMoreErrorEvent(val error: Throwable) : GalleryEvent()
-
-    object RefreshEvent : GalleryEvent()
-    object RefreshFinishedEvent : GalleryEvent()
-    data class RefreshErrorEvent(val error: Throwable) : GalleryEvent()
-
-    object RetryClickEvent : GalleryEvent()
-    object SnackbarShownEvent : GalleryEvent()
-
-    data class SessionChangedEvent(val session: Session) : GalleryEvent()
-    data class ShowMatureChangedEvent(val showMature: Boolean) : GalleryEvent()
-}
-
-sealed class GalleryEffect : Effect() {
-    data class LoadEffect(val params: FolderLoadParams) : GalleryEffect()
-    object LoadMoreEffect : GalleryEffect()
-    object RefreshEffect : GalleryEffect()
 }
