@@ -20,6 +20,7 @@ import io.plastique.deviations.ContentSettings
 import io.plastique.gallery.GalleryEffect.LoadEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
 import io.plastique.gallery.GalleryEffect.RefreshEffect
+import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.ItemsChangedEvent
 import io.plastique.gallery.GalleryEvent.LoadErrorEvent
 import io.plastique.gallery.GalleryEvent.LoadMoreErrorEvent
@@ -232,6 +233,11 @@ class GalleryStateReducer @Inject constructor(
             } else {
                 next(state)
             }
+        }
+
+        is CreateFolderEvent -> {
+            // TODO
+            next(state)
         }
     }
 }

@@ -25,4 +25,6 @@ sealed class GalleryEvent : Event() {
 
     data class SessionChangedEvent(val session: Session) : GalleryEvent()
     data class ShowMatureChangedEvent(val showMature: Boolean) : GalleryEvent()
+
+    data class CreateFolderEvent(val folderName: String) : GalleryEvent()
 }

@@ -3,6 +3,9 @@ package io.plastique.gallery
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +18,8 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.InputDialogFragment
+import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.withArguments
 import io.plastique.core.lists.EndlessScrollListener
@@ -25,6 +30,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.deviations.list.DeviationItem
+import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.LoadMoreEvent
 import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
@@ -35,7 +41,7 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableToTop {
+class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: GalleryAdapter
@@ -113,6 +119,25 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         observeState()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_gallery, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+        R.id.gallery_action_create_folder -> {
+            showCreateFolderDialog()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onInputDialogResult(dialog: InputDialogFragment, text: String) {
+        if (dialog.tag == DIALOG_CREATE_FOLDER) {
+            viewModel.dispatch(CreateFolderEvent(text.trim()))
+        }
+    }
+
     private fun observeState() {
         viewModel.state
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,6 +185,21 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                     viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()
+
+        viewModel.state
+                .distinctUntilChanged { state -> state.showMenu }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { state -> setHasOptionsMenu(state.showMenu) }
+                .disposeOnDestroy()
+    }
+
+    private fun showCreateFolderDialog() {
+        val dialog = InputDialogFragment.newInstance(
+                title = R.string.gallery_action_create_folder,
+                hint = R.string.gallery_folder_name_hint,
+                positiveButton = R.string.gallery_button_create,
+                maxLength = FOLDER_NAME_MAX_LENGTH)
+        dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 
     override fun getTitle(): Int = R.string.gallery_title
@@ -177,6 +217,8 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
     companion object {
         private const val ARG_USERNAME = "username"
+        private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
+        private const val FOLDER_NAME_MAX_LENGTH = 50
 
         fun newInstance(username: String? = null): GalleryFragment {
             return GalleryFragment().withArguments {
