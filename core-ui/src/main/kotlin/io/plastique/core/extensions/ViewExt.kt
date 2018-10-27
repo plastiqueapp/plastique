@@ -1,6 +1,9 @@
 package io.plastique.core.extensions
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +54,20 @@ fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: 
     } else {
         smoothScrollToPosition(position)
     }
+}
+
+fun TextView.doAfterTextChanged(block: (Editable) -> Unit) {
+    addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable) {
+            block(s)
+        }
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        }
+    })
 }
 
 fun Toolbar.setTitleOnClickListener(onClickListener: View.OnClickListener) {
