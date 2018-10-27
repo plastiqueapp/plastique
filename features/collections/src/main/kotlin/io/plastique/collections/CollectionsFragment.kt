@@ -3,12 +3,16 @@ package io.plastique.collections
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import io.plastique.collections.CollectionsEvent.CreateFolderEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreEvent
 import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
@@ -19,6 +23,8 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.InputDialogFragment
+import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.withArguments
 import io.plastique.core.lists.EndlessScrollListener
@@ -35,7 +41,7 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, ScrollableToTop {
+class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: CollectionsAdapter
@@ -114,6 +120,25 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         observeState()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_collections, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.collections_action_create_folder -> {
+            showCreateFolderDialog()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onInputDialogResult(dialog: InputDialogFragment, text: String) {
+        if (dialog.tag == DIALOG_CREATE_FOLDER) {
+            viewModel.dispatch(CreateFolderEvent(text.trim()))
+        }
+    }
+
     private fun observeState() {
         viewModel.state
                 .observeOn(AndroidSchedulers.mainThread())
@@ -161,6 +186,21 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                     viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()
+
+        viewModel.state
+                .distinctUntilChanged { state -> state.showMenu }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { state -> setHasOptionsMenu(state.showMenu) }
+                .disposeOnDestroy()
+    }
+
+    private fun showCreateFolderDialog() {
+        val dialog = InputDialogFragment.newInstance(
+                title = R.string.collections_action_create_folder,
+                hint = R.string.collections_folder_name_hint,
+                positiveButton = R.string.collections_button_create,
+                maxLength = FOLDER_NAME_MAX_LENGTH)
+        dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 
     override fun getTitle(): Int = R.string.collections_title
@@ -178,6 +218,8 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
     companion object {
         private const val ARG_USERNAME = "username"
+        private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
+        private const val FOLDER_NAME_MAX_LENGTH = 50
 
         fun newInstance(username: String? = null): CollectionsFragment {
             return CollectionsFragment().withArguments {

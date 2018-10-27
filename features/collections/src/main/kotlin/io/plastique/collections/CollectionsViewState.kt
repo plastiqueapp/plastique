@@ -20,6 +20,9 @@ data class CollectionsViewState(
     val pagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !loadingMore && !refreshing
 
+    val showMenu: Boolean
+        get() = params.username == null && contentState == ContentState.Content
+
     override fun toString(): String {
         return "CollectionsViewState(" +
                 "params=$params," +

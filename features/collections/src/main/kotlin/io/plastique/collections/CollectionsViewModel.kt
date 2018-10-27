@@ -5,6 +5,7 @@ import com.sch.rxjava2.extensions.ofType
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
+import io.plastique.collections.CollectionsEvent.CreateFolderEvent
 import io.plastique.collections.CollectionsEvent.ItemsChangedEvent
 import io.plastique.collections.CollectionsEvent.LoadErrorEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreErrorEvent
@@ -232,6 +233,11 @@ class CollectionsStateReducer @Inject constructor(
             } else {
                 next(state)
             }
+        }
+
+        is CreateFolderEvent -> {
+            // TODO
+            next(state)
         }
     }
 }

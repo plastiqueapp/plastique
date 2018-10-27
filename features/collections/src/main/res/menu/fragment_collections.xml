@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/collections_action_create_folder"
+        android:icon="@drawable/ic_collections_create_folder_24dp"
+        android:title="@string/collections_action_create_folder"
+        app:showAsAction="ifRoom" />
+</menu>

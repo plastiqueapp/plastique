@@ -26,4 +26,6 @@ sealed class CollectionsEvent : Event() {
 
     data class SessionChangedEvent(val session: Session) : CollectionsEvent()
     data class ShowMatureChangedEvent(val showMature: Boolean) : CollectionsEvent()
+
+    data class CreateFolderEvent(val folderName: String) : CollectionsEvent()
 }
