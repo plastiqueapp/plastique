@@ -31,7 +31,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
                     val deviationItems = folders
                             .map { pagedData ->
                                 if (!pagedData.hasMore) {
-                                    pagedData.value.find { folder -> folder.name == FEATURED_FOLDER_NAME }.toOptional()
+                                    pagedData.value.find { folder -> folder.name == Folder.FEATURED }.toOptional()
                                 } else {
                                     Optional.None
                                 }
@@ -87,9 +87,5 @@ class FoldersWithDeviationsDataSource @Inject constructor(
         } else {
             emptyList()
         }
-    }
-
-    private companion object {
-        private const val FEATURED_FOLDER_NAME = "Featured"
     }
 }
