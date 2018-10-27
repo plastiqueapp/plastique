@@ -121,7 +121,7 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
     }
 
     companion object {
-        private const val DIALOG_AUTH_ERROR = "dialog_auth_error"
+        private const val DIALOG_AUTH_ERROR = "dialog.auth_error"
 
         fun createIntent(context: Context): Intent {
             return Intent(context, LoginActivity::class.java)

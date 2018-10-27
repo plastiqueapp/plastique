@@ -26,6 +26,6 @@ class ProgressDialogController(
         get() = fragmentManager.findFragmentByTag(tag) as DialogFragment?
 
     companion object {
-        private const val DEFAULT_TAG = "dialog_progress"
+        private const val DEFAULT_TAG = "dialog.progress"
     }
 }
