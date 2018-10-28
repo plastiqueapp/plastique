@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<io.plastique.core.ForegroundConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/collections_folder_min_width"
-    android:layout_height="90dp">
+    android:layout_height="90dp"
+    android:foreground="?selectableItemBackground"
+    tools:ignore="UnusedAttribute">
 
     <com.commit451.foregroundviews.ForegroundImageView
         android:id="@+id/folder_thumbnail"
@@ -44,4 +46,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="10" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</io.plastique.core.ForegroundConstraintLayout>
