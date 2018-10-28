@@ -33,6 +33,7 @@ ext.versions = [
         leakCanary           : "1.6.2",
         adapterDelegates     : "4.0.0",
         bottomNavigation     : "2.0.2",
+        foregroundViews      : "2.4.4",
         crashlytics          : "2.9.5",
         permissionsDispatcher: "4.0.0",
         photoView            : "2.2.0",

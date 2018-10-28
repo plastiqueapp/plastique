@@ -19,6 +19,7 @@ dependencies {
     api "com.google.android:flexbox:$versions.flexboxLayout"
     api "com.google.android.material:material:$versions.materialComponents"
     api "com.hannesdorfmann:adapterdelegates4:$versions.adapterDelegates"
+    api "com.github.Commit451:ForegroundViews:$versions.foregroundViews"
 
     api "com.google.firebase:firebase-analytics:$versions.firebase.analytics"
 
