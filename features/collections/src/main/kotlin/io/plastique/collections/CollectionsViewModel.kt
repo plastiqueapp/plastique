@@ -6,6 +6,7 @@ import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
 import io.plastique.collections.CollectionsEvent.CreateFolderEvent
+import io.plastique.collections.CollectionsEvent.DeleteFolderEvent
 import io.plastique.collections.CollectionsEvent.ItemsChangedEvent
 import io.plastique.collections.CollectionsEvent.LoadErrorEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreErrorEvent
@@ -236,6 +237,11 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is CreateFolderEvent -> {
+            // TODO
+            next(state)
+        }
+
+        is DeleteFolderEvent -> {
             // TODO
             next(state)
         }

@@ -8,11 +8,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import io.plastique.collections.CollectionsEvent.CreateFolderEvent
+import io.plastique.collections.CollectionsEvent.DeleteFolderEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreEvent
 import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
@@ -89,6 +91,14 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
         adapter.onFolderClickListener = { item ->
             navigator.openCollectionFolder(navigationContext, CollectionFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
+        }
+        adapter.onFolderLongClickListener = { item, itemView ->
+            if (state.showMenu && item.folder.isDeletable) {
+                showFolderPopupMenu(item.folder, itemView)
+                true
+            } else {
+                false
+            }
         }
         adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
         onScrollListener = EndlessScrollListener(4, enabled = false) { viewModel.dispatch(LoadMoreEvent) }
@@ -201,6 +211,21 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 positiveButton = R.string.collections_button_create,
                 maxLength = FOLDER_NAME_MAX_LENGTH)
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
+    }
+
+    private fun showFolderPopupMenu(folder: Folder, itemView: View) {
+        val popup = PopupMenu(requireContext(), itemView)
+        popup.inflate(R.menu.collections_folder_popup)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.collections_action_delete_folder -> {
+                    viewModel.dispatch(DeleteFolderEvent(folder))
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
     }
 
     override fun getTitle(): Int = R.string.collections_title

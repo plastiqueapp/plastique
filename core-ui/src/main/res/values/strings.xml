@@ -2,6 +2,7 @@
 <resources>
 
     <!-- Common -->
+    <string name="common_action_delete">Delete</string>
     <string name="common_button_ok">OK</string>
     <string name="common_button_cancel">Cancel</string>
     <string name="common_button_login">Login</string>

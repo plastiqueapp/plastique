@@ -28,4 +28,5 @@ sealed class CollectionsEvent : Event() {
     data class ShowMatureChangedEvent(val showMature: Boolean) : CollectionsEvent()
 
     data class CreateFolderEvent(val folderName: String) : CollectionsEvent()
+    data class DeleteFolderEvent(val folder: Folder) : CollectionsEvent()
 }
