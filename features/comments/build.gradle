@@ -11,6 +11,5 @@ dependencies {
     api project(":core-ui")
     implementation project(":features:deviations")
 
-    kapt "androidx.room:room-compiler:$versions.androidx.room"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 }

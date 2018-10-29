@@ -12,7 +12,6 @@ dependencies {
 
     implementation "com.github.chrisbanes:PhotoView:$versions.photoView"
 
-    kapt "androidx.room:room-compiler:$versions.androidx.room"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 
     implementation "com.github.hotchemi:permissionsdispatcher:$versions.permissionsDispatcher"
