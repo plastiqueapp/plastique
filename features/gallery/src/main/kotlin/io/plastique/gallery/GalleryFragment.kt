@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -31,6 +32,7 @@ import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
+import io.plastique.gallery.GalleryEvent.DeleteFolderEvent
 import io.plastique.gallery.GalleryEvent.LoadMoreEvent
 import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
@@ -89,6 +91,14 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         adapter.onFolderClickListener = { item ->
             navigator.openGalleryFolder(navigationContext, GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
         }
+        adapter.onFolderLongClickListener = { item, itemView ->
+            if (state.showMenu && item.folder.isDeletable) {
+                showFolderPopupMenu(item.folder, itemView)
+                true
+            } else {
+                false
+            }
+        }
         adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
         onScrollListener = EndlessScrollListener(4, enabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -124,7 +134,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         inflater.inflate(R.menu.fragment_gallery, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.gallery_action_create_folder -> {
             showCreateFolderDialog()
             true
@@ -200,6 +210,21 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 positiveButton = R.string.gallery_button_create,
                 maxLength = FOLDER_NAME_MAX_LENGTH)
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
+    }
+
+    private fun showFolderPopupMenu(folder: Folder, itemView: View) {
+        val popup = PopupMenu(requireContext(), itemView)
+        popup.inflate(R.menu.gallery_folder_popup)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.gallery_action_delete_folder -> {
+                    viewModel.dispatch(DeleteFolderEvent(folder))
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
     }
 
     override fun getTitle(): Int = R.string.gallery_title

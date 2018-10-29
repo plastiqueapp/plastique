@@ -6,6 +6,9 @@ data class Folder(
     val size: Int,
     val thumbnailUrl: String?
 ) {
+    val isDeletable: Boolean
+        get() = name != FEATURED
+
     companion object {
         const val FEATURED = "Featured"
     }

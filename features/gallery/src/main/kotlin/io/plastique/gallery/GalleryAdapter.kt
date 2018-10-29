@@ -14,6 +14,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.lists.OnViewHolderLongClickListener
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
@@ -22,14 +23,15 @@ import io.plastique.glide.GlideApp
 
 class FolderItemDelegate(
     private val itemSizeCallback: ItemSizeCallback,
-    private val listener: OnViewHolderClickListener
+    private val onViewHolderClickListener: OnViewHolderClickListener,
+    private val onViewHolderLongClickListener: OnViewHolderLongClickListener
 ) : BaseAdapterDelegate<FolderItem, ListItem, FolderItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is FolderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_folder, parent, false)
-        return ViewHolder(view, listener)
+        return ViewHolder(view, onViewHolderClickListener, onViewHolderLongClickListener)
     }
 
     override fun onBindViewHolder(item: FolderItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -54,18 +56,24 @@ class FolderItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val listener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        private val onClickListener: OnViewHolderClickListener,
+        private val onLongClickListener: OnViewHolderLongClickListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
         val thumbnail: ImageView = itemView.findViewById(R.id.folder_thumbnail)
         val name: TextView = itemView.findViewById(R.id.folder_name)
         val size: TextView = itemView.findViewById(R.id.folder_size)
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(view: View) {
-            listener.onViewHolderClick(this, view)
+            onClickListener.onViewHolderClick(this, view)
+        }
+
+        override fun onLongClick(view: View): Boolean {
+            return onLongClickListener.onViewHolderLongClick(this, view)
         }
     }
 }
@@ -87,13 +95,17 @@ class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemD
     }
 }
 
-class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : ListDelegationAdapter<List<ListItem>>(),
+        OnViewHolderClickListener,
+        OnViewHolderLongClickListener {
+
     var onFolderClickListener: OnFolderClickListener? = null
+    var onFolderLongClickListener: OnFolderLongClickListener? = null
     var onDeviationClickListener: OnDeviationClickListener? = null
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(FolderItemDelegate(itemSizeCallback, this))
+        delegatesManager.addDelegate(FolderItemDelegate(itemSizeCallback, this, this))
         delegatesManager.addDelegate(HeaderItemDelegate())
         delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
@@ -108,7 +120,17 @@ class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : Lis
             is DeviationItem -> onDeviationClickListener?.invoke(item)
         }
     }
+
+    override fun onViewHolderLongClick(holder: RecyclerView.ViewHolder, view: View): Boolean {
+        val position = holder.adapterPosition
+        val item = if (position != RecyclerView.NO_POSITION) items[position] else return false
+        return when (item) {
+            is FolderItem -> onFolderLongClickListener?.invoke(item, view) ?: false
+            else -> throw IllegalStateException("Unhandled item type ${item.javaClass}")
+        }
+    }
 }
 
 typealias OnFolderClickListener = (FolderItem) -> Unit
+typealias OnFolderLongClickListener = (FolderItem, View) -> Boolean
 typealias OnDeviationClickListener = (DeviationItem) -> Unit
