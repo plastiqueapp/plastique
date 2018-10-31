@@ -12,6 +12,7 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
@@ -123,11 +124,11 @@ class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewe
         }
 
         is DownloadOriginalErrorEvent -> {
-            next(state.copy(snackbarMessage = event.errorMessage))
+            next(state.copy(snackbarState = SnackbarState.Message(event.errorMessage)))
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is SessionChangedEvent -> {

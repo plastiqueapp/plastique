@@ -23,6 +23,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
@@ -51,6 +52,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private lateinit var authorView: TextView
     private lateinit var descriptionView: TextView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
 
@@ -90,6 +92,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         photoView.setOnPhotoTapListener { _, _, _ -> toggleUiVisibility() }
 
         contentViewController = ContentViewController(this, R.id.photo, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(rootView)
 
         authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state!!.deviation!!.author.name) }
 
@@ -182,11 +185,10 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged { state -> state.snackbarMessage }
-                .filter { state -> state.snackbarMessage != null }
+                .distinctUntilChanged { state -> state.snackbarState }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
-                    Snackbar.make(rootView, state.snackbarMessage!!, Snackbar.LENGTH_SHORT).show()
+                    snackbarController.showSnackbar(state.snackbarState)
                     viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()

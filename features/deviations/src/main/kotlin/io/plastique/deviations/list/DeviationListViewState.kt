@@ -2,6 +2,7 @@ package io.plastique.deviations.list
 
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.tags.Tag
 
@@ -12,7 +13,7 @@ data class DeviationListViewState(
     val items: List<ListItem> = emptyList(),
     val deviationItems: List<ListItem> = emptyList(),
     val tags: List<Tag> = emptyList(),
-    val snackbarMessage: String? = null,
+    val snackbarState: SnackbarState = SnackbarState.None,
     val layoutMode: LayoutMode,
 
     val hasMore: Boolean = false,
@@ -32,7 +33,7 @@ data class DeviationListViewState(
                 "hasMore=$hasMore, " +
                 "loadingMore=$loadingMore, " +
                 "refreshing=$refreshing, " +
-                "snackbarMessage=$snackbarMessage, " +
+                "snackbarState=$snackbarState, " +
                 "layoutMode=$layoutMode" +
                 ")"
     }

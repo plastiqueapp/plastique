@@ -14,6 +14,7 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.deviations.DailyParams
 import io.plastique.deviations.Deviation
@@ -185,7 +186,10 @@ class DeviationListStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.deviationItems, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error)))
+            next(state.copy(
+                    loadingMore = false,
+                    items = state.deviationItems,
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
         }
 
         RefreshEvent -> {
@@ -197,7 +201,7 @@ class DeviationListStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error)))
+            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
         }
 
         is ParamsChangedEvent -> {
@@ -217,7 +221,7 @@ class DeviationListStateReducer @Inject constructor(
         }
 
         SnackbarShown -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is ConnectionStateChangedEvent -> {

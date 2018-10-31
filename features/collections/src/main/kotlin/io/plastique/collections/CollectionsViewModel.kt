@@ -33,6 +33,7 @@ import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.HtmlCompat
@@ -180,7 +181,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.collectionItems, snackbarMessage = event.errorMessage))
+            next(state.copy(loadingMore = false, items = state.collectionItems, snackbarState = SnackbarState.Message(event.errorMessage)))
         }
 
         RefreshEvent -> {
@@ -192,7 +193,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = event.errorMessage))
+            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(event.errorMessage)))
         }
 
         RetryClickEvent -> {
@@ -200,7 +201,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is SessionChangedEvent -> {

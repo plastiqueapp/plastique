@@ -3,6 +3,7 @@ package io.plastique.comments.list
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
+import io.plastique.core.snackbar.SnackbarState
 
 data class CommentListViewState(
     val threadId: CommentThreadId,
@@ -14,7 +15,7 @@ data class CommentListViewState(
     val commentItems: List<ListItem> = emptyList(),
     val replyComment: CommentUiModel? = null,
     val commentDraft: String = "",
-    val snackbarMessage: String? = null,
+    val snackbarState: SnackbarState = SnackbarState.None,
 
     val signedIn: Boolean = false,
     val hasMore: Boolean = false,
@@ -38,7 +39,7 @@ data class CommentListViewState(
                 "commentItems=${commentItems.size}, " +
                 "replyComment=$replyComment, " +
                 "commentDraft='$commentDraft', " +
-                "snackbarMessage='$snackbarMessage', " +
+                "snackbarState=$snackbarState, " +
                 "signedIn=$signedIn, " +
                 "hasMore=$hasMore, " +
                 "loadingMore=$loadingMore, " +

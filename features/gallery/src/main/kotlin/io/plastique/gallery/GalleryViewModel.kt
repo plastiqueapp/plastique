@@ -16,6 +16,7 @@ import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.gallery.GalleryEffect.LoadEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
@@ -180,7 +181,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.galleryItems, snackbarMessage = errorMessageProvider.getErrorMessage(event.error)))
+            next(state.copy(loadingMore = false, items = state.galleryItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -192,7 +193,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error)))
+            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RetryClickEvent -> {
@@ -200,7 +201,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is SessionChangedEvent -> {

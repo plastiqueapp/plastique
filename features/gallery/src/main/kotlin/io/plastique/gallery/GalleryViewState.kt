@@ -2,6 +2,7 @@ package io.plastique.gallery
 
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
+import io.plastique.core.snackbar.SnackbarState
 
 data class GalleryViewState(
     val params: FolderLoadParams,
@@ -10,7 +11,7 @@ data class GalleryViewState(
     val signInNeeded: Boolean,
     val items: List<ListItem> = emptyList(),
     val galleryItems: List<ListItem> = emptyList(),
-    val snackbarMessage: String? = null,
+    val snackbarState: SnackbarState = SnackbarState.None,
 
     val hasMore: Boolean = false,
     val loadingMore: Boolean = false,
@@ -29,7 +30,7 @@ data class GalleryViewState(
                 "signInNeeded=$signInNeeded, " +
                 "items=${items.size}, " +
                 "galleryItems=${galleryItems.size}, " +
-                "snackbarMessage=$snackbarMessage, " +
+                "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
                 "loadingMore=$loadingMore, " +
                 "refreshing=$refreshing" +

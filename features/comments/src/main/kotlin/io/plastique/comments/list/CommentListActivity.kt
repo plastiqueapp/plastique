@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.CommentsNavigator
@@ -33,6 +32,7 @@ import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.snackbar.SnackbarController
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -44,6 +44,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
     private lateinit var composeView: ComposeCommentView
     private lateinit var adapter: CommentsAdapter
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
     @Inject lateinit var navigator: CommentsNavigator
 
@@ -73,6 +74,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         contentViewController = ContentViewController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(refreshLayout)
 
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
@@ -164,11 +166,10 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged(CommentListViewState::snackbarMessage)
-                .filter { state -> state.snackbarMessage != null }
+                .distinctUntilChanged { state -> state.snackbarState }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
-                    Snackbar.make(commentsView, state.snackbarMessage!!, Snackbar.LENGTH_LONG).show()
+                    snackbarController.showSnackbar(state.snackbarState)
                     viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()

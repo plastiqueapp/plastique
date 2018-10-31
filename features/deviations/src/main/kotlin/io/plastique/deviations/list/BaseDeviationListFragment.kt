@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
@@ -25,6 +24,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.R
@@ -50,6 +50,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private lateinit var emptyView: EmptyView
 
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: DeviationsAdapter
     private lateinit var onScrollListener: EndlessScrollListener
 
@@ -74,6 +75,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
         contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(refreshView)
 
         refreshView.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
     }
@@ -170,11 +172,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged(DeviationListViewState::snackbarMessage)
-                .filter { state -> state.snackbarMessage != null }
+                .distinctUntilChanged { state -> state.snackbarState }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
-                    Snackbar.make(refreshView, state.snackbarMessage!!, Snackbar.LENGTH_SHORT).show()
+                    snackbarController.showSnackbar(state.snackbarState)
                     viewModel.dispatch(SnackbarShown)
                 }
                 .disposeOnDestroy()

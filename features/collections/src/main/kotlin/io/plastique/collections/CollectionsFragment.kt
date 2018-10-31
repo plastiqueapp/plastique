@@ -12,7 +12,6 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.collections.CollectionsEvent.CreateFolderEvent
 import io.plastique.collections.CollectionsEvent.DeleteFolderEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreEvent
@@ -36,6 +35,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
@@ -49,6 +49,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
     private lateinit var adapter: CollectionsAdapter
     private lateinit var collectionsView: RecyclerView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var state: CollectionsViewState
 
@@ -119,7 +120,9 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 viewModel.dispatch(RetryClickEvent)
             }
         })
+
         contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(refreshLayout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -188,11 +191,10 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged { state -> state.snackbarMessage }
-                .filter { state -> state.snackbarMessage != null }
+                .distinctUntilChanged { state -> state.snackbarState }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
-                    Snackbar.make(refreshLayout, state.snackbarMessage!!, Snackbar.LENGTH_LONG).show()
+                    snackbarController.showSnackbar(state.snackbarState)
                     viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()

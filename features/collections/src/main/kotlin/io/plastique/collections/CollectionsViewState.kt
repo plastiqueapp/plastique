@@ -2,6 +2,7 @@ package io.plastique.collections
 
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
+import io.plastique.core.snackbar.SnackbarState
 
 data class CollectionsViewState(
     val params: FolderLoadParams,
@@ -11,7 +12,7 @@ data class CollectionsViewState(
 
     val collectionItems: List<ListItem> = emptyList(),
     val items: List<ListItem> = emptyList(),
-    val snackbarMessage: String? = null,
+    val snackbarState: SnackbarState = SnackbarState.None,
 
     val hasMore: Boolean = false,
     val loadingMore: Boolean = false,
@@ -30,7 +31,7 @@ data class CollectionsViewState(
                 "signInNeeded=$signInNeeded, " +
                 "collectionItems=${collectionItems.size}, " +
                 "items=${items.size}, " +
-                "snackbarMessage=$snackbarMessage, " +
+                "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
                 "loadingMore=$loadingMore, " +
                 "refreshing=$refreshing" +

@@ -17,6 +17,7 @@ import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.HtmlCompat
 import io.plastique.util.NetworkConnectionState
@@ -184,7 +185,7 @@ class WatcherListStateReducer @Inject constructor(
             next(state.copy(
                     loadingMore = false,
                     items = state.watcherItems,
-                    snackbarMessage = errorMessageProvider.getErrorMessage(event.error)))
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -196,11 +197,11 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error)))
+            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is ConnectionStateChangedEvent -> {

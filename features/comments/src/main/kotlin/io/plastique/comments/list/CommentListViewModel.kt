@@ -44,6 +44,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.NetworkConnectionState
@@ -208,7 +209,10 @@ class CommentListStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.commentItems, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error)))
+            next(state.copy(
+                    loadingMore = false,
+                    items = state.commentItems,
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error))))
         }
 
         RefreshEvent -> {
@@ -220,7 +224,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error)))
+            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error))))
         }
 
         is PostCommentEvent -> {
@@ -233,7 +237,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         is PostCommentErrorEvent -> {
-            next(state.copy(postingComment = false, snackbarMessage = errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error)))
+            next(state.copy(postingComment = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error))))
         }
 
         is ReplyClickEvent -> {
@@ -276,7 +280,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarMessage = null))
+            next(state.copy(snackbarState = SnackbarState.None))
         }
     }
 
