@@ -24,14 +24,14 @@ data class GalleryViewState(
 
     override fun toString(): String {
         return "GalleryViewState(" +
-                "params=$params," +
-                "contentState=$contentState," +
-                "signInNeeded=$signInNeeded," +
-                "items=${items.size}," +
-                "galleryItems=${galleryItems.size}," +
-                "snackbarMessage=$snackbarMessage," +
-                "hasMore=$hasMore," +
-                "loadingMore=$loadingMore," +
+                "params=$params, " +
+                "contentState=$contentState, " +
+                "signInNeeded=$signInNeeded, " +
+                "items=${items.size}, " +
+                "galleryItems=${galleryItems.size}, " +
+                "snackbarMessage=$snackbarMessage, " +
+                "hasMore=$hasMore, " +
+                "loadingMore=$loadingMore, " +
                 "refreshing=$refreshing" +
                 ")"
     }

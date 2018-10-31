@@ -25,14 +25,14 @@ data class CollectionsViewState(
 
     override fun toString(): String {
         return "CollectionsViewState(" +
-                "params=$params," +
-                "contentState=$contentState," +
-                "signInNeeded=$signInNeeded," +
-                "collectionItems=${collectionItems.size}," +
-                "items=${items.size}," +
-                "snackbarMessage=$snackbarMessage," +
-                "hasMore=$hasMore," +
-                "loadingMore=$loadingMore," +
+                "params=$params, " +
+                "contentState=$contentState, " +
+                "signInNeeded=$signInNeeded, " +
+                "collectionItems=${collectionItems.size}, " +
+                "items=${items.size}, " +
+                "snackbarMessage=$snackbarMessage, " +
+                "hasMore=$hasMore, " +
+                "loadingMore=$loadingMore, " +
                 "refreshing=$refreshing" +
                 ")"
     }
