@@ -19,6 +19,7 @@ dependencies {
     implementation "com.google.firebase:firebase-config:$versions.firebase.config"
     api "com.jakewharton.timber:timber:$versions.timber"
     api "com.squareup.moshi:moshi:$versions.moshi"
+    api "com.squareup.moshi:moshi-adapters:$versions.moshi"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 
