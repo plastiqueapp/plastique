@@ -1,6 +1,7 @@
 # Plastique
+[![CircleCI](https://circleci.com/gh/plastiqueapp/plastique.svg?style=svg&circle-token=7d60ca7b56d6385cc628847c599e0c3db42728f8)](https://circleci.com/gh/plastiqueapp/plastique)
 
-Plastique in an open-source app for [DeviantArt](https://www.deviantart.com).
+Plastique in a work-in-progress open-source app for [DeviantArt](https://www.deviantart.com).
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />](https://play.google.com/store/apps/details?id=io.plastique.android&utm_source=github)
 
