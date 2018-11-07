@@ -32,7 +32,6 @@ ext.versions = [
         moshi                : "1.8.0-SNAPSHOT",
         leakCanary           : "1.6.2",
         adapterDelegates     : "4.0.0",
-        bottomNavigation     : "2.0.2",
         foregroundViews      : "2.5.0",
         crashlytics          : "2.9.6",
         permissionsDispatcher: "4.0.0",

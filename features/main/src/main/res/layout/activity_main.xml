@@ -35,11 +35,15 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <it.sephiroth.android.library.bottomnavigation.BottomNavigation
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/Widget.Design.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:bbn_entries="@menu/main_bottom"
-        app:layout_behavior="@string/bbn_phone_view_behavior" />
+        android:background="?colorPrimary"
+        app:itemIconTint="@color/bottom_navigation_tint"
+        app:itemTextColor="@color/bottom_navigation_tint"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:menu="@menu/main_bottom" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

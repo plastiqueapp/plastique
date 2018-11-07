@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.collections.CollectionsFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmActivity
@@ -22,10 +22,9 @@ import io.plastique.inject.getComponent
 import io.plastique.notifications.NotificationsFragment
 import io.plastique.profile.ProfileFragment
 import io.plastique.util.DragDisabledCallback
-import it.sephiroth.android.library.bottomnavigation.BottomNavigation
 import javax.inject.Inject
 
-class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemSelectionListener {
+class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     @Inject lateinit var navigator: MainNavigator
 
@@ -50,8 +49,9 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemS
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
-        val bottomNavigation = findViewById<BottomNavigation>(R.id.bottom_navigation)
-        bottomNavigation.setOnMenuItemClickListener(this)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        bottomNavigationView.setOnNavigationItemReselectedListener(this)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -88,9 +88,9 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemS
         else -> false
     }
 
-    override fun onMenuItemSelect(@IdRes itemId: Int, position: Int, fromUser: Boolean) {
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val ft = supportFragmentManager.beginTransaction()
-        when (itemId) {
+        when (item.itemId) {
             R.id.main_tab_browse -> ft.replace(R.id.tab_content, BrowseDeviationsFragment())
             R.id.main_tab_collections -> ft.replace(R.id.tab_content, CollectionsFragment.newInstance())
             R.id.main_tab_profile -> ft.replace(R.id.tab_content, ProfileFragment())
@@ -98,9 +98,10 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigation.OnMenuItemS
             R.id.main_tab_notifications -> ft.replace(R.id.tab_content, NotificationsFragment())
         }
         ft.commit()
+        return true
     }
 
-    override fun onMenuItemReselect(@IdRes itemId: Int, position: Int, fromUser: Boolean) {
+    override fun onNavigationItemReselected(item: MenuItem) {
         val fragment = supportFragmentManager.findFragmentById(R.id.tab_content)
         if (fragment is ScrollableToTop) {
             fragment.scrollToTop()

@@ -12,6 +12,4 @@ dependencies {
     implementation project(":features:gallery")
     implementation project(":features:notifications")
     implementation project(":features:profile")
-
-    api "it.sephiroth.android.library.bottomnavigation:bottom-navigation:$versions.bottomNavigation"
 }
