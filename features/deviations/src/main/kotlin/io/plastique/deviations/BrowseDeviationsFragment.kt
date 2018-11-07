@@ -30,7 +30,7 @@ import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.SimpleOnTabSelectedListener
 
-class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), MainPage, TagManagerProvider {
+class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), MainPage, ScrollableToTop, TagManagerProvider {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     private lateinit var tagsView: TagsView
     private lateinit var pager: ViewPager
@@ -120,6 +120,13 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
                 }
             }
         })
+    }
+
+    override fun scrollToTop() {
+        val currentFragment = pagerAdapter.getFragmentAtPosition(pager.currentItem)
+        if (currentFragment is ScrollableToTop) {
+            currentFragment.scrollToTop()
+        }
     }
 
     override val tagManager: TagManager get() = tagsView
