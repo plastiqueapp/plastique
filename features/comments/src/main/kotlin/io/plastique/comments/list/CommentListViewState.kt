@@ -17,10 +17,10 @@ data class CommentListViewState(
     val commentDraft: String = "",
     val snackbarState: SnackbarState = SnackbarState.None,
 
-    val signedIn: Boolean = false,
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false,
+    val isSignedIn: Boolean = false,
     val postingComment: Boolean = false
 ) {
     val isPagingEnabled: Boolean
@@ -40,10 +40,10 @@ data class CommentListViewState(
                 "replyComment=$replyComment, " +
                 "commentDraft='$commentDraft', " +
                 "snackbarState=$snackbarState, " +
-                "signedIn=$signedIn, " +
                 "hasMore=$hasMore, " +
                 "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing, " +
+                "isSignedIn=$isSignedIn, " +
                 "postingComment=$postingComment" +
                 ")"
     }

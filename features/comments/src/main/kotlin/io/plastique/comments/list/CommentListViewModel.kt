@@ -77,7 +77,7 @@ class CommentListViewModel @Inject constructor(
         val initialState = CommentListViewState(
                 threadId = threadId,
                 contentState = ContentState.Loading,
-                signedIn = sessionManager.session is Session.User)
+                isSignedIn = sessionManager.session is Session.User)
 
         state = loop.loop(initialState, LoadTitleEffect(threadId), LoadCommentsEffect(threadId)).disposeOnDestroy()
     }
@@ -170,7 +170,7 @@ class CommentListStateReducer @Inject constructor(
 ) : Reducer<CommentListEvent, CommentListViewState, CommentListEffect> {
     override fun invoke(state: CommentListViewState, event: CommentListEvent): Next<CommentListViewState, CommentListEffect> = when (event) {
         is CommentsChangedEvent -> {
-            val commentItems = createItems(event.comments, state.signedIn)
+            val commentItems = createItems(event.comments, state.isSignedIn)
             val contentState = if (commentItems.isEmpty()) {
                 ContentState.Empty(EmptyState(message = resourceProvider.getString(R.string.comments_message_empty)))
             } else {
@@ -266,11 +266,11 @@ class CommentListStateReducer @Inject constructor(
         }
 
         is SessionChangedEvent -> {
-            val signedIn = event.session is Session.User
-            if (state.signedIn != signedIn) {
-                val items = createItems(state.comments, signedIn)
+            val isSignedIn = event.session is Session.User
+            if (state.isSignedIn != isSignedIn) {
+                val items = createItems(state.comments, isSignedIn)
                 next(state.copy(
-                        signedIn = signedIn,
+                        isSignedIn = isSignedIn,
                         commentItems = items,
                         items = mergeItems(items, state.isLoadingMore),
                         replyComment = null))

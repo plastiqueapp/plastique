@@ -125,11 +125,10 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .map { state -> state.signedIn }
-                .distinctUntilChanged()
+                .distinctUntilChanged { state -> state.isSignedIn }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { signedIn ->
-                    if (signedIn) {
+                .subscribe { state ->
+                    if (state.isSignedIn) {
                         composeView.showCompose()
                     } else {
                         composeView.showSignIn()

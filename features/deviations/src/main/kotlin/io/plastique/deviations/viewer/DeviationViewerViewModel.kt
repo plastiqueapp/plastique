@@ -55,7 +55,7 @@ class DeviationViewerViewModel @Inject constructor(
         val initialState = DeviationViewerViewState(
                 deviationId = deviationId,
                 contentState = ContentState.Loading,
-                signedIn = sessionManager.session is Session.User)
+                isSignedIn = sessionManager.session is Session.User)
 
         state = loop.loop(initialState, LoadDeviationEffect(deviationId)).disposeOnDestroy()
     }
@@ -102,7 +102,7 @@ class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewe
         is DeviationLoadedEvent -> {
             val menuState = MenuState(
                     showDownload = event.deviation.properties.isDownloadable,
-                    showFavorite = state.signedIn,
+                    showFavorite = state.isSignedIn,
                     isFavoriteChecked = event.deviation.properties.isFavorite)
 
             next(state.copy(
@@ -132,10 +132,10 @@ class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewe
         }
 
         is SessionChangedEvent -> {
-            val signedIn = event.session is Session.User
+            val isSignedIn = event.session is Session.User
             next(state.copy(
-                    signedIn = signedIn,
-                    menuState = state.menuState.copy(showFavorite = signedIn)))
+                    isSignedIn = isSignedIn,
+                    menuState = state.menuState.copy(showFavorite = isSignedIn)))
         }
     }
 }

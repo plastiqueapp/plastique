@@ -8,7 +8,7 @@ data class DeviationViewerViewState(
     val deviationId: String,
 
     val contentState: ContentState,
-    val signedIn: Boolean,
+    val isSignedIn: Boolean,
     val menuState: MenuState = MenuState(),
     val deviation: Deviation? = null,
     val snackbarState: SnackbarState = SnackbarState.None
