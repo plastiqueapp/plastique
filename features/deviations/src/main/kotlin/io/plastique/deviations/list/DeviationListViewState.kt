@@ -17,11 +17,11 @@ data class DeviationListViewState(
     val layoutMode: LayoutMode,
 
     val hasMore: Boolean = false,
-    val loadingMore: Boolean = false,
+    val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false
 ) {
     val pagingEnabled: Boolean
-        get() = contentState === ContentState.Content && hasMore && !loadingMore && !isRefreshing
+        get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     override fun toString(): String {
         return "DeviationListViewState(" +
@@ -31,7 +31,7 @@ data class DeviationListViewState(
                 "deviationItems=${deviationItems.size}, " +
                 "tags=${tags.size}, " +
                 "hasMore=$hasMore, " +
-                "loadingMore=$loadingMore, " +
+                "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing, " +
                 "snackbarState=$snackbarState, " +
                 "layoutMode=$layoutMode" +

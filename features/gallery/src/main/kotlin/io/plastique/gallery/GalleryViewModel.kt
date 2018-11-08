@@ -150,7 +150,7 @@ class GalleryStateReducer @Inject constructor(
             }
             next(state.copy(
                     contentState = contentState,
-                    items = if (state.loadingMore) event.items + LoadingIndicatorItem else event.items,
+                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                     galleryItems = event.items,
                     hasMore = event.hasMore))
         }
@@ -169,19 +169,19 @@ class GalleryStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
-                next(state.copy(loadingMore = true, items = state.galleryItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+                next(state.copy(isLoadingMore = true, items = state.galleryItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)
             }
         }
 
         LoadMoreFinishedEvent -> {
-            next(state.copy(loadingMore = false))
+            next(state.copy(isLoadingMore = false))
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(loadingMore = false, items = state.galleryItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isLoadingMore = false, items = state.galleryItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {

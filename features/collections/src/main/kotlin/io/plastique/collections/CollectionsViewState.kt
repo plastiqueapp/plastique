@@ -15,11 +15,11 @@ data class CollectionsViewState(
     val snackbarState: SnackbarState = SnackbarState.None,
 
     val hasMore: Boolean = false,
-    val loadingMore: Boolean = false,
+    val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false
 ) {
     val pagingEnabled: Boolean
-        get() = contentState === ContentState.Content && hasMore && !loadingMore && !isRefreshing
+        get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     val showMenu: Boolean
         get() = params.username == null && contentState == ContentState.Content
@@ -33,7 +33,7 @@ data class CollectionsViewState(
                 "items=${items.size}, " +
                 "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
-                "loadingMore=$loadingMore, " +
+                "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing" +
                 ")"
     }

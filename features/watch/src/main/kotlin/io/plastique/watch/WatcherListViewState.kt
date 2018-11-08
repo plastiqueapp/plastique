@@ -14,11 +14,11 @@ data class WatcherListViewState(
     val snackbarState: SnackbarState = SnackbarState.None,
 
     val hasMore: Boolean = false,
-    val loadingMore: Boolean = false,
+    val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false
 ) {
     val pagingEnabled: Boolean
-        get() = contentState === ContentState.Content && hasMore && !loadingMore && !isRefreshing
+        get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     override fun toString(): String {
         return "WatcherListViewState(" +
@@ -29,7 +29,7 @@ data class WatcherListViewState(
                 "signInNeeded=$signInNeeded, " +
                 "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
-                "loadingMore=$loadingMore, " +
+                "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing" +
                 ")"
     }

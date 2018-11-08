@@ -181,7 +181,7 @@ class CommentListStateReducer @Inject constructor(
                     comments = event.comments,
                     hasMore = event.hasMore,
                     commentItems = commentItems,
-                    items = mergeItems(commentItems, state.loadingMore)))
+                    items = mergeItems(commentItems, state.isLoadingMore)))
         }
 
         is LoadErrorEvent -> {
@@ -197,20 +197,20 @@ class CommentListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
-                next(state.copy(loadingMore = true, items = mergeItems(state.commentItems, true)), LoadMoreEffect)
+            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+                next(state.copy(isLoadingMore = true, items = mergeItems(state.commentItems, true)), LoadMoreEffect)
             } else {
                 next(state)
             }
         }
 
         LoadMoreFinishedEvent -> {
-            next(state.copy(loadingMore = false))
+            next(state.copy(isLoadingMore = false))
         }
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                    loadingMore = false,
+                    isLoadingMore = false,
                     items = state.commentItems,
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error))))
         }
@@ -272,7 +272,7 @@ class CommentListStateReducer @Inject constructor(
                 next(state.copy(
                         signedIn = signedIn,
                         commentItems = items,
-                        items = mergeItems(items, state.loadingMore),
+                        items = mergeItems(items, state.isLoadingMore),
                         replyComment = null))
             } else {
                 next(state)
@@ -288,7 +288,7 @@ class CommentListStateReducer @Inject constructor(
         return comments.map { CommentItem(it, showReplyButton) }
     }
 
-    private fun mergeItems(commentItems: List<ListItem>, loadingMore: Boolean): List<ListItem> {
-        return if (loadingMore) commentItems + LoadingIndicatorItem else commentItems
+    private fun mergeItems(commentItems: List<ListItem>, isLoadingMore: Boolean): List<ListItem> {
+        return if (isLoadingMore) commentItems + LoadingIndicatorItem else commentItems
     }
 }
