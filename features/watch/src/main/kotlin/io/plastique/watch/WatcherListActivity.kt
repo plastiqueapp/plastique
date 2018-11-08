@@ -111,10 +111,9 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .map { state -> state.refreshing }
-                .distinctUntilChanged()
+                .distinctUntilChanged { state -> state.isRefreshing }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { refreshing -> refreshLayout.isRefreshing = refreshing }
+                .subscribe { state -> refreshLayout.isRefreshing = state.isRefreshing }
                 .disposeOnDestroy()
 
         viewModel.state

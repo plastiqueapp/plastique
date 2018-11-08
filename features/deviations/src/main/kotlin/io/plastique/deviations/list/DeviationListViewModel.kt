@@ -194,15 +194,15 @@ class DeviationListStateReducer @Inject constructor(
         }
 
         RefreshEvent -> {
-            next(state.copy(refreshing = true), RefreshEffect)
+            next(state.copy(isRefreshing = true), RefreshEffect)
         }
 
         RefreshFinishedEvent -> {
-            next(state.copy(refreshing = false))
+            next(state.copy(isRefreshing = false))
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
         }
 
         is ParamsChangedEvent -> {

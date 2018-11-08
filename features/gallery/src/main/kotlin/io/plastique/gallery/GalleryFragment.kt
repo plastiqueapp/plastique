@@ -184,9 +184,9 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged { state -> state.refreshing }
+                .distinctUntilChanged { state -> state.isRefreshing }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> refreshLayout.isRefreshing = state.refreshing }
+                .subscribe { state -> refreshLayout.isRefreshing = state.isRefreshing }
                 .disposeOnDestroy()
 
         viewModel.state

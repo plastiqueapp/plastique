@@ -185,15 +185,15 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         RefreshEvent -> {
-            next(state.copy(refreshing = true), RefreshEffect)
+            next(state.copy(isRefreshing = true), RefreshEffect)
         }
 
         RefreshFinishedEvent -> {
-            next(state.copy(refreshing = false))
+            next(state.copy(isRefreshing = false))
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(event.errorMessage)))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(event.errorMessage)))
         }
 
         RetryClickEvent -> {

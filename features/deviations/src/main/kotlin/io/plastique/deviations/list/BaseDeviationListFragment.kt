@@ -47,7 +47,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         ScrollableToTop {
 
     private lateinit var deviationsView: RecyclerView
-    private lateinit var refreshView: SwipeRefreshLayout
+    private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
 
     private lateinit var contentViewController: ContentViewController
@@ -71,14 +71,14 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         deviationsView = view.findViewById(R.id.deviations)
-        refreshView = view.findViewById(R.id.refresh)
+        refreshLayout = view.findViewById(R.id.refresh)
+        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
-        contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        snackbarController = SnackbarController(refreshView)
 
-        refreshView.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(refreshLayout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -139,10 +139,9 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 .disposeOnDestroy()
 
         viewModel.state
-                .map { state -> state.refreshing }
-                .distinctUntilChanged()
+                .distinctUntilChanged { state -> state.isRefreshing }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { refreshing -> refreshView.isRefreshing = refreshing }
+                .subscribe { state -> refreshLayout.isRefreshing = state.isRefreshing }
                 .disposeOnDestroy()
 
         viewModel.state
