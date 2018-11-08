@@ -100,17 +100,9 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
         expandableToolbarLayout = parent
 
-        val tabsView = TabLayout(parent.context)
-        tabsView.id = R.id.browse_tabs
-        tabsView.tabMode = TabLayout.MODE_SCROLLABLE
-        tabsView.layoutParams = ExpandableToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-        parent.addView(tabsView)
+        View.inflate(parent.context, R.layout.inc_browse_appbar, parent)
 
-        tagsView = TagsView(parent.context)
-        tagsView.id = R.id.browse_tags
-        tagsView.layoutParams = ExpandableToolbarLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        parent.addView(tagsView)
-
+        val tabsView = parent.findViewById<TabLayout>(R.id.browse_tabs)
         tabsView.setupWithViewPager(pager)
         tabsView.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -120,6 +112,8 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
                 }
             }
         })
+
+        tagsView = parent.findViewById(R.id.browse_tags)
     }
 
     override fun scrollToTop() {
