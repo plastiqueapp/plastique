@@ -21,7 +21,7 @@ data class CommentListViewState(
     val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false,
     val isSignedIn: Boolean = false,
-    val postingComment: Boolean = false
+    val isPostingComment: Boolean = false
 ) {
     val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
@@ -44,7 +44,7 @@ data class CommentListViewState(
                 "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing, " +
                 "isSignedIn=$isSignedIn, " +
-                "postingComment=$postingComment" +
+                "isPostingComment=$isPostingComment" +
                 ")"
     }
 }

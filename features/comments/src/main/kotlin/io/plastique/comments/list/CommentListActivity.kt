@@ -144,10 +144,9 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .map { state -> state.postingComment }
-                .distinctUntilChanged()
+                .distinctUntilChanged { state -> state.isPostingComment }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { postingComment -> composeView.setPosting(postingComment) }
+                .subscribe { state -> composeView.setPosting(state.isPostingComment) }
                 .disposeOnDestroy()
 
         viewModel.state

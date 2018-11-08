@@ -228,16 +228,16 @@ class CommentListStateReducer @Inject constructor(
         }
 
         is PostCommentEvent -> {
-            next(state.copy(postingComment = true, commentDraft = event.text),
+            next(state.copy(isPostingComment = true, commentDraft = event.text),
                     PostCommentEffect(threadId = state.threadId, text = event.text, parentCommentId = state.replyComment?.id))
         }
 
         CommentPostedEvent -> {
-            next(state.copy(postingComment = false, commentDraft = ""))
+            next(state.copy(isPostingComment = false, commentDraft = ""))
         }
 
         is PostCommentErrorEvent -> {
-            next(state.copy(postingComment = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error))))
+            next(state.copy(isPostingComment = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error))))
         }
 
         is ReplyClickEvent -> {
