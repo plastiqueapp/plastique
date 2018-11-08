@@ -23,7 +23,7 @@ data class CommentListViewState(
     val isRefreshing: Boolean = false,
     val postingComment: Boolean = false
 ) {
-    val pagingEnabled: Boolean
+    val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     val showCompose: Boolean

@@ -17,7 +17,7 @@ data class WatcherListViewState(
     val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false
 ) {
-    val pagingEnabled: Boolean
+    val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     override fun toString(): String {

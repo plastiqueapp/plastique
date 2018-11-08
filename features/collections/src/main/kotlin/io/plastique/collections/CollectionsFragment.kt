@@ -180,9 +180,9 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged { state -> state.pagingEnabled }
+                .distinctUntilChanged { state -> state.isPagingEnabled }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> onScrollListener.isEnabled = state.pagingEnabled }
+                .subscribe { state -> onScrollListener.isEnabled = state.isPagingEnabled }
                 .disposeOnDestroy()
 
         viewModel.state
