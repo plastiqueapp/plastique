@@ -79,11 +79,11 @@ class CategoryListStateReducer @Inject constructor(
         is ItemClickEvent -> {
             if (event.item.parent || !event.item.category.hasChildren) {
                 next(state.copy(selectedCategory = event.item.category))
-            } else if (!state.expanding) {
+            } else if (!state.isExpanding) {
                 val items = state.items.replaceIf(
                         { item -> item.category == event.item.category },
                         { item -> item.copy(loading = true, startLoadingTimestamp = SystemClock.elapsedRealtime()) })
-                next(state.copy(expanding = true, items = items), LoadCategoryEffect(event.item.category))
+                next(state.copy(isExpanding = true, items = items), LoadCategoryEffect(event.item.category))
             } else {
                 next(state)
             }
@@ -107,7 +107,7 @@ class CategoryListStateReducer @Inject constructor(
             next(state.copy(
                     contentState = ContentState.Content,
                     parent = event.category,
-                    expanding = false,
+                    isExpanding = false,
                     breadcrumbs = createBreadcrumbs(event.category),
                     items = createItems(event.category, event.subcategories)))
         }
@@ -120,7 +120,7 @@ class CategoryListStateReducer @Inject constructor(
                         { item -> item.category == event.category },
                         { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
                 next(state.copy(items = items,
-                        expanding = false,
+                        isExpanding = false,
                         snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.deviations_categories_load_error))))
             }
         }

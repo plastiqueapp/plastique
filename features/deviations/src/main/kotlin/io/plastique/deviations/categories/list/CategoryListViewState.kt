@@ -10,7 +10,7 @@ data class CategoryListViewState(
     val parent: Category,
     val items: List<CategoryItem> = emptyList(),
     val breadcrumbs: List<Breadcrumb> = emptyList(),
-    val expanding: Boolean = false,
+    val isExpanding: Boolean = false,
     val snackbarState: SnackbarState = SnackbarState.None,
     val selectedCategory: Category? = null
 ) {
@@ -20,7 +20,7 @@ data class CategoryListViewState(
                 "parent=${parent.path}, " +
                 "items=${items.size}, " +
                 "breadcrumbs=${breadcrumbs.size}, " +
-                "expanding=$expanding, " +
+                "isExpanding=$isExpanding, " +
                 "snackbarState=$snackbarState, " +
                 "selectedCategory=$selectedCategory" +
                 ")"
