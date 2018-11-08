@@ -9,5 +9,5 @@ sealed class UserProfileEvent : Event() {
 
     object RetryClickEvent : UserProfileEvent()
     object CopyProfileLinkClickEvent : UserProfileEvent()
-    object LinkCopiedMessageShownEvent : UserProfileEvent()
+    object SnackbarShownEvent : UserProfileEvent()
 }

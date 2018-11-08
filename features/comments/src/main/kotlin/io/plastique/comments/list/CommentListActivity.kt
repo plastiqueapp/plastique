@@ -33,6 +33,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -167,6 +168,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
 
         viewModel.state
                 .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
                     snackbarController.showSnackbar(state.snackbarState)

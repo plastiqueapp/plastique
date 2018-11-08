@@ -8,18 +8,19 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
-import io.plastique.users.UserProfileEvent.LinkCopiedMessageShownEvent
 import io.plastique.users.UserProfileEvent.RetryClickEvent
+import io.plastique.users.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -29,6 +30,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var realNameView: TextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     @Inject lateinit var navigator: UsersNavigator
 
     private var showMenu: Boolean = false
@@ -53,6 +55,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         realNameView = findViewById(R.id.user_real_name)
 
         contentViewController = ContentViewController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(rootView)
 
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
@@ -100,12 +103,12 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .distinctUntilChanged { state -> state.showLinkCopiedMessage }
-                .filter { state -> state.showLinkCopiedMessage }
+                .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
-                    viewModel.dispatch(LinkCopiedMessageShownEvent)
+                .subscribe { state ->
+                    snackbarController.showSnackbar(state.snackbarState)
+                    viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()
     }

@@ -3,6 +3,7 @@ package io.plastique.deviations.categories.list
 import android.os.SystemClock
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
+import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
@@ -12,15 +13,17 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.core.snackbar.SnackbarState
+import io.plastique.deviations.R
 import io.plastique.deviations.categories.Category
 import io.plastique.deviations.categories.CategoryRepository
 import io.plastique.deviations.categories.list.CategoryListEffect.LoadCategoryEffect
 import io.plastique.deviations.categories.list.CategoryListEvent.BreadcrumbClickEvent
-import io.plastique.deviations.categories.list.CategoryListEvent.ErrorShownEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.ItemClickEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.LoadCategoryErrorEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.LoadCategoryFinishEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.RetryClickEvent
+import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEvent
 import io.plastique.inject.scopes.ActivityScope
 import io.reactivex.Observable
 import timber.log.Timber
@@ -69,7 +72,9 @@ class CategoryListViewModel @Inject constructor(
     }
 }
 
-class CategoryListStateReducer @Inject constructor() : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
+class CategoryListStateReducer @Inject constructor(
+    private val resourceProvider: ResourceProvider
+) : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
     override fun invoke(state: CategoryListViewState, event: CategoryListEvent): Next<CategoryListViewState, CategoryListEffect> = when (event) {
         is ItemClickEvent -> {
             if (event.item.parent || !event.item.category.hasChildren) {
@@ -98,14 +103,6 @@ class CategoryListStateReducer @Inject constructor() : Reducer<CategoryListEvent
             }
         }
 
-        RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadCategoryEffect(state.parent))
-        }
-
-        ErrorShownEvent -> {
-            next(state.copy(expandCategoryError = false))
-        }
-
         is LoadCategoryFinishEvent -> {
             next(state.copy(
                     contentState = ContentState.Content,
@@ -122,8 +119,18 @@ class CategoryListStateReducer @Inject constructor() : Reducer<CategoryListEvent
                 val items = state.items.replaceIf(
                         { item -> item.category == event.category },
                         { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
-                next(state.copy(items = items, expanding = false, expandCategoryError = true))
+                next(state.copy(items = items,
+                        expanding = false,
+                        snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.deviations_categories_load_error))))
             }
+        }
+
+        RetryClickEvent -> {
+            next(state.copy(contentState = ContentState.Loading), LoadCategoryEffect(state.parent))
+        }
+
+        SnackbarShownEvent -> {
+            next(state.copy(snackbarState = SnackbarState.None))
         }
     }
 }

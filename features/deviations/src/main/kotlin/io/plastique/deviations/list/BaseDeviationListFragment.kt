@@ -25,6 +25,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.R
@@ -32,7 +33,7 @@ import io.plastique.deviations.list.DeviationListEvent.LoadMoreEvent
 import io.plastique.deviations.list.DeviationListEvent.ParamsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
 import io.plastique.deviations.list.DeviationListEvent.RetryClickEvent
-import io.plastique.deviations.list.DeviationListEvent.SnackbarShown
+import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
 import io.plastique.deviations.tags.OnTagClickListener
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
@@ -173,10 +174,11 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         viewModel.state
                 .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
                     snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShown)
+                    viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()
 

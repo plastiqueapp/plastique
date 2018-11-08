@@ -9,9 +9,6 @@ sealed class CategoryListEvent : Event() {
     data class ItemClickEvent(val item: CategoryItem) : CategoryListEvent()
     data class BreadcrumbClickEvent(val breadcrumb: Breadcrumb) : CategoryListEvent()
 
-    object RetryClickEvent : CategoryListEvent()
-    object ErrorShownEvent : CategoryListEvent()
-
     data class LoadCategoryFinishEvent(val category: Category, val subcategories: List<Category>) : CategoryListEvent() {
         override fun toString(): String =
                 "LoadCategoryFinishEvent(category=$category, subcategories=${subcategories.size})"
@@ -21,4 +18,7 @@ sealed class CategoryListEvent : Event() {
         val category: Category,
         val emptyState: EmptyState
     ) : CategoryListEvent()
+
+    object RetryClickEvent : CategoryListEvent()
+    object SnackbarShownEvent : CategoryListEvent()
 }

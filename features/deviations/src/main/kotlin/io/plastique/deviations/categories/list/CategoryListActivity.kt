@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.core.MvvmActivity
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
@@ -15,13 +14,15 @@ import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.ListItemDiffTransformer
+import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.R
 import io.plastique.deviations.categories.Category
 import io.plastique.deviations.categories.list.CategoryListEvent.BreadcrumbClickEvent
-import io.plastique.deviations.categories.list.CategoryListEvent.ErrorShownEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.ItemClickEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.RetryClickEvent
+import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEvent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
@@ -30,6 +31,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     private lateinit var breadcrumbsView: BreadcrumbsView
     private lateinit var emptyView: EmptyView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: CategoriesAdapter
 
     private val parentCategory: Category
@@ -52,6 +54,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         categoriesView.adapter = adapter
 
         contentViewController = ContentViewController(this, R.id.categories, android.R.id.progress, android.R.id.empty)
+        snackbarController = SnackbarController(categoriesView)
 
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
@@ -100,11 +103,12 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
                 .disposeOnDestroy()
 
         viewModel.state
-                .filter { state -> state.contentState === ContentState.Content && state.expandCategoryError }
+                .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Snackbar.make(categoriesView, R.string.deviations_categories_load_error, Snackbar.LENGTH_LONG).show()
-                    viewModel.dispatch(ErrorShownEvent)
+                .subscribe { state ->
+                    snackbarController.showSnackbar(state.snackbarState)
+                    viewModel.dispatch(SnackbarShownEvent)
                 }
                 .disposeOnDestroy()
 

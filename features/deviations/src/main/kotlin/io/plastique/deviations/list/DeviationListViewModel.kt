@@ -41,7 +41,7 @@ import io.plastique.deviations.list.DeviationListEvent.RefreshFinishedEvent
 import io.plastique.deviations.list.DeviationListEvent.RetryClickEvent
 import io.plastique.deviations.list.DeviationListEvent.ShowLiteratureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
-import io.plastique.deviations.list.DeviationListEvent.SnackbarShown
+import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
 import io.plastique.inject.scopes.FragmentScope
@@ -221,7 +221,7 @@ class DeviationListStateReducer @Inject constructor(
             next(state.copy(layoutMode = event.layoutMode))
         }
 
-        SnackbarShown -> {
+        SnackbarShownEvent -> {
             next(state.copy(snackbarState = SnackbarState.None))
         }
 

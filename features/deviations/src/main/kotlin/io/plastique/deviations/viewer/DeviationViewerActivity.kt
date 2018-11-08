@@ -24,6 +24,7 @@ import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
@@ -186,6 +187,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         viewModel.state
                 .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
                     snackbarController.showSnackbar(state.snackbarState)

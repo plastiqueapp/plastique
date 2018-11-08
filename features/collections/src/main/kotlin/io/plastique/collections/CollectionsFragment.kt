@@ -36,6 +36,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
@@ -192,6 +193,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
         viewModel.state
                 .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
                     snackbarController.showSnackbar(state.snackbarState)

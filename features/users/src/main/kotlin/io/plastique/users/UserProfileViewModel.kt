@@ -12,13 +12,14 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.users.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.UserProfileEffect.LoadUserProfileEffect
 import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
-import io.plastique.users.UserProfileEvent.LinkCopiedMessageShownEvent
 import io.plastique.users.UserProfileEvent.LoadErrorEvent
 import io.plastique.users.UserProfileEvent.RetryClickEvent
+import io.plastique.users.UserProfileEvent.SnackbarShownEvent
 import io.plastique.users.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
 import io.plastique.util.HtmlCompat
@@ -90,7 +91,9 @@ class UserProfileViewModel @Inject constructor(
     }
 }
 
-class UserProfileStateReducer @Inject constructor() : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
+class UserProfileStateReducer @Inject constructor(
+    private val resourceProvider: ResourceProvider
+) : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
     override fun invoke(state: UserProfileViewState, event: UserProfileEvent): Next<UserProfileViewState, UserProfileEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(state.copy(
@@ -108,11 +111,12 @@ class UserProfileStateReducer @Inject constructor() : Reducer<UserProfileEvent, 
         }
 
         CopyProfileLinkClickEvent -> {
-            next(state.copy(showLinkCopiedMessage = true), CopyProfileLinkEffect(state.userProfile!!.profileUrl))
+            next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.common_message_link_copied))),
+                    CopyProfileLinkEffect(state.userProfile!!.profileUrl))
         }
 
-        LinkCopiedMessageShownEvent -> {
-            next(state.copy(showLinkCopiedMessage = false))
+        SnackbarShownEvent -> {
+            next(state.copy(snackbarState = SnackbarState.None))
         }
     }
 }

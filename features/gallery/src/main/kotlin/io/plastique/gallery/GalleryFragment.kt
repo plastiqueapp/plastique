@@ -30,6 +30,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListItemDiffTransformer
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
+import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.DeleteFolderEvent
@@ -190,6 +191,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
         viewModel.state
                 .distinctUntilChanged { state -> state.snackbarState }
+                .filter { state -> state.snackbarState !== SnackbarState.None }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { state ->
                     snackbarController.showSnackbar(state.snackbarState)

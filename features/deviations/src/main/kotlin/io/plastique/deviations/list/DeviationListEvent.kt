@@ -12,8 +12,8 @@ sealed class DeviationListEvent : Event() {
     }
 
     data class LoadErrorEvent(val error: Throwable) : DeviationListEvent()
-    object SnackbarShown : DeviationListEvent()
     object RetryClickEvent : DeviationListEvent()
+    object SnackbarShownEvent : DeviationListEvent()
 
     object LoadMoreEvent : DeviationListEvent()
     object LoadMoreFinishedEvent : DeviationListEvent()
