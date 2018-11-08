@@ -165,7 +165,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
                 .map { state -> state.contentState }
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState -> contentViewController.switchState(contentState) }
+                .subscribe { contentState -> contentViewController.state = contentState }
                 .disposeOnDestroy()
 
         viewModel.state

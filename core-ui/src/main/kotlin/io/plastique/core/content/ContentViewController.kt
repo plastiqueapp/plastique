@@ -8,6 +8,7 @@ import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.isVisible
 import io.plastique.util.Animations
+import timber.log.Timber
 import kotlin.math.max
 
 class ContentViewController(
@@ -21,12 +22,21 @@ class ContentViewController(
     private val progressView: View?
     private val emptyView: View?
 
-    private var currentState: ContentState? = null
     private var setStateRunnable: Runnable? = null
     private var lastSwitchTime: Long = 0
 
     var minProgressDisplayTime: Int = 500
     var progressShowDelay: Int = 200
+
+    private var displayedState: ContentState = ContentState.None
+    var state: ContentState = ContentState.None
+        set(value) {
+            require(value !== ContentState.None) { "Cannot switch state to $value" }
+            if (field != value && !(field is ContentState.Empty && value is ContentState.Empty)) {
+                field = value
+                switchState(value)
+            }
+        }
 
     constructor(activity: Activity, @IdRes contentViewId: Int, @IdRes progressViewId: Int = View.NO_ID, @IdRes emptyViewId: Int = View.NO_ID)
             : this(activity.window.decorView, contentViewId, progressViewId, emptyViewId)
@@ -35,17 +45,14 @@ class ContentViewController(
         contentView = findViewById(rootView, contentViewId)
         progressView = if (progressViewId != View.NO_ID) findViewById(rootView, progressViewId) else null
         emptyView = if (emptyViewId != View.NO_ID) findViewById(rootView, emptyViewId) else null
-        setState(ContentState.None, false)
+        applyState(ContentState.None, false)
     }
 
-    fun switchState(state: ContentState) {
+    private fun switchState(state: ContentState) {
         handler.removeCallbacks(setStateRunnable)
-        if (currentState == state) {
-            return
-        }
 
         var delay: Long = 0
-        if (currentState === ContentState.Loading) {
+        if (displayedState === ContentState.Loading) {
             val elapsedTime = SystemClock.elapsedRealtime() - lastSwitchTime
             delay = max(0, minProgressDisplayTime - elapsedTime)
         } else if (state === ContentState.Loading) {
@@ -53,15 +60,16 @@ class ContentViewController(
         }
 
         if (delay != 0L) {
-            setStateRunnable = Runnable { setState(state, true) }
+            setStateRunnable = Runnable { applyState(state, true) }
             handler.postDelayed(setStateRunnable, delay)
         } else {
-            setState(state, true)
+            applyState(state, true)
         }
     }
 
-    private fun setState(state: ContentState, animated: Boolean) {
-        currentState = state
+    private fun applyState(state: ContentState, animated: Boolean) {
+        Timber.tag(LOG_TAG).d("Applying state %s", state)
+        displayedState = state
         lastSwitchTime = SystemClock.elapsedRealtime()
 
         contentView.setVisible(state === ContentState.Content, animated)
@@ -83,5 +91,9 @@ class ContentViewController(
 
     private fun findViewById(rootView: View, @IdRes viewId: Int): View {
         return rootView.findViewById(viewId) ?: throw IllegalArgumentException("View with id $viewId doesn't exist")
+    }
+
+    private companion object {
+        private const val LOG_TAG = "ContentViewController"
     }
 }

@@ -9,7 +9,7 @@ import io.plastique.deviations.tags.Tag
 data class DeviationListViewState(
     val params: FetchParams,
 
-    val contentState: ContentState = ContentState.None,
+    val contentState: ContentState,
     val items: List<ListItem> = emptyList(),
     val deviationItems: List<ListItem> = emptyList(),
     val tags: List<Tag> = emptyList(),

@@ -78,7 +78,8 @@ class DeviationListViewModel @Inject constructor(
         val initialState = DeviationListViewState(
                 layoutMode = layoutMode,
                 params = newParams,
-                tags = createTags(tagFactory, params))
+                tags = createTags(tagFactory, params),
+                contentState = ContentState.Loading)
 
         state = loop.loop(initialState, LoadDeviationsEffect(newParams)).disposeOnDestroy()
     }

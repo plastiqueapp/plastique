@@ -163,7 +163,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { contentState ->
-                    contentViewController.switchState(contentState)
+                    contentViewController.state = contentState
                     if (contentState is ContentState.Empty) {
                         emptyView.setState(contentState.emptyState)
                     }

@@ -9,7 +9,7 @@ data class CommentListViewState(
     val threadId: CommentThreadId,
 
     val title: String = "",
-    val contentState: ContentState = ContentState.None,
+    val contentState: ContentState,
     val comments: List<CommentUiModel> = emptyList(),
     val items: List<ListItem> = emptyList(),
     val commentItems: List<ListItem> = emptyList(),
