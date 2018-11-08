@@ -102,7 +102,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
             }
         }
         adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
-        onScrollListener = EndlessScrollListener(4, enabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         galleryView = view.findViewById(R.id.gallery)
         galleryView.layoutManager = FlexboxLayoutManager(context)
@@ -180,7 +180,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         viewModel.state
                 .distinctUntilChanged { state -> state.pagingEnabled }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> onScrollListener.enabled = state.pagingEnabled }
+                .subscribe { state -> onScrollListener.isEnabled = state.pagingEnabled }
                 .disposeOnDestroy()
 
         viewModel.state

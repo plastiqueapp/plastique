@@ -149,7 +149,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 .map { state -> state.pagingEnabled }
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pagingEnabled -> onScrollListener.enabled = pagingEnabled }
+                .subscribe { pagingEnabled -> onScrollListener.isEnabled = pagingEnabled }
                 .disposeOnDestroy()
 
         @Suppress("RemoveExplicitTypeArguments")

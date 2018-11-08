@@ -116,7 +116,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
                 .map { state -> state.pagingEnabled }
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pagingEnabled -> onScrollListener.enabled = pagingEnabled }
+                .subscribe { pagingEnabled -> onScrollListener.isEnabled = pagingEnabled }
                 .disposeOnDestroy()
 
         viewModel.state

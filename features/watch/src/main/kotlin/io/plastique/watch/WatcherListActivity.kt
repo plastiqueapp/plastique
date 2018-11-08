@@ -36,7 +36,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
     private lateinit var contentViewController: ContentViewController
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: WatcherListAdapter
-    private lateinit var endlessScrollListener: EndlessScrollListener
+    private lateinit var onScrollListener: EndlessScrollListener
     @Inject lateinit var navigator: WatchNavigator
     private lateinit var state: WatcherListViewState
 
@@ -50,12 +50,12 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         adapter = WatcherListAdapter()
         adapter.onWatcherClickListener = { item -> navigator.openUserProfile(navigationContext, item.watcher.username) }
 
-        endlessScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }
 
         watchersView = findViewById(R.id.watchers)
         watchersView.layoutManager = LinearLayoutManager(this)
         watchersView.adapter = adapter
-        watchersView.addOnScrollListener(endlessScrollListener)
+        watchersView.addOnScrollListener(onScrollListener)
         watchersView.addItemDecoration(DividerItemDecoration.Builder(this).build())
 
         refreshLayout = findViewById(R.id.refresh)
@@ -107,7 +107,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
                 .map { state -> state.pagingEnabled }
                 .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pagingEnabled -> endlessScrollListener.enabled = pagingEnabled }
+                .subscribe { pagingEnabled -> onScrollListener.isEnabled = pagingEnabled }
                 .disposeOnDestroy()
 
         viewModel.state

@@ -6,11 +6,11 @@ import com.google.android.flexbox.FlexboxLayoutManager
 
 class EndlessScrollListener(
     var loadThreshold: Int,
-    var enabled: Boolean = true,
+    var isEnabled: Boolean = true,
     private var loadMoreListener: LoadMoreListener
 ) : RecyclerView.OnScrollListener() {
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (!enabled) {
+        if (!isEnabled) {
             return
         }
         val layoutManager = recyclerView.layoutManager ?: return
@@ -20,7 +20,7 @@ class EndlessScrollListener(
 
         if (remainingItemCount <= loadThreshold) {
             recyclerView.post {
-                if (enabled) {
+                if (isEnabled) {
                     loadMoreListener()
                 }
             }
