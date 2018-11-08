@@ -9,6 +9,6 @@
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingTop="16dp"
     android:textAllCaps="true"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+    android:textAppearance="?textAppearanceSubtitle2"
     android:textColor="?colorAccent"
-    tools:text="OTHER" />
+    tools:text="Other" />

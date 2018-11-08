@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Base.Theme.App.Dark" parent="Theme.AppCompat.NoActionBar">
+    <style name="Base.Theme.App.Dark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowLightStatusBar">false</item>
     </style>
 

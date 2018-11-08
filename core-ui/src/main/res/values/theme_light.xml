@@ -3,7 +3,7 @@
 
     <color name="light_window_background">#f5f5f5</color>
 
-    <style name="Base.Theme.App.Light" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Base.Theme.App.Light" parent="Theme.MaterialComponents.Light.NoActionBar" />
 
     <style name="Theme.App.Light" parent="Base.Theme.App.Light">
         <item name="android:listDivider">@drawable/list_divider</item>
@@ -18,12 +18,26 @@
         <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
 
-        <item name="appBarTheme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.App.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.App.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.App.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.App.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.App.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.App.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.App.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.App.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.App.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
+
+        <item name="appBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="dividerColor">#33000000</item>
         <item name="emptyViewStyle">@style/Widget.App.EmptyView</item>
         <item name="imageButtonTint">@color/light_image_button_tint</item>
         <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="deviations_literatureBackground">#ffffff</item>
     </style>
 

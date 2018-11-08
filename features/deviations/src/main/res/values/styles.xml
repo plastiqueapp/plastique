@@ -11,7 +11,7 @@
 
     <style name="Theme.App.Light.DeviationViewer">
         <item name="android:windowBackground">@color/light_deviation_viewer_background</item>
-        <item name="appBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="appBarTheme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
         <item name="colorPrimaryDark">@color/light_deviation_viewer_status_bar_background</item>
         <item name="deviationViewerTitleTextColor">@color/light_deviation_viewer_title_text</item>
         <item name="deviationViewerAuthorTextColor">@color/light_deviation_viewer_author_text</item>

@@ -7,4 +7,4 @@
     android:paddingStart="?android:listPreferredItemPaddingStart"
     android:paddingTop="16dp"
     android:text="@string/licenses_header"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    android:textAppearance="?textAppearanceBody2" />

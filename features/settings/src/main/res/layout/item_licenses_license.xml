@@ -15,7 +15,7 @@
         android:id="@+id/library_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textAppearance="?textAppearanceSubtitle1"
         tools:text="MyLibrary" />
 
     <TextView
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_light"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="?textAppearanceBody2"
         tools:text="Lorem ipsum dolor sit amet, ei vel velit ubique, alia praesent euripidis cum no, labitur molestie at mea. Quot brute his id, ea pro simul vocent torquatos." />
 
     <TextView
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_light"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textAppearance="?textAppearanceCaption"
         tools:text="Apache License 2.0" />
 
 </LinearLayout>
