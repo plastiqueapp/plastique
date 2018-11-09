@@ -8,6 +8,6 @@ sealed class LoginEvent : Event() {
     data class AuthUrlGeneratedEvent(val authUrl: String) : LoginEvent()
 
     object AuthSuccessEvent : LoginEvent()
-    object AuthErrorEvent : LoginEvent()
+    data class AuthErrorEvent(val error: Throwable) : LoginEvent()
     object ErrorDialogDismissedEvent : LoginEvent()
 }

@@ -33,7 +33,7 @@ class LoginViewModel @Inject constructor(
             listener = TimberLogger(LOG_TAG))
 
     val state: Observable<LoginViewState> by lazy(LazyThreadSafetyMode.NONE) {
-        loop.loop(LoginViewState(), GenerateAuthUrlEffect).disposeOnDestroy()
+        loop.loop(LoginViewState.Initial, GenerateAuthUrlEffect).disposeOnDestroy()
     }
 
     fun onRedirect(redirectUrl: String): Boolean {
@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(
                                 cookieManager.removeAllCookies(null)
                             }
                             .toSingleDefault<LoginEvent>(AuthSuccessEvent)
-                            .onErrorReturn { AuthErrorEvent }
+                            .onErrorReturn { error -> AuthErrorEvent(error) }
                 }
     }
 
@@ -78,24 +78,19 @@ class LoginViewModel @Inject constructor(
 
 class LoginStateReducer @Inject constructor() : Reducer<LoginEvent, LoginViewState, LoginEffect> {
     override fun invoke(state: LoginViewState, event: LoginEvent): Next<LoginViewState, LoginEffect> = when (event) {
-        is AuthRedirectEvent -> {
-            next(state.copy(authInProgress = true), AuthenticateEffect(event.redirectUri))
-        }
+        is AuthRedirectEvent ->
+            next(LoginViewState.InProgress, AuthenticateEffect(event.redirectUri))
 
-        ErrorDialogDismissedEvent -> {
-            next(state.copy(authError = false), GenerateAuthUrlEffect)
-        }
+        ErrorDialogDismissedEvent ->
+            next(state, GenerateAuthUrlEffect)
 
-        AuthSuccessEvent -> {
-            next(state.copy(authInProgress = false, authSuccess = true))
-        }
+        AuthSuccessEvent ->
+            next(LoginViewState.Success)
 
-        AuthErrorEvent -> {
-            next(state.copy(authInProgress = false, authError = true))
-        }
+        is AuthErrorEvent ->
+            next(LoginViewState.Error)
 
-        is AuthUrlGeneratedEvent -> {
-            next(state.copy(authUrl = event.authUrl))
-        }
+        is AuthUrlGeneratedEvent ->
+            next(LoginViewState.LoadUrl(authUrl = event.authUrl))
     }
 }

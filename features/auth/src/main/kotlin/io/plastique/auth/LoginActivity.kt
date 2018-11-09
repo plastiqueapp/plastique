@@ -42,54 +42,36 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
 
         progressDialogController = ProgressDialogController(supportFragmentManager)
 
-        observeState()
-    }
-
-    private fun observeState() {
         viewModel.state
-                .filter { state -> state.authUrl != null }
-                .map { state -> state.authUrl!! }
-                .distinctUntilChanged()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { authUrl -> webView.loadUrl(authUrl) }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.authInProgress }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { authInProgress ->
-                    if (authInProgress) {
-                        progressDialogController.show(R.string.login_progress_title)
-                    } else {
-                        progressDialogController.dismiss()
-                    }
-                }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.authSuccess }
-                .distinctUntilChanged()
-                .filter { it }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { finish() }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.authError }
-                .distinctUntilChanged()
-                .filter { it }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val dialog = MessageDialogFragment.newInstance(R.string.common_error, R.string.login_error_message)
-                    dialog.showAllowingStateLoss(supportFragmentManager, DIALOG_AUTH_ERROR)
-                }
+                .subscribe { renderState(it) }
                 .disposeOnDestroy()
     }
 
     override fun onDismissDialog(dialog: DialogFragment) {
         if (DIALOG_AUTH_ERROR == dialog.tag) {
             viewModel.dispatch(ErrorDialogDismissedEvent)
+        }
+    }
+
+    private fun renderState(state: LoginViewState) = when (state) {
+        LoginViewState.Initial -> Unit
+
+        is LoginViewState.LoadUrl ->
+            webView.loadUrl(state.authUrl)
+
+        LoginViewState.InProgress ->
+            progressDialogController.show(R.string.login_progress_title)
+
+        LoginViewState.Success -> {
+            progressDialogController.dismiss()
+            finish()
+        }
+
+        LoginViewState.Error -> {
+            progressDialogController.dismiss()
+            val dialog = MessageDialogFragment.newInstance(R.string.common_error, R.string.login_error_message)
+            dialog.showAllowingStateLoss(supportFragmentManager, DIALOG_AUTH_ERROR)
         }
     }
 

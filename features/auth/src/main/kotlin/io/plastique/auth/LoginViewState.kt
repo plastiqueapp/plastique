@@ -1,8 +1,17 @@
 package io.plastique.auth
 
-data class LoginViewState(
-    val authUrl: String? = null,
-    val authInProgress: Boolean = false,
-    val authSuccess: Boolean = false,
-    val authError: Boolean = false
-)
+sealed class LoginViewState {
+    override fun toString(): String = "LoginViewState.${javaClass.simpleName}"
+
+    object Initial : LoginViewState()
+
+    data class LoadUrl(val authUrl: String) : LoginViewState() {
+        override fun toString(): String {
+            return "LoginViewState.LoadUrl(authUrl='$authUrl')"
+        }
+    }
+
+    object InProgress : LoginViewState()
+    object Success : LoginViewState()
+    object Error : LoginViewState()
+}
