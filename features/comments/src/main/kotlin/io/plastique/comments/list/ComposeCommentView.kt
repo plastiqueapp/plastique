@@ -1,7 +1,6 @@
 package io.plastique.comments.list
 
 import android.content.Context
-import android.text.Editable
 import android.transition.ChangeBounds
 import android.transition.Fade
 import android.transition.TransitionManager
@@ -15,8 +14,8 @@ import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.plastique.comments.R
+import io.plastique.core.extensions.doAfterTextChanged
 import io.plastique.util.HtmlCompat
-import io.plastique.util.SimpleTextWatcher
 
 class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val draftView: EditText
@@ -41,11 +40,7 @@ class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: Attr
         replyingToView = findViewById(R.id.text_replying_to)
         cancelReplyButton = findViewById(R.id.button_cancel_reply)
 
-        draftView.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                postButton.isEnabled = s.isNotEmpty()
-            }
-        })
+        draftView.doAfterTextChanged { text -> postButton.isEnabled = text.isNotEmpty() }
         postButton.isEnabled = false
 
         val signInButton = findViewById<Button>(R.id.button_sign_in)
