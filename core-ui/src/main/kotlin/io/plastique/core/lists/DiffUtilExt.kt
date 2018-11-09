@@ -7,66 +7,80 @@ import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import timber.log.Timber
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 class ListItemDiffTransformer<T : ListItem> : ObservableTransformer<List<T>, ListUpdateData<T>> {
-    private val firstUpdate = AtomicBoolean(true)
-
     override fun apply(upstream: Observable<List<T>>): ObservableSource<ListUpdateData<T>> {
-        return upstream.distinctUntilChanged()
-                .scan(ListUpdateData.empty<T>()) { prev, items ->
-                    if (firstUpdate.compareAndSet(true, false)) {
-                        ListUpdateData(items, null)
-                    } else {
-                        calculateDiff(prev.items, items)
-                    }
-                }
-                .skip(1)
+        val previous = AtomicReference<List<T>>()
+        return upstream
+                .map { items -> calculateDiff(previous.getAndSet(items), items) }
     }
 }
 
-fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> {
-    val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems.orEmpty(), newItems, ListItemCallback))
-    return ListUpdateData(newItems, diffResult)
+@Suppress("UNCHECKED_CAST")
+fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> = when {
+    oldItems.orEmpty() == newItems -> ListUpdateData.Empty as ListUpdateData<T>
+    oldItems.isNullOrEmpty() -> ListUpdateData.Full(newItems)
+    else -> {
+        val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems, newItems, ListItemCallback))
+        ListUpdateData.Diff(newItems, diffResult)
+    }
 }
 
-class ListUpdateData<T>(
-    val items: List<T>,
-    private val diffResult: DiffUtil.DiffResult?
-) {
+sealed class ListUpdateData<T> {
+    abstract val items: List<T>
 
-    fun applyTo(adapter: BaseListAdapter<T, *>) {
-        if (adapter.items.isEmpty() || diffResult == null) {
+    abstract fun applyTo(adapter: BaseListAdapter<T, *>)
+
+    abstract fun applyTo(adapter: ListDelegationAdapter<List<T>>)
+
+    abstract fun log(tag: String)
+
+    data class Full<T : ListItem>(override val items: List<T>) : ListUpdateData<T>() {
+        override fun applyTo(adapter: BaseListAdapter<T, *>) {
             adapter.items = items
             adapter.notifyDataSetChanged()
-        } else {
-            adapter.items = items
-            diffResult.dispatchUpdatesTo(adapter)
         }
-    }
 
-    fun applyTo(adapter: ListDelegationAdapter<List<T>>) {
-        if (adapter.items == null || diffResult == null) {
+        override fun applyTo(adapter: ListDelegationAdapter<List<T>>) {
             adapter.items = items
             adapter.notifyDataSetChanged()
-        } else {
-            adapter.items = items
-            diffResult.dispatchUpdatesTo(adapter)
         }
-    }
 
-    fun log(tag: String) {
-        if (diffResult != null) {
-            diffResult.dispatchUpdatesTo(LoggingListUpdateCallback(tag))
-        } else {
+        override fun log(tag: String) {
             Timber.tag(tag).d("notifyDataSetChanged")
         }
     }
 
-    companion object {
-        fun <T> empty(): ListUpdateData<T> {
-            return ListUpdateData(emptyList(), null)
+    data class Diff<T : ListItem>(override val items: List<T>, private val diffResult: DiffUtil.DiffResult) : ListUpdateData<T>() {
+        override fun applyTo(adapter: BaseListAdapter<T, *>) {
+            adapter.items = items
+            diffResult.dispatchUpdatesTo(adapter)
         }
+
+        override fun applyTo(adapter: ListDelegationAdapter<List<T>>) {
+            adapter.items = items
+            diffResult.dispatchUpdatesTo(adapter)
+        }
+
+        override fun log(tag: String) {
+            diffResult.dispatchUpdatesTo(LoggingListUpdateCallback(tag))
+        }
+    }
+
+    object Empty : ListUpdateData<Any>() {
+        override val items: List<Any> get() = emptyList()
+
+        override fun applyTo(adapter: BaseListAdapter<Any, *>) {
+        }
+
+        override fun applyTo(adapter: ListDelegationAdapter<List<Any>>) {
+        }
+
+        override fun log(tag: String) {
+        }
+
+        override fun toString(): String = "Empty"
     }
 }
 
