@@ -77,7 +77,7 @@ class BreadcrumbsAdapter(
     }
 
     fun update(items: List<ListItem>) {
-        val updateData = calculateDiff(this.items ?: emptyList(), items)
+        val updateData = calculateDiff(this.items, items)
         updateData.applyTo(this)
     }
 

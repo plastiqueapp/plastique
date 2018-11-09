@@ -25,8 +25,8 @@ class ListItemDiffTransformer<T : ListItem> : ObservableTransformer<List<T>, Lis
     }
 }
 
-fun <T : ListItem> calculateDiff(oldItems: List<T>, newItems: List<T>): ListUpdateData<T> {
-    val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems, newItems, ListItemCallback))
+fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> {
+    val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems.orEmpty(), newItems, ListItemCallback))
     return ListUpdateData(newItems, diffResult)
 }
 
