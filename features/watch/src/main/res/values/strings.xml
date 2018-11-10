@@ -5,6 +5,6 @@
     <string name="watch_watchers_title_current_user">Your watchers</string>
     <string name="watch_message_empty">&lt;b&gt;%1$s&lt;/b&gt; has no watchers yet</string>
     <string name="watch_message_empty_current_user">You have no watchers yet</string>
-    <string name="watch_message_login">Login to see who\'s watching you</string>
+    <string name="watch_message_sign_in">Sign in to see who\'s watching you</string>
 
 </resources>

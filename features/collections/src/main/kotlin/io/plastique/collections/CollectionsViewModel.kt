@@ -68,8 +68,8 @@ class CollectionsViewModel @Inject constructor(
             next(CollectionsViewState(
                     params = params,
                     contentState = ContentState.Empty(EmptyState(
-                            message = resourceProvider.getString(R.string.collections_message_login),
-                            button = resourceProvider.getString(R.string.common_button_login))),
+                            message = resourceProvider.getString(R.string.collections_message_sign_in),
+                            button = resourceProvider.getString(R.string.common_button_sign_in))),
                     signInNeeded = signInNeeded))
         } else {
             next(CollectionsViewState(
@@ -210,8 +210,8 @@ class CollectionsStateReducer @Inject constructor(
                 if (signInNeeded) {
                     next(state.copy(
                             contentState = ContentState.Empty(EmptyState(
-                                    message = resourceProvider.getString(R.string.collections_message_login),
-                                    button = resourceProvider.getString(R.string.common_button_login))),
+                                    message = resourceProvider.getString(R.string.collections_message_sign_in),
+                                    button = resourceProvider.getString(R.string.common_button_sign_in))),
                             signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(

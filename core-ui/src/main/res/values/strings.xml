@@ -5,7 +5,7 @@
     <string name="common_action_delete">Delete</string>
     <string name="common_button_ok">OK</string>
     <string name="common_button_cancel">Cancel</string>
-    <string name="common_button_login">Login</string>
+    <string name="common_button_sign_in">Sign in</string>
     <string name="common_button_try_again">Try again</string>
     <string name="common_error">Error</string>
 

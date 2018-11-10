@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
-            android:text="@string/comments_button_sign_in" />
+            android:text="@string/common_button_sign_in" />
 
         <TextView
             android:layout_width="wrap_content"

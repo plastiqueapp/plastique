@@ -5,7 +5,7 @@
     <string name="gallery_action_create_folder">Create folder</string>
     <string name="gallery_button_create">Create</string>
     <string name="gallery_folder_name_hint">Folder name</string>
-    <string name="gallery_message_login">Login to see your gallery</string>
+    <string name="gallery_message_sign_in">Sign in to see your gallery</string>
     <string name="gallery_message_empty_collection">Your gallery is empty</string>
     <string name="gallery_message_empty_user_collection">&lt;b&gt;%1$s&lt;/b&gt; gallery is empty</string>
 

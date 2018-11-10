@@ -5,11 +5,11 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button_login"
+        android:id="@+id/button_sign_in"
         style="?borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/common_button_login"
+        android:text="@string/common_button_sign_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

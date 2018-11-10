@@ -18,7 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
-    private lateinit var loginButton: Button
+    private lateinit var signInButton: Button
     @Inject lateinit var navigator: ProfileNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +31,8 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        loginButton = view.findViewById(R.id.button_login)
-        loginButton.setOnClickListener { navigator.openLogin(navigationContext) }
+        signInButton = view.findViewById(R.id.button_sign_in)
+        signInButton.setOnClickListener { navigator.openLogin(navigationContext) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,10 +55,9 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
 
     private fun observeState() {
         viewModel.state
-                .map { state -> state.showLoginButton }
-                .distinctUntilChanged()
+                .distinctUntilChanged { state -> state.showSignInButton }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { show -> loginButton.isVisible = show }
+                .subscribe { state -> signInButton.isVisible = state.showSignInButton }
                 .disposeOnDestroy()
     }
 

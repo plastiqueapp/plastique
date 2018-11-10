@@ -2,7 +2,6 @@
 <resources>
 
     <string name="comments_title">Comments</string>
-    <string name="comments_button_sign_in">Sign in</string>
     <string name="comments_compose_hint">Add a comment…</string>
     <string name="comments_replying_to">Replying to %1$s</string>
     <string name="comments_sign_in_to_post">to post a comment</string>

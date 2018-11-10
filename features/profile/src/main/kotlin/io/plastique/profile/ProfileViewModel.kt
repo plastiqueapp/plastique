@@ -41,7 +41,7 @@ class ProfileViewModel @Inject constructor(
 class ProfileStateReducer @Inject constructor() : Reducer<ProfileEvent, ProfileViewState, ProfileEffect> {
     override fun invoke(state: ProfileViewState, event: ProfileEvent): Next<ProfileViewState, ProfileEffect> = when (event) {
         is SessionChangedEvent -> {
-            next(state.copy(showLoginButton = event.session !is Session.User))
+            next(state.copy(showSignInButton = event.session !is Session.User))
         }
     }
 }
