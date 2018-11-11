@@ -21,6 +21,7 @@ import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.NullFallbackJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
+import io.plastique.core.adapters.StringCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
 import io.plastique.core.client.ApiClient
 import org.threeten.bp.format.DateTimeFormatter
@@ -91,6 +92,7 @@ object ApiModule {
         return Moshi.Builder()
                 .add(ZonedDateTimeAdapter(dateTimeFormatter))
                 .add(OffsetCursorAdapter())
+                .add(StringCursorAdapter())
                 .add(NullFallbackJsonAdapterFactory(PolymorphicJsonAdapterFactory.of(FeedElement::class.java, "type")
                         .withSubtype(CollectionUpdateElement::class.java, FeedElement.TYPE_COLLECTION_UPDATE)
                         .withSubtype(DeviationSubmittedElement::class.java, FeedElement.TYPE_DEVIATION_SUBMITTED)
