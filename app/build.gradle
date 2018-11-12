@@ -117,6 +117,7 @@ dependencies {
     implementation project(":features:notifications")
     implementation project(":features:profile")
     implementation project(":features:settings")
+    implementation project(":features:statuses")
     implementation project(":features:users")
     implementation project(":features:watch")
 
