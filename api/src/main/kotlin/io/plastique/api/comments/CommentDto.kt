@@ -2,11 +2,11 @@ package io.plastique.api.comments
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.users.User
+import io.plastique.api.users.UserDto
 import org.threeten.bp.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
-data class Comment(
+data class CommentDto(
     @Json(name = "commentid")
     val id: String,
 
@@ -26,5 +26,5 @@ data class Comment(
     val text: String,
 
     @Json(name = "user")
-    var author: User
+    var author: UserDto
 )

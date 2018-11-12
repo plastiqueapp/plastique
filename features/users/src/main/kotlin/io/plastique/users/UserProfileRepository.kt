@@ -2,6 +2,7 @@ package io.plastique.users
 
 import androidx.room.RoomDatabase
 import io.plastique.api.common.ErrorType
+import io.plastique.api.users.UserProfileDto
 import io.plastique.api.users.UserService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
@@ -14,7 +15,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
 import javax.inject.Inject
-import io.plastique.api.users.UserProfile as UserProfileDto
 
 class UserProfileRepository @Inject constructor(
     private val database: RoomDatabase,
@@ -46,7 +46,7 @@ class UserProfileRepository @Inject constructor(
                     persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
                 }
                 .onErrorResumeNext { error ->
-                    if (error is ApiResponseException && error.errorResponse.errorType == ErrorType.InvalidRequest) {
+                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
                         deleteUser(username, cacheKey)
                         Single.error(NoSuchUserException(username, error))
                     } else {

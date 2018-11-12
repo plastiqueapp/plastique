@@ -3,7 +3,7 @@ package io.plastique.api.collections
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
 import io.plastique.api.common.PagedListResult
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -20,7 +20,7 @@ interface CollectionService {
         @Query("ext_preload") preload: Boolean,
         @Query("mature_content") matureContent: Boolean,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<Folder>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<FolderDto>>
 
     @GET("collections/{folderid}")
     fun getFolderContents(
@@ -28,7 +28,7 @@ interface CollectionService {
         @Query("username") username: String?,
         @Query("mature_content") matureContent: Boolean,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 24) limit: Int): Single<PagedListResult<Deviation>>
+        @Query("limit") @IntRange(from = 1, to = 24) limit: Int): Single<PagedListResult<DeviationDto>>
 
     @POST("collections/fave")
     @FormUrlEncoded

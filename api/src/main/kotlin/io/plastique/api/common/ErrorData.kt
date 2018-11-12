@@ -4,16 +4,16 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ErrorResponse(
+data class ErrorData(
     @Json(name = "error")
-    val errorType: ErrorType,
+    val type: ErrorType,
 
     @Json(name = "error_code")
-    val errorCode: Int = -1,
+    val code: Int = -1,
 
     @Json(name = "error_description")
-    val errorDescription: String? = null,
+    val description: String? = null,
 
     @Json(name = "error_details")
-    val errorDetails: Map<String, String> = emptyMap()
+    val details: Map<String, String> = emptyMap()
 )

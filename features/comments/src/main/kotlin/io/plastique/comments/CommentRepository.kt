@@ -3,6 +3,7 @@ package io.plastique.comments
 import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.comments.CommentDto
 import io.plastique.api.comments.CommentList
 import io.plastique.api.comments.CommentService
 import io.plastique.api.comments.HideReason
@@ -24,7 +25,6 @@ import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import java.util.concurrent.Callable
 import javax.inject.Inject
-import io.plastique.api.comments.Comment as CommentDto
 
 class CommentRepository @Inject constructor(
     private val database: RoomDatabase,

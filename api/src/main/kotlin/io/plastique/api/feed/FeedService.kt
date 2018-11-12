@@ -3,7 +3,7 @@ package io.plastique.api.feed
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
 import io.plastique.api.common.PagedListResult
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.FieldMap
@@ -19,21 +19,21 @@ interface FeedService {
     fun getHomeFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
-    ): Single<FeedResult>
+    ): Single<FeedElementList>
 
     @GET("feed/profile")
     @AccessScope("feed")
     fun getProfileFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
-    ): Single<FeedResult>
+    ): Single<FeedElementList>
 
     @GET("feed/notifications")
     @AccessScope("feed")
     fun getNotificationsFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
-    ): Single<FeedResult>
+    ): Single<FeedElementList>
 
     @GET("feed/home/{bucketid}")
     @AccessScope("feed")
@@ -42,7 +42,7 @@ interface FeedService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("mature_content") matureContent: Boolean
-    ): Single<PagedListResult<Deviation>>
+    ): Single<PagedListResult<DeviationDto>>
 
     @GET("feed/settings")
     @AccessScope("feed")

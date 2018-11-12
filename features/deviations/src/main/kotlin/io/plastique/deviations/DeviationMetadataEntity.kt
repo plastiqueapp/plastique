@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import io.plastique.api.deviations.DeviationMetadata
+import io.plastique.api.deviations.DeviationMetadataDto
 
 @Entity(tableName = "deviation_metadata",
         foreignKeys = [
@@ -19,5 +19,5 @@ data class DeviationMetadataEntity(
     val description: String? = null
 )
 
-fun DeviationMetadata.toDeviationMetadataEntity(): DeviationMetadataEntity =
+fun DeviationMetadataDto.toDeviationMetadataEntity(): DeviationMetadataEntity =
         DeviationMetadataEntity(deviationId = deviationId, description = description)

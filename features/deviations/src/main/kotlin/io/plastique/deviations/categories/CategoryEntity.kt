@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.plastique.api.deviations.Category
+import io.plastique.api.deviations.CategoryDto
 
 @Entity(tableName = "categories",
         indices = [Index("parent")])
@@ -23,5 +23,5 @@ data class CategoryEntity(
     val hasChildren: Boolean
 )
 
-fun Category.toCategoryEntity(): CategoryEntity =
+fun CategoryDto.toCategoryEntity(): CategoryEntity =
         CategoryEntity(path = path, parent = parent, title = title, hasChildren = hasChildren)

@@ -3,7 +3,6 @@ package io.plastique.users
 import io.plastique.api.users.UserService
 import io.reactivex.Single
 import javax.inject.Inject
-import io.plastique.api.users.User as UserDto
 
 class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao,

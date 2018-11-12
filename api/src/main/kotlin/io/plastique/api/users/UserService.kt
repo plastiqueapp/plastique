@@ -15,15 +15,15 @@ import retrofit2.http.Query
 
 interface UserService {
     @GET("user/profile/{username}")
-    fun getUserProfile(@Path("username") username: String): Single<UserProfile>
+    fun getUserProfile(@Path("username") username: String): Single<UserProfileDto>
 
     @GET("user/whoami")
     @AccessScope("user")
-    fun whoami(@Query("access_token") accessToken: String): Single<User>
+    fun whoami(@Query("access_token") accessToken: String): Single<UserDto>
 
     @POST("user/whois")
     @FormUrlEncoded
-    fun whois(@FieldMap usernames: Map<String, String>): Single<ListResult<User>>
+    fun whois(@FieldMap usernames: Map<String, String>): Single<ListResult<UserDto>>
 
     @GET("user/statuses/")
     fun getStatuses(
@@ -31,13 +31,13 @@ interface UserService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
         @Query("mature_content") matureContent: Boolean
-    ): Single<PagedListResult<Status>>
+    ): Single<PagedListResult<StatusDto>>
 
     @GET("user/statuses/{statusid}")
     fun getStatusById(
         @Path("statusid") statusId: String,
         @Query("mature_content") matureContent: Boolean
-    ): Single<Status>
+    ): Single<StatusDto>
 
     @POST("user/statuses/post")
     @FormUrlEncoded

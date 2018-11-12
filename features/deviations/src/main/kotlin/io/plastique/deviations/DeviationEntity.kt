@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 import io.plastique.images.ImageEntity
 import io.plastique.images.toImageEntity
 import io.plastique.users.UserEntity
@@ -56,7 +56,7 @@ class DeviationEntity(
     val authorId: String
 )
 
-fun Deviation.toDeviationEntity(): DeviationEntity = DeviationEntity(
+fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
         id = id,
         title = title,
         url = url,

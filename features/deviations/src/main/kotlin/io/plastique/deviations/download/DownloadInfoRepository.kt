@@ -1,10 +1,10 @@
 package io.plastique.deviations.download
 
 import io.plastique.api.deviations.DeviationService
+import io.plastique.api.deviations.DownloadInfoDto
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
-import io.plastique.api.deviations.DownloadInfo as DownloadInfoDto
 
 class DownloadInfoRepository @Inject constructor(
     private val downloadInfoDao: DownloadInfoDao,
@@ -21,7 +21,7 @@ class DownloadInfoRepository @Inject constructor(
     }
 
     private fun getDownloadInfoFromServer(deviationId: String): Single<DownloadInfoEntity> {
-        return deviationService.getDeviationDownload(deviationId)
+        return deviationService.getDownloadInfoById(deviationId)
                 .map { persist(deviationId, it) }
     }
 

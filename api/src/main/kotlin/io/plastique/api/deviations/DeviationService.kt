@@ -14,7 +14,7 @@ interface DeviationService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
 
     @GET("browse/popular")
     fun getPopularDeviations(
@@ -22,28 +22,28 @@ interface DeviationService {
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("timerange") timeRange: TimeRange?,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
 
     @GET("browse/undiscovered")
     fun getUndiscoveredDeviations(
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
 
     @GET("browse/dailydeviations")
     fun getDailyDeviations(
         @Query("date") date: String?,
-        @Query("mature_content") matureContent: Boolean): Single<ListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<ListResult<DeviationDto>>
 
     @GET("deviation/{deviationId}")
-    fun getDeviationById(@Path("deviationId") deviationId: String): Single<Deviation>
+    fun getDeviationById(@Path("deviationId") deviationId: String): Single<DeviationDto>
 
     @GET("deviation/metadata")
-    fun getMetadataByIds(@Query("deviationids[]") deviationIds: Collection<String>): Single<DeviationMetadataResponse>
+    fun getMetadataByIds(@Query("deviationids[]") deviationIds: Collection<String>): Single<DeviationMetadataList>
 
     @GET("deviation/download/{deviationId}")
-    fun getDeviationDownload(@Path("deviationId") deviationId: String): Single<DownloadInfo>
+    fun getDownloadInfoById(@Path("deviationId") deviationId: String): Single<DownloadInfoDto>
 
     @GET("browse/categorytree")
     fun getCategories(@Query("catpath") path: String): Single<CategoryList>

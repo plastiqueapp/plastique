@@ -15,13 +15,13 @@ interface WatchService {
     @GET("user/watchers")
     fun getWatchers(
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<Watcher>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<WatcherDto>>
 
     @GET("user/watchers/{username}")
     fun getWatchers(
         @Path("username") username: String,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<Watcher>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<WatcherDto>>
 
     @POST("user/friends/watch/{username}")
     @FormUrlEncoded
@@ -33,5 +33,5 @@ interface WatchService {
     fun unwatch(@Path("username") username: String): Completable
 
     @GET("user/friends/watching/{username}")
-    fun isWatching(@Path("username") username: String): Single<IsWatchingResponse>
+    fun isWatching(@Path("username") username: String): Single<IsWatchingResult>
 }

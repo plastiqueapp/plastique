@@ -3,7 +3,7 @@ package io.plastique.api.gallery
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
 import io.plastique.api.common.PagedListResult
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -19,7 +19,7 @@ interface GalleryService {
         @Query("username") username: String?,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
 
     @GET("gallery/folders?calculate_size=true")
     fun getFolders(
@@ -27,7 +27,7 @@ interface GalleryService {
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
         @Query("ext_preload") preload: Boolean,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Folder>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<FolderDto>>
 
     @GET("gallery/{folderid}")
     fun getFolderContents(
@@ -36,7 +36,7 @@ interface GalleryService {
         @Query("mode") order: SortOrder? = null,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
 
     @POST("gallery/folders/create")
     @FormUrlEncoded

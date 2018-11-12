@@ -12,5 +12,5 @@ data class CommentList(
     val nextOffset: Int? = 0,
 
     @Json(name = "thread")
-    val comments: List<Comment> = emptyList()
+    val comments: List<CommentDto> = emptyList()
 )

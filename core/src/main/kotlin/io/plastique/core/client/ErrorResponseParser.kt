@@ -2,7 +2,7 @@ package io.plastique.core.client
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import io.plastique.api.common.ErrorResponse
+import io.plastique.api.common.ErrorData
 import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.ApiHttpException
 import io.plastique.core.exceptions.ApiResponseException
@@ -20,8 +20,8 @@ class ErrorResponseParser @Inject constructor(
         val errorBody = response.errorBody()
         if (isClientHttpError(response.code()) && errorBody != null) {
             try {
-                val errorResponse = moshi.adapter<ErrorResponse>().fromJson(errorBody.source())
-                return ApiResponseException(response, errorResponse!!)
+                val errorData = moshi.adapter<ErrorData>().fromJson(errorBody.source())
+                return ApiResponseException(response, errorData!!)
             } catch (ignored: IOException) {
             } catch (e: JsonDataException) {
                 Timber.e(e)

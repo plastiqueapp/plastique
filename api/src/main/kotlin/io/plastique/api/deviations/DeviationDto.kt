@@ -2,11 +2,11 @@ package io.plastique.api.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.common.ImageInfo
-import io.plastique.api.users.User
+import io.plastique.api.common.ImageDto
+import io.plastique.api.users.UserDto
 
 @JsonClass(generateAdapter = true)
-data class Deviation(
+data class DeviationDto(
     @Json(name = "deviationid")
     val id: String,
 
@@ -26,17 +26,17 @@ data class Deviation(
     var isMature: Boolean = false,
 
     @Json(name = "content")
-    var content: ImageInfo? = null,
+    var content: ImageDto? = null,
 
     @Json(name = "preview")
-    var preview: ImageInfo? = null,
+    var preview: ImageDto? = null,
 
     @Json(name = "excerpt")
     var excerpt: String? = null,
 
     @Json(name = "author")
-    var author: User,
+    var author: UserDto,
 
     @Json(name = "daily_deviation")
-    var dailyDeviation: DailyDeviation? = null
+    var dailyDeviation: DailyDeviationDto? = null
 )

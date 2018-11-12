@@ -20,8 +20,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import org.threeten.bp.Duration
 import javax.inject.Inject
-import io.plastique.api.collections.Folder as FolderDto
-import io.plastique.api.deviations.Deviation as DeviationDto
 
 class FolderRepository @Inject constructor(
     private val database: RoomDatabase,

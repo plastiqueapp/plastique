@@ -9,13 +9,8 @@ import io.plastique.api.auth.AuthService
 import io.plastique.api.collections.CollectionService
 import io.plastique.api.comments.CommentService
 import io.plastique.api.deviations.DeviationService
-import io.plastique.api.feed.CollectionUpdateElement
-import io.plastique.api.feed.DeviationSubmittedElement
-import io.plastique.api.feed.FeedElement
+import io.plastique.api.feed.FeedElementDto
 import io.plastique.api.feed.FeedService
-import io.plastique.api.feed.JournalSubmittedElement
-import io.plastique.api.feed.StatusElement
-import io.plastique.api.feed.UsernameChangeElement
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
@@ -93,12 +88,12 @@ object ApiModule {
                 .add(ZonedDateTimeAdapter(dateTimeFormatter))
                 .add(OffsetCursorAdapter())
                 .add(StringCursorAdapter())
-                .add(NullFallbackJsonAdapterFactory(PolymorphicJsonAdapterFactory.of(FeedElement::class.java, "type")
-                        .withSubtype(CollectionUpdateElement::class.java, FeedElement.TYPE_COLLECTION_UPDATE)
-                        .withSubtype(DeviationSubmittedElement::class.java, FeedElement.TYPE_DEVIATION_SUBMITTED)
-                        .withSubtype(JournalSubmittedElement::class.java, FeedElement.TYPE_JOURNAL_SUBMITTED)
-                        .withSubtype(StatusElement::class.java, FeedElement.TYPE_STATUS)
-                        .withSubtype(UsernameChangeElement::class.java, FeedElement.TYPE_USERNAME_CHANGE)))
+                .add(NullFallbackJsonAdapterFactory(PolymorphicJsonAdapterFactory.of(FeedElementDto::class.java, "type")
+                        .withSubtype(FeedElementDto.CollectionUpdate::class.java, FeedElementDto.TYPE_COLLECTION_UPDATE)
+                        .withSubtype(FeedElementDto.DeviationSubmitted::class.java, FeedElementDto.TYPE_DEVIATION_SUBMITTED)
+                        .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementDto.TYPE_JOURNAL_SUBMITTED)
+                        .withSubtype(FeedElementDto.Status::class.java, FeedElementDto.TYPE_STATUS)
+                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementDto.TYPE_USERNAME_CHANGE)))
                 .build()
     }
 }

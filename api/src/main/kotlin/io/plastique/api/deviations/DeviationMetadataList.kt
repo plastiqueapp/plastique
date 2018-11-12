@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class DeviationMetadataResponse(
+data class DeviationMetadataList(
     @Json(name = "metadata")
-    val metadata: List<DeviationMetadata>
+    val metadata: List<DeviationMetadataDto>
 )

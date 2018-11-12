@@ -2,10 +2,10 @@ package io.plastique.api.collections
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 
 @JsonClass(generateAdapter = true)
-data class Folder(
+data class FolderDto(
     @Json(name = "folderid")
     val id: String,
 
@@ -16,5 +16,5 @@ data class Folder(
     val size: Int = 0,
 
     @Json(name = "deviations")
-    val deviations: List<Deviation> = emptyList()
+    val deviations: List<DeviationDto> = emptyList()
 )

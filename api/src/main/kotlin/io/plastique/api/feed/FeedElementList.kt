@@ -4,13 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class FeedResult(
-    @Json(name = "cursor")
-    val cursor: String?,
-
+data class FeedElementList(
     @Json(name = "has_more")
     val hasMore: Boolean,
 
+    @Json(name = "cursor")
+    val cursor: String? = null,
+
     @Json(name = "items")
-    val items: List<FeedElement?> = emptyList()
+    val items: List<FeedElementDto?> = emptyList()
 )

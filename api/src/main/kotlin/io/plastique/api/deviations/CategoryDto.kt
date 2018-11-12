@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Category(
+data class CategoryDto(
     @Json(name = "catpath")
     val path: String,
 

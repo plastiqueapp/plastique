@@ -41,7 +41,7 @@ interface CommentService {
     fun postCommentOnDeviation(
         @Path("deviationid") deviationId: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<Comment>
+        @Field("body") text: String): Single<CommentDto>
 
     @POST("comments/post/profile/{username}")
     @FormUrlEncoded
@@ -49,7 +49,7 @@ interface CommentService {
     fun postCommentOnProfile(
         @Path("username") username: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<Comment>
+        @Field("body") text: String): Single<CommentDto>
 
     @POST("comments/post/status/{statusid}")
     @FormUrlEncoded
@@ -57,5 +57,5 @@ interface CommentService {
     fun postCommentOnStatus(
         @Path("statusid") statusId: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<Comment>
+        @Field("body") text: String): Single<CommentDto>
 }

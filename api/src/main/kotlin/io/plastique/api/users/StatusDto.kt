@@ -5,12 +5,12 @@ import com.squareup.moshi.JsonClass
 import org.threeten.bp.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
-data class Status(
+data class StatusDto(
     @Json(name = "statusid")
     val id: String,
 
     @Json(name = "author")
-    val author: User,
+    val author: UserDto,
 
     @Json(name = "body")
     val body: String,

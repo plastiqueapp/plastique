@@ -2,13 +2,13 @@ package io.plastique.api.watch
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.users.User
+import io.plastique.api.users.UserDto
 import org.threeten.bp.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
-data class Watcher(
+data class WatcherDto(
     @Json(name = "user")
-    val user: User,
+    val user: UserDto,
 
     @Json(name = "is_watching")
     val isWatching: Boolean,

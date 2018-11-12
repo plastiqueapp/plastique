@@ -2,7 +2,7 @@ package io.plastique.auth
 
 import com.sch.rxjava2.extensions.sneakyGet
 import io.plastique.api.auth.AuthService
-import io.plastique.api.common.ErrorResponse
+import io.plastique.api.common.ErrorData
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.session.Session
@@ -45,7 +45,7 @@ class SessionManagerImpl @Inject constructor(
             refreshAccessToken(currentSession)
                     .doOnSuccess { session = it }
                     .doOnError { error ->
-                        if (error is ApiResponseException && isTokenInvalidated(error.errorResponse)) {
+                        if (error is ApiResponseException && isTokenInvalidated(error.errorData)) {
                             logout()
                         }
                     }
@@ -68,8 +68,8 @@ class SessionManagerImpl @Inject constructor(
                 .map { result -> Session.Anonymous(accessToken = result.accessToken) }
     }
 
-    private fun isTokenInvalidated(errorResponse: ErrorResponse): Boolean {
-        return errorResponse.errorType != null
+    private fun isTokenInvalidated(errorData: ErrorData): Boolean {
+        return errorData.type != null
     }
 
     private val Session.accessToken: String

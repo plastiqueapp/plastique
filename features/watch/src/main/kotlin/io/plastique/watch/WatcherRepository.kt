@@ -4,6 +4,7 @@ import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.watch.WatchService
+import io.plastique.api.watch.WatcherDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -23,7 +24,6 @@ import io.reactivex.Observable
 import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
-import io.plastique.api.watch.Watcher as WatcherDto
 
 class WatcherRepository @Inject constructor(
     private val database: RoomDatabase,

@@ -1,7 +1,8 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
-import io.plastique.api.deviations.DeviationMetadata
+import io.plastique.api.deviations.DeviationDto
+import io.plastique.api.deviations.DeviationMetadataDto
 import io.plastique.api.deviations.DeviationService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
@@ -20,7 +21,6 @@ import io.reactivex.Single
 import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
-import io.plastique.api.deviations.Deviation as DeviationDto
 
 class DeviationRepository @Inject constructor(
     private val database: RoomDatabase,
@@ -151,7 +151,7 @@ class DeviationRepository @Inject constructor(
                         .map { deviation -> deviation.title })
     }
 
-    private fun getMetadataById(deviationId: String): Single<DeviationMetadata> {
+    private fun getMetadataById(deviationId: String): Single<DeviationMetadataDto> {
         return deviationService.getMetadataByIds(listOf(deviationId))
                 .doOnSuccess { response -> persist(response.metadata) }
                 .flattenAsObservable { response -> response.metadata }
@@ -168,7 +168,7 @@ class DeviationRepository @Inject constructor(
         }
     }
 
-    private fun persist(metadataList: List<DeviationMetadata>) {
+    private fun persist(metadataList: List<DeviationMetadataDto>) {
         val entities = metadataList.map { metadata -> metadata.toDeviationMetadataEntity() }
         deviationMetadataDao.insertOrUpdate(entities)
     }

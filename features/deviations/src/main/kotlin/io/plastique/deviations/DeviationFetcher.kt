@@ -1,7 +1,7 @@
 package io.plastique.deviations
 
 import android.os.Parcelable
-import io.plastique.api.deviations.Deviation
+import io.plastique.api.deviations.DeviationDto
 import io.plastique.core.paging.Cursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
@@ -16,7 +16,7 @@ interface FetchParams : Parcelable {
 }
 
 data class FetchResult<TCursor : Cursor>(
-    val deviations: List<Deviation>,
+    val deviations: List<DeviationDto>,
     val nextCursor: TCursor?,
     val replaceExisting: Boolean
 )

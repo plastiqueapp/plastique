@@ -4,9 +4,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserProfile(
+data class UserProfileDto(
     @Json(name = "user")
-    val user: User,
+    val user: UserDto,
 
     @Json(name = "profile_url")
     val profileUrl: String,

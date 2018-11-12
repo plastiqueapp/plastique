@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class CategoryList(
     @Json(name = "categories")
-    val categories: List<Category>
+    val categories: List<CategoryDto>
 )
