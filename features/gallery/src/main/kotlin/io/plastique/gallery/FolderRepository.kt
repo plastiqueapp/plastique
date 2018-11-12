@@ -11,6 +11,7 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
+import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.util.RxRoom
@@ -60,8 +61,7 @@ class FolderRepository @Inject constructor(
                 offset = offset,
                 limit = FOLDERS_PER_PAGE)
                 .map { folderList ->
-                    val nextCursor = if (folderList.hasMore) OffsetCursor(folderList.nextOffset!!) else null
-                    val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = nextCursor)
+                    val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     val entities = folderList.results.map { folder -> folder.toFolderEntity() }
                     persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)

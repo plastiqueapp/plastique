@@ -49,8 +49,7 @@ class CommentRepository @Inject constructor(
         val offset = cursor?.offset ?: 0
         return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
                 .map { commentList ->
-                    val nextCursor = if (commentList.hasMore) OffsetCursor(commentList.nextOffset!!) else null
-                    val metadata = CommentCacheMetadata(nextCursor)
+                    val metadata = CommentCacheMetadata(commentList.nextCursor)
                     persistComments(threadId.key, commentList, timeProvider.currentInstant, metadata, offset == 0)
                 }
                 .ignoreElement()
@@ -138,3 +137,6 @@ data class CommentCacheMetadata(
     @Json(name = "next_cursor")
     val nextCursor: OffsetCursor? = null
 )
+
+private val CommentList.nextCursor: OffsetCursor?
+    get() = if (hasMore) OffsetCursor(nextOffset!!) else null

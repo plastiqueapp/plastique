@@ -11,6 +11,7 @@ import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
+import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.users.UserRepository
@@ -61,8 +62,7 @@ class WatcherRepository @Inject constructor(
             watchService.getWatchers(offset, WATCHERS_PER_PAGE)
         }
                 .doOnSuccess { watcherList ->
-                    val nextCursor = if (watcherList.hasMore) OffsetCursor(watcherList.nextOffset!!) else null
-                    val cacheMetadata = WatchersCacheMetadata(nextCursor = nextCursor)
+                    val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     persist(watchers = watcherList.results, cacheEntry = cacheEntry, replaceExisting = offset == 0)
                 }

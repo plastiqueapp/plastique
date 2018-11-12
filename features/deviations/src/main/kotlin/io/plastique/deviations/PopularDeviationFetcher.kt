@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.deviations.TimeRange
 import io.plastique.core.paging.OffsetCursor
+import io.plastique.core.paging.nextCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
@@ -46,7 +47,7 @@ class PopularDeviationFetcher @Inject constructor(
                 .map { deviationList ->
                     FetchResult(
                             deviations = deviationList.results,
-                            nextCursor = if (deviationList.hasMore) OffsetCursor(deviationList.nextOffset!!) else null,
+                            nextCursor = deviationList.nextCursor,
                             replaceExisting = offset == 0)
                 }
     }

@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.CollectionService
 import io.plastique.core.paging.OffsetCursor
+import io.plastique.core.paging.nextCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
 import io.plastique.deviations.FetchParams
@@ -48,7 +49,7 @@ class CollectionDeviationFetcher @Inject constructor(
                 .map { deviationList ->
                     FetchResult(
                             deviations = deviationList.results,
-                            nextCursor = if (deviationList.hasMore) OffsetCursor(deviationList.nextOffset!!) else null,
+                            nextCursor = deviationList.nextCursor,
                             replaceExisting = offset == 0)
                 }
     }
