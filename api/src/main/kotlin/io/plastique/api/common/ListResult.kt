@@ -1,10 +1,10 @@
-package io.plastique.api.users
+package io.plastique.api.common
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class WhoisResult(
+data class ListResult<T : Any>(
     @Json(name = "results")
-    val users: List<User>
+    val results: List<T> = emptyList()
 )

@@ -4,7 +4,6 @@ import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.watch.WatchService
-import io.plastique.api.watch.WatcherList
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -23,6 +22,7 @@ import io.reactivex.Observable
 import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
+import io.plastique.api.watch.Watcher as WatcherDto
 
 class WatcherRepository @Inject constructor(
     private val database: RoomDatabase,
@@ -64,7 +64,7 @@ class WatcherRepository @Inject constructor(
                     val nextCursor = if (watcherList.hasMore) OffsetCursor(watcherList.nextOffset!!) else null
                     val cacheMetadata = WatchersCacheMetadata(nextCursor = nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    persist(watcherList = watcherList, cacheEntry = cacheEntry, replaceExisting = offset == 0)
+                    persist(watchers = watcherList.results, cacheEntry = cacheEntry, replaceExisting = offset == 0)
                 }
                 .ignoreElement()
     }
@@ -79,8 +79,8 @@ class WatcherRepository @Inject constructor(
         }.distinctUntilChanged()
     }
 
-    private fun persist(cacheEntry: CacheEntry, watcherList: WatcherList, replaceExisting: Boolean) {
-        val users = watcherList.watchers.map { watcher -> watcher.user.toUserEntity() }
+    private fun persist(cacheEntry: CacheEntry, watchers: List<WatcherDto>, replaceExisting: Boolean) {
+        val users = watchers.map { watcher -> watcher.user.toUserEntity() }
 
         database.runInTransaction {
             userRepository.put(users)
@@ -93,8 +93,8 @@ class WatcherRepository @Inject constructor(
                 watchDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val watchers = watcherList.watchers.map { watcher -> WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = order++) }
-            watchDao.insertWatchers(watchers) // TODO: Handle possible duplicates
+            val watcherEntities = watchers.map { watcher -> WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = order++) }
+            watchDao.insertWatchers(watcherEntities) // TODO: Handle possible duplicates
         }
     }
 

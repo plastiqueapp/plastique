@@ -39,7 +39,7 @@ class DailyDeviationFetcher @Inject constructor(
         return deviationService.getDailyDeviations(date.format(DATE_FORMAT), params.showMatureContent)
                 .map { deviationList ->
                     FetchResult(
-                            deviations = deviationList.deviations,
+                            deviations = deviationList.results,
                             nextCursor = DateCursor(date.minusDays(1)),
                             replaceExisting = cursor == null)
                 }

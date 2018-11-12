@@ -42,7 +42,7 @@ class HotDeviationFetcher @Inject constructor(
                 limit = 50)
                 .map { deviationList ->
                     FetchResult(
-                            deviations = deviationList.deviations,
+                            deviations = deviationList.results,
                             nextCursor = if (deviationList.hasMore) OffsetCursor(deviationList.nextOffset!!) else null,
                             replaceExisting = offset == 0)
                 }

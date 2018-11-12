@@ -1,6 +1,8 @@
 package io.plastique.api.deviations
 
 import androidx.annotation.IntRange
+import io.plastique.api.common.ListResult
+import io.plastique.api.common.PagedListResult
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -12,7 +14,7 @@ interface DeviationService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<DeviationList>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
 
     @GET("browse/popular")
     fun getPopularDeviations(
@@ -20,19 +22,19 @@ interface DeviationService {
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("timerange") timeRange: TimeRange?,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<DeviationList>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
 
     @GET("browse/undiscovered")
     fun getUndiscoveredDeviations(
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("category_path") categoryPath: String?,
-        @Query("mature_content") matureContent: Boolean): Single<DeviationList>
+        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<Deviation>>
 
     @GET("browse/dailydeviations")
     fun getDailyDeviations(
         @Query("date") date: String?,
-        @Query("mature_content") matureContent: Boolean): Single<DeviationList>
+        @Query("mature_content") matureContent: Boolean): Single<ListResult<Deviation>>
 
     @GET("deviation/{deviationId}")
     fun getDeviationById(@Path("deviationId") deviationId: String): Single<Deviation>

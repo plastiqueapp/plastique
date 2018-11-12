@@ -2,7 +2,8 @@ package io.plastique.api.feed
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
-import io.plastique.api.deviations.DeviationList
+import io.plastique.api.common.PagedListResult
+import io.plastique.api.deviations.Deviation
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.FieldMap
@@ -41,7 +42,7 @@ interface FeedService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
         @Query("mature_content") matureContent: Boolean
-    ): Single<DeviationList>
+    ): Single<PagedListResult<Deviation>>
 
     @GET("feed/settings")
     @AccessScope("feed")

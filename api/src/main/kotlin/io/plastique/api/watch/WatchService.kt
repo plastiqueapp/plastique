@@ -1,6 +1,7 @@
 package io.plastique.api.watch
 
 import androidx.annotation.IntRange
+import io.plastique.api.common.PagedListResult
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.FieldMap
@@ -14,13 +15,13 @@ interface WatchService {
     @GET("user/watchers")
     fun getWatchers(
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<WatcherList>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<Watcher>>
 
     @GET("user/watchers/{username}")
     fun getWatchers(
         @Path("username") username: String,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<WatcherList>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<Watcher>>
 
     @POST("user/friends/watch/{username}")
     @FormUrlEncoded

@@ -63,7 +63,7 @@ class FolderRepository @Inject constructor(
                     val nextCursor = if (folderList.hasMore) OffsetCursor(folderList.nextOffset!!) else null
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    val entities = folderList.folders.map { folder -> folder.toFolderEntity() }
+                    val entities = folderList.results.map { folder -> folder.toFolderEntity() }
                     persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
                 }
                 .ignoreElement()

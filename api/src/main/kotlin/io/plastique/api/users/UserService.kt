@@ -2,6 +2,8 @@ package io.plastique.api.users
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.ListResult
+import io.plastique.api.common.PagedListResult
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FieldMap
@@ -21,7 +23,7 @@ interface UserService {
 
     @POST("user/whois")
     @FormUrlEncoded
-    fun whois(@FieldMap usernames: Map<String, String>): Single<WhoisResult>
+    fun whois(@FieldMap usernames: Map<String, String>): Single<ListResult<User>>
 
     @GET("user/statuses/")
     fun getStatuses(
@@ -29,7 +31,7 @@ interface UserService {
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
         @Query("mature_content") matureContent: Boolean
-    ): Single<StatusList>
+    ): Single<PagedListResult<Status>>
 
     @GET("user/statuses/{statusid}")
     fun getStatusById(
