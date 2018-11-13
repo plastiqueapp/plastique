@@ -133,11 +133,10 @@ class DeviationRepository @Inject constructor(
     }
 
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {
-        return RxRoom.createObservable(database, arrayOf("deviations")) {
-            deviationDao.getDeviationWithUsersById(deviationId)
-        }
+        return deviationDao.getDeviationWithUsersById(deviationId)
                 .takeWhile { it.isNotEmpty() }
                 .map { it.first().toDeviation() }
+                .distinctUntilChanged()
     }
 
     private fun getDeviationByIdFromServer(deviationId: String): Single<DeviationDto> {
