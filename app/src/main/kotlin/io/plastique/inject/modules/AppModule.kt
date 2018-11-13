@@ -11,6 +11,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plastique.BuildConfig
+import io.plastique.MainFragmentFactoryImpl
 import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.core.analytics.FirebaseTracker
@@ -24,6 +25,7 @@ import io.plastique.core.session.SessionManager
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.DeviationRepositoryImpl
 import io.plastique.deviations.list.LayoutMode
+import io.plastique.main.MainFragmentFactory
 import io.plastique.users.UserRepository
 import io.plastique.users.UserRepositoryImpl
 import io.plastique.util.NetworkConnectivityMonitor
@@ -49,6 +51,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
 
     @Module
     companion object {

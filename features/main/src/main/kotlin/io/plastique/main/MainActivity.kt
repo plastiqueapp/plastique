@@ -9,23 +9,19 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import io.plastique.collections.CollectionsFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
-import io.plastique.deviations.BrowseDeviationsFragment
-import io.plastique.gallery.GalleryFragment
 import io.plastique.inject.getComponent
-import io.plastique.notifications.NotificationsFragment
-import io.plastique.profile.ProfileFragment
 import io.plastique.util.DragDisabledCallback
 import javax.inject.Inject
 
 class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
+    @Inject lateinit var fragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
@@ -55,7 +51,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.tab_content, BrowseDeviationsFragment())
+                    .replace(R.id.tab_content, fragmentFactory.createFragment(R.id.main_tab_browse))
                     .commit()
         }
     }
@@ -89,15 +85,9 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val ft = supportFragmentManager.beginTransaction()
-        when (item.itemId) {
-            R.id.main_tab_browse -> ft.replace(R.id.tab_content, BrowseDeviationsFragment())
-            R.id.main_tab_collections -> ft.replace(R.id.tab_content, CollectionsFragment.newInstance())
-            R.id.main_tab_profile -> ft.replace(R.id.tab_content, ProfileFragment())
-            R.id.main_tab_gallery -> ft.replace(R.id.tab_content, GalleryFragment.newInstance())
-            R.id.main_tab_notifications -> ft.replace(R.id.tab_content, NotificationsFragment())
-        }
-        ft.commit()
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.tab_content, fragmentFactory.createFragment(item.itemId))
+                .commit()
         return true
     }
 
