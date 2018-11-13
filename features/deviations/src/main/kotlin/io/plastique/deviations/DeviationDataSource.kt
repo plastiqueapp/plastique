@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class DeviationDataSource @Inject constructor(
-    private val deviationRepository: DeviationRepository
+    private val deviationRepository: DeviationRepositoryImpl
 ) : PagedDataSource<List<Deviation>, FetchParams> {
     private val params = AtomicReference<FetchParams>()
     private val nextCursor = AtomicReference<Cursor>()

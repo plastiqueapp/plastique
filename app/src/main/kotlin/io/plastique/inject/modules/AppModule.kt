@@ -21,6 +21,8 @@ import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.SessionManager
+import io.plastique.deviations.DeviationRepository
+import io.plastique.deviations.DeviationRepositoryImpl
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.users.UserRepository
 import io.plastique.users.UserRepositoryImpl
@@ -41,6 +43,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindNetworkConnectivityMonitor(impl: NetworkConnectivityMonitorImpl): NetworkConnectivityMonitor
+
+    @Binds
+    abstract fun bindDeviationRepository(impl: DeviationRepositoryImpl): DeviationRepository
 
     @Binds
     abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository

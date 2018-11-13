@@ -10,7 +10,10 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
+import io.plastique.images.toImage
+import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
+import io.plastique.users.toUser
 import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -22,7 +25,7 @@ import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-class DeviationRepository @Inject constructor(
+class DeviationRepositoryImpl @Inject constructor(
     private val database: RoomDatabase,
     private val deviationDao: DeviationDao,
     private val deviationMetadataDao: DeviationMetadataDao,
@@ -31,7 +34,8 @@ class DeviationRepository @Inject constructor(
     private val fetcherFactory: DeviationFetcherFactory,
     private val timeProvider: TimeProvider,
     private val userRepository: UserRepository
-) {
+) : DeviationRepository {
+
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
         val metadataSerializer = fetcher.createMetadataSerializer()
@@ -125,7 +129,7 @@ class DeviationRepository @Inject constructor(
         }
     }
 
-    fun getDeviationById(deviationId: String): Observable<Deviation> {
+    override fun getDeviationById(deviationId: String): Observable<Deviation> {
         return getDeviationByIdFromDb(deviationId)
                 .switchIfEmpty(getDeviationByIdFromServer(deviationId)
                         .ignoreElement()
@@ -144,7 +148,7 @@ class DeviationRepository @Inject constructor(
                 .doOnSuccess { deviation -> persistDeviation(deviation) }
     }
 
-    fun getDeviationTitleById(deviationId: String): Single<String> {
+    override fun getDeviationTitleById(deviationId: String): Single<String> {
         return Maybe.fromCallable<String> { deviationDao.getDeviationTitleById(deviationId) }
                 .switchIfEmpty(getDeviationByIdFromServer(deviationId)
                         .map { deviation -> deviation.title })
@@ -175,4 +179,25 @@ class DeviationRepository @Inject constructor(
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)
     }
+}
+
+private fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
+        id = deviation.id,
+        title = deviation.title,
+        url = deviation.url,
+        content = deviation.content?.toImage(),
+        preview = deviation.preview?.toImage(),
+        excerpt = deviation.excerpt,
+        author = author.first().toUser(),
+        properties = Deviation.Properties(
+                isDownloadable = deviation.isDownloadable,
+                isFavorite = deviation.isFavorite,
+                isMature = deviation.isMature),
+        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
+
+private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): DailyDeviation {
+    if (giverId != giver.id) {
+        throw IllegalArgumentException("Expected user with id $giverId but got ${giver.id}")
+    }
+    return DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
