@@ -20,7 +20,7 @@ import io.plastique.users.UserEntity
             Index("author_id"),
             Index("daily_deviation_giver_id")
         ])
-class DeviationEntity(
+data class DeviationEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: String,

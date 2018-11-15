@@ -18,7 +18,7 @@ import org.threeten.bp.ZonedDateTime
             Index("author_id"),
             Index("parent_id")
         ])
-class CommentEntity(
+data class CommentEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
     val id: String,
