@@ -57,7 +57,7 @@ class ListImageDeviationItemDelegate(
         val image = chooseImage(item.deviation, holder.maxImageWidth)
         val size = calculateOptimalImageSize(image, holder.maxImageWidth)
         val layoutParams = holder.preview.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = String.format(Locale.US, "%d:%d", size.width, size.height)
+        layoutParams.dimensionRatio = "${size.width}:${size.height}"
 
         GlideApp.with(holder.itemView.context)
                 .load(image.url)
