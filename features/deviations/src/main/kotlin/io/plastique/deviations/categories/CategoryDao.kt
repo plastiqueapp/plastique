@@ -14,13 +14,13 @@ interface CategoryDao {
     fun getSubcategories(path: String): Single<List<CategoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(categories: List<CategoryEntity>)
+    fun insert(categories: Collection<CategoryEntity>)
 
     @Update
-    fun update(categories: List<CategoryEntity>)
+    fun update(categories: Collection<CategoryEntity>)
 
     @Transaction
-    fun insertOrUpdate(categories: List<CategoryEntity>) {
+    fun insertOrUpdate(categories: Collection<CategoryEntity>) {
         update(categories)
         insert(categories)
     }

@@ -13,13 +13,13 @@ interface CollectionDao {
     fun getFoldersByKey(key: String): List<FolderEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertFolders(folders: List<FolderEntity>)
+    fun insertFolders(folders: Collection<FolderEntity>)
 
     @Update
-    fun updateFolders(folders: List<FolderEntity>)
+    fun updateFolders(folders: Collection<FolderEntity>)
 
     @Transaction
-    fun insertOrUpdateFolders(folders: List<FolderEntity>) {
+    fun insertOrUpdateFolders(folders: Collection<FolderEntity>) {
         updateFolders(folders)
         insertFolders(folders)
     }
@@ -31,5 +31,5 @@ interface CollectionDao {
     fun deleteFoldersByKey(key: String)
 
     @Insert
-    fun insertLinks(links: List<FolderLinkage>)
+    fun insertLinks(links: Collection<FolderLinkage>)
 }
