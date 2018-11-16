@@ -30,6 +30,9 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override fun put(users: Collection<UserEntity>) {
+        if (users.isEmpty()) {
+            return
+        }
         userDao.insertOrUpdate(users)
     }
 }
