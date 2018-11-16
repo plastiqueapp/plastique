@@ -19,7 +19,7 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
-import io.plastique.gallery.GalleryEffect.LoadEffect
+import io.plastique.gallery.GalleryEffect.LoadGalleryEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
 import io.plastique.gallery.GalleryEffect.RefreshEffect
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
@@ -76,7 +76,7 @@ class GalleryViewModel @Inject constructor(
                     params = params,
                     contentState = ContentState.Loading,
                     signInNeeded = signInNeeded),
-                    LoadEffect(params))
+                    LoadGalleryEffect(params))
         }
 
         state = loop.loop(stateAndEffects).disposeOnDestroy()
@@ -87,7 +87,7 @@ class GalleryViewModel @Inject constructor(
     }
 
     private fun effectHandler(effects: Observable<GalleryEffect>): Observable<GalleryEvent> {
-        val loadEvents = effects.ofType<LoadEffect>()
+        val loadEvents = effects.ofType<LoadGalleryEffect>()
                 .switchMap { effect ->
                     dataSource.items(effect.params)
                             .bindToLifecycle()
@@ -197,7 +197,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadEffect(state.params))
+            next(state.copy(contentState = ContentState.Loading), LoadGalleryEffect(state.params))
         }
 
         SnackbarShownEvent -> {
@@ -217,7 +217,7 @@ class GalleryStateReducer @Inject constructor(
                     next(state.copy(
                             contentState = ContentState.Loading,
                             signInNeeded = signInNeeded
-                    ), LoadEffect(state.params))
+                    ), LoadGalleryEffect(state.params))
                 }
             } else {
                 next(state)
@@ -232,7 +232,7 @@ class GalleryStateReducer @Inject constructor(
                         contentState = ContentState.Loading,
                         items = emptyList(),
                         galleryItems = emptyList()),
-                        LoadEffect(params))
+                        LoadGalleryEffect(params))
             } else {
                 next(state)
             }
