@@ -1,5 +1,6 @@
 package io.plastique.users
 
+import io.plastique.api.users.UserDto
 import io.reactivex.Single
 
 interface UserRepository {
@@ -7,7 +8,7 @@ interface UserRepository {
 
     fun getUserByName(username: String): Single<User>
 
-    fun put(user: UserEntity)
+    fun put(user: UserDto)
 
-    fun put(users: Collection<UserEntity>)
+    fun put(users: Collection<UserDto>)
 }

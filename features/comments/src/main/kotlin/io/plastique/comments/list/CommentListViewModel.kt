@@ -126,7 +126,7 @@ class CommentListViewModel @Inject constructor(
         val postCommentEvents = effects.ofType<PostCommentEffect>()
                 .flatMapSingle { effect ->
                     commentSender.sendComment(effect.threadId, effect.text, effect.parentCommentId)
-                            .map<CommentListEvent> { CommentPostedEvent }
+                            .toSingleDefault<CommentListEvent>(CommentPostedEvent)
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> PostCommentErrorEvent(error) }
                 }

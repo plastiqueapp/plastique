@@ -14,7 +14,6 @@ import io.plastique.images.toImage
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -108,7 +107,6 @@ class DeviationRepositoryImpl @Inject constructor(
                     }
                 }
                 .distinctBy { user -> user.id }
-                .map { user -> user.toUserEntity() }
                 .toList()
 
         database.runInTransaction {
@@ -163,9 +161,9 @@ class DeviationRepositoryImpl @Inject constructor(
 
     private fun persistDeviation(deviation: DeviationDto) {
         database.runInTransaction {
-            userRepository.put(deviation.author.toUserEntity())
+            userRepository.put(deviation.author)
             deviation.dailyDeviation?.run {
-                userRepository.put(giver.toUserEntity())
+                userRepository.put(giver)
             }
             deviationDao.insertOrUpdate(deviation.toDeviationEntity())
         }

@@ -1,5 +1,6 @@
 package io.plastique.users
 
+import io.plastique.api.users.UserDto
 import io.plastique.api.users.UserService
 import io.reactivex.Single
 import javax.inject.Inject
@@ -11,7 +12,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getCurrentUser(accessToken: String): Single<User> {
         return userService.whoami(accessToken)
-                .map { user -> user.toUserEntity().also { put(it) }.toUser() }
+                .map { user -> user.toUserEntity().also { userDao.insertOrUpdate(it) }.toUser() }
     }
 
     override fun getUserByName(username: String): Single<User> {
@@ -22,17 +23,17 @@ class UserRepositoryImpl @Inject constructor(
 
     private fun getUserByNameFromServer(username: String): Single<UserEntity> {
         return userService.getUserProfile(username)
-                .map { userProfile -> userProfile.user.toUserEntity().also { put(it) } }
+                .map { userProfile -> userProfile.user.toUserEntity().also { userDao.insertOrUpdate(it) } }
     }
 
-    override fun put(user: UserEntity) {
-        userDao.insertOrUpdate(user)
+    override fun put(user: UserDto) {
+        userDao.insertOrUpdate(user.toUserEntity())
     }
 
-    override fun put(users: Collection<UserEntity>) {
+    override fun put(users: Collection<UserDto>) {
         if (users.isEmpty()) {
             return
         }
-        userDao.insertOrUpdate(users)
+        userDao.insertOrUpdate(users.map { it.toUserEntity() })
     }
 }

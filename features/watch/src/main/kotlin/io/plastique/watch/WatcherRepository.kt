@@ -16,7 +16,6 @@ import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.users.UserRepository
-import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -80,7 +79,7 @@ class WatcherRepository @Inject constructor(
     }
 
     private fun persist(cacheEntry: CacheEntry, watchers: List<WatcherDto>, replaceExisting: Boolean) {
-        val users = watchers.map { watcher -> watcher.user.toUserEntity() }
+        val users = watchers.map { watcher -> watcher.user }
 
         database.runInTransaction {
             userRepository.put(users)

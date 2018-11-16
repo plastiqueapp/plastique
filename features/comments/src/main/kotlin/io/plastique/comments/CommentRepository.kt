@@ -15,7 +15,6 @@ import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserRepository
-import io.plastique.users.toUserEntity
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -90,7 +89,7 @@ class CommentRepository @Inject constructor(
 
     private fun persistComments(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {
         val users = commentList.comments.asSequence()
-                .map { comment -> comment.author.toUserEntity() }
+                .map { comment -> comment.author }
                 .distinctBy { user -> user.id }
                 .toList()
 
@@ -112,14 +111,12 @@ class CommentRepository @Inject constructor(
         }
     }
 
-    fun persistComment(comment: CommentDto): Comment {
+    fun persistComment(comment: CommentDto) {
         val commentEntity = comment.toCommentEntity()
-        val authorEntity = comment.author.toUserEntity()
         database.runInTransaction {
-            userRepository.put(authorEntity)
+            userRepository.put(comment.author)
             commentDao.insertOrUpdate(commentEntity)
         }
-        return commentEntity.toComment(authorEntity)
     }
 
     private fun isIgnoredComment(comment: CommentEntity): Boolean =
