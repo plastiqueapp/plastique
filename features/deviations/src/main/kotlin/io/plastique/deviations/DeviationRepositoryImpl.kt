@@ -54,6 +54,30 @@ class DeviationRepositoryImpl @Inject constructor(
         return fetch(fetcher, fetcher.getCacheKey(params), params, cursor)
     }
 
+    override fun put(deviations: Collection<DeviationDto>) {
+        if (deviations.isEmpty()) {
+            return
+        }
+
+        val users = deviations.asSequence()
+                .flatMap { deviation ->
+                    val dailyDeviation = deviation.dailyDeviation
+                    if (dailyDeviation != null) {
+                        sequenceOf(deviation.author, dailyDeviation.giver)
+                    } else {
+                        sequenceOf(deviation.author)
+                    }
+                }
+                .distinctBy { user -> user.id }
+                .toList()
+        val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
+
+        database.runInTransaction {
+            userRepository.put(users)
+            deviationDao.insertOrUpdate(deviationEntities)
+        }
+    }
+
     private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: String, params: FetchParams, cursor: Cursor? = null): Completable {
         return fetcher.fetch(params, cursor)
                 .doOnSuccess { fetchResult ->
@@ -96,22 +120,8 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     private fun persist(cacheEntry: CacheEntry, deviations: List<DeviationDto>, replaceExisting: Boolean) {
-        val entities = deviations.map { deviation -> deviation.toDeviationEntity() }
-        val users = deviations.asSequence()
-                .flatMap { deviation ->
-                    val dailyDeviation = deviation.dailyDeviation
-                    if (dailyDeviation != null) {
-                        sequenceOf(deviation.author, dailyDeviation.giver)
-                    } else {
-                        sequenceOf(deviation.author)
-                    }
-                }
-                .distinctBy { user -> user.id }
-                .toList()
-
         database.runInTransaction {
-            userRepository.put(users)
-            deviationDao.insertOrUpdate(entities)
+            put(deviations)
             cacheEntryRepository.setEntry(cacheEntry)
 
             var order = if (replaceExisting) {
