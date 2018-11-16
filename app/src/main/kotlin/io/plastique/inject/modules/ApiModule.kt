@@ -12,6 +12,7 @@ import io.plastique.api.deviations.DeviationService
 import io.plastique.api.feed.FeedElementDto
 import io.plastique.api.feed.FeedService
 import io.plastique.api.gallery.GalleryService
+import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.FallbackJsonAdapterFactory
@@ -95,6 +96,10 @@ object ApiModule {
                         .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementDto.TYPE_JOURNAL_SUBMITTED)
                         .withSubtype(FeedElementDto.StatusUpdate::class.java, FeedElementDto.TYPE_STATUS_UPDATE)
                         .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementDto.TYPE_USERNAME_CHANGE))
+                .add(FallbackJsonAdapterFactory(StatusDto.EmbeddedItem::class.java, StatusDto.EmbeddedItem.Unknown))
+                .add(PolymorphicJsonAdapterFactory.of(StatusDto.EmbeddedItem::class.java, "type")
+                        .withSubtype(StatusDto.EmbeddedItem.SharedDeviation::class.java, StatusDto.EmbeddedItem.TYPE_DEVIATION)
+                        .withSubtype(StatusDto.EmbeddedItem.SharedStatus::class.java, StatusDto.EmbeddedItem.TYPE_STATUS))
                 .build()
     }
 }
