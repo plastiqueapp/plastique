@@ -228,9 +228,10 @@ class GalleryStateReducer @Inject constructor(
             if (state.params.matureContent != event.showMature) {
                 val params = state.params.copy(matureContent = event.showMature)
                 next(state.copy(
+                        params = params,
                         contentState = ContentState.Loading,
                         items = emptyList(),
-                        params = params),
+                        galleryItems = emptyList()),
                         LoadEffect(params))
             } else {
                 next(state)
