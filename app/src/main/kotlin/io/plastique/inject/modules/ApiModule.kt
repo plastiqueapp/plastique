@@ -14,7 +14,7 @@ import io.plastique.api.feed.FeedService
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
-import io.plastique.core.adapters.NullFallbackJsonAdapterFactory
+import io.plastique.core.adapters.FallbackJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.StringCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
@@ -88,12 +88,13 @@ object ApiModule {
                 .add(ZonedDateTimeAdapter(dateTimeFormatter))
                 .add(OffsetCursorAdapter())
                 .add(StringCursorAdapter())
-                .add(NullFallbackJsonAdapterFactory(PolymorphicJsonAdapterFactory.of(FeedElementDto::class.java, "type")
+                .add(FallbackJsonAdapterFactory(FeedElementDto::class.java, FeedElementDto.Unknown))
+                .add(PolymorphicJsonAdapterFactory.of(FeedElementDto::class.java, "type")
                         .withSubtype(FeedElementDto.CollectionUpdate::class.java, FeedElementDto.TYPE_COLLECTION_UPDATE)
                         .withSubtype(FeedElementDto.DeviationSubmitted::class.java, FeedElementDto.TYPE_DEVIATION_SUBMITTED)
                         .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementDto.TYPE_JOURNAL_SUBMITTED)
-                        .withSubtype(FeedElementDto.Status::class.java, FeedElementDto.TYPE_STATUS)
-                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementDto.TYPE_USERNAME_CHANGE)))
+                        .withSubtype(FeedElementDto.StatusUpdate::class.java, FeedElementDto.TYPE_STATUS_UPDATE)
+                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementDto.TYPE_USERNAME_CHANGE))
                 .build()
     }
 }

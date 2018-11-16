@@ -72,7 +72,7 @@ sealed class FeedElementDto {
     ) : FeedElementDto()
 
     @JsonClass(generateAdapter = true)
-    data class Status(
+    data class StatusUpdate(
         @Json(name = "ts")
         override val timestamp: ZonedDateTime,
 
@@ -95,11 +95,19 @@ sealed class FeedElementDto {
         val formerName: String
     ) : FeedElementDto()
 
+    object Unknown : FeedElementDto() {
+        override val timestamp: ZonedDateTime
+            get() = throw NotImplementedError()
+
+        override val user: UserDto
+            get() = throw NotImplementedError()
+    }
+
     companion object {
         const val TYPE_COLLECTION_UPDATE = "collection_update"
         const val TYPE_DEVIATION_SUBMITTED = "deviation_submitted"
         const val TYPE_JOURNAL_SUBMITTED = "journal_submitted"
-        const val TYPE_STATUS = "status"
+        const val TYPE_STATUS_UPDATE = "status"
         const val TYPE_USERNAME_CHANGE = "username_change"
     }
 }

@@ -12,5 +12,5 @@ data class FeedElementList(
     val cursor: String? = null,
 
     @Json(name = "items")
-    val items: List<FeedElementDto?> = emptyList()
+    val items: List<FeedElementDto> = emptyList()
 )
