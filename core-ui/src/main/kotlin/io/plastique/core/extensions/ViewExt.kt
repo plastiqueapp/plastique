@@ -30,7 +30,7 @@ fun AppBarLayout.invalidateScrollRanges() {
         }
     }
     try {
-        METHOD_INVALIDATE_SCROLL_RANGES!!.invoke(this)
+        METHOD_INVALIDATE_SCROLL_RANGES!!(this)
     } catch (e: IllegalAccessException) {
         throw RuntimeException(e)
     } catch (e: InvocationTargetException) {
