@@ -1,6 +1,7 @@
 package io.plastique.users
 
 import android.text.TextUtils
+import androidx.core.text.HtmlCompat
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
@@ -22,7 +23,6 @@ import io.plastique.users.UserProfileEvent.RetryClickEvent
 import io.plastique.users.UserProfileEvent.SnackbarShownEvent
 import io.plastique.users.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
-import io.plastique.util.HtmlCompat
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
@@ -82,7 +82,7 @@ class UserProfileViewModel @Inject constructor(
 
     private fun getErrorState(error: Throwable): EmptyState = when (error) {
         is NoSuchUserException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username))))
+                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username)), 0))
         else -> errorMessageProvider.getErrorState(error)
     }
 

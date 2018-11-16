@@ -1,6 +1,7 @@
 package io.plastique.collections
 
 import android.text.TextUtils
+import androidx.core.text.HtmlCompat
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
@@ -36,7 +37,6 @@ import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.inject.scopes.FragmentScope
-import io.plastique.util.HtmlCompat
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import timber.log.Timber
@@ -127,7 +127,7 @@ class CollectionsViewModel @Inject constructor(
 
     private fun getErrorState(error: Throwable, username: String?): EmptyState = when (error) {
         is ApiResponseException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username))))
+                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username)), 0))
         else -> errorMessageProvider.getErrorState(error)
     }
 
@@ -146,7 +146,7 @@ class CollectionsStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = if (state.params.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.collections_message_empty_user_collection, TextUtils.htmlEncode(state.params.username)))
+                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.collections_message_empty_user_collection, TextUtils.htmlEncode(state.params.username)), 0)
                 } else {
                     resourceProvider.getString(R.string.collections_message_empty_collection)
                 }

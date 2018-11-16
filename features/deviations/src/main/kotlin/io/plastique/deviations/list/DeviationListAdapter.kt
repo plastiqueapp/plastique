@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -20,7 +21,6 @@ import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideApp
 import io.plastique.images.Image
-import io.plastique.util.HtmlCompat
 import io.plastique.util.Size
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
@@ -178,7 +178,7 @@ class ListLiteratureDeviationItemDelegate(
         }
 
         holder.title.text = item.deviation.title
-        holder.excerpt.text = HtmlCompat.fromHtml(item.deviation.excerpt!!)
+        holder.excerpt.text = HtmlCompat.fromHtml(item.deviation.excerpt!!, 0)
     }
 
     class ViewHolder(

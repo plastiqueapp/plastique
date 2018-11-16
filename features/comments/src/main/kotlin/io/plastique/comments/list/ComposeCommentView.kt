@@ -13,9 +13,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import io.plastique.comments.R
 import io.plastique.core.extensions.doAfterTextChanged
-import io.plastique.util.HtmlCompat
 
 class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val draftView: EditText
@@ -93,7 +93,7 @@ class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     private fun formatReplyingToText(username: String): CharSequence {
-        return HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to, username))
+        return HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to, username), 0)
     }
 
     companion object {

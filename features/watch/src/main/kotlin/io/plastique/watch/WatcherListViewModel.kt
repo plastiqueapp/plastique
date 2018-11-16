@@ -1,6 +1,7 @@
 package io.plastique.watch
 
 import android.text.TextUtils
+import androidx.core.text.HtmlCompat
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
@@ -19,7 +20,6 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
-import io.plastique.util.HtmlCompat
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.watch.WatcherListEffect.LoadMoreEffect
@@ -144,7 +144,7 @@ class WatcherListStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = if (state.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.watch_message_empty, TextUtils.htmlEncode(state.username)))
+                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.watch_message_empty, TextUtils.htmlEncode(state.username)), 0)
                 } else {
                     resourceProvider.getString(R.string.watch_message_empty_current_user)
                 }
@@ -237,7 +237,7 @@ class WatcherListStateReducer @Inject constructor(
 
     private fun getErrorState(error: Throwable, username: String?): EmptyState = when (error) {
         is ApiResponseException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username))))
+                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username)), 0))
         else -> errorMessageProvider.getErrorState(error)
     }
 }

@@ -1,8 +1,8 @@
 package io.plastique.comments.list
 
+import androidx.core.text.HtmlCompat
 import io.plastique.comments.Comment
 import io.plastique.users.User
-import io.plastique.util.HtmlCompat
 import org.threeten.bp.ZonedDateTime
 
 data class CommentUiModel(
@@ -24,7 +24,7 @@ fun Comment.toCommentUiModel(parent: Comment?): CommentUiModel {
     return CommentUiModel(
             id = id,
             datePosted = datePosted,
-            text = HtmlCompat.fromHtml(text),
+            text = HtmlCompat.fromHtml(text, 0),
             author = author,
             parentId = parentId,
             parentAuthorName = parent?.author?.name)

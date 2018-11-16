@@ -1,6 +1,7 @@
 package io.plastique.gallery
 
 import android.text.TextUtils
+import androidx.core.text.HtmlCompat
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
@@ -36,7 +37,6 @@ import io.plastique.gallery.GalleryEvent.SessionChangedEvent
 import io.plastique.gallery.GalleryEvent.ShowMatureChangedEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.inject.scopes.FragmentScope
-import io.plastique.util.HtmlCompat
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import timber.log.Timber
@@ -141,7 +141,7 @@ class GalleryStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = if (state.params.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection, TextUtils.htmlEncode(state.params.username)))
+                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection, TextUtils.htmlEncode(state.params.username)), 0)
                 } else {
                     resourceProvider.getString(R.string.gallery_message_empty_collection)
                 }
@@ -158,7 +158,7 @@ class GalleryStateReducer @Inject constructor(
         is LoadErrorEvent -> {
             val errorState = when (event.error) {
                 is ApiResponseException -> EmptyState(
-                        message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(event.username))))
+                        message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(event.username)), 0))
                 else -> errorMessageProvider.getErrorState(event.error)
             }
             next(state.copy(
