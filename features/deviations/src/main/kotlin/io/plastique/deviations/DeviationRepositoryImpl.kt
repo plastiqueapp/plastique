@@ -1,6 +1,7 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
+import io.plastique.api.deviations.DailyDeviationDto
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationMetadataDto
 import io.plastique.api.deviations.DeviationService
@@ -11,6 +12,7 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.images.toImage
+import io.plastique.images.toImageEntity
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
@@ -188,6 +190,22 @@ class DeviationRepositoryImpl @Inject constructor(
         private val CACHE_DURATION = Duration.ofHours(1)
     }
 }
+
+private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
+        id = id,
+        title = title,
+        url = url,
+        authorId = author.id,
+        isDownloadable = isDownloadable,
+        isFavorite = isFavorite,
+        isMature = isMature,
+        content = content?.toImageEntity(),
+        preview = preview?.toImageEntity(),
+        excerpt = excerpt,
+        dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
+
+private fun DailyDeviationDto.toDailyDeviationEntity(): DailyDeviationEntity =
+        DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
 private fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
         id = deviation.id,

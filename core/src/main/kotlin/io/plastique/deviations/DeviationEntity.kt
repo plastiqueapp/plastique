@@ -6,10 +6,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.plastique.api.deviations.DeviationDto
 import io.plastique.images.ImageEntity
-import io.plastique.images.toImageEntity
 import io.plastique.users.UserEntity
+import org.threeten.bp.ZonedDateTime
 
 @Entity(tableName = "deviations",
         foreignKeys = [
@@ -56,15 +55,13 @@ data class DeviationEntity(
     val authorId: String
 )
 
-fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
-        id = id,
-        title = title,
-        url = url,
-        authorId = author.id,
-        isDownloadable = isDownloadable,
-        isFavorite = isFavorite,
-        isMature = isMature,
-        content = content?.toImageEntity(),
-        preview = preview?.toImageEntity(),
-        excerpt = excerpt,
-        dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
+data class DailyDeviationEntity(
+    @ColumnInfo(name = "body")
+    val body: String,
+
+    @ColumnInfo(name = "date")
+    val date: ZonedDateTime,
+
+    @ColumnInfo(name = "giver_id")
+    val giverId: String
+)
