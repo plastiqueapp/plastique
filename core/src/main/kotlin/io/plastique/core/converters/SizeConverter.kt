@@ -9,7 +9,7 @@ class SizeConverter {
         val parts = string.split('x')
         val width = parts[0].toInt()
         val height = parts[1].toInt()
-        return Size.of(width, height)
+        return Size(width, height)
     }
 
     @TypeConverter

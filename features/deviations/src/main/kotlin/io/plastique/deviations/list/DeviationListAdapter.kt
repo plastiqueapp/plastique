@@ -80,7 +80,7 @@ class ListImageDeviationItemDelegate(
             aspectRatio = min(aspectRatio, MAX_ASPECT_RATIO)
             imageWidth = min(imageWidth, maxImageWidth)
             imageHeight = (imageWidth * aspectRatio).toInt()
-            return Size.of(imageWidth, imageHeight)
+            return Size(imageWidth, imageHeight)
         }
         return image.size
     }

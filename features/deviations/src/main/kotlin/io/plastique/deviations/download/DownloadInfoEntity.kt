@@ -30,5 +30,5 @@ data class DownloadInfoEntity(
 fun DownloadInfoDto.toDownloadInfoEntity(deviationId: String): DownloadInfoEntity = DownloadInfoEntity(
         deviationId = deviationId,
         downloadUrl = url,
-        size = Size.of(width, height),
+        size = Size(width, height),
         fileSize = fileSize)

@@ -12,4 +12,4 @@ data class ImageEntity(
     val url: String
 )
 
-fun ImageDto.toImageEntity(): ImageEntity = ImageEntity(size = Size.of(width, height), url = url)
+fun ImageDto.toImageEntity(): ImageEntity = ImageEntity(size = Size(width, height), url = url)

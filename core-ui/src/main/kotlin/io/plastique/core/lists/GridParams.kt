@@ -25,7 +25,7 @@ object GridParamsCalculator {
         val excessWidth = width - columnCount * itemWidth - (columnCount - 1) * itemSpacing
         return GridParams(
                 columnCount = columnCount,
-                itemSize = Size.of(itemWidth, itemHeight),
+                itemSize = Size(itemWidth, itemHeight),
                 excessSpace = excessWidth)
     }
 }
