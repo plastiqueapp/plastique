@@ -112,6 +112,7 @@ dependencies {
     implementation project(":features:collections")
     implementation project(":features:comments")
     implementation project(":features:deviations")
+    implementation project(":features:feed")
     implementation project(":features:gallery")
     implementation project(":features:main")
     implementation project(":features:notifications")
