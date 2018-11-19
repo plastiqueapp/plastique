@@ -122,6 +122,7 @@ dependencies {
     implementation project(":features:watch")
 
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
+    implementation "com.jakewharton:process-phoenix:$versions.processPhoenix"
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     implementation "io.requery:sqlite-android:$versions.sqlite"
 

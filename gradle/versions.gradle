@@ -37,6 +37,7 @@ ext.versions = [
         crashlytics          : "2.9.6",
         permissionsDispatcher: "4.0.0",
         photoView            : "2.2.0",
+        processPhoenix       : "2.0.0",
         rxjava               : "2.2.3",
         rxandroid            : "2.1.0",
         rxkotlin             : "2.3.0",
