@@ -45,6 +45,7 @@ import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.core.text.RichTextFormatter
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.NetworkConnectionState
@@ -61,6 +62,7 @@ class CommentListViewModel @Inject constructor(
     private val commentSender: CommentSender,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val deviationRepository: DeviationRepository,
+    private val richTextFormatter: RichTextFormatter,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
@@ -156,6 +158,19 @@ class CommentListViewModel @Inject constructor(
             val parent = comment.parentId?.let { commentsById[it] }
             comment.toCommentUiModel(parent)
         }
+    }
+
+    private fun Comment.toCommentUiModel(parent: Comment?): CommentUiModel {
+        if (parentId != parent?.id) {
+            throw IllegalArgumentException("Expected parent comment with id $parentId but got ${parent?.id}")
+        }
+        return CommentUiModel(
+                id = id,
+                datePosted = datePosted,
+                text = richTextFormatter.format(text),
+                author = author,
+                parentId = parentId,
+                parentAuthorName = parent?.author?.name)
     }
 
     companion object {
