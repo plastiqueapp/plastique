@@ -14,29 +14,29 @@ data class DeviationDto(
     val title: String,
 
     @Json(name = "url")
-    var url: String,
+    val url: String,
 
     @Json(name = "is_downloadable")
-    var isDownloadable: Boolean = false,
+    val isDownloadable: Boolean = false,
 
     @Json(name = "is_favourited")
-    var isFavorite: Boolean = false,
+    val isFavorite: Boolean = false,
 
     @Json(name = "is_mature")
-    var isMature: Boolean = false,
+    val isMature: Boolean = false,
 
     @Json(name = "content")
-    var content: ImageDto? = null,
+    val content: ImageDto? = null,
 
     @Json(name = "preview")
-    var preview: ImageDto? = null,
+    val preview: ImageDto? = null,
 
     @Json(name = "excerpt")
-    var excerpt: String? = null,
+    val excerpt: String? = null,
 
     @Json(name = "author")
-    var author: UserDto,
+    val author: UserDto,
 
     @Json(name = "daily_deviation")
-    var dailyDeviation: DailyDeviationDto? = null
+    val dailyDeviation: DailyDeviationDto? = null
 )

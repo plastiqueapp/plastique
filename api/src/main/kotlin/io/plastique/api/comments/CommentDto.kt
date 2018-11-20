@@ -26,5 +26,5 @@ data class CommentDto(
     val text: String,
 
     @Json(name = "user")
-    var author: UserDto
+    val author: UserDto
 )

@@ -14,5 +14,5 @@ data class DailyDeviationDto(
     val date: ZonedDateTime,
 
     @Json(name = "giver")
-    var giver: UserDto
+    val giver: UserDto
 )
