@@ -21,7 +21,8 @@ data class Deviation(
     data class Properties(
         val isDownloadable: Boolean,
         val isFavorite: Boolean,
-        val isMature: Boolean
+        val isMature: Boolean,
+        val allowsComments: Boolean
     )
 }
 

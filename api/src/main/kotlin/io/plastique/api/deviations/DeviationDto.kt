@@ -25,6 +25,9 @@ data class DeviationDto(
     @Json(name = "is_mature")
     val isMature: Boolean = false,
 
+    @Json(name = "allows_comments")
+    val allowsComments: Boolean = true,
+
     @Json(name = "content")
     val content: ImageDto? = null,
 

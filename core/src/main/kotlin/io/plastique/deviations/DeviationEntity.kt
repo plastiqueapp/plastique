@@ -39,6 +39,9 @@ data class DeviationEntity(
     @ColumnInfo(name = "is_mature")
     val isMature: Boolean,
 
+    @ColumnInfo(name = "allows_comments")
+    val allowsComments: Boolean,
+
     @Embedded(prefix = "content_")
     val content: ImageEntity? = null,
 
