@@ -17,6 +17,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
@@ -108,7 +109,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
 
         val viewCommentsButton = findViewById<TextView>(R.id.button_view_comments)
-        viewCommentsButton.setOnClickListener { navigator.openCommentsForDeviation(navigationContext, deviationId) }
+        viewCommentsButton.setOnClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
 
         viewModel.init(deviationId)
         observeState()

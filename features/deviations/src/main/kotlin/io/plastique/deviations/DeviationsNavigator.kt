@@ -1,9 +1,10 @@
 package io.plastique.deviations
 
+import io.plastique.comments.CommentThreadId
 import io.plastique.core.navigation.NavigationContext
 
 interface DeviationsNavigator {
-    fun openCommentsForDeviation(navigationContext: NavigationContext, deviationId: String)
+    fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId)
 
     fun openDeviation(navigationContext: NavigationContext, deviationId: String)
 

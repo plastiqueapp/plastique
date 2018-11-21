@@ -47,12 +47,8 @@ class Navigator @Inject constructor() :
         navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, folderId, folderName))
     }
 
-    override fun openCommentsForDeviation(navigationContext: NavigationContext, deviationId: String) {
-        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentThreadId.Deviation(deviationId)))
-    }
-
-    override fun openCommentsForUserProfile(navigationContext: NavigationContext, username: String) {
-        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, CommentThreadId.Profile(username)))
+    override fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId) {
+        navigationContext.startActivity(CommentListActivity.createIntent(navigationContext.context, threadId))
     }
 
     override fun openDeviation(navigationContext: NavigationContext, deviationId: String) {

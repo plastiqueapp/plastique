@@ -37,7 +37,7 @@ class CommentRepository @Inject constructor(
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
-        val cacheKey = threadId.key
+        val cacheKey = threadId.cacheKey
         return cacheHelper.createObservable(
                 cacheKey = cacheKey,
                 cachedData = getCommentsFromDb(cacheKey),
@@ -49,7 +49,7 @@ class CommentRepository @Inject constructor(
         return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
                 .map { commentList ->
                     val metadata = CommentCacheMetadata(commentList.nextCursor)
-                    persistComments(threadId.key, commentList, timeProvider.currentInstant, metadata, offset == 0)
+                    persistComments(threadId.cacheKey, commentList, timeProvider.currentInstant, metadata, offset == 0)
                 }
                 .ignoreElement()
 
@@ -137,3 +137,10 @@ data class CommentCacheMetadata(
 
 private val CommentList.nextCursor: OffsetCursor?
     get() = if (hasMore) OffsetCursor(nextOffset!!) else null
+
+private val CommentThreadId.cacheKey: String
+    get() = when (this) {
+        is CommentThreadId.Deviation -> "comments-deviation-$deviationId"
+        is CommentThreadId.Profile -> "comments-profile-$username"
+        is CommentThreadId.Status -> "comments-status-$statusId"
+    }

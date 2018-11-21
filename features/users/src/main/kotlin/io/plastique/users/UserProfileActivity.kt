@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
@@ -130,7 +131,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             true
         }
         R.id.users_action_view_comments -> {
-            navigator.openCommentsForUserProfile(navigationContext, username)
+            navigator.openComments(navigationContext, CommentThreadId.Profile(username))
             true
         }
         R.id.users_action_copy_profile_link -> {
