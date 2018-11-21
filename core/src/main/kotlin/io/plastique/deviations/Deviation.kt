@@ -13,10 +13,17 @@ data class Deviation(
     val excerpt: String?,
     val author: User,
     val properties: Properties,
+    val stats: Stats,
     val dailyDeviation: DailyDeviation?
 ) {
     val isLiterature: Boolean
         get() = excerpt != null
+
+    data class DailyDeviation(
+        val body: String,
+        val date: ZonedDateTime,
+        val giver: User
+    )
 
     data class Properties(
         val isDownloadable: Boolean,
@@ -24,10 +31,9 @@ data class Deviation(
         val isMature: Boolean,
         val allowsComments: Boolean
     )
-}
 
-data class DailyDeviation(
-    val body: String,
-    val date: ZonedDateTime,
-    val giver: User
-)
+    data class Stats(
+        val comments: Int,
+        val favorites: Int
+    )
+}

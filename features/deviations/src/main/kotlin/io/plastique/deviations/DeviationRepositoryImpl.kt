@@ -1,7 +1,6 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
-import io.plastique.api.deviations.DailyDeviationDto
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationMetadataDto
 import io.plastique.api.deviations.DeviationService
@@ -196,16 +195,18 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
         title = title,
         url = url,
         authorId = author.id,
-        isDownloadable = isDownloadable,
-        isFavorite = isFavorite,
-        isMature = isMature,
-        allowsComments = allowsComments,
         content = content?.toImageEntity(),
         preview = preview?.toImageEntity(),
         excerpt = excerpt,
+        properties = DeviationPropertiesEntity(
+                isDownloadable = isDownloadable,
+                isFavorite = isFavorite,
+                isMature = isMature,
+                allowsComments = allowsComments),
+        stats = DeviationStatsEntity(comments = stats.comments, favorites = stats.favorites),
         dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
 
-private fun DailyDeviationDto.toDailyDeviationEntity(): DailyDeviationEntity =
+private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
         DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
 private fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
@@ -216,16 +217,19 @@ private fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
         preview = deviation.preview?.toImage(),
         excerpt = deviation.excerpt,
         author = author.first().toUser(),
-        properties = Deviation.Properties(
-                isDownloadable = deviation.isDownloadable,
-                isFavorite = deviation.isFavorite,
-                isMature = deviation.isMature,
-                allowsComments = deviation.allowsComments),
+        properties = deviation.properties.toDeviationProperties(),
+        stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
         dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
 
-private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): DailyDeviation {
+private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
     if (giverId != giver.id) {
         throw IllegalArgumentException("Expected user with id $giverId but got ${giver.id}")
     }
-    return DailyDeviation(body = body, date = date, giver = giver.toUser())
+    return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
+
+private fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
+        isDownloadable = isDownloadable,
+        isFavorite = isFavorite,
+        isMature = isMature,
+        allowsComments = allowsComments)

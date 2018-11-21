@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.common.ImageDto
 import io.plastique.api.users.UserDto
+import org.threeten.bp.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
 data class DeviationDto(
@@ -40,6 +41,30 @@ data class DeviationDto(
     @Json(name = "author")
     val author: UserDto,
 
+    @Json(name = "stats")
+    val stats: Stats,
+
     @Json(name = "daily_deviation")
-    val dailyDeviation: DailyDeviationDto? = null
-)
+    val dailyDeviation: DailyDeviation? = null
+) {
+    @JsonClass(generateAdapter = true)
+    data class DailyDeviation(
+        @Json(name = "body")
+        val body: String,
+
+        @Json(name = "time")
+        val date: ZonedDateTime,
+
+        @Json(name = "giver")
+        val giver: UserDto
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class Stats(
+        @Json(name = "comments")
+        val comments: Int,
+
+        @Json(name = "favourites")
+        val favorites: Int
+    )
+}
