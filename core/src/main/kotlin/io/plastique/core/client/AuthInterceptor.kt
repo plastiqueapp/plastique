@@ -14,7 +14,7 @@ class AuthInterceptor @Inject constructor(
     private val accessTokenProvider: AccessTokenProvider
 ) : Authenticator, Interceptor {
 
-    private val accessTokenAppender: AccessTokenAppender = if (BuildConfig.DEBUG) DebugAccessTokenAppender() else ReleaseAccessTokenAppender()
+    private val accessTokenAppender: AccessTokenAppender = if (BuildConfig.DEBUG) UrlAccessTokenAppender() else HeaderAccessTokenAppender()
 
     override fun authenticate(route: Route?, response: Response): Request? {
         // Stop if previous attempt has failed

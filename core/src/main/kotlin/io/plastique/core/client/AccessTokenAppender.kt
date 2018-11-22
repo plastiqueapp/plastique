@@ -8,7 +8,19 @@ interface AccessTokenAppender {
     fun append(accessToken: String, request: Request, builder: Request.Builder)
 }
 
-class DebugAccessTokenAppender : AccessTokenAppender {
+class HeaderAccessTokenAppender : AccessTokenAppender {
+    override fun hasAccessToken(request: Request): Boolean {
+        return request.header(HttpHeaders.AUTHORIZATION) != null
+    }
+
+    override fun append(accessToken: String, request: Request, builder: Request.Builder) {
+        if (!hasAccessToken(request)) {
+            builder.header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+        }
+    }
+}
+
+class UrlAccessTokenAppender : AccessTokenAppender {
     override fun hasAccessToken(request: Request): Boolean {
         return request.url().queryParameter("access_token") != null
     }
@@ -20,18 +32,6 @@ class DebugAccessTokenAppender : AccessTokenAppender {
                     .addQueryParameter("access_token", accessToken)
                     .build()
             builder.url(url)
-        }
-    }
-}
-
-class ReleaseAccessTokenAppender : AccessTokenAppender {
-    override fun hasAccessToken(request: Request): Boolean {
-        return request.header(HttpHeaders.AUTHORIZATION) != null
-    }
-
-    override fun append(accessToken: String, request: Request, builder: Request.Builder) {
-        if (!hasAccessToken(request)) {
-            builder.header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
         }
     }
 }
