@@ -38,20 +38,21 @@ class SessionManagerImpl @Inject constructor(
         sessionSubject.onNext(session)
     }
 
-    @Synchronized
-    override fun getAccessToken(refresh: Boolean): String {
-        val currentSession = session
-        val session = if (currentSession === Session.None || refresh) {
-            refreshAccessToken(currentSession)
-                    .doOnSuccess { session = it }
-                    .doOnError { error ->
-                        if (error is ApiResponseException && isTokenInvalidated(error.errorData)) {
-                            logout()
-                        }
-                    }
-                    .sneakyGet()
-        } else {
-            currentSession
+    override fun getAccessToken(invalidatedAccessToken: String?): String {
+        var localSession = session
+        if (localSession === Session.None || invalidatedAccessToken != null) {
+            synchronized(this) {
+                localSession = session
+                if (localSession === Session.None || invalidatedAccessToken != null && localSession.accessToken == invalidatedAccessToken) {
+                    session = refreshAccessToken(localSession)
+                            .doOnError { error ->
+                                if (error is ApiResponseException && isTokenInvalidated(error.errorData)) {
+                                    logout()
+                                }
+                            }
+                            .sneakyGet()
+                }
+            }
         }
         return session.accessToken
     }

@@ -104,11 +104,10 @@ abstract class AppModule {
         }
 
         @Provides
-        @Singleton
         @JvmStatic
         fun provideAccessTokenProvider(sessionManager: Lazy<SessionManager>): AccessTokenProvider = object : AccessTokenProvider {
-            override fun getAccessToken(refresh: Boolean): String {
-                return sessionManager.get().getAccessToken(refresh)
+            override fun getAccessToken(invalidatedAccessToken: String?): String {
+                return sessionManager.get().getAccessToken(invalidatedAccessToken)
             }
         }
 

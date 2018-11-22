@@ -21,32 +21,30 @@ class AuthInterceptor @Inject constructor(
         if (response.priorResponse() != null) {
             return null
         }
-        if (response.request().isAuthorized) {
-            val accessToken = accessTokenProvider.getAccessToken(true)
-            return rewriteRequest(response.request(), accessToken)
+        val request = response.request()
+        if (request.isAuthorized) {
+            val previousAccessToken = accessTokenAppender.getAccessToken(request)!!
+            val accessToken = accessTokenProvider.getAccessToken(previousAccessToken)
+
+            val builder = request.newBuilder()
+            accessTokenAppender.append(accessToken, request, builder)
+            return builder.build()
         }
         return null
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val originalRequest = chain.request()
-
-        val accessToken = if (originalRequest.isAuthorized) accessTokenProvider.getAccessToken(false) else null
-        val request = rewriteRequest(originalRequest, accessToken)
-
-        return chain.proceed(request)
-    }
-
-    private fun rewriteRequest(request: Request, accessToken: String?): Request {
+        val request = chain.request()
         val builder = request.newBuilder()
                 .header(HttpHeaders.API_VERSION, ApiConstants.VERSION)
                 .header(HttpHeaders.USER_AGENT, configuration.userAgent)
 
-        if (accessToken != null) {
+        if (request.isAuthorized && !accessTokenAppender.hasAccessToken(request)) {
+            val accessToken = accessTokenProvider.getAccessToken()
             accessTokenAppender.append(accessToken, request, builder)
         }
 
-        return builder.build()
+        return chain.proceed(builder.build())
     }
 
     private val Request.isAuthorized: Boolean

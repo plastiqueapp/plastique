@@ -5,6 +5,8 @@ import okhttp3.Request
 interface AccessTokenAppender {
     fun hasAccessToken(request: Request): Boolean
 
+    fun getAccessToken(request: Request): String?
+
     fun append(accessToken: String, request: Request, builder: Request.Builder)
 }
 
@@ -13,10 +15,18 @@ class HeaderAccessTokenAppender : AccessTokenAppender {
         return request.header(HttpHeaders.AUTHORIZATION) != null
     }
 
-    override fun append(accessToken: String, request: Request, builder: Request.Builder) {
-        if (!hasAccessToken(request)) {
-            builder.header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
+    override fun getAccessToken(request: Request): String? {
+        return request.header(HttpHeaders.AUTHORIZATION)?.let { value ->
+            val typeAndCredentials = value.split(' ')
+            if (typeAndCredentials.size != 2 || typeAndCredentials[0] != "Bearer") {
+                throw IllegalArgumentException("Unsupported Authorization header: '$value'")
+            }
+            typeAndCredentials[1]
         }
+    }
+
+    override fun append(accessToken: String, request: Request, builder: Request.Builder) {
+        builder.header(HttpHeaders.AUTHORIZATION, "Bearer $accessToken")
     }
 }
 
@@ -25,13 +35,15 @@ class UrlAccessTokenAppender : AccessTokenAppender {
         return request.url().queryParameter("access_token") != null
     }
 
+    override fun getAccessToken(request: Request): String? {
+        return request.url().queryParameter("access_token")
+    }
+
     override fun append(accessToken: String, request: Request, builder: Request.Builder) {
-        if (!hasAccessToken(request)) {
-            val url = request.url()
-                    .newBuilder()
-                    .addQueryParameter("access_token", accessToken)
-                    .build()
-            builder.url(url)
-        }
+        val url = request.url()
+                .newBuilder()
+                .setQueryParameter("access_token", accessToken)
+                .build()
+        builder.url(url)
     }
 }
