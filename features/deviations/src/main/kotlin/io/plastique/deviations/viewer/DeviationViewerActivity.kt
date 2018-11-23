@@ -17,6 +17,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
@@ -112,7 +113,11 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         viewCommentsButton.setOnClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
 
         viewModel.init(deviationId)
-        observeState()
+        viewModel.state
+                .pairwiseWithPrevious()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it.first, it.second) }
+                .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -157,50 +162,31 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun observeState() {
-        viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> this.state = state }
-                .disposeOnDestroy()
+    private fun renderState(state: DeviationViewerViewState, prevState: DeviationViewerViewState?) {
+        this.state = state
 
-        viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState -> contentViewController.state = contentState }
-                .disposeOnDestroy()
+        contentViewController.state = state.contentState
 
-        viewModel.state
-                .filter { state -> state.deviation != null }
-                .map { state -> state.deviation!! }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { deviation ->
-                    titleView.text = deviation.title
-                    authorView.text = deviation.author.name
-                    infoView.visibility = View.VISIBLE
+        if (state.deviation != null) {
+            titleView.text = state.deviation.title
+            authorView.text = state.deviation.author.name
+            infoView.isVisible = true
+        }
 
-                    GlideApp.with(this)
-                            .load(deviation.content!!.url)
-                            .into(photoView)
-                }
-                .disposeOnDestroy()
+        if (state.deviation?.content?.url != prevState?.deviation?.content?.url) {
+            GlideApp.with(this)
+                    .load(state.deviation!!.content!!.url)
+                    .into(photoView)
+        }
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.snackbarState }
-                .filter { state -> state.snackbarState !== SnackbarState.None }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShownEvent)
-                }
-                .disposeOnDestroy()
+        if (state.menuState != prevState?.menuState) {
+            invalidateOptionsMenu()
+        }
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.menuState }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { invalidateOptionsMenu() }
-                .disposeOnDestroy()
+        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+            snackbarController.showSnackbar(state.snackbarState)
+            viewModel.dispatch(SnackbarShownEvent)
+        }
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

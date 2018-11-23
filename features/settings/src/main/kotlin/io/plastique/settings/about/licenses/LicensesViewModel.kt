@@ -9,6 +9,7 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.core.lists.ListItem
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.settings.about.licenses.LicensesEffect.LoadLicensesEffect
 import io.plastique.settings.about.licenses.LicensesEvent.LoadErrorEvent
@@ -44,10 +45,10 @@ class LicensesViewModel @Inject constructor(
                 }
     }
 
-    private fun loadItems(): Single<List<LicensesItem>> {
+    private fun loadItems(): Single<List<ListItem>> {
         return licenseRepository.getLicenses()
                 .flattenAsObservable(Functions.identity())
-                .map<LicensesItem> { license -> LicenseItem(license) }
+                .map<ListItem> { license -> LicenseItem(license) }
                 .startWith(HeaderItem)
                 .toList()
     }

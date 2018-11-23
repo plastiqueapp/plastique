@@ -3,19 +3,7 @@ package io.plastique.core.lists
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.ObservableTransformer
 import timber.log.Timber
-import java.util.concurrent.atomic.AtomicReference
-
-class ListItemDiffTransformer<T : ListItem> : ObservableTransformer<List<T>, ListUpdateData<T>> {
-    override fun apply(upstream: Observable<List<T>>): ObservableSource<ListUpdateData<T>> {
-        val previous = AtomicReference<List<T>>()
-        return upstream
-                .map { items -> calculateDiff(previous.getAndSet(items), items) }
-    }
-}
 
 @Suppress("UNCHECKED_CAST")
 fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> = when {

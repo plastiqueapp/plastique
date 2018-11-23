@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
@@ -62,55 +63,10 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
 
         viewModel.init(username)
-        observeState()
-    }
-
-    private fun observeState() {
         viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
+                .pairwiseWithPrevious()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState ->
-                    contentViewController.state = contentState
-                    if (contentState is ContentState.Empty) {
-                        emptyView.setState(contentState.emptyState)
-                    }
-                }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .filter { state -> state.userProfile != null }
-                .map { state -> state.userProfile!! }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { userProfile ->
-                    showMenu = true
-                    realNameView.text = userProfile.realName
-
-                    GlideApp.with(this)
-                            .load(userProfile.user.avatarUrl)
-                            .circleCrop()
-                            .into(avatarView)
-
-                    invalidateOptionsMenu()
-                }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.title }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { title -> supportActionBar!!.title = title }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.snackbarState }
-                .filter { state -> state.snackbarState !== SnackbarState.None }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShownEvent)
-                }
+                .subscribe { renderState(it.first, it.second) }
                 .disposeOnDestroy()
     }
 
@@ -143,6 +99,32 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun renderState(state: UserProfileViewState, prevState: UserProfileViewState?) {
+        supportActionBar!!.title = state.title
+
+        contentViewController.state = state.contentState
+        if (state.contentState is ContentState.Empty) {
+            emptyView.setState(state.contentState.emptyState)
+        }
+
+        if (state.userProfile != prevState?.userProfile) {
+            realNameView.text = state.userProfile!!.realName
+
+            GlideApp.with(this)
+                    .load(state.userProfile.user.avatarUrl)
+                    .circleCrop()
+                    .into(avatarView)
+
+            showMenu = true
+            invalidateOptionsMenu()
+        }
+
+        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+            snackbarController.showSnackbar(state.snackbarState)
+            viewModel.dispatch(SnackbarShownEvent)
+        }
     }
 
     override fun injectDependencies() {

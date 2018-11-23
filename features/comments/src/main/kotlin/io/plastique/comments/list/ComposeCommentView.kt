@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import io.plastique.comments.R
 import io.plastique.core.extensions.doAfterTextChanged
 
@@ -24,76 +25,76 @@ class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: Attr
     private val postButton: ImageButton
     private val signInGroup: View
     private val postProgressSwitcher: ViewSwitcher
-    private var replying: Boolean = false
     var onCancelReplyClickListener: OnCancelReplyClickListener? = null
     var onPostCommentListener: OnPostCommentListener? = null
     var onSignInClickListener: OnSignInClickListener? = null
 
+    var draft: CharSequence
+        get() = draftView.text
+        set(value) {
+            draftView.setText(value)
+        }
+
+    var isPostingComment: Boolean
+        get() = postProgressSwitcher.displayedChild == 1
+        set(value) {
+            postProgressSwitcher.displayedChild = if (value) 1 else 0
+        }
+
+    var isSignedIn: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                applySignedInState(value)
+            }
+        }
+
+    var replyUsername: String? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                applyReplyingState(value)
+            }
+        }
+
     init {
         View.inflate(context, R.layout.view_comments_compose, this)
 
-        draftView = findViewById(R.id.comment_draft)
-        postProgressSwitcher = findViewById(R.id.comment_post_switcher)
         postButton = findViewById(R.id.button_post_comment)
-        signInGroup = findViewById(R.id.group_sign_in)
+        postButton.setOnClickListener { onPostCommentListener?.invoke(draft.toString()) }
+        postButton.isEnabled = false
+        postProgressSwitcher = findViewById(R.id.comment_post_switcher)
+
+        draftView = findViewById(R.id.comment_draft)
+        draftView.doAfterTextChanged { text -> postButton.isEnabled = text.isNotEmpty() }
 
         replyingToView = findViewById(R.id.text_replying_to)
         cancelReplyButton = findViewById(R.id.button_cancel_reply)
-
-        draftView.doAfterTextChanged { text -> postButton.isEnabled = text.isNotEmpty() }
-        postButton.isEnabled = false
-
-        val signInButton = findViewById<Button>(R.id.button_sign_in)
-        signInButton.setOnClickListener { onSignInClickListener?.invoke() }
-        postButton.setOnClickListener { onPostCommentListener?.invoke(draftView.text.toString()) }
         cancelReplyButton.setOnClickListener { onCancelReplyClickListener?.invoke() }
+
+        signInGroup = findViewById(R.id.group_sign_in)
+        val signInButton: Button = findViewById(R.id.button_sign_in)
+        signInButton.setOnClickListener { onSignInClickListener?.invoke() }
+
+        applySignedInState(isSignedIn)
     }
 
-    fun setDraft(draft: String) {
-        draftView.setText(draft)
+    private fun applySignedInState(signedIn: Boolean) {
+        draftView.isVisible = signedIn
+        postProgressSwitcher.isVisible = signedIn
+        signInGroup.isVisible = !signedIn
+
+        replyingToView.isVisible = signedIn && replyUsername != null
+        cancelReplyButton.isVisible = signedIn && replyUsername != null
     }
 
-    fun setReplyUserName(username: String?) {
+    private fun applyReplyingState(username: String?) {
+        val replying = username != null
+
         TransitionManager.beginDelayedTransition(this, REPLY_TRANSITION)
-
-        if (username != null) {
-            replying = true
-            replyingToView.text = formatReplyingToText(username)
-            replyingToView.visibility = View.VISIBLE
-            cancelReplyButton.visibility = View.VISIBLE
-        } else {
-            replying = false
-            replyingToView.visibility = View.GONE
-            cancelReplyButton.visibility = View.GONE
-        }
-    }
-
-    fun setPosting(posting: Boolean) {
-        postProgressSwitcher.displayedChild = if (posting) 1 else 0
-    }
-
-    fun showSignIn() {
-        signInGroup.visibility = View.VISIBLE
-        replyingToView.visibility = View.GONE
-        cancelReplyButton.visibility = View.GONE
-
-        draftView.visibility = View.GONE
-        postProgressSwitcher.visibility = View.GONE
-    }
-
-    fun showCompose() {
-        signInGroup.visibility = View.GONE
-        draftView.visibility = View.VISIBLE
-        postProgressSwitcher.visibility = View.VISIBLE
-
-        if (replying) {
-            replyingToView.visibility = View.VISIBLE
-            cancelReplyButton.visibility = View.VISIBLE
-        }
-    }
-
-    private fun formatReplyingToText(username: String): CharSequence {
-        return HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to, username), 0)
+        replyingToView.text = if (replying) HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to, username), 0) else null
+        replyingToView.isVisible = replying
+        cancelReplyButton.isVisible = replying
     }
 
     companion object {

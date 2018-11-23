@@ -7,13 +7,16 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.MvvmActivity
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
-import io.plastique.core.lists.ListItemDiffTransformer
+import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.calculateDiff
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
@@ -60,7 +63,12 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
 
         viewModel.init(parentCategory)
-        observeState()
+        viewModel.state
+                .pairwiseWithPrevious()
+                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it.first, it.second, it.third) }
+                .disposeOnDestroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -71,57 +79,28 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun observeState() {
-        viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState ->
-                    contentViewController.state = contentState
-                    if (contentState is ContentState.Empty) {
-                        emptyView.setState(contentState.emptyState)
-                    }
-                }
-                .disposeOnDestroy()
+    private fun renderState(state: CategoryListViewState, prevState: CategoryListViewState?, listUpdateData: ListUpdateData<CategoryItem>) {
+        contentViewController.state = state.contentState
+        if (state.contentState is ContentState.Empty) {
+            emptyView.setState(state.contentState.emptyState)
+        }
 
-        @Suppress("RemoveExplicitTypeArguments")
-        viewModel.state
-                .map { state -> state.items }
-                .compose(ListItemDiffTransformer<CategoryItem>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateData -> updateData.applyTo(adapter) }
-                .disposeOnDestroy()
+        listUpdateData.applyTo(adapter)
 
-        viewModel.state
-                .map { state -> state.breadcrumbs }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { breadcrumbs ->
-                    breadcrumbsView.setBreadcrumbs(breadcrumbs)
-                    breadcrumbsView.scrollToPosition(breadcrumbsView.adapter!!.itemCount - 1)
-                }
-                .disposeOnDestroy()
+        if (state.breadcrumbs != prevState?.breadcrumbs) {
+            breadcrumbsView.setBreadcrumbs(state.breadcrumbs)
+            breadcrumbsView.scrollToPosition(breadcrumbsView.adapter!!.itemCount - 1)
+        }
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.snackbarState }
-                .filter { state -> state.snackbarState !== SnackbarState.None }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShownEvent)
-                }
-                .disposeOnDestroy()
+        if (state.selectedCategory != null) {
+            setResult(RESULT_OK, Intent().putExtra(RESULT_SELECTED_CATEGORY, state.selectedCategory))
+            finish()
+        }
 
-        viewModel.state
-                .filter { state -> state.selectedCategory != null }
-                .map { state -> state.selectedCategory }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { category ->
-                    setResult(RESULT_OK, Intent().putExtra(RESULT_SELECTED_CATEGORY, category))
-                    finish()
-                }
-                .disposeOnDestroy()
+        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+            snackbarController.showSnackbar(state.snackbarState)
+            viewModel.dispatch(SnackbarShownEvent)
+        }
     }
 
     override fun injectDependencies() {

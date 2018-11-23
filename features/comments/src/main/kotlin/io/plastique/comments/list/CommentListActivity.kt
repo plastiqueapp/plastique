@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.CommentsNavigator
@@ -24,13 +25,15 @@ import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
-import io.plastique.core.lists.ListItemDiffTransformer
+import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
@@ -81,96 +84,40 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
         emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
 
         viewModel.init(intent.getParcelableExtra(EXTRA_THREAD_ID))
-        observeState()
+        viewModel.state
+                .pairwiseWithPrevious()
+                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it.first, it.second, it.third) }
+                .disposeOnDestroy()
     }
 
-    private fun observeState() {
-        viewModel.state
-                .map { state -> state.title }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { title -> supportActionBar!!.subtitle = title }
-                .disposeOnDestroy()
+    private fun renderState(state: CommentListViewState, prevState: CommentListViewState?, listUpdateData: ListUpdateData<ListItem>) {
+        supportActionBar!!.subtitle = state.title
 
-        viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState ->
-                    contentViewController.state = contentState
-                    if (contentState is ContentState.Empty) {
-                        emptyView.setState(contentState.emptyState)
-                    }
-                }
-                .disposeOnDestroy()
+        contentViewController.state = state.contentState
+        if (state.contentState is ContentState.Empty) {
+            emptyView.setState(state.contentState.emptyState)
+        }
 
-        @Suppress("RemoveExplicitTypeArguments")
-        viewModel.state
-                .map { state -> state.items }
-                .compose(ListItemDiffTransformer<ListItem>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateData -> updateData.applyTo(adapter) }
-                .disposeOnDestroy()
+        listUpdateData.applyTo(adapter)
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.isPagingEnabled }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> onScrollListener.isEnabled = state.isPagingEnabled }
-                .disposeOnDestroy()
+        onScrollListener.isEnabled = state.isPagingEnabled
+        refreshLayout.isRefreshing = state.isRefreshing
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.isRefreshing }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> refreshLayout.isRefreshing = state.isRefreshing }
-                .disposeOnDestroy()
+        composeView.isSignedIn = state.isSignedIn
+        composeView.isPostingComment = state.isPostingComment
+        composeView.replyUsername = state.replyComment?.author?.name
+        composeView.isVisible = state.showCompose
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.isSignedIn }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    if (state.isSignedIn) {
-                        composeView.showCompose()
-                    } else {
-                        composeView.showSignIn()
-                    }
-                }
-                .disposeOnDestroy()
+        if (state.commentDraft != prevState?.commentDraft) {
+            composeView.draft = state.commentDraft
+        }
 
-        viewModel.state
-                .map { state -> state.showCompose }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showCompose -> composeView.isVisible = showCompose }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.isPostingComment }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> composeView.setPosting(state.isPostingComment) }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.replyComment }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> composeView.setReplyUserName(state.replyComment?.author?.name) }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.commentDraft }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { draft -> composeView.setDraft(draft) }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.snackbarState }
-                .filter { state -> state.snackbarState !== SnackbarState.None }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShownEvent)
-                }
-                .disposeOnDestroy()
+        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+            snackbarController.showSnackbar(state.snackbarState)
+            viewModel.dispatch(SnackbarShownEvent)
+        }
     }
 
     private fun scrollToComment(commentId: String) {

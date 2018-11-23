@@ -12,6 +12,7 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
@@ -20,6 +21,7 @@ import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
+import io.plastique.core.extensions.add
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.withArguments
 import io.plastique.core.lists.EndlessScrollListener
@@ -27,7 +29,8 @@ import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
-import io.plastique.core.lists.ListItemDiffTransformer
+import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
@@ -129,7 +132,12 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
         val username = args.getString(ARG_USERNAME)
         viewModel.init(username)
-        observeState()
+        viewModel.state
+                .pairwiseWithPrevious()
+                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it.first, it.second, it.third) }
+                .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -151,59 +159,24 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         }
     }
 
-    private fun observeState() {
-        viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> this.state = state }
-                .disposeOnDestroy()
+    private fun renderState(state: GalleryViewState, prevState: GalleryViewState?, listUpdateData: ListUpdateData<ListItem>) {
+        this.state = state
+        setHasOptionsMenu(state.showMenu)
 
-        viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState ->
-                    contentViewController.state = contentState
-                    if (contentState is ContentState.Empty) {
-                        emptyView.setState(contentState.emptyState)
-                    }
-                }
-                .disposeOnDestroy()
+        contentViewController.state = state.contentState
+        if (state.contentState is ContentState.Empty) {
+            emptyView.setState(state.contentState.emptyState)
+        }
 
-        @Suppress("RemoveExplicitTypeArguments")
-        viewModel.state
-                .map { state -> state.items }
-                .compose(ListItemDiffTransformer<ListItem>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateData -> updateData.applyTo(adapter) }
-                .disposeOnDestroy()
+        listUpdateData.applyTo(adapter)
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.isPagingEnabled }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> onScrollListener.isEnabled = state.isPagingEnabled }
-                .disposeOnDestroy()
+        onScrollListener.isEnabled = state.isPagingEnabled
+        refreshLayout.isRefreshing = state.isRefreshing
 
-        viewModel.state
-                .distinctUntilChanged { state -> state.isRefreshing }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> refreshLayout.isRefreshing = state.isRefreshing }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.snackbarState }
-                .filter { state -> state.snackbarState !== SnackbarState.None }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state ->
-                    snackbarController.showSnackbar(state.snackbarState)
-                    viewModel.dispatch(SnackbarShownEvent)
-                }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .distinctUntilChanged { state -> state.showMenu }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> setHasOptionsMenu(state.showMenu) }
-                .disposeOnDestroy()
+        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+            snackbarController.showSnackbar(state.snackbarState)
+            viewModel.dispatch(SnackbarShownEvent)
+        }
     }
 
     private fun showCreateFolderDialog() {

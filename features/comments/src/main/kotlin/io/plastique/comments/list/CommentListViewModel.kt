@@ -248,7 +248,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         CommentPostedEvent -> {
-            next(state.copy(isPostingComment = false, commentDraft = ""))
+            next(state.copy(isPostingComment = false, commentDraft = "", replyComment = null))
         }
 
         is PostCommentErrorEvent -> {

@@ -8,11 +8,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
+import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.settings.R
 
-class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, LicensesItem, HeaderItemDelegate.ViewHolder>() {
-    override fun isForViewType(item: LicensesItem): Boolean = item === HeaderItem
+class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
+    override fun isForViewType(item: ListItem): Boolean = item === HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_licenses_header, parent, false)
@@ -27,9 +28,9 @@ class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, LicensesItem, HeaderI
 
 class LicenseItemDelegate(
     private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<LicenseItem, LicensesItem, LicenseItemDelegate.ViewHolder>() {
+) : BaseAdapterDelegate<LicenseItem, ListItem, LicenseItemDelegate.ViewHolder>() {
 
-    override fun isForViewType(item: LicensesItem): Boolean = item is LicenseItem
+    override fun isForViewType(item: ListItem): Boolean = item is LicenseItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_licenses_license, parent, false)
@@ -61,7 +62,7 @@ class LicenseItemDelegate(
     }
 }
 
-class LicensesAdapter : ListDelegationAdapter<List<LicensesItem>>(), OnViewHolderClickListener {
+class LicensesAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
     var onLicenseClickListener: OnLicenseClickListener? = null
 
     init {
@@ -75,11 +76,6 @@ class LicensesAdapter : ListDelegationAdapter<List<LicensesItem>>(), OnViewHolde
             val item = items[position] as LicenseItem
             onLicenseClickListener?.invoke(item.license)
         }
-    }
-
-    fun update(items: List<LicensesItem>) {
-        this.items = items
-        notifyDataSetChanged()
     }
 
     companion object {

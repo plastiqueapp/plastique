@@ -1,8 +1,11 @@
 package io.plastique.settings.about.licenses
 
-sealed class LicensesItem {
-    override fun toString(): String = javaClass.simpleName
+import io.plastique.core.lists.ListItem
+
+object HeaderItem : ListItem {
+    override val id: String get() = "header"
 }
 
-object HeaderItem : LicensesItem()
-data class LicenseItem(val license: License) : LicensesItem()
+data class LicenseItem(val license: License) : ListItem {
+    override val id: String get() = license.libraryName
+}

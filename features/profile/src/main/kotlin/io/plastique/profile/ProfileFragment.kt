@@ -37,7 +37,11 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeState()
+
+        viewModel.state
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it) }
+                .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -53,12 +57,8 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun observeState() {
-        viewModel.state
-                .distinctUntilChanged { state -> state.showSignInButton }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> signInButton.isVisible = state.showSignInButton }
-                .disposeOnDestroy()
+    private fun renderState(state: ProfileViewState) {
+        signInButton.isVisible = state.showSignInButton
     }
 
     override fun getTitle(): Int = R.string.profile_title

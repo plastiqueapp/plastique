@@ -5,11 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.BrowserLauncher
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
+import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.DividerItemDecoration
+import io.plastique.core.lists.ListItem
+import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.calculateDiff
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
@@ -39,27 +44,21 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
 
         contentViewController = ContentViewController(this, R.id.licenses, android.R.id.progress)
 
-        observeState()
+        viewModel.state
+                .pairwiseWithPrevious()
+                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { renderState(it.first, it.third) }
+                .disposeOnDestroy()
+    }
+
+    private fun renderState(state: LicensesViewState, listUpdateData: ListUpdateData<ListItem>) {
+        contentViewController.state = state.contentState
+        listUpdateData.applyTo(adapter)
     }
 
     override fun injectDependencies() {
         getComponent<SettingsActivityComponent>().inject(this)
-    }
-
-    private fun observeState() {
-        viewModel.state
-                .map { state -> state.contentState }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { contentState -> contentViewController.state = contentState }
-                .disposeOnDestroy()
-
-        viewModel.state
-                .map { state -> state.items }
-                .distinctUntilChanged()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { items -> adapter.update(items) }
-                .disposeOnDestroy()
     }
 
     companion object {
