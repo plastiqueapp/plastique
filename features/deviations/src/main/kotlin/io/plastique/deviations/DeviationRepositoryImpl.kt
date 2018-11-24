@@ -1,6 +1,7 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
+import io.plastique.api.common.ImageDto
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationMetadataDto
 import io.plastique.api.deviations.DeviationService
@@ -10,12 +11,11 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
-import io.plastique.images.toImage
-import io.plastique.images.toImageEntity
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
+import io.plastique.util.Size
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -73,9 +73,19 @@ class DeviationRepositoryImpl @Inject constructor(
                 .toList()
         val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
 
+        val imageEntities = mutableListOf<DeviationImageEntity>()
+        deviations.forEach { deviation ->
+            imageEntities += deviation.thumbnails.asSequence()
+                    .map { createImageEntity(deviation.id, DeviationImageType.Thumbnail, it) }
+
+            deviation.preview?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Preview, it) }
+            deviation.content?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Content, it) }
+        }
+
         database.runInTransaction {
             userRepository.put(users)
             deviationDao.insertOrUpdate(deviationEntities)
+            deviationDao.replaceImages(imageEntities)
         }
     }
 
@@ -107,7 +117,7 @@ class DeviationRepositoryImpl @Inject constructor(
         return metadata?.nextCursor
     }
 
-    private fun combineAndFilter(deviationsWithUsers: List<DeviationWithUsers>, params: FetchParams): List<Deviation> {
+    private fun combineAndFilter(deviationsWithUsers: List<DeviationWithRelations>, params: FetchParams): List<Deviation> {
         return deviationsWithUsers
                 .asSequence()
                 .map { deviationWithUsers -> deviationWithUsers.toDeviation() }
@@ -154,7 +164,7 @@ class DeviationRepositoryImpl @Inject constructor(
 
     private fun getDeviationByIdFromServer(deviationId: String): Single<DeviationDto> {
         return deviationService.getDeviationById(deviationId)
-                .doOnSuccess { deviation -> persistDeviation(deviation) }
+                .doOnSuccess { deviation -> put(listOf(deviation)) }
     }
 
     override fun getDeviationTitleById(deviationId: String): Single<String> {
@@ -168,16 +178,6 @@ class DeviationRepositoryImpl @Inject constructor(
                 .doOnSuccess { response -> persist(response.metadata) }
                 .flattenAsObservable { response -> response.metadata }
                 .firstOrError()
-    }
-
-    private fun persistDeviation(deviation: DeviationDto) {
-        database.runInTransaction {
-            userRepository.put(deviation.author)
-            deviation.dailyDeviation?.run {
-                userRepository.put(giver)
-            }
-            deviationDao.insertOrUpdate(deviation.toDeviationEntity())
-        }
     }
 
     private fun persist(metadataList: List<DeviationMetadataDto>) {
@@ -195,8 +195,6 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
         title = title,
         url = url,
         authorId = author.id,
-        content = content?.toImageEntity(),
-        preview = preview?.toImageEntity(),
         excerpt = excerpt,
         properties = DeviationPropertiesEntity(
                 isDownloadable = isDownloadable,
@@ -209,17 +207,30 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
         DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
-private fun DeviationWithUsers.toDeviation(): Deviation = Deviation(
+private fun DeviationWithRelations.toDeviation(): Deviation = Deviation(
         id = deviation.id,
         title = deviation.title,
         url = deviation.url,
-        content = deviation.content?.toImage(),
-        preview = deviation.preview?.toImage(),
-        excerpt = deviation.excerpt,
         author = author.first().toUser(),
         properties = deviation.properties.toDeviationProperties(),
         stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
-        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
+        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()),
+
+        content = images.asSequence()
+                .filter { it.type == DeviationImageType.Content }
+                .map { it.toImage() }
+                .firstOrNull(),
+        preview = images.asSequence()
+                .filter { it.type == DeviationImageType.Preview }
+                .map { it.toImage() }
+                .firstOrNull(),
+        thumbnails = images.asSequence()
+                .filter { it.type == DeviationImageType.Thumbnail }
+                .map { it.toImage() }
+                .sortedBy { it.size.width }
+                .toList(),
+
+        excerpt = deviation.excerpt)
 
 private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
     if (giverId != giver.id) {
@@ -233,3 +244,14 @@ private fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Propert
         isFavorite = isFavorite,
         isMature = isMature,
         allowsComments = allowsComments)
+
+private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
+
+private fun createImageEntity(deviationId: String, type: DeviationImageType, imageDto: ImageDto): DeviationImageEntity {
+    val size = Size(imageDto.width, imageDto.height)
+    val id = when (type) {
+        DeviationImageType.Content, DeviationImageType.Preview -> "$deviationId-${type.value}"
+        DeviationImageType.Thumbnail -> "$deviationId-${type.value}-$size"
+    }
+    return DeviationImageEntity(id = id, deviationId = deviationId, type = type, size = size, url = imageDto.url)
+}

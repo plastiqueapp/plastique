@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import io.plastique.users.UserEntity
 
-data class DeviationWithUsers(
+data class DeviationWithRelations(
     @Embedded
     val deviation: DeviationEntity,
 
@@ -12,5 +12,8 @@ data class DeviationWithUsers(
     val author: List<UserEntity>,
 
     @Relation(parentColumn = "daily_deviation_giver_id", entityColumn = "id")
-    val dailyDeviationGiver: List<UserEntity>
+    val dailyDeviationGiver: List<UserEntity>,
+
+    @Relation(parentColumn = "id", entityColumn = "deviation_id")
+    val images: List<DeviationImageEntity>
 )

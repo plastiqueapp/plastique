@@ -1,20 +1,23 @@
 package io.plastique.deviations
 
-import io.plastique.images.Image
 import io.plastique.users.User
+import io.plastique.util.Size
 import org.threeten.bp.ZonedDateTime
 
 data class Deviation(
     val id: String,
     val title: String,
     val url: String,
-    val content: Image?,
-    val preview: Image?,
-    val excerpt: String?,
     val author: User,
     val properties: Properties,
     val stats: Stats,
-    val dailyDeviation: DailyDeviation?
+    val dailyDeviation: DailyDeviation?,
+
+    val content: Image?,
+    val preview: Image?,
+    val thumbnails: List<Image>,
+
+    val excerpt: String?
 ) {
     val isLiterature: Boolean
         get() = excerpt != null
@@ -35,5 +38,10 @@ data class Deviation(
     data class Stats(
         val comments: Int,
         val favorites: Int
+    )
+
+    data class Image(
+        val size: Size,
+        val url: String
     )
 }

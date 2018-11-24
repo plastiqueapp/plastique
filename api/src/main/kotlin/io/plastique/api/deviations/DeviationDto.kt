@@ -35,6 +35,9 @@ data class DeviationDto(
     @Json(name = "preview")
     val preview: ImageDto? = null,
 
+    @Json(name = "thumbs")
+    val thumbnails: List<ImageDto> = emptyList(),
+
     @Json(name = "excerpt")
     val excerpt: String? = null,
 

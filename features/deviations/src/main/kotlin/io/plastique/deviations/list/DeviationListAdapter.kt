@@ -20,7 +20,6 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideApp
-import io.plastique.images.Image
 import io.plastique.util.Size
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
@@ -28,8 +27,6 @@ import kotlin.math.min
 
 private const val MAX_IMAGE_WIDTH = 1080
 private const val MAX_ASPECT_RATIO = 2.5 // height / width
-
-typealias LayoutModeProvider = () -> LayoutMode
 
 class ListImageDeviationItemDelegate(
     context: Context,
@@ -67,12 +64,12 @@ class ListImageDeviationItemDelegate(
                 .into(holder.preview)
     }
 
-    private fun chooseImage(deviation: Deviation, maxImageWidth: Int): Image {
+    private fun chooseImage(deviation: Deviation, maxImageWidth: Int): Deviation.Image {
         val preview = deviation.preview
         return if (preview != null && preview.size.width >= maxImageWidth) preview else deviation.content!!
     }
 
-    private fun calculateOptimalImageSize(image: Image, maxImageWidth: Int): Size {
+    private fun calculateOptimalImageSize(image: Deviation.Image, maxImageWidth: Int): Size {
         var imageWidth = image.size.width
         var imageHeight = image.size.height
         var aspectRatio = imageHeight / imageWidth.toDouble()
@@ -122,21 +119,24 @@ class GridImageDeviationItemDelegate(
     }
 
     override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val itemSize = itemSizeCallback.getItemSize(item)
+        val columnCount = itemSizeCallback.getColumnCount(item)
+
         (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
-            val itemSize = itemSizeCallback.getItemSize(item)
-            val columnCount = itemSizeCallback.getColumnCount(item)
             width = itemSize.width
             height = itemSize.height
             leftMargin = if (item.index % columnCount != 0) spacing else 0
             topMargin = if (item.index >= columnCount) spacing else 0
         }
 
-        val image = item.deviation.preview ?: item.deviation.content!!
+        val image = chooseImage(item.deviation, itemSize.width)
         GlideApp.with(holder.thumbnail)
                 .load(image.url)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail)
+    }
+
+    private fun chooseImage(deviation: Deviation, itemWidth: Int): Deviation.Image {
+        return deviation.thumbnails.firstOrNull { it.size.width >= itemWidth } ?: deviation.thumbnails.last()
     }
 
     class ViewHolder(
@@ -217,9 +217,10 @@ class GridLiteratureDeviationItemDelegate(
     }
 
     override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val itemSize = itemSizeCallback.getItemSize(item)
+        val columnCount = itemSizeCallback.getColumnCount(item)
+
         (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
-            val itemSize = itemSizeCallback.getItemSize(item)
-            val columnCount = itemSizeCallback.getColumnCount(item)
             width = itemSize.width
             height = itemSize.height
             leftMargin = if (item.index % columnCount != 0) spacing else 0
@@ -286,4 +287,5 @@ class DeviationsAdapter(context: Context, layoutModeProvider: LayoutModeProvider
     }
 }
 
+typealias LayoutModeProvider = () -> LayoutMode
 typealias OnDeviationClickListener = (Deviation) -> Unit

@@ -6,7 +6,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.plastique.images.ImageEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
@@ -29,12 +28,6 @@ data class DeviationEntity(
 
     @ColumnInfo(name = "url")
     val url: String,
-
-    @Embedded(prefix = "content_")
-    val content: ImageEntity? = null,
-
-    @Embedded(prefix = "preview_")
-    val preview: ImageEntity? = null,
 
     @ColumnInfo(name = "excerpt")
     val excerpt: String? = null,

@@ -5,6 +5,6 @@
     android:layout_width="@dimen/deviations_list_min_cell_size"
     android:layout_height="@dimen/deviations_list_min_cell_size"
     android:foreground="?selectableItemBackground"
+    android:scaleType="centerCrop"
     tools:ignore="UnusedAttribute"
-    tools:scaleType="centerCrop"
     tools:src="@tools:sample/backgrounds/scenic" />
