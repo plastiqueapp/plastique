@@ -43,6 +43,6 @@
         android:background="?colorPrimary"
         app:itemIconTint="@color/bottom_navigation_tint"
         app:itemTextColor="@color/bottom_navigation_tint"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:layout_behavior="io.plastique.core.BottomNavigationViewBehavior"
         app:menu="@menu/main_bottom" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
