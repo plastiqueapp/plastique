@@ -77,6 +77,7 @@ class DeviationRepositoryImpl @Inject constructor(
         deviations.forEach { deviation ->
             imageEntities += deviation.thumbnails.asSequence()
                     .map { createImageEntity(deviation.id, DeviationImageType.Thumbnail, it) }
+                    .distinctBy { it.size } // Ignore duplicates with the same dimensions
 
             deviation.preview?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Preview, it) }
             deviation.content?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Content, it) }
