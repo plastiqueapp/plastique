@@ -5,29 +5,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 
 class EndlessScrollListener(
-    var loadThreshold: Int,
+    var loadMoreThreshold: Int,
     var isEnabled: Boolean = true,
-    private var loadMoreListener: LoadMoreListener
+    private val onLoadMore: () -> Unit
 ) : RecyclerView.OnScrollListener() {
+    private var scrollStateReset = true
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         if (!isEnabled) {
             return
         }
         val layoutManager = recyclerView.layoutManager ?: return
-        val totalItemCount = layoutManager.itemCount
         val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-        val remainingItemCount = totalItemCount - lastVisibleItem
+        val remainingItemCount = layoutManager.itemCount - lastVisibleItem
 
-        if (remainingItemCount <= loadThreshold) {
+        if (scrollStateReset && remainingItemCount <= loadMoreThreshold) {
+            scrollStateReset = false
             recyclerView.post {
                 if (isEnabled) {
-                    loadMoreListener()
+                    onLoadMore()
                 }
             }
         }
     }
 
-    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+            scrollStateReset = true
+        }
+    }
 
     private fun RecyclerView.LayoutManager.findLastVisibleItemPosition(): Int = when (this) {
         is FlexboxLayoutManager -> findLastVisibleItemPosition()
@@ -35,5 +41,3 @@ class EndlessScrollListener(
         else -> throw UnsupportedOperationException("$javaClass is not supported by EndlessScrollListener")
     }
 }
-
-typealias LoadMoreListener = () -> Unit

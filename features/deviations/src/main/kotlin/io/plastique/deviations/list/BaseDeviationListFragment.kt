@@ -157,7 +157,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         if (state.layoutMode != prevState?.layoutMode) {
             deviationsView.layoutManager = createLayoutManager(requireContext(), state.layoutMode)
-            onScrollListener.loadThreshold = calculateLoadMoreThreshold(state.layoutMode)
+            onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(state.layoutMode)
 
             if (adapter.itemCount > 0) {
                 deviationsView.scrollToPosition(0)
@@ -167,7 +167,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             adapter.notifyDataSetChanged()
         } else {
             listUpdateData.applyTo(adapter)
-            listUpdateData.log("BaseDeviationListFragment")
         }
 
         onScrollListener.isEnabled = state.isPagingEnabled
