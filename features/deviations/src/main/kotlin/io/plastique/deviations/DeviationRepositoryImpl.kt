@@ -14,10 +14,11 @@ import io.plastique.core.paging.PagedData
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
+import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.Size
 import io.plastique.util.TimeProvider
-import io.reactivex.Completable
+import io.plastique.util.toOptional
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -47,10 +48,10 @@ class DeviationRepositoryImpl @Inject constructor(
         return CacheHelper(cacheEntryRepository, cacheEntryChecker).createObservable(
                 cacheKey = cacheKey,
                 cachedData = getDeviationsFromDb(cacheKey, params, metadataSerializer),
-                updater = fetch(fetcher, cacheKey, params))
+                updater = fetch(fetcher, cacheKey, params).ignoreElement())
     }
 
-    fun fetch(params: FetchParams, cursor: Cursor? = null): Completable {
+    fun fetch(params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
         return fetch(fetcher, fetcher.getCacheKey(params), params, cursor)
     }
@@ -90,15 +91,15 @@ class DeviationRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: String, params: FetchParams, cursor: Cursor? = null): Completable {
+    private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: String, params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
         return fetcher.fetch(params, cursor)
-                .doOnSuccess { fetchResult ->
+                .map { fetchResult ->
                     val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
                     val metadataSerializer = fetcher.createMetadataSerializer()
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataSerializer.serialize(cacheMetadata))
                     persist(cacheEntry, fetchResult.deviations, fetchResult.replaceExisting)
+                    cacheMetadata.nextCursor.toOptional()
                 }
-                .ignoreElement()
     }
 
     private fun getDeviationsFromDb(key: String, params: FetchParams, metadataSerializer: DeviationCacheMetadataSerializer): Observable<PagedData<List<Deviation>, Cursor>> {

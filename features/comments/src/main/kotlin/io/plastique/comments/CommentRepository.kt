@@ -15,9 +15,10 @@ import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserRepository
+import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
-import io.reactivex.Completable
+import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -41,17 +42,17 @@ class CommentRepository @Inject constructor(
         return cacheHelper.createObservable(
                 cacheKey = cacheKey,
                 cachedData = getCommentsFromDb(cacheKey),
-                updater = fetchComments(threadId))
+                updater = fetchComments(threadId).ignoreElement())
     }
 
-    fun fetchComments(threadId: CommentThreadId, cursor: OffsetCursor? = null): Completable {
+    fun fetchComments(threadId: CommentThreadId, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
                 .map { commentList ->
-                    val metadata = CommentCacheMetadata(commentList.nextCursor)
-                    persistComments(threadId.cacheKey, commentList, timeProvider.currentInstant, metadata, offset == 0)
+                    val cacheMetadata = CommentCacheMetadata(nextCursor = commentList.nextCursor)
+                    persist(threadId.cacheKey, commentList, timeProvider.currentInstant, cacheMetadata, offset == 0)
+                    cacheMetadata.nextCursor.toOptional()
                 }
-                .ignoreElement()
 
         // TODO: Ignore duplicates if offset changes
         // TODO: Load nested comments automatically
@@ -87,7 +88,7 @@ class CommentRepository @Inject constructor(
         is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
     }
 
-    private fun persistComments(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {
+    private fun persist(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {
         val users = commentList.comments.asSequence()
                 .map { comment -> comment.author }
                 .distinctBy { user -> user.id }

@@ -14,10 +14,12 @@ import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
+import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
-import io.reactivex.Completable
+import io.plastique.util.toOptional
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
@@ -41,18 +43,18 @@ class FolderRepository @Inject constructor(
             cacheHelper.createObservable(
                     cacheKey = cacheKey,
                     cachedData = getFoldersFromDb(cacheKey),
-                    updater = fetchFolders(params, null, cacheKey))
+                    updater = fetchFolders(params, null, cacheKey).ignoreElement())
         }
     }
 
-    fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor? = null): Completable {
-        return Completable.defer {
+    fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
+        return Single.defer {
             val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
             fetchFolders(params, cursor, cacheKey)
         }
     }
 
-    private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Completable {
+    private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolders(
                 username = params.username,
@@ -65,8 +67,8 @@ class FolderRepository @Inject constructor(
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     val entities = folderList.results.map { folder -> folder.toFolderEntity() }
                     persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
+                    cacheMetadata.nextCursor.toOptional()
                 }
-                .ignoreElement()
     }
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {

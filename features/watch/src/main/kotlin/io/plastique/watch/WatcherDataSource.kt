@@ -22,9 +22,13 @@ class WatcherDataSource @Inject constructor(
 
     override fun loadMore(): Completable {
         return watcherRepository.fetchWatchers(params.get(), nextCursor.get()!!)
+                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .ignoreElement()
     }
 
     override fun refresh(): Completable {
         return watcherRepository.fetchWatchers(params.get())
+                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .ignoreElement()
     }
 }

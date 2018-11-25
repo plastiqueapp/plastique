@@ -24,6 +24,8 @@ class DeviationDataSource @Inject constructor(
         val params = params.get()
         return if (params != null) {
             deviationRepository.fetch(params, nextCursor.get())
+                    .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                    .ignoreElement()
         } else {
             Completable.complete()
         }
@@ -33,6 +35,8 @@ class DeviationDataSource @Inject constructor(
         val params = params.get()
         return if (params != null) {
             deviationRepository.fetch(params)
+                    .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                    .ignoreElement()
         } else {
             Completable.complete()
         }

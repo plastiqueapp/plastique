@@ -16,10 +16,12 @@ import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.users.UserRepository
+import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
-import io.reactivex.Completable
+import io.plastique.util.toOptional
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
@@ -42,30 +44,30 @@ class WatcherRepository @Inject constructor(
             cacheHelper.createObservable(
                     cacheKey = cacheKey,
                     cachedData = getWatchersFromDb(cacheKey),
-                    updater = fetchWatchers(username, null))
+                    updater = fetchWatchers(username, null).ignoreElement())
         }
     }
 
-    fun fetchWatchers(username: String?, cursor: OffsetCursor? = null): Completable {
-        return Completable.defer {
+    fun fetchWatchers(username: String?, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
+        return Single.defer {
             val cacheKey = getCacheKey(username ?: sessionManager.currentUsername)
             fetchWatchers(username, cursor, cacheKey)
         }
     }
 
-    private fun fetchWatchers(username: String?, cursor: OffsetCursor?, cacheKey: String): Completable {
+    private fun fetchWatchers(username: String?, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return if (username != null) {
             watchService.getWatchers(username, offset, WATCHERS_PER_PAGE)
         } else {
             watchService.getWatchers(offset, WATCHERS_PER_PAGE)
         }
-                .doOnSuccess { watcherList ->
+                .map { watcherList ->
                     val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     persist(watchers = watcherList.results, cacheEntry = cacheEntry, replaceExisting = offset == 0)
+                    cacheMetadata.nextCursor.toOptional()
                 }
-                .ignoreElement()
     }
 
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
