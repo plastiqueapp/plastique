@@ -28,7 +28,7 @@ import kotlin.math.min
 private const val MAX_IMAGE_WIDTH = 1080
 private const val MAX_ASPECT_RATIO = 2.5 // height / width
 
-class ListImageDeviationItemDelegate(
+private class ListImageDeviationItemDelegate(
     context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -156,7 +156,7 @@ class GridImageDeviationItemDelegate(
     }
 }
 
-class ListLiteratureDeviationItemDelegate(
+private class ListLiteratureDeviationItemDelegate(
     context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -247,7 +247,7 @@ class GridLiteratureDeviationItemDelegate(
     }
 }
 
-class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateItemDelegate.ViewHolder>() {
+private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateItemDelegate.ViewHolder>() {
     private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
 
     override fun isForViewType(item: ListItem): Boolean = item is DateItem

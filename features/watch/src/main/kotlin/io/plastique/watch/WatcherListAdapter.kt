@@ -13,7 +13,7 @@ import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.glide.GlideApp
 
-class WatcherItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
+private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item is WatcherItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {

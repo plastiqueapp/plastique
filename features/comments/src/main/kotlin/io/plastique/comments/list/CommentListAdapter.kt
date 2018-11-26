@@ -19,7 +19,7 @@ import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
 import org.threeten.bp.ZonedDateTime
 
-class CommentItemDelegate(
+private class CommentItemDelegate(
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<CommentItem, ListItem, CommentItemDelegate.ViewHolder>() {
 

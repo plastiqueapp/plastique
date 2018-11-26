@@ -13,7 +13,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.lists.calculateDiff
 
-class BreadcrumbItemDelegate(
+private class BreadcrumbItemDelegate(
     private val layoutId: Int,
     private val onClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<BreadcrumbItem, ListItem, BreadcrumbItemDelegate.ViewHolder>() {
@@ -45,7 +45,7 @@ class BreadcrumbItemDelegate(
     }
 }
 
-class SeparatorItemDelegate(
+private class SeparatorItemDelegate(
     private val separatorDrawableResId: Int
 ) : BaseAdapterDelegate<SeparatorItem, ListItem, SeparatorItemDelegate.ViewHolder>() {
 

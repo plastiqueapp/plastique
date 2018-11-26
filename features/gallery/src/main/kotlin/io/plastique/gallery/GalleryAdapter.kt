@@ -21,7 +21,7 @@ import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.glide.GlideApp
 
-class FolderItemDelegate(
+private class FolderItemDelegate(
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener,
     private val onViewHolderLongClickListener: OnViewHolderLongClickListener
@@ -78,7 +78,7 @@ class FolderItemDelegate(
     }
 }
 
-class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
+private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item is HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {

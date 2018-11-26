@@ -12,7 +12,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.settings.R
 
-class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
+private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item === HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -26,7 +26,7 @@ class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemD
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
-class LicenseItemDelegate(
+private class LicenseItemDelegate(
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<LicenseItem, ListItem, LicenseItemDelegate.ViewHolder>() {
 
