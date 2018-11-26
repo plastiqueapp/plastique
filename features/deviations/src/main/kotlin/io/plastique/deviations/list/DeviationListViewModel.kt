@@ -12,14 +12,9 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
-import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.core.text.RichTextFormatter
 import io.plastique.deviations.ContentSettings
-import io.plastique.deviations.DailyParams
-import io.plastique.deviations.Deviation
-import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.HotParams
 import io.plastique.deviations.PopularParams
@@ -49,7 +44,6 @@ import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
-import org.threeten.bp.LocalDate
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -58,9 +52,8 @@ class DeviationListViewModel @Inject constructor(
     stateReducer: DeviationListStateReducer,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
-    private val dataSource: DeviationDataSource,
-    private val tagFactory: TagFactory,
-    private val richTextFormatter: RichTextFormatter
+    private val deviationListModel: DeviationListModel,
+    private val tagFactory: TagFactory
 ) : ViewModel() {
 
     lateinit var state: Observable<DeviationListViewState>
@@ -93,11 +86,9 @@ class DeviationListViewModel @Inject constructor(
     private fun effectHandler(effects: Observable<DeviationListEffect>): Observable<DeviationListEvent> {
         val loadEvents = effects.ofType<LoadDeviationsEffect>()
                 .switchMap { effect ->
-                    dataSource.getData(effect.params)
+                    deviationListModel.getItems(effect.params)
                             .bindToLifecycle()
-                            .map<DeviationListEvent> { data ->
-                                ItemsChangedEvent(items = createItems(data.value, effect.params is DailyParams), hasMore = data.hasMore)
-                            }
+                            .map<DeviationListEvent> { data -> ItemsChangedEvent(items = data.items, hasMore = data.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
@@ -105,7 +96,7 @@ class DeviationListViewModel @Inject constructor(
         // TODO: Cancel on new LoadDeviationsEffect
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
                 .switchMapSingle {
-                    dataSource.loadMore()
+                    deviationListModel.loadMore()
                             .toSingleDefault<DeviationListEvent>(LoadMoreFinishedEvent)
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadMoreErrorEvent(error) }
@@ -113,7 +104,7 @@ class DeviationListViewModel @Inject constructor(
 
         val refreshEvents = effects.ofType<RefreshEffect>()
                 .switchMapSingle {
-                    dataSource.refresh()
+                    deviationListModel.refresh()
                             .toSingleDefault<DeviationListEvent>(RefreshFinishedEvent)
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> RefreshErrorEvent(error) }
@@ -137,32 +128,6 @@ class DeviationListViewModel @Inject constructor(
                         .bindToLifecycle()
                         .map { layoutMode -> LayoutModeChangedEvent(layoutMode) }
         )
-    }
-
-    private fun createItems(deviations: List<Deviation>, daily: Boolean): List<ListItem> {
-        var index = 0
-        return if (daily) {
-            val items = ArrayList<ListItem>(deviations.size + 1)
-            var prevDate: LocalDate? = null
-            for (deviation in deviations) {
-                val date = deviation.dailyDeviation!!.date.toLocalDate()
-                if (date != prevDate) {
-                    items += DateItem(date)
-                    prevDate = date
-                    index = 0
-                }
-                items += createDeviationItem(deviation, index++)
-            }
-            items
-        } else {
-            deviations.map { deviation -> createDeviationItem(deviation, index++) }
-        }
-    }
-
-    private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = richTextFormatter.format(deviation.excerpt!!))
-    } else {
-        ImageDeviationItem(deviation, index = index)
     }
 
     companion object {
