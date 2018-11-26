@@ -23,7 +23,7 @@ data class FolderEntity(
 
 fun FolderDto.toFolderEntity(): FolderEntity {
     val thumbnailUrl = deviations.asSequence()
-            .map { deviation -> deviation.preview?.url ?: deviation.content?.url }
-            .firstOrNull()
+            .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
+            .firstOrNull { it != null }
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
