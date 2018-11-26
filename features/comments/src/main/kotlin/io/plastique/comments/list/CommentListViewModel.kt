@@ -139,7 +139,7 @@ class CommentListViewModel @Inject constructor(
     private fun loadTitle(threadId: CommentThreadId): Single<String> = when (threadId) {
         is CommentThreadId.Deviation -> deviationRepository.getDeviationTitleById(threadId.deviationId)
         is CommentThreadId.Profile -> Single.just(threadId.username)
-        is CommentThreadId.Status -> TODO("Not implemented yet")
+        is CommentThreadId.Status -> Single.just("")
     }
 
     private fun externalEvents(): Observable<CommentListEvent> {
