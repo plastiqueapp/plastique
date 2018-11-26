@@ -9,9 +9,11 @@ apply from: "$rootDir/gradle/junit.gradle"
 dependencies {
     api project(":core")
 
+    api "androidx.activity:activity:$versions.androidx.activity"
     api "androidx.appcompat:appcompat:$versions.androidx.appcompat"
     implementation "androidx.browser:browser:$versions.androidx.browser"
     api "androidx.constraintlayout:constraintlayout:$versions.androidx.constraintLayout"
+    api "androidx.fragment:fragment:$versions.androidx.fragment"
     implementation "androidx.lifecycle:lifecycle-common:$versions.androidx.lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$versions.androidx.lifecycle"
     implementation "androidx.legacy:legacy-preference-v14:$versions.androidx.preferenceV14"
