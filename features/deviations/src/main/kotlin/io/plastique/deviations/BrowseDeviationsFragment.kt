@@ -48,7 +48,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        pagerAdapter = FragmentListPagerAdapter(requireContext(), childFragmentManager, *PAGES)
+        pagerAdapter = FragmentListPagerAdapter(requireContext(), childFragmentManager, PAGES)
         pager = view.findViewById(R.id.pager)
         pager.adapter = pagerAdapter
     }
@@ -159,7 +159,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
     }
 
     companion object {
-        private val PAGES = arrayOf(
+        private val PAGES = listOf(
                 FragmentListPagerAdapter.Page(R.string.deviations_browse_page_hot, HotDeviationsFragment::class.java),
                 FragmentListPagerAdapter.Page(R.string.deviations_browse_page_popular, PopularDeviationsFragment::class.java),
                 FragmentListPagerAdapter.Page(R.string.deviations_browse_page_undiscovered, UndiscoveredDeviationsFragment::class.java),

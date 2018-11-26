@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 class FragmentListPagerAdapter(
     private val context: Context,
     private val fragmentManager: FragmentManager,
-    private vararg val pages: Page
+    private val pages: List<Page>
 ) : BaseFragmentStatePagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
