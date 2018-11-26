@@ -22,12 +22,8 @@ import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.SessionManager
-import io.plastique.deviations.DeviationRepository
-import io.plastique.deviations.DeviationRepositoryImpl
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.main.MainFragmentFactory
-import io.plastique.users.UserRepository
-import io.plastique.users.UserRepositoryImpl
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
@@ -35,7 +31,7 @@ import io.plastique.util.SystemTimeProvider
 import io.plastique.util.TimeProvider
 import javax.inject.Singleton
 
-@Module(includes = [WorkerModule::class])
+@Module(includes = [RepositoryModule::class, WorkerModule::class])
 abstract class AppModule {
     @Binds
     abstract fun bindContext(application: Application): Context
@@ -45,12 +41,6 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindNetworkConnectivityMonitor(impl: NetworkConnectivityMonitorImpl): NetworkConnectivityMonitor
-
-    @Binds
-    abstract fun bindDeviationRepository(impl: DeviationRepositoryImpl): DeviationRepository
-
-    @Binds
-    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
 
     @Binds
     abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
