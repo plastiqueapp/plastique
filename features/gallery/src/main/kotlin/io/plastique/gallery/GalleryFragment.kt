@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -108,8 +109,9 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         galleryView = view.findViewById(R.id.gallery)
-        galleryView.layoutManager = FlexboxLayoutManager(context)
         galleryView.adapter = adapter
+        galleryView.layoutManager = FlexboxLayoutManager(context)
+        galleryView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         galleryView.addOnScrollListener(onScrollListener)
 
         refreshLayout = view.findViewById(R.id.refresh)

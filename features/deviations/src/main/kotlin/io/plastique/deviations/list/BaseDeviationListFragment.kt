@@ -74,6 +74,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         deviationsView = view.findViewById(R.id.deviations)
+        deviationsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
@@ -114,7 +116,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
-        deviationsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         deviationsView.adapter = adapter
 
         @Suppress("UNCHECKED_CAST")
