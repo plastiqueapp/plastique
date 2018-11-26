@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -32,19 +31,19 @@ private class ListImageDeviationItemDelegate(
     context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<DeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
+) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
 
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is DeviationItem && !item.deviation.isLiterature && layoutModeProvider() == LayoutMode.List
+            item is ImageDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_list, parent, false)
         return ViewHolder(view, onViewHolderClickListener, min(parent.width, MAX_IMAGE_WIDTH))
     }
 
-    override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         (holder.itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
             topMargin = if (position > 0) spacing else 0
         }
@@ -106,19 +105,19 @@ class GridImageDeviationItemDelegate(
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<DeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
+) : BaseAdapterDelegate<ImageDeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
 
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is DeviationItem && !item.deviation.isLiterature && layoutModeProvider() == LayoutMode.Grid
+            item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_grid, parent, false)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
-    override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         val itemSize = itemSizeCallback.getItemSize(item)
         val columnCount = itemSizeCallback.getColumnCount(item)
 
@@ -160,25 +159,25 @@ private class ListLiteratureDeviationItemDelegate(
     context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<DeviationItem, ListItem, ListLiteratureDeviationItemDelegate.ViewHolder>() {
+) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, ListLiteratureDeviationItemDelegate.ViewHolder>() {
 
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is DeviationItem && item.deviation.isLiterature && layoutModeProvider() == LayoutMode.List
+            item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_list, parent, false)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
-    override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         (holder.itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
             topMargin = if (position > 0) spacing else 0
         }
 
         holder.title.text = item.deviation.title
-        holder.excerpt.text = HtmlCompat.fromHtml(item.deviation.excerpt!!, 0)
+        holder.excerpt.text = item.excerpt
     }
 
     class ViewHolder(
@@ -204,19 +203,19 @@ class GridLiteratureDeviationItemDelegate(
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<DeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
+) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
 
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is DeviationItem && item.deviation.isLiterature && layoutModeProvider() == LayoutMode.Grid
+            item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_grid, parent, false)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
-    override fun onBindViewHolder(item: DeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         val itemSize = itemSizeCallback.getItemSize(item)
         val columnCount = itemSizeCallback.getColumnCount(item)
 
@@ -282,10 +281,10 @@ class DeviationsAdapter(context: Context, layoutModeProvider: LayoutModeProvider
         val position = holder.adapterPosition
         val item = if (position != RecyclerView.NO_POSITION) items[position] else return
         when (item) {
-            is DeviationItem -> onDeviationClickListener?.invoke(item.deviation)
+            is DeviationItem -> onDeviationClickListener?.invoke(item.deviation.id)
         }
     }
 }
 
 typealias LayoutModeProvider = () -> LayoutMode
-typealias OnDeviationClickListener = (Deviation) -> Unit
+typealias OnDeviationClickListener = (deviationId: String) -> Unit

@@ -15,6 +15,7 @@ import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.core.text.RichTextFormatter
 import io.plastique.deviations.ContentSettings
 import io.plastique.deviations.DailyParams
 import io.plastique.deviations.Deviation
@@ -58,7 +59,8 @@ class DeviationListViewModel @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
     private val dataSource: DeviationDataSource,
-    private val tagFactory: TagFactory
+    private val tagFactory: TagFactory,
+    private val richTextFormatter: RichTextFormatter
 ) : ViewModel() {
 
     lateinit var state: Observable<DeviationListViewState>
@@ -135,6 +137,32 @@ class DeviationListViewModel @Inject constructor(
                         .bindToLifecycle()
                         .map { layoutMode -> LayoutModeChangedEvent(layoutMode) }
         )
+    }
+
+    private fun createItems(deviations: List<Deviation>, daily: Boolean): List<ListItem> {
+        var index = 0
+        return if (daily) {
+            val items = ArrayList<ListItem>(deviations.size + 1)
+            var prevDate: LocalDate? = null
+            for (deviation in deviations) {
+                val date = deviation.dailyDeviation!!.date.toLocalDate()
+                if (date != prevDate) {
+                    items += DateItem(date)
+                    prevDate = date
+                    index = 0
+                }
+                items += createDeviationItem(deviation, index++)
+            }
+            items
+        } else {
+            deviations.map { deviation -> createDeviationItem(deviation, index++) }
+        }
+    }
+
+    private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
+        LiteratureDeviationItem(deviation, index = index, excerpt = richTextFormatter.format(deviation.excerpt!!))
+    } else {
+        ImageDeviationItem(deviation, index = index)
     }
 
     companion object {
@@ -258,24 +286,4 @@ private fun createTags(tagFactory: TagFactory, params: FetchParams): List<Tag> =
     is PopularParams -> tagFactory.createCategoryTags(params.category) + tagFactory.createTimeRangeTag(params.timeRange)
     is UndiscoveredParams -> tagFactory.createCategoryTags(params.category)
     else -> emptyList()
-}
-
-private fun createItems(deviations: List<Deviation>, daily: Boolean): List<ListItem> {
-    var index = 0
-    return if (daily) {
-        val items = ArrayList<ListItem>(deviations.size + 1)
-        var prevDate: LocalDate? = null
-        for (deviation in deviations) {
-            val date = deviation.dailyDeviation!!.date.toLocalDate()
-            if (date != prevDate) {
-                items.add(DateItem(date))
-                prevDate = date
-                index = 0
-            }
-            items.add(DeviationItem(deviation).also { it.index = index++ })
-        }
-        items
-    } else {
-        deviations.map { deviation -> DeviationItem(deviation).also { it.index = index++ } }
-    }
 }

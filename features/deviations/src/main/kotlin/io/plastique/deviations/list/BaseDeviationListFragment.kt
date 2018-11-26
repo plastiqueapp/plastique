@@ -112,7 +112,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                     }
                 })
 
-        adapter.onDeviationClickListener = { deviation -> navigator.openDeviation(navigationContext, deviation.id) }
+        adapter.onDeviationClickListener = { deviationId -> navigator.openDeviation(navigationContext, deviationId) }
 
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)

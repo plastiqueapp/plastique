@@ -117,7 +117,7 @@ class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : Lis
         val item = if (position != RecyclerView.NO_POSITION) items[position] else return
         when (item) {
             is FolderItem -> onFolderClickListener?.invoke(item)
-            is DeviationItem -> onDeviationClickListener?.invoke(item)
+            is DeviationItem -> onDeviationClickListener?.invoke(item.deviation.id)
         }
     }
 
@@ -133,4 +133,4 @@ class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : Lis
 
 typealias OnFolderClickListener = (FolderItem) -> Unit
 typealias OnFolderLongClickListener = (FolderItem, View) -> Boolean
-typealias OnDeviationClickListener = (DeviationItem) -> Unit
+typealias OnDeviationClickListener = (deviationId: String) -> Unit

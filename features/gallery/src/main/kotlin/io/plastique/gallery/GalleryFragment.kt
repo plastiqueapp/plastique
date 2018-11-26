@@ -105,7 +105,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 false
             }
         }
-        adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
+        adapter.onDeviationClickListener = { deviationId -> navigator.openDeviation(navigationContext, deviationId) }
         onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         galleryView = view.findViewById(R.id.gallery)

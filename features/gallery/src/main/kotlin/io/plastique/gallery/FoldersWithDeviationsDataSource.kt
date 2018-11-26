@@ -2,9 +2,12 @@ package io.plastique.gallery
 
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
+import io.plastique.core.text.RichTextFormatter
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.list.DeviationItem
+import io.plastique.deviations.list.ImageDeviationItem
+import io.plastique.deviations.list.LiteratureDeviationItem
 import io.plastique.util.Optional
 import io.plastique.util.toOptional
 import io.reactivex.Completable
@@ -14,7 +17,8 @@ import javax.inject.Inject
 
 class FoldersWithDeviationsDataSource @Inject constructor(
     private val foldersDataSource: FoldersDataSource,
-    private val deviationDataSource: DeviationDataSource
+    private val deviationDataSource: DeviationDataSource,
+    private val richTextFormatter: RichTextFormatter
 ) {
     @Volatile private var hasMoreFolders = false
     @Volatile private var hasMoreDeviations = false
@@ -83,9 +87,15 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
         return if (deviations.isNotEmpty()) {
             var index = 0
-            listOf(HeaderItem(folderId = folder.id, title = folder.name)) + deviations.map { deviation -> DeviationItem(deviation).also { it.index = index++ } }
+            listOf(HeaderItem(folderId = folder.id, title = folder.name)) + deviations.map { deviation -> createDeviationItem(deviation, index++) }
         } else {
             emptyList()
         }
+    }
+
+    private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
+        LiteratureDeviationItem(deviation, index = index, excerpt = richTextFormatter.format(deviation.excerpt!!))
+    } else {
+        ImageDeviationItem(deviation, index = index)
     }
 }

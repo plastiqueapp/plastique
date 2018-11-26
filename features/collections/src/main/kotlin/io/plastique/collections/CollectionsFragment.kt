@@ -106,7 +106,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 false
             }
         }
-        adapter.onDeviationClickListener = { item -> navigator.openDeviation(navigationContext, item.deviation.id) }
+        adapter.onDeviationClickListener = { deviationId -> navigator.openDeviation(navigationContext, deviationId) }
         onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         collectionsView = view.findViewById(R.id.collections)
