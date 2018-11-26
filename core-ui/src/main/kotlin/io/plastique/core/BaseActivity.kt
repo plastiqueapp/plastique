@@ -66,6 +66,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
     }
 
     override val activityComponent: ActivityComponent by lazy(LazyThreadSafetyMode.NONE) {
+        @Suppress("DEPRECATION")
         (lastCustomNonConfigurationInstance as ActivityComponent?) ?: application.getComponent<AppComponent>().createActivityComponent()
     }
 
@@ -73,5 +74,6 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
         return activityComponent.createFragmentComponent()
     }
 
+    @Suppress("OverridingDeprecatedMember")
     override fun onRetainCustomNonConfigurationInstance(): Any = activityComponent
 }

@@ -7,12 +7,13 @@ import androidx.fragment.app.FragmentManager
 
 class FragmentListPagerAdapter(
     private val context: Context,
-    fragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
     private vararg val pages: Page
 ) : BaseFragmentStatePagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
-        return Fragment.instantiate(context, pages[position].fragmentClass.name)
+        val className = pages[position].fragmentClass.name
+        return fragmentManager.fragmentFactory.instantiate(context.classLoader, className, null)
     }
 
     override fun getCount(): Int = pages.size
