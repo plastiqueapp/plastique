@@ -103,7 +103,7 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     private fun getDeviationsFromDb(key: String, params: FetchParams, metadataSerializer: DeviationCacheMetadataSerializer): Observable<PagedData<List<Deviation>, Cursor>> {
-        return RxRoom.createObservable(database, arrayOf("deviations", "deviation_linkage")) {
+        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "deviation_linkage")) {
             database.runInTransaction(Callable {
                 val deviationsWithUsers = deviationDao.getDeviationsWithUsersByKey(key)
                 val nextCursor = getNextCursor(key, metadataSerializer)

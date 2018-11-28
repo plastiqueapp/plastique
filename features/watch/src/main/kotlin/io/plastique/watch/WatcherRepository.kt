@@ -71,7 +71,7 @@ class WatcherRepository @Inject constructor(
     }
 
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("watchers")) {
+        return RxRoom.createObservable(database, arrayOf("users", "watchers")) {
             database.runInTransaction(Callable {
                 val watchers = watchDao.getWatchers(cacheKey).map { watcherWithUser -> watcherWithUser.toWatcher() }
                 val nextCursor = getNextCursor(cacheKey)

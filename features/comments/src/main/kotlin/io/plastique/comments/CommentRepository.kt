@@ -59,7 +59,7 @@ class CommentRepository @Inject constructor(
     }
 
     private fun getCommentsFromDb(key: String): Observable<PagedData<List<Comment>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("comments", "comment_linkage")) {
+        return RxRoom.createObservable(database, arrayOf("users", "comments", "comment_linkage")) {
             database.runInTransaction(Callable {
                 val commentsWithAuthors = commentDao.getCommentsWithAuthors(key)
                 val nextCursor = getNextCursor(key)
