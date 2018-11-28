@@ -22,10 +22,10 @@ private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewH
     }
 
     override fun onBindViewHolder(item: WatcherItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.username.text = item.watcher.username
+        holder.username.text = item.watcher.user.name
 
         GlideApp.with(holder.avatar)
-                .load(item.watcher.avatarUrl)
+                .load(item.watcher.user.avatarUrl)
                 .circleCrop()
                 .dontAnimate()
                 .into(holder.avatar)

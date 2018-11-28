@@ -4,17 +4,14 @@ import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import io.plastique.core.ui.R
+import javax.inject.Inject
 
-class BrowserLauncher(private val context: Context) {
-    private val toolbarColor: Int
-
-    init {
+class BrowserLauncher @Inject constructor() {
+    fun openUrl(context: Context, url: String) {
         val a = context.obtainStyledAttributes(intArrayOf(R.attr.colorPrimary))
-        toolbarColor = a.getColor(0, 0)
+        val toolbarColor = a.getColor(0, 0)
         a.recycle()
-    }
 
-    fun openUrl(url: String) {
         CustomTabsIntent.Builder()
                 .setToolbarColor(toolbarColor)
                 .setShowTitle(true)

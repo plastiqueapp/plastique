@@ -1,11 +1,12 @@
 package io.plastique.watch
 
+import io.plastique.users.User
+import io.plastique.users.toUser
+
 data class Watcher(
-    val username: String,
-    val avatarUrl: String?
+    val user: User
 )
 
 fun WatcherWithUser.toWatcher(): Watcher {
-    val user = users.first()
-    return Watcher(username = user.name, avatarUrl = user.avatarUrl)
+    return Watcher(user = users.first().toUser())
 }

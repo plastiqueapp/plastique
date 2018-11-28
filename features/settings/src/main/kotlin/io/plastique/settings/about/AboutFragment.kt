@@ -32,6 +32,7 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
     }
 
     @Inject lateinit var appConfig: AppConfig
+    @Inject lateinit var browserLauncher: BrowserLauncher
     @Inject lateinit var navigator: SettingsNavigator
 
     private var newVersionAvailable: Boolean = false
@@ -85,15 +86,15 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
                 true
             }
             "privacy_policy" -> {
-                BrowserLauncher(context).openUrl(appConfig.getString("privacy_policy_url"))
+                browserLauncher.openUrl(context, appConfig.getString("privacy_policy_url"))
                 true
             }
             "deviantart_privacy_policy" -> {
-                BrowserLauncher(context).openUrl(appConfig.getString("deviantart_privacy_policy_url"))
+                browserLauncher.openUrl(context, appConfig.getString("deviantart_privacy_policy_url"))
                 true
             }
             "deviantart_tos" -> {
-                BrowserLauncher(context).openUrl(appConfig.getString("deviantart_terms_of_service_url"))
+                browserLauncher.openUrl(context, appConfig.getString("deviantart_terms_of_service_url"))
                 true
             }
             "licenses" -> {
@@ -126,7 +127,7 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
         private val DEV_VERSION_NAME_SUFFIX = Pattern.compile("-dev$")
     }
 
-    fun PreferenceGroup.all(action: (preference: Preference) -> Any) {
+    private fun PreferenceGroup.all(action: (preference: Preference) -> Any) {
         for (i in 0 until preferenceCount) {
             val preference = getPreference(i)
             action(preference)

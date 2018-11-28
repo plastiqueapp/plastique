@@ -51,7 +51,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         initToolbar(username)
 
         adapter = WatcherListAdapter()
-        adapter.onWatcherClickListener = { item -> navigator.openUserProfile(navigationContext, item.watcher.username) }
+        adapter.onWatcherClickListener = { item -> navigator.openUserProfile(navigationContext, item.watcher.user) }
 
         onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }
 

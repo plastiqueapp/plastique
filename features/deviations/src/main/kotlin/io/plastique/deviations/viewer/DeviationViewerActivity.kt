@@ -97,7 +97,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         contentViewController = ContentViewController(this, R.id.photo, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(rootView)
 
-        authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state!!.deviation!!.author.name) }
+        authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state!!.deviation!!.author) }
 
         val attrs = intArrayOf(R.attr.colorPrimary)
         val a = appBar.context.obtainStyledAttributes(attrs)

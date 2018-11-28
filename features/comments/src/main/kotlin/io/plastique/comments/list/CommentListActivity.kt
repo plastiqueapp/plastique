@@ -58,7 +58,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
         initToolbar()
 
         adapter = CommentsAdapter()
-        adapter.onOpenUserProfileListener = { navigator.openUserProfile(navigationContext, it.name) }
+        adapter.onOpenUserProfileListener = { user -> navigator.openUserProfile(navigationContext, user) }
         adapter.onReplyClickListener = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) }
         adapter.onReplyingToClickListener = { commentId -> scrollToComment(commentId) }
 

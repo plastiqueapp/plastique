@@ -7,6 +7,7 @@ import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.list.CommentListActivity
+import io.plastique.core.BrowserLauncher
 import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.viewer.DeviationViewerActivity
@@ -17,7 +18,9 @@ import io.plastique.main.MainNavigator
 import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsActivity
 import io.plastique.settings.SettingsNavigator
+import io.plastique.users.User
 import io.plastique.users.UserProfileActivity
+import io.plastique.users.UserType
 import io.plastique.users.UsersNavigator
 import io.plastique.util.Intents
 import io.plastique.watch.WatchNavigator
@@ -28,7 +31,7 @@ import io.plastique.collections.FolderDeviationListActivity as CollectionFolderD
 import io.plastique.gallery.FolderDeviationListActivity as GalleryFolderDeviationListActivity
 
 @Singleton
-class Navigator @Inject constructor() :
+class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher) :
         CollectionsNavigator,
         CommentsNavigator,
         DeviationsNavigator,
@@ -75,8 +78,12 @@ class Navigator @Inject constructor() :
         navigationContext.startActivity(SettingsActivity.createIntent(navigationContext.context))
     }
 
-    override fun openUserProfile(navigationContext: NavigationContext, username: String) {
-        navigationContext.startActivity(UserProfileActivity.createIntent(navigationContext.context, username))
+    override fun openUserProfile(navigationContext: NavigationContext, user: User) {
+        if (user.type == UserType.Group) {
+            browserLauncher.openUrl(navigationContext.context, "https://www.deviantart.com/${user.name}")
+        } else {
+            navigationContext.startActivity(UserProfileActivity.createIntent(navigationContext.context, user.name))
+        }
     }
 
     override fun openWatchers(navigationContext: NavigationContext, username: String?) {

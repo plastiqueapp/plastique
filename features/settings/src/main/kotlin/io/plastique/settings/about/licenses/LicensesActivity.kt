@@ -19,10 +19,12 @@ import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
+import javax.inject.Inject
 
 class LicensesActivity : MvvmActivity<LicensesViewModel>() {
     private lateinit var adapter: LicensesAdapter
     private lateinit var contentViewController: ContentViewController
+    @Inject lateinit var browserLauncher: BrowserLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
         }
 
         adapter = LicensesAdapter()
-        adapter.onLicenseClickListener = { license -> BrowserLauncher(this).openUrl(license.url) }
+        adapter.onLicenseClickListener = { license -> browserLauncher.openUrl(this, license.url) }
 
         val licensesView = findViewById<RecyclerView>(R.id.licenses)
         licensesView.adapter = adapter
