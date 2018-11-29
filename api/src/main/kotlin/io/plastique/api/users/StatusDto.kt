@@ -2,6 +2,7 @@ package io.plastique.api.users
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.common.NullIfDeleted
 import io.plastique.api.deviations.DeviationDto
 import org.threeten.bp.ZonedDateTime
 
@@ -25,9 +26,6 @@ data class StatusDto(
     @Json(name = "comments_count")
     val commentCount: Int = 0,
 
-    @Json(name = "is_deleted")
-    val isDeleted: Boolean = false,
-
     @Json(name = "is_share")
     val isShare: Boolean = false,
 
@@ -37,14 +35,16 @@ data class StatusDto(
     sealed class EmbeddedItem {
         @JsonClass(generateAdapter = true)
         data class SharedDeviation(
+            @NullIfDeleted
             @Json(name = "deviation")
-            val deviation: DeviationDto
+            val deviation: DeviationDto?
         ) : EmbeddedItem()
 
         @JsonClass(generateAdapter = true)
         data class SharedStatus(
+            @NullIfDeleted
             @Json(name = "status")
-            val status: StatusDto
+            val status: StatusDto?
         ) : EmbeddedItem()
 
         object Unknown : EmbeddedItem()

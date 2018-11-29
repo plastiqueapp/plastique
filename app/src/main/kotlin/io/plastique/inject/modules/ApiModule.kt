@@ -16,6 +16,7 @@ import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.FallbackJsonAdapterFactory
+import io.plastique.core.adapters.NullIfDeletedJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.StringCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
@@ -100,6 +101,7 @@ object ApiModule {
                 .add(PolymorphicJsonAdapterFactory.of(StatusDto.EmbeddedItem::class.java, "type")
                         .withSubtype(StatusDto.EmbeddedItem.SharedDeviation::class.java, StatusDto.EmbeddedItem.TYPE_DEVIATION)
                         .withSubtype(StatusDto.EmbeddedItem.SharedStatus::class.java, StatusDto.EmbeddedItem.TYPE_STATUS))
+                .add(NullIfDeletedJsonAdapterFactory())
                 .build()
     }
 }
