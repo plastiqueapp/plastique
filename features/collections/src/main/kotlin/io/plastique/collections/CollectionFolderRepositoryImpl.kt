@@ -4,6 +4,7 @@ import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.CollectionService
+import io.plastique.api.collections.FolderDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -24,7 +25,7 @@ import org.threeten.bp.Duration
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-class FolderRepository @Inject constructor(
+class CollectionFolderRepositoryImpl @Inject constructor(
     private val database: RoomDatabase,
     private val collectionDao: CollectionDao,
     private val collectionService: CollectionService,
@@ -32,7 +33,7 @@ class FolderRepository @Inject constructor(
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider
-) {
+) : CollectionFolderRepository {
 
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
         val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
@@ -83,13 +84,17 @@ class FolderRepository @Inject constructor(
                 .map { folderList ->
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    val entities = folderList.results.map { folder -> folder.toFolderEntity() }
-                    persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
+                    persist(cacheEntry = cacheEntry, folders = folderList.results, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
                 }
     }
 
-    private fun persist(cacheEntry: CacheEntry, folders: List<FolderEntity>, replaceExisting: Boolean) {
+    override fun put(folders: Collection<FolderDto>) {
+        val entities = folders.map { folder -> folder.toFolderEntity() }
+        collectionDao.insertOrUpdateFolders(entities)
+    }
+
+    private fun persist(cacheEntry: CacheEntry, folders: List<FolderDto>, replaceExisting: Boolean) {
         database.runInTransaction {
             var order = if (replaceExisting) {
                 collectionDao.deleteFoldersByKey(cacheEntry.key)
@@ -98,7 +103,7 @@ class FolderRepository @Inject constructor(
                 collectionDao.maxOrder(cacheEntry.key) + 1
             }
 
-            collectionDao.insertOrUpdateFolders(folders)
+            put(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
             val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
@@ -124,3 +129,10 @@ data class FolderCacheMetadata(
     @Json(name = "next_cursor")
     val nextCursor: OffsetCursor?
 )
+
+private fun FolderDto.toFolderEntity(): FolderEntity {
+    val thumbnailUrl = deviations.asSequence()
+            .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
+            .firstOrNull { it != null }
+    return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
+}

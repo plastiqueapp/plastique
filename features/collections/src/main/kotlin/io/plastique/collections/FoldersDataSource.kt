@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class FoldersDataSource @Inject constructor(
-    private val folderRepository: FolderRepository
+    private val folderRepository: CollectionFolderRepositoryImpl
 ) : PagedDataSource<List<Folder>, FolderLoadParams> {
     private val params = AtomicReference<FolderLoadParams>()
     private val nextCursor = AtomicReference<OffsetCursor>()

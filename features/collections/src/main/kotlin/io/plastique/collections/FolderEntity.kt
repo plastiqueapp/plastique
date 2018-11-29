@@ -3,7 +3,6 @@ package io.plastique.collections
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import io.plastique.api.collections.FolderDto
 
 @Entity(tableName = "collection_folders")
 data class FolderEntity(
@@ -20,10 +19,3 @@ data class FolderEntity(
     @ColumnInfo(name = "thumbnail_url")
     val thumbnailUrl: String? = null
 )
-
-fun FolderDto.toFolderEntity(): FolderEntity {
-    val thumbnailUrl = deviations.asSequence()
-            .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
-            .firstOrNull { it != null }
-    return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
-}
