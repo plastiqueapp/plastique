@@ -109,7 +109,7 @@ subprojects {
         if (plugins.hasPlugin("kotlin-android-extensions")) {
             androidExtensions {
                 experimental = true
-                defaultCacheImplementation = "NONE"
+                features = ["parcelize"]
             }
         }
     }
