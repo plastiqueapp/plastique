@@ -10,7 +10,7 @@ import androidx.room.Transaction
 interface WatchDao {
     @Transaction
     @Query("SELECT * FROM watchers WHERE `key` = :key ORDER BY `order`")
-    fun getWatchers(key: String): List<WatcherWithUser>
+    fun getWatchersByKey(key: String): List<WatcherEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertWatchers(watchers: Collection<WatcherEntity>)

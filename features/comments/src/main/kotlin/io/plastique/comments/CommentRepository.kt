@@ -61,18 +61,18 @@ class CommentRepository @Inject constructor(
     private fun getCommentsFromDb(key: String): Observable<PagedData<List<Comment>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "comments", "comment_linkage")) {
             database.runInTransaction(Callable {
-                val commentsWithAuthors = commentDao.getCommentsWithAuthors(key)
+                val commentsWithRelations = commentDao.getCommentsByKey(key)
+                val comments = combineAndFilter(commentsWithRelations)
                 val nextCursor = getNextCursor(key)
-                val comments = combineAndFilter(commentsWithAuthors)
                 PagedData(comments, nextCursor)
             })
         }.distinctUntilChanged()
     }
 
-    private fun combineAndFilter(commentsWithAuthors: List<CommentWithAuthor>): List<Comment> {
-        return commentsWithAuthors.asSequence()
-                .filter { commentWithAuthor -> !isIgnoredComment(commentWithAuthor.comment) }
-                .map { commentWithAuthor -> commentWithAuthor.toComment() }
+    private fun combineAndFilter(commentsWithRelations: List<CommentEntityWithRelations>): List<Comment> {
+        return commentsWithRelations.asSequence()
+                .filter { !it.comment.isIgnored }
+                .map { it.toComment() }
                 .toList()
     }
 
@@ -120,8 +120,8 @@ class CommentRepository @Inject constructor(
         }
     }
 
-    private fun isIgnoredComment(comment: CommentEntity): Boolean =
-            comment.hidden == HideReason.HIDDEN_AS_SPAM && comment.numReplies == 0
+    private val CommentEntity.isIgnored: Boolean
+        get() = hidden == HideReason.HIDDEN_AS_SPAM && numReplies == 0
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)

@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import io.plastique.users.UserEntity
 
-data class WatcherWithUser(
+data class WatcherEntityWithRelations(
     @Embedded
     val watcher: WatcherEntity,
 

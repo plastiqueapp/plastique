@@ -7,6 +7,6 @@ data class Watcher(
     val user: User
 )
 
-fun WatcherWithUser.toWatcher(): Watcher {
+fun WatcherEntityWithRelations.toWatcher(): Watcher {
     return Watcher(user = users.first().toUser())
 }

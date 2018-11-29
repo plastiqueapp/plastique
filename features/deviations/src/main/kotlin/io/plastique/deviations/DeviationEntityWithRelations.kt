@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import io.plastique.users.UserEntity
 
-data class DeviationWithRelations(
+data class DeviationEntityWithRelations(
     @Embedded
     val deviation: DeviationEntity,
 

@@ -12,11 +12,11 @@ import io.reactivex.Observable
 interface DeviationDao {
     @Transaction
     @Query("SELECT * FROM deviations WHERE id = :deviationId")
-    fun getDeviationWithUsersById(deviationId: String): Observable<List<DeviationWithRelations>>
+    fun getDeviationById(deviationId: String): Observable<List<DeviationEntityWithRelations>>
 
     @Transaction
     @Query("SELECT d.* FROM deviations d INNER JOIN deviation_linkage dl ON d.id = dl.deviation_id WHERE dl.`key` = :key ORDER BY dl.`order`")
-    fun getDeviationsWithUsersByKey(key: String): List<DeviationWithRelations>
+    fun getDeviationsByKey(key: String): List<DeviationEntityWithRelations>
 
     @Query("SELECT title FROM deviations WHERE id = :deviationId")
     fun getDeviationTitleById(deviationId: String): String?

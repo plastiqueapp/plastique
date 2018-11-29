@@ -75,7 +75,7 @@ class FolderRepository @Inject constructor(
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders")) {
             database.runInTransaction(Callable {
-                val folders = galleryDao.getFolders(cacheKey).map { folderEntity -> folderEntity.toFolder() }
+                val folders = galleryDao.getFolders(cacheKey).map { it.toFolder() }
                 val nextCursor = getNextCursor(cacheKey)
                 PagedData(folders, nextCursor)
             })

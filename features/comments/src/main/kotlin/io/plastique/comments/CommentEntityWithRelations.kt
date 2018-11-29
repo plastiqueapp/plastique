@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import io.plastique.users.UserEntity
 
-data class CommentWithAuthor(
+data class CommentEntityWithRelations(
     @Embedded
     val comment: CommentEntity,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val authors: List<UserEntity>
+    val users: List<UserEntity>
 )

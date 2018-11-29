@@ -6,7 +6,7 @@ data class UserProfile(
     val realName: String?
 )
 
-fun UserProfileWithUser.toUserProfile(): UserProfile = UserProfile(
-        user = user.first().toUser(),
+fun UserProfileEntityWithRelations.toUserProfile(): UserProfile = UserProfile(
+        user = users.first().toUser(),
         profileUrl = userProfile.profileUrl,
         realName = userProfile.realName)

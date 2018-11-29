@@ -25,4 +25,4 @@ fun CommentEntity.toComment(author: UserEntity): Comment {
             text = text)
 }
 
-fun CommentWithAuthor.toComment(): Comment = comment.toComment(authors.first())
+fun CommentEntityWithRelations.toComment(): Comment = comment.toComment(users.first())

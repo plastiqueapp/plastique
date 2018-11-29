@@ -11,7 +11,7 @@ import androidx.room.Update
 interface CommentDao {
     @Transaction
     @Query("SELECT c.* FROM comments c INNER JOIN comment_linkage cl ON c.id = cl.comment_id WHERE cl.`key` = :key ORDER BY cl.`order`")
-    fun getCommentsWithAuthors(key: String): List<CommentWithAuthor>
+    fun getCommentsByKey(key: String): List<CommentEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(comment: CommentEntity): Long

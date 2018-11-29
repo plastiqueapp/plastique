@@ -105,9 +105,9 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun getDeviationsFromDb(key: String, params: FetchParams, metadataSerializer: DeviationCacheMetadataSerializer): Observable<PagedData<List<Deviation>, Cursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "deviation_linkage")) {
             database.runInTransaction(Callable {
-                val deviationsWithUsers = deviationDao.getDeviationsWithUsersByKey(key)
+                val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
+                val deviations = combineAndFilter(deviationsWithRelations, params)
                 val nextCursor = getNextCursor(key, metadataSerializer)
-                val deviations = combineAndFilter(deviationsWithUsers, params)
                 PagedData(deviations, nextCursor)
             })
         }.distinctUntilChanged()
@@ -119,11 +119,11 @@ class DeviationRepositoryImpl @Inject constructor(
         return metadata?.nextCursor
     }
 
-    private fun combineAndFilter(deviationsWithUsers: List<DeviationWithRelations>, params: FetchParams): List<Deviation> {
-        return deviationsWithUsers
+    private fun combineAndFilter(deviationsWithRelations: List<DeviationEntityWithRelations>, params: FetchParams): List<Deviation> {
+        return deviationsWithRelations
                 .asSequence()
-                .map { deviationWithUsers -> deviationWithUsers.toDeviation() }
-                .filter { deviation -> matchesParams(deviation, params) }
+                .map { it.toDeviation() }
+                .filter { matchesParams(it, params) }
                 .toList()
     }
 
@@ -158,7 +158,7 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {
-        return deviationDao.getDeviationWithUsersById(deviationId)
+        return deviationDao.getDeviationById(deviationId)
                 .takeWhile { it.isNotEmpty() }
                 .map { it.first().toDeviation() }
                 .distinctUntilChanged()
@@ -209,7 +209,7 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
         DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
-private fun DeviationWithRelations.toDeviation(): Deviation = Deviation(
+private fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
         id = deviation.id,
         title = deviation.title,
         url = deviation.url,
