@@ -22,6 +22,7 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
@@ -32,6 +33,7 @@ import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
+import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
@@ -55,6 +57,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private lateinit var authorView: TextView
     private lateinit var descriptionView: TextView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
@@ -95,6 +98,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         photoView.setOnPhotoTapListener { _, _, _ -> toggleUiVisibility() }
 
         contentViewController = ContentViewController(this, R.id.photo, android.R.id.progress, android.R.id.empty)
+        progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
         authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state!!.deviation!!.author) }
@@ -145,6 +149,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.deviations_viewer_action_favorite -> {
+            viewModel.dispatch(SetFavoriteEvent(state!!.deviationId, !item.isChecked))
             true
         }
         R.id.deviations_viewer_action_download -> {
@@ -181,6 +186,14 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         if (state.menuState != prevState?.menuState) {
             invalidateOptionsMenu()
+        }
+
+        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
+            if (state.showProgressDialog) {
+                progressDialogController.show()
+            } else {
+                progressDialogController.dismiss()
+            }
         }
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {

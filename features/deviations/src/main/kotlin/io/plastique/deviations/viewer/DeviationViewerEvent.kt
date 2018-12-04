@@ -14,6 +14,10 @@ sealed class DeviationViewerEvent : Event() {
     object DownloadOriginalClickEvent : DeviationViewerEvent()
     data class DownloadOriginalErrorEvent(val errorMessage: String) : DeviationViewerEvent()
 
+    data class SetFavoriteEvent(val deviationId: String, val favorite: Boolean) : DeviationViewerEvent()
+    object SetFavoriteFinishedEvent : DeviationViewerEvent()
+    data class SetFavoriteErrorEvent(val error: Throwable) : DeviationViewerEvent()
+
     object SnackbarShownEvent : DeviationViewerEvent()
 
     data class SessionChangedEvent(val session: Session) : DeviationViewerEvent()

@@ -2,6 +2,7 @@ package io.plastique.deviations.viewer
 
 import android.net.Uri
 import com.sch.rxjava2.extensions.ofType
+import io.plastique.collections.FavoritesModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
@@ -13,17 +14,22 @@ import io.plastique.core.flow.next
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
 import io.plastique.deviations.viewer.DeviationViewerEffect.DownloadOriginalEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.LoadDeviationEffect
+import io.plastique.deviations.viewer.DeviationViewerEffect.SetFavoriteEffect
 import io.plastique.deviations.viewer.DeviationViewerEvent.DeviationLoadedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.LoadErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SessionChangedEvent
+import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteErrorEvent
+import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
+import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.inject.scopes.ActivityScope
@@ -38,6 +44,7 @@ class DeviationViewerViewModel @Inject constructor(
     private val deviationRepository: DeviationRepository,
     private val downloadInfoRepository: DownloadInfoRepository,
     private val downloader: FileDownloader,
+    private val favoritesModel: FavoritesModel,
     private val errorMessageProvider: ErrorMessageProvider,
     private val sessionManager: SessionManager
 ) : ViewModel() {
@@ -55,7 +62,7 @@ class DeviationViewerViewModel @Inject constructor(
         val initialState = DeviationViewerViewState(
                 deviationId = deviationId,
                 contentState = ContentState.Loading,
-                isSignedIn = sessionManager.session is Session.User)
+                session = sessionManager.session)
 
         state = loop.loop(initialState, LoadDeviationEffect(deviationId)).disposeOnDestroy()
     }
@@ -83,7 +90,15 @@ class DeviationViewerViewModel @Inject constructor(
                             .onErrorReturn { error -> DownloadOriginalErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.deviations_viewer_message_download_error)) }
                 }
 
-        return Observable.merge(loadEvents, downloadOriginalEvents)
+        val setFavoriteEvents = effects.ofType<SetFavoriteEffect>()
+                .switchMapSingle { effect ->
+                    favoritesModel.setFavorite(effect.deviationId, effect.favorite)
+                            .toSingleDefault<DeviationViewerEvent>(SetFavoriteFinishedEvent)
+                            .doOnError(Timber::e)
+                            .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
+                }
+
+        return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents)
     }
 
     private fun externalEvents(): Observable<DeviationViewerEvent> {
@@ -97,12 +112,14 @@ class DeviationViewerViewModel @Inject constructor(
     }
 }
 
-class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
+class DeviationViewerStateReducer @Inject constructor(
+    private val errorMessageProvider: ErrorMessageProvider
+) : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
     override fun invoke(state: DeviationViewerViewState, event: DeviationViewerEvent): Next<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
         is DeviationLoadedEvent -> {
             val menuState = MenuState(
                     showDownload = event.deviation.properties.isDownloadable,
-                    showFavorite = state.isSignedIn,
+                    showFavorite = showFavorite(event.deviation, state.session),
                     isFavoriteChecked = event.deviation.properties.isFavorite)
 
             next(state.copy(
@@ -127,15 +144,31 @@ class DeviationViewerStateReducer @Inject constructor() : Reducer<DeviationViewe
             next(state.copy(snackbarState = SnackbarState.Message(event.errorMessage)))
         }
 
+        is SetFavoriteEvent -> {
+            next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
+        }
+
+        SetFavoriteFinishedEvent -> {
+            next(state.copy(showProgressDialog = false))
+        }
+
+        is SetFavoriteErrorEvent -> {
+            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
+            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+        }
+
         SnackbarShownEvent -> {
             next(state.copy(snackbarState = SnackbarState.None))
         }
 
         is SessionChangedEvent -> {
-            val isSignedIn = event.session is Session.User
             next(state.copy(
-                    isSignedIn = isSignedIn,
-                    menuState = state.menuState.copy(showFavorite = isSignedIn)))
+                    session = event.session,
+                    menuState = state.menuState.copy(showFavorite = state.deviation != null && showFavorite(state.deviation, event.session))))
         }
+    }
+
+    private fun showFavorite(deviation: Deviation, session: Session): Boolean {
+        return session is Session.User && deviation.author.id != session.userId
     }
 }

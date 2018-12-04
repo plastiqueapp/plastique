@@ -35,16 +35,22 @@ interface DeviationDao {
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(metadata: Collection<DeviationEntity>)
+    fun insert(deviations: Collection<DeviationEntity>)
 
     @Update
-    fun update(metadata: Collection<DeviationEntity>)
+    fun update(deviations: Collection<DeviationEntity>)
 
     @Transaction
-    fun insertOrUpdate(metadata: Collection<DeviationEntity>) {
-        update(metadata)
-        insert(metadata)
+    fun insertOrUpdate(deviations: Collection<DeviationEntity>) {
+        update(deviations)
+        insert(deviations)
     }
+
+    @Query("UPDATE deviations SET properties_is_favorite = :favorite WHERE id = :deviationId")
+    fun setFavorite(deviationId: String, favorite: Boolean)
+
+    @Query("UPDATE deviations SET properties_is_favorite = :favorite, stats_favorites = :numFavorites WHERE id = :deviationId")
+    fun setFavorite(deviationId: String, favorite: Boolean, numFavorites: Int)
 
     @Insert
     fun insertLinks(links: Collection<DeviationLinkage>)

@@ -11,7 +11,7 @@ class ProgressDialogController(
     private val tag: String = DEFAULT_TAG
 ) {
 
-    fun show(@StringRes titleId: Int, @StringRes messageId: Int = R.string.common_message_please_wait) {
+    fun show(@StringRes titleId: Int = 0, @StringRes messageId: Int = R.string.common_message_please_wait) {
         if (fragment == null) {
             val fragment = ProgressDialogFragment.newInstance(titleId, messageId)
             fragment.showAllowingStateLoss(fragmentManager, tag)

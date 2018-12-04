@@ -35,14 +35,14 @@ interface CollectionService {
     @AccessScope("collection")
     fun addToFolder(
         @Field("deviationid") deviationId: String,
-        @Field("folderid[0]") folderId: String?): Single<FolderChangeResult>
+        @Field("folderid[0]") folderId: String?): Single<AddRemoveFavoriteResult>
 
     @POST("collections/unfave")
     @FormUrlEncoded
     @AccessScope("collection")
     fun removeFromFolder(
         @Field("deviationid") deviationId: String,
-        @Field("folderid[0]") folderId: String?): Single<FolderChangeResult>
+        @Field("folderid[0]") folderId: String?): Single<AddRemoveFavoriteResult>
 
     @POST("collections/folders/create")
     @FormUrlEncoded

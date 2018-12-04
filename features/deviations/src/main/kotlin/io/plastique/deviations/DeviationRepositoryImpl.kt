@@ -153,8 +153,7 @@ class DeviationRepositoryImpl @Inject constructor(
     override fun getDeviationById(deviationId: String): Observable<Deviation> {
         return getDeviationByIdFromDb(deviationId)
                 .switchIfEmpty(getDeviationByIdFromServer(deviationId)
-                        .ignoreElement()
-                        .andThen(getDeviationByIdFromDb(deviationId)))
+                        .flatMapObservable { getDeviationByIdFromDb(deviationId) })
     }
 
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {

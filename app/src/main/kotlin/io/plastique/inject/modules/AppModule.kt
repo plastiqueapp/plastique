@@ -14,6 +14,8 @@ import io.plastique.BuildConfig
 import io.plastique.MainFragmentFactoryImpl
 import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
+import io.plastique.collections.FavoritesModel
+import io.plastique.collections.FavoritesModelImpl
 import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
 import io.plastique.core.client.AccessTokenProvider
@@ -44,6 +46,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
+
+    @Binds
+    abstract fun bindFavoritesModel(impl: FavoritesModelImpl): FavoritesModel
 
     @Module
     companion object {
