@@ -12,7 +12,10 @@
 
         <item name="colorPrimary">#fafafa</item>
         <item name="colorPrimaryDark">#b0b0b0</item>
+        <item name="colorOnPrimary">#000000</item>
         <item name="colorAccent">#607d8b</item>
+        <item name="colorSurface">?colorPrimary</item>
+        <item name="colorOnSurface">?colorOnPrimary</item>
         <item name="bottomSheetDialogTheme">@style/AppTheme.Light.BottomSheetDialog</item>
         <item name="preferenceTheme">@style/App.PreferenceThemeOverlay</item>
         <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
