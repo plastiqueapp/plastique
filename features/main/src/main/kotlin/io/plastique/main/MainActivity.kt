@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
+import io.plastique.core.extensions.fixLabelClipping
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
@@ -46,6 +47,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.fixLabelClipping()
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
         bottomNavigationView.setOnNavigationItemReselectedListener(this)
 
