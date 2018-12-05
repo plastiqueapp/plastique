@@ -68,7 +68,7 @@ interface DeviationDao {
     fun updateImages(images: Collection<DeviationImageEntity>)
 
     @Query("DELETE FROM deviation_images WHERE deviation_id IN (:deviationIds) AND id NOT IN (:exceptIds)")
-    fun deleteImages(exceptIds: Set<String>, deviationIds: Set<String>)
+    fun deleteImages(exceptIds: Collection<String>, deviationIds: Collection<String>)
 
     @Transaction
     fun replaceImages(images: Collection<DeviationImageEntity>) {

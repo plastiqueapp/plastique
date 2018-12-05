@@ -9,7 +9,6 @@ dependencies {
     implementation project(":api")
 
     api "android.arch.work:work-runtime:$versions.androidx.work"
-    implementation "android.arch.work:work-firebase:$versions.androidx.work"
     api "androidx.core:core:$versions.androidx.core"
     api "androidx.core:core-ktx:$versions.androidx.coreKtx"
     api "androidx.room:room-runtime:$versions.androidx.room"
