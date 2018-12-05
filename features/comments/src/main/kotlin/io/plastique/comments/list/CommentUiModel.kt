@@ -1,12 +1,13 @@
 package io.plastique.comments.list
 
+import io.plastique.core.text.SpannedWrapper
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
 data class CommentUiModel(
     val id: String,
     val datePosted: ZonedDateTime,
-    val text: CharSequence, // TODO: Need stable equals for Spanned
+    val text: SpannedWrapper,
     val author: User,
     val parentId: String?,
     val parentAuthorName: String?

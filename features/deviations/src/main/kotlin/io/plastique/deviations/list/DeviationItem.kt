@@ -2,6 +2,7 @@ package io.plastique.deviations.list
 
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ListItem
+import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
 
 abstract class DeviationItem : ListItem, IndexedItem {
@@ -18,5 +19,5 @@ data class ImageDeviationItem(
 data class LiteratureDeviationItem(
     override val deviation: Deviation,
     override var index: Int = 0,
-    val excerpt: CharSequence
+    val excerpt: SpannedWrapper
 ) : DeviationItem()

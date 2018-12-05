@@ -3,6 +3,7 @@ package io.plastique.deviations.list
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.RichTextFormatter
+import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DailyParams
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
@@ -53,7 +54,7 @@ class DeviationListModel @Inject constructor(
     }
 
     private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = richTextFormatter.format(deviation.excerpt!!))
+        LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
     } else {
         ImageDeviationItem(deviation, index = index)
     }

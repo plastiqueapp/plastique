@@ -32,7 +32,7 @@ private class CommentItemDelegate(
 
     override fun onBindViewHolder(item: CommentItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.authorView.text = item.comment.author.name
-        holder.textView.text = item.comment.text
+        holder.textView.text = item.comment.text.value
         holder.timeView.text = ElapsedTimeFormatter.format(holder.timeView.context, item.comment.datePosted, ZonedDateTime.now())
 
         val replyingTo = if (item.comment.isReply) {

@@ -177,7 +177,7 @@ private class ListLiteratureDeviationItemDelegate(
         }
 
         holder.title.text = item.deviation.title
-        holder.excerpt.text = item.excerpt
+        holder.excerpt.text = item.excerpt.value
     }
 
     class ViewHolder(

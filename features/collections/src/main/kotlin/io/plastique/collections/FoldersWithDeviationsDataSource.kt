@@ -2,6 +2,7 @@ package io.plastique.collections
 
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
+import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.list.DeviationItem
@@ -92,7 +93,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     }
 
     private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = "")
+        LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper.EMPTY)
     } else {
         ImageDeviationItem(deviation, index = index)
     }

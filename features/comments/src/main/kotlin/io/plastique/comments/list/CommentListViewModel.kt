@@ -46,6 +46,7 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.core.text.RichTextFormatter
+import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.NetworkConnectionState
@@ -167,7 +168,7 @@ class CommentListViewModel @Inject constructor(
         return CommentUiModel(
                 id = id,
                 datePosted = datePosted,
-                text = richTextFormatter.format(text),
+                text = SpannedWrapper(richTextFormatter.format(text)),
                 author = author,
                 parentId = parentId,
                 parentAuthorName = parent?.author?.name)
