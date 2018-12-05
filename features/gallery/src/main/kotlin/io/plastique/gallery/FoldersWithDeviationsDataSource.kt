@@ -2,7 +2,6 @@ package io.plastique.gallery
 
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
-import io.plastique.core.text.RichTextFormatter
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.list.DeviationItem
@@ -17,8 +16,7 @@ import javax.inject.Inject
 
 class FoldersWithDeviationsDataSource @Inject constructor(
     private val foldersDataSource: FoldersDataSource,
-    private val deviationDataSource: DeviationDataSource,
-    private val richTextFormatter: RichTextFormatter
+    private val deviationDataSource: DeviationDataSource
 ) {
     @Volatile private var hasMoreFolders = false
     @Volatile private var hasMoreDeviations = false
@@ -94,7 +92,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     }
 
     private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = richTextFormatter.format(deviation.excerpt!!))
+        LiteratureDeviationItem(deviation, index = index, excerpt = "")
     } else {
         ImageDeviationItem(deviation, index = index)
     }
