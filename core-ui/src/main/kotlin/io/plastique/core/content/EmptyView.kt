@@ -50,7 +50,7 @@ class EmptyView @JvmOverloads constructor(
         button.isVisible = state.button != null
     }
 
-    fun setOnButtonClickListener(listener: View.OnClickListener) {
+    fun setOnButtonClickListener(listener: (view: View) -> Unit) {
         button.setOnClickListener(listener)
     }
 }

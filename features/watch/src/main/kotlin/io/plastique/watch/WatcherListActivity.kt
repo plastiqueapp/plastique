@@ -65,13 +65,13 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener(View.OnClickListener {
+        emptyView.setOnButtonClickListener {
             if (state.signInNeeded) {
                 navigator.openLogin(navigationContext)
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }
-        })
+        }
 
         contentViewController = ContentViewController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)

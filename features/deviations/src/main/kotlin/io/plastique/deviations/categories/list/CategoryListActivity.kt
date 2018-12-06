@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
@@ -60,7 +59,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         snackbarController = SnackbarController(categoriesView)
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(parentCategory)
         viewModel.state

@@ -60,7 +60,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         snackbarController = SnackbarController(rootView)
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(username)
         viewModel.state

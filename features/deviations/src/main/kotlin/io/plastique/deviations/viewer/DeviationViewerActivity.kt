@@ -111,7 +111,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         initBottomSheet()
 
         val emptyView = findViewById<EmptyView>(android.R.id.empty)
-        emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         val viewCommentsButton = findViewById<TextView>(R.id.button_view_comments)
         viewCommentsButton.setOnClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }

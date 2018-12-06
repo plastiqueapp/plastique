@@ -81,7 +81,7 @@ class CommentListActivity : MvvmActivity<CommentListViewModel>() {
         snackbarController = SnackbarController(refreshLayout)
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener(View.OnClickListener { viewModel.dispatch(RetryClickEvent) })
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(intent.getParcelableExtra(EXTRA_THREAD_ID))
         viewModel.state
