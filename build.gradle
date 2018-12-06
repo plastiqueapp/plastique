@@ -110,6 +110,7 @@ subprojects {
             androidExtensions {
                 experimental = true
                 features = ["parcelize"]
+                defaultCacheImplementation = "NONE"
             }
         }
     }
