@@ -23,7 +23,7 @@ ext.versions = [
                 core     : "16.0.6",
         ],
 
-        kotlin               : "1.3.10",
+        kotlin               : "1.3.11",
         autoFactory          : "1.0-beta6",
         dagger               : "2.19",
         javaxAnnotation      : "1.3.2",
