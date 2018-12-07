@@ -14,7 +14,7 @@ ext.versions = [
                 work            : "1.0.0-alpha12",
                 preference      : "1.1.0-alpha01",
                 preferenceV14   : "1.0.0",
-                testCore        : "1.1.0-alpha01",
+                testCore        : "1.1.0-beta01",
         ],
 
         firebase             : [
@@ -37,7 +37,7 @@ ext.versions = [
         adapterDelegates     : "4.0.0",
         foregroundViews      : "2.5.0",
         crashlytics          : "2.9.7",
-        permissionsDispatcher: "4.0.0",
+        permissionsDispatcher: "4.1.0",
         photoView            : "2.3.0",
         processPhoenix       : "2.0.0",
         rxjava               : "2.2.4",

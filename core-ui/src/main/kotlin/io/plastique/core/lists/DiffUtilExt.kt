@@ -1,5 +1,6 @@
 package io.plastique.core.lists
 
+import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
@@ -96,6 +97,7 @@ private object ListItemCallback : DiffUtil.ItemCallback<ListItem>() {
     override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
             oldItem.javaClass === newItem.javaClass && oldItem.id == newItem.id
 
+    @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
             oldItem == newItem
 }
