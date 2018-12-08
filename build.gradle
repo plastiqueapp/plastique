@@ -49,23 +49,12 @@ subprojects {
     }
 
     afterEvaluate {
-        if (plugins.hasPlugin("kotlin-android")) {
-            android {
-                sourceSets {
-                    main.java.srcDirs += "src/main/kotlin"
-                    debug.java.srcDirs += "src/debug/kotlin"
-                    release.java.srcDirs += "src/release/kotlin"
-                    test.java.srcDirs += "src/test/kotlin"
-                }
-            }
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+            kotlinOptions {
+                jvmTarget = "1.8"
 
-            tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-                kotlinOptions {
-                    jvmTarget = "1.8"
-
-                    if (name.toLowerCase().contains("release")) {
-                        freeCompilerArgs = ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
-                    }
+                if (name.toLowerCase().contains("release")) {
+                    freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
                 }
             }
         }
@@ -102,6 +91,13 @@ subprojects {
                     textReport true
                     textOutput "stdout"
                     explainIssues false
+                }
+
+                sourceSets {
+                    main.java.srcDirs += "src/main/kotlin"
+                    debug.java.srcDirs += "src/debug/kotlin"
+                    release.java.srcDirs += "src/release/kotlin"
+                    test.java.srcDirs += "src/test/kotlin"
                 }
             }
         }
