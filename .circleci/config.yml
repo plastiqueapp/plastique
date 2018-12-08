@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -8,16 +8,11 @@ jobs:
 
     environment:
       TERM: dumb
-      GRADLE_OPTS: '-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048m -Dorg.gradle.workers.max=2'
+      _JAVA_OPTIONS: "-XX:+HeapDumpOnOutOfMemoryError"
+      GRADLE_OPTS: "-Dorg.gradle.cache.cleanup=false -Dorg.gradle.jvmargs='-Xmx1536m -XX:MaxMetaspaceSize=320m' -Dkotlin.daemon.jvm.options=-Xmx512m -Djava.util.concurrent.ForkJoinPool.common.parallelism=2"
 
     steps:
       - checkout
-
-      - run:
-          name: Update Android SDK
-          command: |
-            yes | sdkmanager --licenses || true
-            sdkmanager "platform-tools" "platforms;android-28"
 
       - run:
           name: Check Environment
@@ -30,8 +25,15 @@ jobs:
 
       - run:
           name: Build and Test
-          command: ./gradlew check --stacktrace
+          command: ./gradlew test :app:lintProdDebug :app:lintProdRelease --max-workers=2 --stacktrace
           no_output_timeout: 5m
+
+      - run:
+          name: Copy heap dumps
+          command: |
+            mkdir -p /tmp/heap_dumps
+            cp *.hprof /tmp/heap_dumps 2>/dev/null || :
+          when: on_fail
 
       - save_cache:
           paths:
@@ -41,26 +43,21 @@ jobs:
           key: v1-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
 
       - store_artifacts:
-          path: app/build/outputs/apk
-          destination: apks
-
-      - store_artifacts:
-          path: core/build/reports
-          destination: reports/core
-
-      - store_artifacts:
-          path: api/build/reports
-          destination: reports/api
-
-      - store_artifacts:
           path: app/build/reports
           destination: reports/app
+
+      - store_artifacts:
+          path: /tmp/heap_dumps
+          destination: heap_dumps
 
       - store_test_results:
           path: core/build/test-results
 
       - store_test_results:
           path: core-ui/build/test-results
+
+      - store_test_results:
+          path: features/settings/build/test-results
 
 workflows:
   version: 2
