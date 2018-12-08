@@ -127,7 +127,7 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
         private val DEV_VERSION_NAME_SUFFIX = Pattern.compile("-dev$")
     }
 
-    private fun PreferenceGroup.all(action: (preference: Preference) -> Any) {
+    private fun PreferenceGroup.all(action: (preference: Preference) -> Unit) {
         for (i in 0 until preferenceCount) {
             val preference = getPreference(i)
             action(preference)
