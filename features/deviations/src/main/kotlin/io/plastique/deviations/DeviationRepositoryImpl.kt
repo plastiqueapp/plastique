@@ -208,7 +208,7 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
         DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
-private fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
+fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
         id = deviation.id,
         title = deviation.title,
         url = deviation.url,

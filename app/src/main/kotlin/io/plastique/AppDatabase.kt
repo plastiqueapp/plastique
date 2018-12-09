@@ -23,6 +23,8 @@ import io.plastique.deviations.categories.CategoryEntity
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.deviations.download.DownloadInfoEntity
 import io.plastique.gallery.GalleryDao
+import io.plastique.statuses.StatusDao
+import io.plastique.statuses.StatusEntity
 import io.plastique.users.UserDao
 import io.plastique.users.UserEntity
 import io.plastique.users.UserProfileEntity
@@ -52,6 +54,8 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     GalleryFolderEntity::class,
     GalleryFolderLinkage::class,
 
+    StatusEntity::class,
+
     UserEntity::class,
     UserProfileEntity::class,
     WatcherEntity::class
@@ -73,6 +77,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun downloadInfoDao(): DownloadInfoDao
 
     abstract fun galleryDao(): GalleryDao
+
+    abstract fun statusDao(): StatusDao
 
     abstract fun userDao(): UserDao
 

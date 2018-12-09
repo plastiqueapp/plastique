@@ -6,6 +6,8 @@ import io.plastique.collections.CollectionFolderRepository
 import io.plastique.collections.CollectionFolderRepositoryImpl
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.DeviationRepositoryImpl
+import io.plastique.statuses.StatusRepository
+import io.plastique.statuses.StatusRepositoryImpl
 import io.plastique.users.UserRepository
 import io.plastique.users.UserRepositoryImpl
 
@@ -16,6 +18,9 @@ interface RepositoryModule {
 
     @Binds
     fun bindDeviationRepository(impl: DeviationRepositoryImpl): DeviationRepository
+
+    @Binds
+    fun bindStatusRepository(impl: StatusRepositoryImpl): StatusRepository
 
     @Binds
     fun bindUserRepository(impl: UserRepositoryImpl): UserRepository

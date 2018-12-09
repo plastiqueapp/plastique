@@ -11,6 +11,7 @@ import io.plastique.deviations.DeviationMetadataDao
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.gallery.GalleryDao
+import io.plastique.statuses.StatusDao
 import io.plastique.users.UserDao
 import io.plastique.watch.WatchDao
 
@@ -47,6 +48,10 @@ object DaoModule {
     @Provides
     @JvmStatic
     fun provideGalleryDao(database: AppDatabase): GalleryDao = database.galleryDao()
+
+    @Provides
+    @JvmStatic
+    fun provideStatusDao(database: AppDatabase): StatusDao = database.statusDao()
 
     @Provides
     @JvmStatic
