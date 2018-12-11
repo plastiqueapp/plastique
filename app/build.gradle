@@ -14,10 +14,8 @@ if (publishKeysFile.exists()) {
         track = "internal"
     }
 
-    tasks.whenTaskAdded { task ->
-        if (task.name.startsWith("publishDevRelease")) {
-            task.enabled = false
-        }
+    tasks.matching { it.name.startsWith("publishDevRelease") }.configureEach {
+        it.enabled = false
     }
 }
 

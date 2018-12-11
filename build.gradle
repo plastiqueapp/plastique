@@ -48,17 +48,17 @@ subprojects {
         }
     }
 
-    afterEvaluate {
-        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-            kotlinOptions {
-                jvmTarget = "1.8"
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
 
-                if (name.toLowerCase().contains("release")) {
-                    freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
-                }
+            if (name.toLowerCase().contains("release")) {
+                freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
             }
         }
+    }
 
+    afterEvaluate {
         if (plugins.hasPlugin("com.android.application") ||
                 plugins.hasPlugin("com.android.library") ||
                 plugins.hasPlugin("com.android.feature") ||
