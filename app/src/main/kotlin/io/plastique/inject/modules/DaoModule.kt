@@ -10,6 +10,7 @@ import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationMetadataDao
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.download.DownloadInfoDao
+import io.plastique.feed.FeedDao
 import io.plastique.gallery.GalleryDao
 import io.plastique.statuses.StatusDao
 import io.plastique.users.UserDao
@@ -44,6 +45,10 @@ object DaoModule {
     @Provides
     @JvmStatic
     fun provideDownloadInfoDao(database: AppDatabase): DownloadInfoDao = database.downloadInfoDao()
+
+    @Provides
+    @JvmStatic
+    fun provideFeedDao(database: AppDatabase): FeedDao = database.feedDao()
 
     @Provides
     @JvmStatic

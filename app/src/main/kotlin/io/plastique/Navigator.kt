@@ -11,6 +11,7 @@ import io.plastique.core.BrowserLauncher
 import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.viewer.DeviationViewerActivity
+import io.plastique.feed.FeedNavigator
 import io.plastique.gallery.GalleryActivity
 import io.plastique.gallery.GalleryFolderId
 import io.plastique.gallery.GalleryNavigator
@@ -18,6 +19,7 @@ import io.plastique.main.MainNavigator
 import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsActivity
 import io.plastique.settings.SettingsNavigator
+import io.plastique.statuses.ShareObjectId
 import io.plastique.users.User
 import io.plastique.users.UserProfileActivity
 import io.plastique.users.UserType
@@ -35,6 +37,7 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         CollectionsNavigator,
         CommentsNavigator,
         DeviationsNavigator,
+        FeedNavigator,
         GalleryNavigator,
         MainNavigator,
         ProfileNavigator,
@@ -46,8 +49,8 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         navigationContext.startActivity(CollectionsActivity.createIntent(navigationContext.context, username))
     }
 
-    override fun openCollectionFolder(navigationContext: NavigationContext, folderId: CollectionFolderId, folderName: String) {
-        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, folderId, folderName))
+    override fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String) {
+        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, CollectionFolderId(folderId, username), folderName))
     }
 
     override fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId) {
@@ -76,6 +79,15 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
 
     override fun openSettings(navigationContext: NavigationContext) {
         navigationContext.startActivity(SettingsActivity.createIntent(navigationContext.context))
+    }
+
+    override fun openStatus(navigationContext: NavigationContext, statusId: String) {
+        // TODO: Open status with comments
+        openComments(navigationContext, CommentThreadId.Status(statusId))
+    }
+
+    override fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?) {
+        // TODO
     }
 
     override fun openUserProfile(navigationContext: NavigationContext, user: User) {

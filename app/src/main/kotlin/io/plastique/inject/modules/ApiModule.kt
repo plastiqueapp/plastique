@@ -10,6 +10,7 @@ import io.plastique.api.collections.CollectionService
 import io.plastique.api.comments.CommentService
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.feed.FeedElementDto
+import io.plastique.api.feed.FeedElementTypes
 import io.plastique.api.feed.FeedService
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.users.StatusDto
@@ -92,11 +93,11 @@ object ApiModule {
                 .add(StringCursorAdapter())
                 .add(FallbackJsonAdapterFactory(FeedElementDto::class.java, FeedElementDto.Unknown))
                 .add(PolymorphicJsonAdapterFactory.of(FeedElementDto::class.java, "type")
-                        .withSubtype(FeedElementDto.CollectionUpdate::class.java, FeedElementDto.TYPE_COLLECTION_UPDATE)
-                        .withSubtype(FeedElementDto.DeviationSubmitted::class.java, FeedElementDto.TYPE_DEVIATION_SUBMITTED)
-                        .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementDto.TYPE_JOURNAL_SUBMITTED)
-                        .withSubtype(FeedElementDto.StatusUpdate::class.java, FeedElementDto.TYPE_STATUS_UPDATE)
-                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementDto.TYPE_USERNAME_CHANGE))
+                        .withSubtype(FeedElementDto.CollectionUpdate::class.java, FeedElementTypes.COLLECTION_UPDATE)
+                        .withSubtype(FeedElementDto.DeviationSubmitted::class.java, FeedElementTypes.DEVIATION_SUBMITTED)
+                        .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementTypes.JOURNAL_SUBMITTED)
+                        .withSubtype(FeedElementDto.StatusUpdate::class.java, FeedElementTypes.STATUS_UPDATE)
+                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementTypes.USERNAME_CHANGE))
                 .add(FallbackJsonAdapterFactory(StatusDto.EmbeddedItem::class.java, StatusDto.EmbeddedItem.Unknown))
                 .add(PolymorphicJsonAdapterFactory.of(StatusDto.EmbeddedItem::class.java, "type")
                         .withSubtype(StatusDto.EmbeddedItem.SharedDeviation::class.java, StatusDto.EmbeddedItem.TYPE_DEVIATION)

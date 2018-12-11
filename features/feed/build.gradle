@@ -9,6 +9,8 @@ dependencies {
     implementation project(":api")
     implementation project(":core")
     implementation project(":core-ui")
+    implementation project(":features:deviations")
+    implementation project(":features:statuses")
 
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 }

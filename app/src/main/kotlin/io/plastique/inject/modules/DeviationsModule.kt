@@ -17,6 +17,8 @@ import io.plastique.deviations.PopularDeviationFetcher
 import io.plastique.deviations.PopularParams
 import io.plastique.deviations.UndiscoveredDeviationFetcher
 import io.plastique.deviations.UndiscoveredParams
+import io.plastique.feed.BucketDeviationFetcher
+import io.plastique.feed.BucketDeviationParams
 import io.plastique.gallery.GalleryDeviationFetcher
 import io.plastique.gallery.GalleryDeviationParams
 
@@ -51,4 +53,9 @@ interface DeviationsModule {
     @IntoMap
     @ClassKey(GalleryDeviationParams::class)
     fun bindGalleryDeviationFetcher(impl: GalleryDeviationFetcher): DeviationFetcher<out FetchParams, out Cursor>
+
+    @Binds
+    @IntoMap
+    @ClassKey(BucketDeviationParams::class)
+    fun bindBucketDeviationFetcher(impl: BucketDeviationFetcher): DeviationFetcher<out FetchParams, out Cursor>
 }

@@ -96,7 +96,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         })
 
         adapter.onFolderClickListener = { item ->
-            navigator.openCollectionFolder(navigationContext, CollectionFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
+            navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name)
         }
         adapter.onFolderLongClickListener = { item, itemView ->
             if (state.showMenu && item.folder.isDeletable) {

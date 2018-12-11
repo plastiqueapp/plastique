@@ -17,5 +17,5 @@ data class FolderEntity(
     val size: Int,
 
     @ColumnInfo(name = "thumbnail_url")
-    val thumbnailUrl: String? = null
+    val thumbnailUrl: String?
 )

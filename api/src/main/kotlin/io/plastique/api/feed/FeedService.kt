@@ -46,7 +46,7 @@ interface FeedService {
 
     @GET("feed/settings")
     @AccessScope("feed")
-    fun getSettings(): Single<FeedSettings>
+    fun getSettings(): Single<FeedSettingsDto>
 
     @POST("feed/settings/update")
     @FormUrlEncoded

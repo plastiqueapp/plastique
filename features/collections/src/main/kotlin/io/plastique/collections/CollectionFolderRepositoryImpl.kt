@@ -136,3 +136,6 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
             .firstOrNull { it != null }
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
+
+private fun FolderEntity.toFolder(): Folder =
+        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

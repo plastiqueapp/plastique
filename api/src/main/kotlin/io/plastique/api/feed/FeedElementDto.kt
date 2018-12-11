@@ -2,6 +2,7 @@ package io.plastique.api.feed
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.collections.FolderDto
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserDto
@@ -23,23 +24,8 @@ sealed class FeedElementDto {
         val addedCount: Int = 0,
 
         @Json(name = "collection")
-        val collection: CollectionInfo
-    ) : FeedElementDto() {
-        @JsonClass(generateAdapter = true)
-        data class CollectionInfo(
-            @Json(name = "folderid")
-            val folderId: String,
-
-            @Json(name = "name")
-            val name: String,
-
-            @Json(name = "url")
-            val url: String,
-
-            @Json(name = "size")
-            val size: Int = 0
-        )
-    }
+        val folder: FolderDto
+    ) : FeedElementDto()
 
     @JsonClass(generateAdapter = true)
     data class DeviationSubmitted(
@@ -53,7 +39,7 @@ sealed class FeedElementDto {
         val bucketId: String? = null,
 
         @Json(name = "bucket_total")
-        val bucketSize: Int = 0,
+        val bucketTotal: Int = 0,
 
         @Json(name = "deviations")
         val deviations: List<DeviationDto>
@@ -101,13 +87,5 @@ sealed class FeedElementDto {
 
         override val user: UserDto
             get() = throw NotImplementedError()
-    }
-
-    companion object {
-        const val TYPE_COLLECTION_UPDATE = "collection_update"
-        const val TYPE_DEVIATION_SUBMITTED = "deviation_submitted"
-        const val TYPE_JOURNAL_SUBMITTED = "journal_submitted"
-        const val TYPE_STATUS_UPDATE = "status"
-        const val TYPE_USERNAME_CHANGE = "username_change"
     }
 }

@@ -22,6 +22,10 @@ import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.categories.CategoryEntity
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.deviations.download.DownloadInfoEntity
+import io.plastique.feed.FeedDao
+import io.plastique.feed.FeedDeviationEntityWithRelations
+import io.plastique.feed.FeedElementDeviation
+import io.plastique.feed.FeedElementEntity
 import io.plastique.gallery.GalleryDao
 import io.plastique.statuses.StatusDao
 import io.plastique.statuses.StatusEntity
@@ -51,6 +55,9 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     DeviationMetadataEntity::class,
     DownloadInfoEntity::class,
 
+    FeedElementEntity::class,
+    FeedElementDeviation::class,
+
     GalleryFolderEntity::class,
     GalleryFolderLinkage::class,
 
@@ -59,6 +66,8 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     UserEntity::class,
     UserProfileEntity::class,
     WatcherEntity::class
+], views = [
+    FeedDeviationEntityWithRelations::class
 ], version = BuildConfig.DB_VERSION, exportSchema = false)
 @TypeConverters(InstantConverter::class, SizeConverter::class, ZonedDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -75,6 +84,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun deviationMetadataDao(): DeviationMetadataDao
 
     abstract fun downloadInfoDao(): DownloadInfoDao
+
+    abstract fun feedDao(): FeedDao
 
     abstract fun galleryDao(): GalleryDao
 

@@ -13,6 +13,3 @@ data class Folder(
         const val FEATURED = "Featured"
     }
 }
-
-fun FolderEntity.toFolder(): Folder =
-        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
