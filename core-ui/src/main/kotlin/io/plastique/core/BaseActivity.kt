@@ -23,6 +23,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
     private val disposables = CompositeDisposable()
     private var themeDisposable: Disposable? = null
     private var hasMenu: Boolean = true
+    protected var optionsMenu: Menu? = null
 
     protected abstract fun injectDependencies()
 
@@ -57,7 +58,10 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
 
     final override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (hasMenu) {
+            optionsMenu = menu
             onCreateOptionsMenu(menu, menuInflater)
+        } else {
+            optionsMenu = null
         }
         return super.onCreateOptionsMenu(menu)
     }

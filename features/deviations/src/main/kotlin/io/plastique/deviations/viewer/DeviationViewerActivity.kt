@@ -36,6 +36,7 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClick
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
+import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
@@ -128,17 +129,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.deviation_viewer, menu)
-
-        menu.findItem(R.id.deviations_viewer_action_download).apply {
-            isVisible = state.menuState.showDownload
-        }
-
-        menu.findItem(R.id.deviations_viewer_action_favorite).apply {
-            isChecked = state.menuState.isFavoriteChecked
-            isVisible = state.menuState.showFavorite
-            setIcon(if (state.menuState.isFavoriteChecked) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp)
-            setTitle(if (state.menuState.isFavoriteChecked) R.string.deviations_viewer_action_remove_from_favorites else R.string.deviations_viewer_action_add_to_favorites)
-        }
+        menu.update(state.menuState)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -185,7 +176,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
 
         if (state.menuState != prevState?.menuState) {
-            invalidateOptionsMenu()
+            optionsMenu?.update(state.menuState)
         }
 
         if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
@@ -250,6 +241,19 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
                 title = null
                 appBar.setBackgroundResource(R.drawable.gradient_vertical)
             }
+        }
+    }
+
+    private fun Menu.update(menuState: MenuState) {
+        findItem(R.id.deviations_viewer_action_download).apply {
+            isVisible = menuState.showDownload
+        }
+
+        findItem(R.id.deviations_viewer_action_favorite).apply {
+            isChecked = menuState.isFavoriteChecked
+            isVisible = menuState.showFavorite
+            setIcon(if (isChecked) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp)
+            setTitle(if (isChecked) R.string.deviations_viewer_action_remove_from_favorites else R.string.deviations_viewer_action_add_to_favorites)
         }
     }
 

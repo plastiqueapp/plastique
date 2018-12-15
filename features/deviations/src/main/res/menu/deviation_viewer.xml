@@ -4,7 +4,6 @@
 
     <item
         android:id="@+id/deviations_viewer_action_favorite"
-        android:checkable="true"
         android:icon="@drawable/ic_favorite_unchecked_24dp"
         android:title="@string/deviations_viewer_action_add_to_favorites"
         app:showAsAction="ifRoom" />
