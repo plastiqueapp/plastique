@@ -48,7 +48,7 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DeviationRepository
-import io.plastique.inject.scopes.ActivityScope
+import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
@@ -56,7 +56,7 @@ import io.reactivex.Single
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
+@FragmentScope
 class CommentListViewModel @Inject constructor(
     stateReducer: CommentListStateReducer,
     private val commentDataSource: CommentDataSource,

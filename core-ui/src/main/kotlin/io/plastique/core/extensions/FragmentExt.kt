@@ -1,6 +1,8 @@
 package io.plastique.core.extensions
 
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,6 +12,9 @@ inline var Fragment.args: Bundle
     set(value) {
         arguments = value
     }
+
+val Fragment.actionBar: ActionBar
+    get() = (activity as AppCompatActivity).supportActionBar!!
 
 val Fragment.isRemovingSelfOrParent: Boolean
     get() = isRemoving || parentFragment?.isRemovingSelfOrParent ?: false
