@@ -12,7 +12,7 @@ data class ErrorData(
     val code: Int = -1,
 
     @Json(name = "error_description")
-    val description: String? = null,
+    val description: String = "",
 
     @Json(name = "error_details")
     val details: Map<String, String> = emptyMap()

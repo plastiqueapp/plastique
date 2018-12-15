@@ -1,7 +1,6 @@
 package io.plastique.core.exceptions
 
 import io.plastique.api.common.ErrorData
-import retrofit2.Response
 import java.io.IOException
 
 open class ApiException : IOException {
@@ -9,10 +8,9 @@ open class ApiException : IOException {
     constructor(cause: Throwable) : super(cause)
 }
 
-open class ApiHttpException(response: Response<*>) : ApiException("HTTP error " + response.code()) {
-    val responseCode: Int = response.code()
-}
+open class ApiHttpException(responseCode: Int) : ApiException("HTTP error $responseCode")
+class ApiResponseException(val errorData: ErrorData) : ApiException("${errorData.type}: ${errorData.description}" +
+        if (errorData.details.isNotEmpty()) "\n${errorData.details}" else "")
 
-class ApiResponseException(response: Response<*>, val errorData: ErrorData) : ApiHttpException(response)
 class ApiTransportException(cause: Throwable) : ApiException(cause)
 class NoNetworkConnectionException : ApiException("Not connected to network")

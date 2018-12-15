@@ -21,13 +21,13 @@ class ErrorResponseParser @Inject constructor(
         if (isClientHttpError(response.code()) && errorBody != null) {
             try {
                 val errorData = moshi.adapter<ErrorData>().fromJson(errorBody.source())
-                return ApiResponseException(response, errorData!!)
+                return ApiResponseException(errorData!!)
             } catch (ignored: IOException) {
             } catch (e: JsonDataException) {
                 Timber.e(e)
             }
         }
-        return ApiHttpException(response)
+        return ApiHttpException(response.code())
     }
 
     private fun isClientHttpError(responseCode: Int): Boolean {
