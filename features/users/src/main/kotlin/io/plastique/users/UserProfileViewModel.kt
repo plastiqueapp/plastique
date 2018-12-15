@@ -17,12 +17,17 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.users.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.UserProfileEffect.LoadUserProfileEffect
+import io.plastique.users.UserProfileEffect.SetWatchingEffect
 import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.UserProfileEvent.LoadErrorEvent
 import io.plastique.users.UserProfileEvent.RetryClickEvent
+import io.plastique.users.UserProfileEvent.SetWatchingErrorEvent
+import io.plastique.users.UserProfileEvent.SetWatchingEvent
+import io.plastique.users.UserProfileEvent.SetWatchingFinishedEvent
 import io.plastique.users.UserProfileEvent.SnackbarShownEvent
 import io.plastique.users.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
+import io.plastique.watch.WatchManager
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,6 +37,7 @@ class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
     private val clipboard: Clipboard,
     private val userProfileRepository: UserProfileRepository,
+    private val watchManager: WatchManager,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
@@ -58,26 +64,28 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private fun effectHandler(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
-        return Observable.merge(
-                handleLoadUserProfile(effects),
-                handleCopyProfileLink(effects))
-    }
-
-    private fun handleLoadUserProfile(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
-        return effects.ofType<LoadUserProfileEffect>()
+        val loadEvents = effects.ofType<LoadUserProfileEffect>()
                 .switchMap { effect ->
                     userProfileRepository.getUserProfileByName(effect.username)
                             .map<UserProfileEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(getErrorState(error)) }
                 }
-    }
 
-    private fun handleCopyProfileLink(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
-        return effects.ofType<CopyProfileLinkEffect>()
+        val copyProfileLinkEvents = effects.ofType<CopyProfileLinkEffect>()
                 .map { effect -> clipboard.setText(effect.profileUrl) }
                 .ignoreElements()
-                .toObservable()
+                .toObservable<UserProfileEvent>()
+
+        val watchEvents = effects.ofType<UserProfileEffect.SetWatchingEffect>()
+                .switchMapSingle { effect ->
+                    watchManager.setWatching(effect.username, effect.watching)
+                            .toSingleDefault<UserProfileEvent>(SetWatchingFinishedEvent)
+                            .doOnError(Timber::e)
+                            .onErrorReturn { error -> SetWatchingErrorEvent(error) }
+                }
+
+        return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents)
     }
 
     private fun getErrorState(error: Throwable): EmptyState = when (error) {
@@ -92,6 +100,7 @@ class UserProfileViewModel @Inject constructor(
 }
 
 class UserProfileStateReducer @Inject constructor(
+    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
     override fun invoke(state: UserProfileViewState, event: UserProfileEvent): Next<UserProfileViewState, UserProfileEffect> = when (event) {
@@ -117,6 +126,19 @@ class UserProfileStateReducer @Inject constructor(
 
         SnackbarShownEvent -> {
             next(state.copy(snackbarState = SnackbarState.None))
+        }
+
+        is SetWatchingEvent -> {
+            next(state.copy(showProgressDialog = true), SetWatchingEffect(state.username, event.watching))
+        }
+
+        SetWatchingFinishedEvent -> {
+            next(state.copy(showProgressDialog = false))
+        }
+
+        is SetWatchingErrorEvent -> {
+            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
+            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
         }
     }
 }

@@ -11,4 +11,6 @@ interface UserRepository {
     fun put(user: UserDto)
 
     fun put(users: Collection<UserDto>)
+
+    fun setWatching(username: String, watching: Boolean)
 }

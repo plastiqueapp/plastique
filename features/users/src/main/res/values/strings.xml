@@ -6,5 +6,7 @@
     <string name="users_action_view_gallery">Gallery</string>
     <string name="users_action_view_comments">Comments</string>
     <string name="users_action_view_watchers">Watchers</string>
+    <string name="users_action_watch">Watch</string>
+    <string name="users_action_unwatch">Unwatch</string>
 
 </resources>

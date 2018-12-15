@@ -31,6 +31,8 @@ import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
 import io.plastique.util.SystemTimeProvider
 import io.plastique.util.TimeProvider
+import io.plastique.watch.WatchManager
+import io.plastique.watch.WatchManagerImpl
 import javax.inject.Singleton
 
 @Module(includes = [RepositoryModule::class, WorkerModule::class])
@@ -49,6 +51,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindFavoritesModel(impl: FavoritesModelImpl): FavoritesModel
+
+    @Binds
+    abstract fun bindWatchManager(impl: WatchManagerImpl): WatchManager
 
     @Module
     companion object {

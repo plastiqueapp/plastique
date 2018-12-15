@@ -12,5 +12,8 @@ data class UserProfileDto(
     val profileUrl: String,
 
     @Json(name = "real_name")
-    val realName: String?
+    val realName: String?,
+
+    @Json(name = "is_watching")
+    val isWatching: Boolean
 )

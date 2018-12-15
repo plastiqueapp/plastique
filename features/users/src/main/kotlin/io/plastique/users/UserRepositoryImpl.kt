@@ -36,4 +36,8 @@ class UserRepositoryImpl @Inject constructor(
         }
         userDao.insertOrUpdate(users.map { it.toUserEntity() })
     }
+
+    override fun setWatching(username: String, watching: Boolean) {
+        userDao.setWatching(username, watching)
+    }
 }

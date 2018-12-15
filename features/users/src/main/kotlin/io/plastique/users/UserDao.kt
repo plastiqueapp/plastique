@@ -61,4 +61,8 @@ interface UserDao {
 
     @Query("DELETE FROM user_profiles WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
     fun deleteProfileByName(username: String)
+
+    @Transaction
+    @Query("UPDATE user_profiles SET is_watching = :watching WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
+    fun setWatching(username: String, watching: Boolean)
 }

@@ -8,5 +8,6 @@ data class UserProfileViewState(
     val username: String,
     val title: String = "",
     val userProfile: UserProfile? = null,
-    val snackbarState: SnackbarState = SnackbarState.None
+    val snackbarState: SnackbarState = SnackbarState.None,
+    val showProgressDialog: Boolean = false
 )

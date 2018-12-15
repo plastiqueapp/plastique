@@ -19,8 +19,14 @@ data class UserProfileEntity(
     val profileUrl: String,
 
     @ColumnInfo(name = "real_name")
-    val realName: String?
+    val realName: String?,
+
+    @ColumnInfo(name = "is_watching")
+    val isWatching: Boolean
 )
 
-fun UserProfileDto.toUserProfileEntity(): UserProfileEntity =
-        UserProfileEntity(userId = user.id, profileUrl = profileUrl, realName = realName)
+fun UserProfileDto.toUserProfileEntity(): UserProfileEntity = UserProfileEntity(
+        userId = user.id,
+        profileUrl = profileUrl,
+        realName = realName,
+        isWatching = isWatching)

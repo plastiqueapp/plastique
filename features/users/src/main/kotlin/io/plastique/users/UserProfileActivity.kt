@@ -15,6 +15,7 @@ import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
@@ -23,6 +24,7 @@ import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.UserProfileEvent.RetryClickEvent
+import io.plastique.users.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -33,7 +35,9 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var realNameView: TextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentViewController: ContentViewController
+    private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
+    private lateinit var state: UserProfileViewState
     @Inject lateinit var navigator: UsersNavigator
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -58,6 +62,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         realNameView = findViewById(R.id.user_real_name)
 
         contentViewController = ContentViewController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
+        progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
         emptyView = findViewById(android.R.id.empty)
@@ -73,6 +78,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_user_profile, menu)
+        menu.update(state.userProfile!!)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -96,10 +102,15 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             navigator.openWatchers(navigationContext, username)
             true
         }
+        R.id.users_action_watch -> {
+            viewModel.dispatch(SetWatchingEvent(!item.isChecked))
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
     private fun renderState(state: UserProfileViewState, prevState: UserProfileViewState?) {
+        this.state = state
         supportActionBar!!.title = state.title
         setHasOptionsMenu(state.userProfile != null)
 
@@ -115,11 +126,29 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
                     .load(state.userProfile.user.avatarUrl)
                     .circleCrop()
                     .into(avatarView)
+
+            optionsMenu?.update(state.userProfile)
+        }
+
+        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
+            if (state.showProgressDialog) {
+                progressDialogController.show()
+            } else {
+                progressDialogController.dismiss()
+            }
         }
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
+        }
+    }
+
+    private fun Menu.update(userProfile: UserProfile) {
+        findItem(R.id.users_action_watch).apply {
+            isChecked = userProfile.isWatching
+            setIcon(if (isChecked) R.drawable.ic_users_watch_checked_24dp else R.drawable.ic_users_watch_unchecked_24dp)
+            setTitle(if (isChecked) R.string.users_action_unwatch else R.string.users_action_watch)
         }
     }
 
