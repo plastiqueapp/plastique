@@ -1,6 +1,8 @@
 package io.plastique.core
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import io.plastique.core.config.AppConfig
@@ -20,6 +22,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
     private lateinit var currentTheme: String
     private val disposables = CompositeDisposable()
     private var themeDisposable: Disposable? = null
+    private var hasMenu: Boolean = true
 
     protected abstract fun injectDependencies()
 
@@ -52,12 +55,29 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
         disposables.dispose()
     }
 
+    final override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        if (hasMenu) {
+            onCreateOptionsMenu(menu, menuInflater)
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    open fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
             finish()
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    fun setHasOptionsMenu(hasMenu: Boolean) {
+        if (this.hasMenu != hasMenu) {
+            this.hasMenu = hasMenu
+            invalidateOptionsMenu()
+        }
     }
 
     protected fun <T : Disposable> T.disposeOnDestroy(): T {

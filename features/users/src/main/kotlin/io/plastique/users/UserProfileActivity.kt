@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -35,7 +36,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var snackbarController: SnackbarController
     @Inject lateinit var navigator: UsersNavigator
 
-    private var showMenu: Boolean = false
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
         if (intent.hasExtra(EXTRA_USERNAME)) {
             intent.getStringExtra(EXTRA_USERNAME)
@@ -48,6 +48,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_profile)
+        setHasOptionsMenu(false)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
@@ -70,11 +71,8 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
                 .disposeOnDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (showMenu) {
-            menuInflater.inflate(R.menu.activity_user_profile, menu)
-        }
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.activity_user_profile, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -103,6 +101,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
 
     private fun renderState(state: UserProfileViewState, prevState: UserProfileViewState?) {
         supportActionBar!!.title = state.title
+        setHasOptionsMenu(state.userProfile != null)
 
         contentViewController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
@@ -116,9 +115,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
                     .load(state.userProfile.user.avatarUrl)
                     .circleCrop()
                     .into(avatarView)
-
-            showMenu = true
-            invalidateOptionsMenu()
         }
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {

@@ -2,6 +2,7 @@ package io.plastique.main
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -63,9 +64,8 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

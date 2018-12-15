@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
@@ -62,7 +63,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
 
-    private var state: DeviationViewerViewState? = null
+    private lateinit var state: DeviationViewerViewState
     private var titleOnAppBar: Boolean = false
     private var appbarBackgroundColor: Int = 0
 
@@ -83,6 +84,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deviation_viewer)
+        setHasOptionsMenu(false)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
@@ -101,7 +103,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
-        authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state!!.deviation!!.author) }
+        authorView.setOnClickListener { navigator.openUserProfile(navigationContext, state.deviation!!.author) }
 
         val attrs = intArrayOf(R.attr.colorPrimary)
         val a = appBar.context.obtainStyledAttributes(attrs)
@@ -124,22 +126,19 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
                 .disposeOnDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        state?.let { state ->
-            menuInflater.inflate(R.menu.deviation_viewer, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.deviation_viewer, menu)
 
-            menu.findItem(R.id.deviations_viewer_action_download).run {
-                isVisible = state.menuState.showDownload
-            }
-
-            menu.findItem(R.id.deviations_viewer_action_favorite).run {
-                isChecked = state.menuState.isFavoriteChecked
-                isVisible = state.menuState.showFavorite
-                setIcon(if (state.menuState.isFavoriteChecked) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp)
-                setTitle(if (state.menuState.isFavoriteChecked) R.string.deviations_viewer_action_remove_from_favorites else R.string.deviations_viewer_action_add_to_favorites)
-            }
+        menu.findItem(R.id.deviations_viewer_action_download).apply {
+            isVisible = state.menuState.showDownload
         }
-        return true
+
+        menu.findItem(R.id.deviations_viewer_action_favorite).apply {
+            isChecked = state.menuState.isFavoriteChecked
+            isVisible = state.menuState.showFavorite
+            setIcon(if (state.menuState.isFavoriteChecked) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp)
+            setTitle(if (state.menuState.isFavoriteChecked) R.string.deviations_viewer_action_remove_from_favorites else R.string.deviations_viewer_action_add_to_favorites)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -149,7 +148,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.deviations_viewer_action_favorite -> {
-            viewModel.dispatch(SetFavoriteEvent(state!!.deviationId, !item.isChecked))
+            viewModel.dispatch(SetFavoriteEvent(state.deviationId, !item.isChecked))
             true
         }
         R.id.deviations_viewer_action_download -> {
@@ -169,6 +168,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     private fun renderState(state: DeviationViewerViewState, prevState: DeviationViewerViewState?) {
         this.state = state
+        setHasOptionsMenu(state.deviation != null)
 
         contentViewController.state = state.contentState
 
@@ -209,14 +209,14 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     private fun openInBrowser() {
         try {
-            startActivity(Intents.openUrl(state!!.deviation!!.url))
+            startActivity(Intents.openUrl(state.deviation!!.url))
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(rootView, R.string.deviations_viewer_message_no_apps_to_open_url, Snackbar.LENGTH_SHORT).show()
         }
     }
 
     private fun copyLinkToClipboard() {
-        clipboard.setText(state!!.deviation!!.url)
+        clipboard.setText(state.deviation!!.url)
         Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -244,7 +244,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         if (this.titleOnAppBar != titleOnAppBar) {
             this.titleOnAppBar = titleOnAppBar
             if (titleOnAppBar) {
-                title = state!!.deviation!!.title
+                title = state.deviation!!.title
                 appBar.setBackgroundColor(appbarBackgroundColor)
             } else {
                 title = null
