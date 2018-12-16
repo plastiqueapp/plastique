@@ -172,8 +172,8 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         listUpdateData.applyTo(adapter)
 
         onScrollListener.isEnabled = state.pagingEnabled
-        refreshLayout.isRefreshing = state.refreshing
-        horizontalProgressViewController.isVisible = state.applyingSettings
+        refreshLayout.isRefreshing = state.isRefreshing
+        horizontalProgressViewController.isVisible = state.isApplyingSettings
 
         if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
             if (state.showProgressDialog) {

@@ -14,13 +14,13 @@ data class FeedViewState(
     val snackbarState: SnackbarState = SnackbarState.None,
 
     val hasMore: Boolean = false,
-    val loadingMore: Boolean = false,
-    val refreshing: Boolean = false,
-    val applyingSettings: Boolean = false,
+    val isLoadingMore: Boolean = false,
+    val isRefreshing: Boolean = false,
+    val isApplyingSettings: Boolean = false,
     val showProgressDialog: Boolean = false
 ) {
     val pagingEnabled: Boolean
-        get() = contentState === ContentState.Content && hasMore && !loadingMore && !refreshing
+        get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     override fun toString(): String {
         return "FeedViewState(" +
@@ -31,9 +31,9 @@ data class FeedViewState(
                 "feedItems=${feedItems.size}, " +
                 "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
-                "loadingMore=$loadingMore, " +
-                "refreshing=$refreshing, " +
-                "applyingSettings=$applyingSettings, " +
+                "isLoadingMore=$isLoadingMore, " +
+                "isRefreshing=$isRefreshing, " +
+                "isApplyingSettings=$isApplyingSettings, " +
                 "showProgressDialog=$showProgressDialog" +
                 ")"
     }

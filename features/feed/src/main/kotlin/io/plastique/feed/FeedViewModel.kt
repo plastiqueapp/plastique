@@ -161,7 +161,7 @@ class FeedStateReducer @Inject constructor(
             }
             next(state.copy(
                     contentState = contentState,
-                    items = if (state.loadingMore) event.items + LoadingIndicatorItem else event.items,
+                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                     feedItems = event.items,
                     hasMore = event.hasMore))
         }
@@ -175,34 +175,34 @@ class FeedStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.loadingMore && connectivityMonitor.isConnectedToNetwork) {
-                next(state.copy(loadingMore = true, items = state.feedItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+                next(state.copy(isLoadingMore = true, items = state.feedItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)
             }
         }
 
         LoadMoreFinishedEvent -> {
-            next(state.copy(loadingMore = false))
+            next(state.copy(isLoadingMore = false))
         }
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                    loadingMore = false,
+                    isLoadingMore = false,
                     items = state.feedItems,
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
-            next(state.copy(refreshing = true), RefreshEffect)
+            next(state.copy(isRefreshing = true), RefreshEffect)
         }
 
         RefreshFinishedEvent -> {
-            next(state.copy(refreshing = false))
+            next(state.copy(isRefreshing = false))
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(refreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RetryClickEvent -> {
@@ -247,12 +247,12 @@ class FeedStateReducer @Inject constructor(
         }
 
         is SetFeedSettingsEvent -> {
-            next(state.copy(applyingSettings = true), SetFeedSettingsEffect(event.settings))
+            next(state.copy(isApplyingSettings = true), SetFeedSettingsEffect(event.settings))
         }
 
         SettingsChangedEvent -> {
             next(state.copy(
-                    applyingSettings = false,
+                    isApplyingSettings = false,
                     contentState = ContentState.Loading,
                     items = emptyList(),
                     feedItems = emptyList(),
@@ -262,7 +262,7 @@ class FeedStateReducer @Inject constructor(
 
         is SettingsChangeErrorEvent -> {
             next(state.copy(
-                    applyingSettings = false,
+                    isApplyingSettings = false,
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.feed_message_settings_change_error))))
         }
 
