@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<template
+    format="5"
+    revision="1"
+    name="ViewModel"
+    description="Create a ViewModel"
+    minApi="7"
+    minBuildApi="8">
+
+    <category value="Plastique" />
+
+    <parameter
+        id="baseName"
+        name="Base Name"
+        type="string"
+        constraints="class|nonempty"
+        default="New"
+        help="Base name of the generated classes" />
+
+    <parameter
+        id="externalEvents"
+        name="External events"
+        type="boolean"
+        default="true"
+        help="Add support for external events" />
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>
