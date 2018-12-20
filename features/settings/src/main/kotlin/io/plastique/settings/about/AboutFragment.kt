@@ -41,7 +41,7 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
         setPreferencesFromResource(R.xml.preferences, "screen_about")
         getComponent<SettingsFragmentComponent>().inject(this)
 
-        preferenceScreen.all { preference ->
+        preferenceScreen.forEach { preference ->
             if (preference !is PreferenceGroup) {
                 preference.onPreferenceClickListener = this
             }
@@ -49,10 +49,11 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
 
         val context = requireContext()
         val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val currentAppVersion = packageInfo.versionName + " (" + PackageInfoCompat.getLongVersionCode(packageInfo) + ")"
         newVersionAvailable = isNewVersionAvailable(packageInfo.versionName)
 
-        val currentAppVersion = packageInfo.versionName + " (" + PackageInfoCompat.getLongVersionCode(packageInfo) + ")"
-        findPreference("app_version").summary = if (newVersionAvailable) {
+        val versionPreference = findPreference<Preference>("app_version")
+        versionPreference.summary = if (newVersionAvailable) {
             val a = context.obtainStyledAttributes(intArrayOf(R.attr.colorAccent))
             val color = a.getColor(0, Color.BLACK)
             a.recycle()
@@ -122,19 +123,19 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
         navigator.openPlayStore(navigationContext, packageName)
     }
 
-    companion object {
-        private val DEV_PACKAGE_NAME_SUFFIX = Pattern.compile("\\.dev$")
-        private val DEV_VERSION_NAME_SUFFIX = Pattern.compile("-dev$")
-    }
-
-    private fun PreferenceGroup.all(action: (preference: Preference) -> Unit) {
+    private fun PreferenceGroup.forEach(action: (preference: Preference) -> Unit) {
         for (i in 0 until preferenceCount) {
             val preference = getPreference(i)
             action(preference)
 
             if (preference is PreferenceGroup) {
-                preference.all(action)
+                preference.forEach(action)
             }
         }
+    }
+
+    companion object {
+        private val DEV_PACKAGE_NAME_SUFFIX = Pattern.compile("\\.dev$")
+        private val DEV_VERSION_NAME_SUFFIX = Pattern.compile("-dev$")
     }
 }
