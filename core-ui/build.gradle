@@ -16,6 +16,7 @@ dependencies {
     api "androidx.fragment:fragment:$versions.androidx.fragment"
     implementation "androidx.lifecycle:lifecycle-common:$versions.androidx.lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$versions.androidx.lifecycle"
+    implementation "androidx.preference:preference:$versions.androidx.preference"
     implementation "androidx.legacy:legacy-preference-v14:$versions.androidx.preferenceV14"
     api "androidx.recyclerview:recyclerview:$versions.androidx.recyclerView"
     api "com.google.android:flexbox:$versions.flexboxLayout"
