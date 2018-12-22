@@ -3,6 +3,7 @@ package io.plastique.feed
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
+import io.plastique.statuses.ShareUiModel
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
@@ -49,37 +50,9 @@ data class StatusUpdateItem(
     val statusId: String,
     val text: SpannedWrapper,
     val commentCount: Int,
-    val sharedItem: StatusSharedItem
+    val share: ShareUiModel
 ) : ListItem {
     override val id: String get() = statusId
-}
-
-sealed class StatusSharedItem {
-    object None : StatusSharedItem()
-
-    data class ImageDeviation(
-        val deviationId: String,
-        val author: User,
-        val title: String,
-        val preview: Deviation.Image
-    ) : StatusSharedItem()
-
-    data class LiteratureDeviation(
-        val deviationId: String,
-        val author: User,
-        val title: String,
-        val excerpt: SpannedWrapper
-    ) : StatusSharedItem()
-
-    data class Status(
-        val statusId: String,
-        val author: User,
-        val date: ZonedDateTime,
-        val text: SpannedWrapper
-    ) : StatusSharedItem()
-
-    object DeletedDeviation : StatusSharedItem()
-    object DeletedStatus : StatusSharedItem()
 }
 
 data class UsernameChangeItem(
@@ -88,6 +61,3 @@ data class UsernameChangeItem(
     val user: User,
     val formerName: String
 ) : ListItem
-
-val StatusSharedItem.isDeleted: Boolean
-    get() = this === StatusSharedItem.DeletedDeviation || this === StatusSharedItem.DeletedStatus

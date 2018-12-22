@@ -11,7 +11,7 @@ import io.plastique.feed.FeedElement.CollectionUpdate
 import io.plastique.feed.FeedElement.JournalSubmitted
 import io.plastique.feed.FeedElement.StatusUpdate
 import io.plastique.feed.FeedElement.UsernameChange
-import io.plastique.statuses.Status
+import io.plastique.statuses.toShareUiModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.concurrent.atomic.AtomicReference
@@ -91,7 +91,7 @@ class FeedModel @Inject constructor(
                 statusId = feedElement.status.id,
                 text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
                 commentCount = feedElement.status.commentCount,
-                sharedItem = feedElement.status.share.toStatusSharedItem())
+                share = feedElement.status.share.toShareUiModel(richTextFormatter))
 
         is UsernameChange -> UsernameChangeItem(
                 id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
@@ -104,41 +104,5 @@ class FeedModel @Inject constructor(
         io.plastique.deviations.list.LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
     } else {
         ImageDeviationItem(deviation, index = index)
-    }
-
-    private fun Status.Share.toStatusSharedItem(): StatusSharedItem = when (this) {
-        Status.Share.None -> StatusSharedItem.None
-
-        is Status.Share.DeviationShare -> {
-            val deviation = deviation
-            when {
-                deviation == null -> StatusSharedItem.DeletedDeviation
-                deviation.isLiterature -> {
-                    StatusSharedItem.LiteratureDeviation(
-                            deviationId = deviation.id,
-                            author = deviation.author,
-                            title = deviation.title,
-                            excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
-                }
-                else -> StatusSharedItem.ImageDeviation(
-                        deviationId = deviation.id,
-                        author = deviation.author,
-                        title = deviation.title,
-                        preview = deviation.preview!!)
-            }
-        }
-
-        is Status.Share.StatusShare -> {
-            val status = status
-            if (status != null) {
-                StatusSharedItem.Status(
-                        statusId = status.id,
-                        author = status.author,
-                        date = status.date,
-                        text = SpannedWrapper(richTextFormatter.format(status.body)))
-            } else {
-                StatusSharedItem.DeletedStatus
-            }
-        }
     }
 }
