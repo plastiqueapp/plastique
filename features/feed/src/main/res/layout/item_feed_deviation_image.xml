@@ -46,7 +46,7 @@
         android:layout_marginStart="8dp"
         android:background="?selectableItemBackground"
         android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_feed_comments_24dp"
+        android:drawableStart="@drawable/ic_common_comment_24dp"
         android:gravity="center_vertical"
         android:minHeight="40dp"
         android:minWidth="72dp"
@@ -80,7 +80,7 @@
         android:minHeight="40dp"
         android:minWidth="40dp"
         android:scaleType="center"
-        android:src="@drawable/ic_feed_share_24dp"
+        android:src="@drawable/ic_common_share_24dp"
         app:layout_constraintStart_toEndOf="@id/button_favorite"
         app:layout_constraintTop_toBottomOf="@id/deviation_title" />
 </androidx.constraintlayout.widget.ConstraintLayout>
