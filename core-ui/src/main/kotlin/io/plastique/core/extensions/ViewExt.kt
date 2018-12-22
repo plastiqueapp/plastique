@@ -54,6 +54,9 @@ fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: 
     val layoutManager = layoutManager as LinearLayoutManager
     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+    if (firstVisiblePosition == RecyclerView.NO_POSITION || lastVisiblePosition == RecyclerView.NO_POSITION) {
+        return
+    }
 
     val distance = when {
         position <= firstVisiblePosition -> firstVisiblePosition - position
