@@ -13,8 +13,9 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 import kotlin.math.max
 
-class CategoriesAdapter : BaseListAdapter<CategoryItem, CategoriesAdapter.ViewHolder>(), OnViewHolderClickListener {
-    var onItemClickListener: OnItemClickListener? = null
+class CategoriesAdapter(
+    private val onItemClick: OnItemClickListener
+) : BaseListAdapter<CategoryItem, CategoriesAdapter.ViewHolder>(), OnViewHolderClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
@@ -40,7 +41,7 @@ class CategoriesAdapter : BaseListAdapter<CategoryItem, CategoriesAdapter.ViewHo
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
         if (position != RecyclerView.NO_POSITION) {
-            onItemClickListener?.invoke(items[position])
+            onItemClick(items[position])
         }
     }
 

@@ -98,7 +98,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
                 itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
-        adapter = DeviationsAdapter(requireContext(),
+        adapter = DeviationsAdapter(
+                context = requireContext(),
                 layoutModeProvider = { state.layoutMode },
                 itemSizeCallback = object : ItemSizeCallback {
                     override fun getColumnCount(item: IndexedItem): Int = when (item) {
@@ -110,9 +111,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                         is DeviationItem -> gridParams.getItemSize(item.index)
                         else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
                     }
-                })
-
-        adapter.onDeviationClickListener = { deviationId -> navigator.openDeviation(navigationContext, deviationId) }
+                },
+                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)

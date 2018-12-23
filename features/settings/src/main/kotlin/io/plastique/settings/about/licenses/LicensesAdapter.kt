@@ -62,8 +62,9 @@ private class LicenseItemDelegate(
     }
 }
 
-class LicensesAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
-    var onLicenseClickListener: OnLicenseClickListener? = null
+class LicensesAdapter(
+    private val onLicenseClick: OnLicenseClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
         delegatesManager.addDelegate(TYPE_HEADER, HeaderItemDelegate())
@@ -74,7 +75,7 @@ class LicensesAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderCli
         val position = holder.adapterPosition
         if (position != RecyclerView.NO_POSITION) {
             val item = items[position] as LicenseItem
-            onLicenseClickListener?.invoke(item.license)
+            onLicenseClick(item.license)
         }
     }
 

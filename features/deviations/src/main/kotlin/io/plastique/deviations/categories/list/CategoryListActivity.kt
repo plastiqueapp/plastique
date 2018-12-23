@@ -49,8 +49,8 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         breadcrumbsView = findViewById(R.id.breadcrumbs)
         breadcrumbsView.setOnBreadcrumbClickListener { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }
 
-        adapter = CategoriesAdapter()
-        adapter.onItemClickListener = { item -> viewModel.dispatch(ItemClickEvent(item)) }
+        adapter = CategoriesAdapter(
+                onItemClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
         categoriesView = findViewById(R.id.categories)
         categoriesView.layoutManager = LinearLayoutManager(this)
         categoriesView.adapter = adapter

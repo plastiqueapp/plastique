@@ -265,8 +265,12 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     }
 }
 
-class DeviationsAdapter(context: Context, layoutModeProvider: LayoutModeProvider, itemSizeCallback: ItemSizeCallback) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
-    var onDeviationClickListener: OnDeviationClickListener? = null
+class DeviationsAdapter(
+    context: Context,
+    layoutModeProvider: LayoutModeProvider,
+    itemSizeCallback: ItemSizeCallback,
+    private val onDeviationClick: OnDeviationClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
         delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, layoutModeProvider, this))
@@ -281,7 +285,7 @@ class DeviationsAdapter(context: Context, layoutModeProvider: LayoutModeProvider
         val position = holder.adapterPosition
         val item = if (position != RecyclerView.NO_POSITION) items[position] else return
         when (item) {
-            is DeviationItem -> onDeviationClickListener?.invoke(item.deviation.id)
+            is DeviationItem -> onDeviationClick(item.deviation.id)
         }
     }
 }

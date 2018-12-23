@@ -33,8 +33,8 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        adapter = LicensesAdapter()
-        adapter.onLicenseClickListener = { license -> browserLauncher.openUrl(this, license.url) }
+        adapter = LicensesAdapter(
+                onLicenseClick = { license -> browserLauncher.openUrl(this, license.url) })
 
         val licensesView = findViewById<RecyclerView>(R.id.licenses)
         licensesView.adapter = adapter

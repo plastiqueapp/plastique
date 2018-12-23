@@ -50,8 +50,8 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         val username = intent.getStringExtra(EXTRA_USERNAME)
         initToolbar(username)
 
-        adapter = WatcherListAdapter()
-        adapter.onWatcherClickListener = { item -> navigator.openUserProfile(navigationContext, item.watcher.user) }
+        adapter = WatcherListAdapter(
+                onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }
 

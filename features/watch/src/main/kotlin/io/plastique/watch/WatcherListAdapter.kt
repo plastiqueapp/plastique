@@ -12,6 +12,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.glide.GlideApp
+import io.plastique.users.User
 
 private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item is WatcherItem
@@ -48,8 +49,9 @@ private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewH
     }
 }
 
-class WatcherListAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
-    var onWatcherClickListener: OnWatcherClickListener? = null
+class WatcherListAdapter(
+    private val onUserClick: OnUserClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
         delegatesManager.addDelegate(WatcherItemDelegate(this))
@@ -58,9 +60,9 @@ class WatcherListAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolder
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] else return
-        onWatcherClickListener?.invoke(item as WatcherItem)
+        val item = if (position != RecyclerView.NO_POSITION) items[position] as WatcherItem else return
+        onUserClick(item.watcher.user)
     }
 }
 
-typealias OnWatcherClickListener = (WatcherItem) -> Unit
+typealias OnUserClickListener = (user: User) -> Unit

@@ -80,32 +80,32 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
                 itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
-        adapter = GalleryAdapter(requireContext(), object : ItemSizeCallback {
-            override fun getColumnCount(item: IndexedItem): Int = when (item) {
-                is FolderItem -> folderParams.columnCount
-                is DeviationItem -> deviationParams.columnCount
-                else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-            }
+        adapter = GalleryAdapter(
+                context = requireContext(),
+                itemSizeCallback = object : ItemSizeCallback {
+                    override fun getColumnCount(item: IndexedItem): Int = when (item) {
+                        is FolderItem -> folderParams.columnCount
+                        is DeviationItem -> deviationParams.columnCount
+                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+                    }
 
-            override fun getItemSize(item: IndexedItem): Size = when (item) {
-                is FolderItem -> folderParams.getItemSize(item.index)
-                is DeviationItem -> deviationParams.getItemSize(item.index)
-                else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-            }
-        })
+                    override fun getItemSize(item: IndexedItem): Size = when (item) {
+                        is FolderItem -> folderParams.getItemSize(item.index)
+                        is DeviationItem -> deviationParams.getItemSize(item.index)
+                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+                    }
+                },
+                onFolderClick = { item -> navigator.openGalleryFolder(navigationContext, GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name) },
+                onFolderLongClick = { item, itemView ->
+                    if (state.showMenu && item.folder.isDeletable) {
+                        showFolderPopupMenu(item.folder, itemView)
+                        true
+                    } else {
+                        false
+                    }
+                },
+                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
-        adapter.onFolderClickListener = { item ->
-            navigator.openGalleryFolder(navigationContext, GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
-        }
-        adapter.onFolderLongClickListener = { item, itemView ->
-            if (state.showMenu && item.folder.isDeletable) {
-                showFolderPopupMenu(item.folder, itemView)
-                true
-            } else {
-                false
-            }
-        }
-        adapter.onDeviationClickListener = { deviationId -> navigator.openDeviation(navigationContext, deviationId) }
         onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         galleryView = view.findViewById(R.id.gallery)

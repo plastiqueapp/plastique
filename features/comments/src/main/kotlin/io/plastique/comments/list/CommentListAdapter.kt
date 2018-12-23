@@ -77,10 +77,11 @@ private class CommentItemDelegate(
     }
 }
 
-class CommentsAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
-    var onOpenUserProfileListener: OnOpenUserProfileListener? = null
-    var onReplyClickListener: OnReplyClickListener? = null
-    var onReplyingToClickListener: OnReplyingToClickListener? = null
+class CommentsAdapter(
+    private val onReplyClick: OnReplyClickListener,
+    private val onReplyingToClick: OnReplyingToClickListener,
+    private val onUserClick: OnUserClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
         delegatesManager.addDelegate(CommentItemDelegate(this))
@@ -93,11 +94,11 @@ class CommentsAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderCli
         val item = items[position] as CommentItem
         if (holder is CommentItemDelegate.ViewHolder) {
             if (view === holder.avatarView || view === holder.authorView) {
-                onOpenUserProfileListener?.invoke(item.comment.author)
+                onUserClick(item.comment.author)
             } else if (view === holder.replyButton) {
-                onReplyClickListener?.invoke(item.comment.id)
+                onReplyClick(item.comment.id)
             } else if (view === holder.replyingToView) {
-                onReplyingToClickListener?.invoke(item.comment.id)
+                onReplyingToClick(item.comment.id)
             }
         }
     }
@@ -114,6 +115,6 @@ class CommentsAdapter : ListDelegationAdapter<List<ListItem>>(), OnViewHolderCli
     }
 }
 
-typealias OnOpenUserProfileListener = (user: User) -> Unit
 typealias OnReplyClickListener = (commentId: String) -> Unit
 typealias OnReplyingToClickListener = (commentId: String) -> Unit
+typealias OnUserClickListener = (user: User) -> Unit

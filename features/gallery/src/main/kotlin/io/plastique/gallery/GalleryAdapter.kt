@@ -95,13 +95,13 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     }
 }
 
-class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : ListDelegationAdapter<List<ListItem>>(),
-        OnViewHolderClickListener,
-        OnViewHolderLongClickListener {
-
-    var onFolderClickListener: OnFolderClickListener? = null
-    var onFolderLongClickListener: OnFolderLongClickListener? = null
-    var onDeviationClickListener: OnDeviationClickListener? = null
+class GalleryAdapter(
+    context: Context,
+    itemSizeCallback: ItemSizeCallback,
+    private val onFolderClick: OnFolderClickListener,
+    private val onFolderLongClick: OnFolderLongClickListener,
+    private val onDeviationClick: OnDeviationClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener, OnViewHolderLongClickListener {
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
@@ -116,8 +116,8 @@ class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : Lis
         val position = holder.adapterPosition
         val item = if (position != RecyclerView.NO_POSITION) items[position] else return
         when (item) {
-            is FolderItem -> onFolderClickListener?.invoke(item)
-            is DeviationItem -> onDeviationClickListener?.invoke(item.deviation.id)
+            is FolderItem -> onFolderClick(item)
+            is DeviationItem -> onDeviationClick(item.deviation.id)
         }
     }
 
@@ -125,7 +125,7 @@ class GalleryAdapter(context: Context, itemSizeCallback: ItemSizeCallback) : Lis
         val position = holder.adapterPosition
         val item = if (position != RecyclerView.NO_POSITION) items[position] else return false
         return when (item) {
-            is FolderItem -> onFolderLongClickListener?.invoke(item, view) ?: false
+            is FolderItem -> onFolderLongClick(item, view)
             else -> throw IllegalStateException("Unhandled item type ${item.javaClass}")
         }
     }

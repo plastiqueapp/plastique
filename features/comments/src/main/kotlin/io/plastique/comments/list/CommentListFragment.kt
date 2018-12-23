@@ -51,10 +51,10 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = CommentsAdapter()
-        adapter.onOpenUserProfileListener = { user -> navigator.openUserProfile(navigationContext, user) }
-        adapter.onReplyClickListener = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) }
-        adapter.onReplyingToClickListener = { commentId -> scrollToComment(commentId) }
+        adapter = CommentsAdapter(
+                onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
+                onReplyingToClick = { commentId -> scrollToComment(commentId) },
+                onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         commentsView = view.findViewById(R.id.comments)
         commentsView.adapter = adapter
