@@ -35,4 +35,8 @@ dependencies {
 
     testImplementation "androidx.test:core:$versions.androidx.testCore"
     testImplementation "org.robolectric:robolectric:$versions.robolectric"
+
+    constraints {
+        implementation "androidx.fragment:fragment:$versions.androidx.fragment"
+    }
 }
