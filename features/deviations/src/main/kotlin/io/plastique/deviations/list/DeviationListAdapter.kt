@@ -278,7 +278,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     override fun isForViewType(item: ListItem): Boolean = item is DateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_date, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviations_date, parent, false)
         return ViewHolder(view)
     }
 
