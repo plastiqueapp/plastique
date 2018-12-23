@@ -26,13 +26,15 @@
         android:breakStrategy="balanced"
         android:ellipsize="none"
         android:fadingEdgeLength="60dp"
+        android:paddingBottom="8dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:paddingTop="8dp"
         android:requiresFadingEdge="vertical"
         android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp"
         tools:targetApi="m"
-        tools:text="@tools:sample/lorem" />
+        tools:text="@tools:sample/lorem/random" />
 
     <LinearLayout
         android:layout_width="match_parent"

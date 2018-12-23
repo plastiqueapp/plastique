@@ -4,8 +4,5 @@
     <dimen name="deviations_list_min_cell_size">100dp</dimen>
     <dimen name="deviations_list_spacing">8dp</dimen>
     <dimen name="deviations_grid_spacing">4dp</dimen>
-    <dimen name="deviations_item_title_padding">10dp</dimen>
-    <dimen name="deviations_item_title_margin_bottom">16dp</dimen>
-    <dimen name="deviations_item_title_text_size">16sp</dimen>
 
 </resources>

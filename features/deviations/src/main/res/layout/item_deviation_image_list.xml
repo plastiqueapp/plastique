@@ -6,10 +6,9 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/preview"
+        android:id="@+id/deviation_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -17,14 +16,69 @@
         tools:src="#333" />
 
     <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
+        android:id="@+id/deviation_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/deviations_item_title_margin_bottom"
-        android:background="?deviationTitleBackground"
-        android:padding="@dimen/deviations_item_title_padding"
-        android:textColor="?deviationTitleTextColor"
-        android:textSize="@dimen/deviations_item_title_text_size"
-        app:layout_constraintBottom_toBottomOf="@id/preview"
-        tools:text="Title" />
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:minHeight="40dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:singleLine="true"
+        android:textAppearance="?textAppearanceSubtitle1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deviation_image"
+        tools:text="@tools:sample/lorem" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deviation_title">
+
+        <CheckedTextView
+            android:id="@+id/button_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackground"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_favorite_24dp"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:minWidth="96dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            tools:text="30" />
+
+        <TextView
+            android:id="@+id/button_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackground"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_common_comment_24dp"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:minWidth="96dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            tools:text="15" />
+
+        <ImageView
+            android:id="@+id/button_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?selectableItemBackground"
+            android:contentDescription="@string/common_button_share"
+            android:minHeight="40dp"
+            android:minWidth="40dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_common_share_24dp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

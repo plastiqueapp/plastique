@@ -4,13 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import io.plastique.comments.CommentThreadId
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
@@ -19,6 +22,7 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideApp
+import io.plastique.statuses.ShareObjectId
 import io.plastique.util.Size
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
@@ -48,11 +52,15 @@ private class ListImageDeviationItemDelegate(
             topMargin = if (position > 0) spacing else 0
         }
 
-        holder.title.text = item.deviation.title
+        holder.titleView.text = item.deviation.title
+        holder.commentsButton.text = item.deviation.stats.comments.toString()
+        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
+        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
+        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
 
         val image = chooseImage(item.deviation, holder.maxImageWidth)
         val size = calculateOptimalImageSize(image, holder.maxImageWidth)
-        val layoutParams = holder.preview.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams = holder.imageView.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.dimensionRatio = "${size.width}:${size.height}"
 
         GlideApp.with(holder.itemView.context)
@@ -60,7 +68,7 @@ private class ListImageDeviationItemDelegate(
                 .override(size.width, size.height)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.preview)
+                .into(holder.imageView)
     }
 
     private fun chooseImage(deviation: Deviation, maxImageWidth: Int): Deviation.Image {
@@ -87,11 +95,18 @@ private class ListImageDeviationItemDelegate(
         val maxImageWidth: Int
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        val title: TextView = itemView.findViewById(R.id.title)
-        val preview: ImageView = itemView.findViewById(R.id.preview)
+        val titleView: TextView = itemView.findViewById(R.id.deviation_title)
+        val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
+        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
+        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
+        private val shareButton: View = itemView.findViewById(R.id.button_share)
 
         init {
-            itemView.setOnClickListener(this)
+            imageView.setOnClickListener(this)
+            titleView.setOnClickListener(this)
+            commentsButton.setOnClickListener(this)
+            favoriteButton.setOnClickListener(this)
+            shareButton.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -176,8 +191,12 @@ private class ListLiteratureDeviationItemDelegate(
             topMargin = if (position > 0) spacing else 0
         }
 
-        holder.title.text = item.deviation.title
-        holder.excerpt.text = item.excerpt.value
+        holder.titleView.text = item.deviation.title
+        holder.excerptView.text = item.excerpt.value
+        holder.commentsButton.text = item.deviation.stats.comments.toString()
+        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
+        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
+        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
     }
 
     class ViewHolder(
@@ -185,11 +204,18 @@ private class ListLiteratureDeviationItemDelegate(
         private val onClickListener: OnViewHolderClickListener
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        val title: TextView = itemView.findViewById(R.id.deviation_title)
-        val excerpt: TextView = itemView.findViewById(R.id.deviation_excerpt)
+        val titleView: TextView = itemView.findViewById(R.id.deviation_title)
+        val excerptView: TextView = itemView.findViewById(R.id.deviation_excerpt)
+        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
+        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
+        private val shareButton: View = itemView.findViewById(R.id.button_share)
 
         init {
-            itemView.setOnClickListener(this)
+            titleView.setOnClickListener(this)
+            excerptView.setOnClickListener(this)
+            commentsButton.setOnClickListener(this)
+            favoriteButton.setOnClickListener(this)
+            shareButton.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -269,7 +295,10 @@ class DeviationsAdapter(
     context: Context,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,
-    private val onDeviationClick: OnDeviationClickListener
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
@@ -283,12 +312,28 @@ class DeviationsAdapter(
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] else return
-        when (item) {
-            is DeviationItem -> onDeviationClick(item.deviation.id)
+        val item = if (position != RecyclerView.NO_POSITION) items[position] as DeviationItem else return
+
+        when (view.id) {
+            R.id.button_comments -> {
+                onCommentsClick(CommentThreadId.Deviation(item.deviation.id))
+            }
+
+            R.id.button_favorite -> {
+                onFavoriteClick(item.deviation.id, !item.deviation.properties.isFavorite)
+            }
+
+            R.id.button_share -> {
+                onShareClick(ShareObjectId.Deviation(item.deviation.id))
+            }
+
+            else -> onDeviationClick(item.deviation.id)
         }
     }
 }
 
 typealias LayoutModeProvider = () -> LayoutMode
 typealias OnDeviationClickListener = (deviationId: String) -> Unit
+typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
+typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
+typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit

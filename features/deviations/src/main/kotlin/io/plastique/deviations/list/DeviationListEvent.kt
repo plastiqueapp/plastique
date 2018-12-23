@@ -23,6 +23,10 @@ sealed class DeviationListEvent : Event() {
     object RefreshFinishedEvent : DeviationListEvent()
     data class RefreshErrorEvent(val error: Throwable) : DeviationListEvent()
 
+    data class SetFavoriteEvent(val deviationId: String, val favorite: Boolean) : DeviationListEvent()
+    object SetFavoriteFinishedEvent : DeviationListEvent()
+    data class SetFavoriteErrorEvent(val error: Throwable) : DeviationListEvent()
+
     data class ConnectionStateChangedEvent(val connectionState: NetworkConnectionState) : DeviationListEvent()
     data class ParamsChangedEvent(val params: FetchParams) : DeviationListEvent()
     data class ShowLiteratureChangedEvent(val showLiterature: Boolean) : DeviationListEvent()

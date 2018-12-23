@@ -121,7 +121,7 @@ class FeedViewModel @Inject constructor(
                             .onErrorReturn { error -> SettingsChangeErrorEvent(error) }
                 }
 
-        val setFavoriteEvents = effects.ofType<SetFavoriteEffect>()
+        val favoriteEvents = effects.ofType<SetFavoriteEffect>()
                 .flatMapSingle { effect ->
                     favoritesModel.setFavorite(effect.deviationId, effect.favorite)
                             .toSingleDefault<FeedEvent>(SetFavoriteFinishedEvent)
@@ -129,7 +129,7 @@ class FeedViewModel @Inject constructor(
                             .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
                 }
 
-        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, setFavoriteEvents)
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, favoriteEvents)
     }
 
     private fun externalEvents(): Observable<FeedEvent> {

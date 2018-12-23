@@ -1,6 +1,7 @@
 package io.plastique.deviations.list
 
 import com.sch.rxjava2.extensions.ofType
+import io.plastique.collections.FavoritesModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -23,6 +24,7 @@ import io.plastique.deviations.UndiscoveredParams
 import io.plastique.deviations.list.DeviationListEffect.LoadDeviationsEffect
 import io.plastique.deviations.list.DeviationListEffect.LoadMoreEffect
 import io.plastique.deviations.list.DeviationListEffect.RefreshEffect
+import io.plastique.deviations.list.DeviationListEffect.SetFavoriteEffect
 import io.plastique.deviations.list.DeviationListEvent.ConnectionStateChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.ItemsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.LayoutModeChangedEvent
@@ -35,6 +37,9 @@ import io.plastique.deviations.list.DeviationListEvent.RefreshErrorEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshFinishedEvent
 import io.plastique.deviations.list.DeviationListEvent.RetryClickEvent
+import io.plastique.deviations.list.DeviationListEvent.SetFavoriteErrorEvent
+import io.plastique.deviations.list.DeviationListEvent.SetFavoriteEvent
+import io.plastique.deviations.list.DeviationListEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.list.DeviationListEvent.ShowLiteratureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
@@ -53,6 +58,7 @@ class DeviationListViewModel @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
     private val deviationListModel: DeviationListModel,
+    private val favoritesModel: FavoritesModel,
     private val tagFactory: TagFactory
 ) : ViewModel() {
 
@@ -110,7 +116,15 @@ class DeviationListViewModel @Inject constructor(
                             .onErrorReturn { error -> RefreshErrorEvent(error) }
                 }
 
-        return Observable.merge(loadEvents, loadMoreEvents, refreshEvents)
+        val favoriteEvents = effects.ofType<SetFavoriteEffect>()
+                .flatMapSingle { effect ->
+                    favoritesModel.setFavorite(effect.deviationId, effect.favorite)
+                            .toSingleDefault<DeviationListEvent>(SetFavoriteFinishedEvent)
+                            .doOnError(Timber::e)
+                            .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
+                }
+
+        return Observable.merge(loadEvents, loadMoreEvents, refreshEvents, favoriteEvents)
     }
 
     private fun externalEvents(): Observable<DeviationListEvent> {
@@ -228,6 +242,19 @@ class DeviationListStateReducer @Inject constructor(
             } else {
                 next(state)
             }
+        }
+
+        is SetFavoriteEvent -> {
+            next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
+        }
+
+        SetFavoriteFinishedEvent -> {
+            next(state.copy(showProgressDialog = false))
+        }
+
+        is SetFavoriteErrorEvent -> {
+            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
+            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
         }
     }
 

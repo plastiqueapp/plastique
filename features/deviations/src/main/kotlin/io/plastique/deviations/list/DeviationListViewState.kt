@@ -18,7 +18,8 @@ data class DeviationListViewState(
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val showProgressDialog: Boolean = false
 ) {
     val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
@@ -30,11 +31,12 @@ data class DeviationListViewState(
                 "items=${items.size}, " +
                 "deviationItems=${deviationItems.size}, " +
                 "tags=${tags.size}, " +
+                "snackbarState=$snackbarState, " +
+                "layoutMode=$layoutMode, " +
                 "hasMore=$hasMore, " +
                 "isLoadingMore=$isLoadingMore, " +
                 "isRefreshing=$isRefreshing, " +
-                "snackbarState=$snackbarState, " +
-                "layoutMode=$layoutMode" +
+                "showProgressDialog=$showProgressDialog" +
                 ")"
     }
 }

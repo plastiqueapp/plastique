@@ -17,6 +17,7 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
@@ -36,6 +37,7 @@ import io.plastique.deviations.list.DeviationListEvent.LoadMoreEvent
 import io.plastique.deviations.list.DeviationListEvent.ParamsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
 import io.plastique.deviations.list.DeviationListEvent.RetryClickEvent
+import io.plastique.deviations.list.DeviationListEvent.SetFavoriteEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
 import io.plastique.deviations.tags.OnTagClickListener
 import io.plastique.deviations.tags.Tag
@@ -54,6 +56,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private lateinit var emptyView: EmptyView
 
     private lateinit var contentViewController: ContentViewController
+    private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: DeviationsAdapter
     private lateinit var onScrollListener: EndlessScrollListener
@@ -83,6 +86,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        progressDialogController = ProgressDialogController(childFragmentManager)
         snackbarController = SnackbarController(refreshLayout)
     }
 
@@ -112,7 +116,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                         else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
                     }
                 },
-                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
+                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
+                onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
+                onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
+                onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
 
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
@@ -175,6 +182,14 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         if (state.tags != prevState?.tags && visibleToUser) {
             tagManager?.setTags(tags, true)
+        }
+
+        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
+            if (state.showProgressDialog) {
+                progressDialogController.show()
+            } else {
+                progressDialogController.dismiss()
+            }
         }
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
