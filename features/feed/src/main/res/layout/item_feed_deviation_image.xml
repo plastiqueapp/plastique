@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:maxHeight="48dp" />
 
     <ImageView
         android:id="@+id/deviation_image"
@@ -56,13 +57,13 @@
         app:layout_constraintTop_toBottomOf="@id/deviation_title"
         tools:text="0" />
 
-    <TextView
+    <CheckedTextView
         android:id="@+id/button_favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_favorite_unchecked_24dp"
+        android:drawableStart="@drawable/ic_favorite_24dp"
         android:gravity="center_vertical"
         android:minHeight="40dp"
         android:minWidth="72dp"

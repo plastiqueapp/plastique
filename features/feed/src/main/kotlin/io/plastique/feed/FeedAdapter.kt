@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +99,7 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
         holder.commentsButton.text = item.deviation.stats.comments.toString()
         holder.commentsButton.isVisible = item.deviation.properties.allowsComments
         holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.setCompoundDrawablesWithIntrinsicBounds(if (item.deviation.properties.isFavorite) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp, 0, 0, 0)
+        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
 
         val image = item.deviation.preview ?: item.deviation.content!!
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "${image.size.width}:${image.size.height}"
@@ -114,7 +115,7 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
         val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: TextView = itemView.findViewById(R.id.button_favorite)
+        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
         private val shareButton: View = itemView.findViewById(R.id.button_share)
 
         init {
@@ -148,7 +149,7 @@ private class LiteratureDeviationItemDelegate(private val onViewHolderClickListe
         holder.commentsButton.text = item.deviation.stats.comments.toString()
         holder.commentsButton.isVisible = item.deviation.properties.allowsComments
         holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.setCompoundDrawablesWithIntrinsicBounds(if (item.deviation.properties.isFavorite) R.drawable.ic_favorite_checked_24dp else R.drawable.ic_favorite_unchecked_24dp, 0, 0, 0)
+        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -156,7 +157,7 @@ private class LiteratureDeviationItemDelegate(private val onViewHolderClickListe
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: TextView = itemView.findViewById(R.id.deviation_excerpt)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: TextView = itemView.findViewById(R.id.button_favorite)
+        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
         private val shareButton: View = itemView.findViewById(R.id.button_share)
 
         init {
