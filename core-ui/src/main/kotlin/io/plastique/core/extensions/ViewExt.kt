@@ -9,6 +9,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,7 +52,7 @@ fun BottomNavigationView.fixLabelClipping() {
 }
 
 fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: Int) {
-    val layoutManager = layoutManager as LinearLayoutManager
+    val layoutManager = this.layoutManager ?: return
     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
     if (firstVisiblePosition == RecyclerView.NO_POSITION || lastVisiblePosition == RecyclerView.NO_POSITION) {
@@ -69,6 +70,18 @@ fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: 
     } else {
         smoothScrollToPosition(position)
     }
+}
+
+fun RecyclerView.LayoutManager.findFirstVisibleItemPosition(): Int = when (this) {
+    is FlexboxLayoutManager -> findFirstVisibleItemPosition()
+    is LinearLayoutManager -> findFirstVisibleItemPosition()
+    else -> throw UnsupportedOperationException("Unsupported layout manager $javaClass")
+}
+
+fun RecyclerView.LayoutManager.findLastVisibleItemPosition(): Int = when (this) {
+    is FlexboxLayoutManager -> findLastVisibleItemPosition()
+    is LinearLayoutManager -> findLastVisibleItemPosition()
+    else -> throw UnsupportedOperationException("Unsupported layout manager $javaClass")
 }
 
 fun TextView.doAfterTextChanged(block: (Editable) -> Unit) {

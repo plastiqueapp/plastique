@@ -1,8 +1,7 @@
 package io.plastique.core.lists
 
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.flexbox.FlexboxLayoutManager
+import io.plastique.core.extensions.findLastVisibleItemPosition
 
 class EndlessScrollListener(
     var loadMoreThreshold: Int,
@@ -33,11 +32,5 @@ class EndlessScrollListener(
         if (newState == RecyclerView.SCROLL_STATE_IDLE || newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             scrollStateReset = true
         }
-    }
-
-    private fun RecyclerView.LayoutManager.findLastVisibleItemPosition(): Int = when (this) {
-        is FlexboxLayoutManager -> findLastVisibleItemPosition()
-        is LinearLayoutManager -> findLastVisibleItemPosition()
-        else -> throw UnsupportedOperationException("$javaClass is not supported by EndlessScrollListener")
     }
 }
