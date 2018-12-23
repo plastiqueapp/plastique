@@ -1,6 +1,5 @@
 package io.plastique.collections
 
-import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.Event
 import io.plastique.core.lists.ListItem
 import io.plastique.core.session.Session
@@ -11,15 +10,15 @@ sealed class CollectionsEvent : Event() {
                 "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
     }
 
-    data class LoadErrorEvent(val errorState: EmptyState) : CollectionsEvent()
+    data class LoadErrorEvent(val error: Throwable) : CollectionsEvent()
 
     object LoadMoreEvent : CollectionsEvent()
     object LoadMoreFinishedEvent : CollectionsEvent()
-    data class LoadMoreErrorEvent(val errorMessage: String) : CollectionsEvent()
+    data class LoadMoreErrorEvent(val error: Throwable) : CollectionsEvent()
 
     object RefreshEvent : CollectionsEvent()
     object RefreshFinishedEvent : CollectionsEvent()
-    data class RefreshErrorEvent(val errorMessage: String) : CollectionsEvent()
+    data class RefreshErrorEvent(val error: Throwable) : CollectionsEvent()
 
     object RetryClickEvent : CollectionsEvent()
     object SnackbarShownEvent : CollectionsEvent()

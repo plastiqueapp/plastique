@@ -1,8 +1,10 @@
 package io.plastique.watch
 
 import androidx.room.RoomDatabase
+import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.common.ErrorType
 import io.plastique.api.watch.WatchService
 import io.plastique.api.watch.WatcherDto
 import io.plastique.core.cache.CacheEntry
@@ -10,6 +12,8 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
@@ -67,6 +71,13 @@ class WatcherRepository @Inject constructor(
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
                     persist(watchers = watcherList.results, cacheEntry = cacheEntry, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
+                }
+                .mapError { error ->
+                    if (username != null && error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                        UserNotFoundException(username, error)
+                    } else {
+                        error
+                    }
                 }
     }
 

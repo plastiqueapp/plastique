@@ -1,6 +1,7 @@
 package io.plastique.users
 
 import androidx.room.RoomDatabase
+import com.sch.rxjava2.extensions.mapError
 import io.plastique.api.common.ErrorType
 import io.plastique.api.users.UserProfileDto
 import io.plastique.api.users.UserService
@@ -9,10 +10,10 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
@@ -45,12 +46,12 @@ class UserProfileRepository @Inject constructor(
                     val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
                     persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
                 }
-                .onErrorResumeNext { error ->
-                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                .mapError { error ->
+                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.code == ERROR_CODE_USER_NOT_FOUND) {
                         deleteUser(username, cacheKey)
-                        Single.error(NoSuchUserException(username, error))
+                        UserNotFoundException(username, error)
                     } else {
-                        Single.error(error)
+                        error
                     }
                 }
                 .ignoreElement()
@@ -77,5 +78,6 @@ class UserProfileRepository @Inject constructor(
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)
+        private const val ERROR_CODE_USER_NOT_FOUND = 2
     }
 }

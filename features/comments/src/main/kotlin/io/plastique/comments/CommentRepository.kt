@@ -1,17 +1,21 @@
 package io.plastique.comments
 
 import androidx.room.RoomDatabase
+import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.comments.CommentDto
 import io.plastique.api.comments.CommentList
 import io.plastique.api.comments.CommentService
 import io.plastique.api.comments.HideReason
+import io.plastique.api.common.ErrorType
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserRepository
@@ -85,6 +89,13 @@ class CommentRepository @Inject constructor(
     private fun getCommentList(threadId: CommentThreadId, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> = when (threadId) {
         is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
         is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
+                .mapError { error ->
+                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                        UserNotFoundException(threadId.username, error)
+                    } else {
+                        error
+                    }
+                }
         is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
     }
 

@@ -25,7 +25,6 @@ import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -46,7 +45,6 @@ import javax.inject.Inject
 class CollectionsViewModel @Inject constructor(
     stateReducer: CollectionsStateReducer,
     private val sessionManager: SessionManager,
-    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,
     private val dataSource: FoldersWithDeviationsDataSource,
     private val contentSettings: ContentSettings
@@ -93,7 +91,7 @@ class CollectionsViewModel @Inject constructor(
                             .bindToLifecycle()
                             .map<CollectionsEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(getErrorState(error, username = effect.params.username)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
@@ -101,7 +99,7 @@ class CollectionsViewModel @Inject constructor(
                     dataSource.loadMore()
                             .toSingleDefault<CollectionsEvent>(LoadMoreFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(errorMessageProvider.getErrorMessage(error)) }
+                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
                 }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
@@ -109,7 +107,7 @@ class CollectionsViewModel @Inject constructor(
                     dataSource.refresh()
                             .toSingleDefault<CollectionsEvent>(RefreshFinishedEvent)
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(errorMessageProvider.getErrorMessage(error)) }
+                            .onErrorReturn { error -> RefreshErrorEvent(error) }
                 }
 
         return Observable.merge(loadCollectionsEvent, loadMoreEvents, refreshEvents)
@@ -125,12 +123,6 @@ class CollectionsViewModel @Inject constructor(
                         .map { showMature -> ShowMatureChangedEvent(showMature) })
     }
 
-    private fun getErrorState(error: Throwable, username: String?): EmptyState = when (error) {
-        is ApiResponseException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username)), 0))
-        else -> errorMessageProvider.getErrorState(error)
-    }
-
     companion object {
         private const val LOG_TAG = "CollectionsViewModel"
     }
@@ -138,6 +130,7 @@ class CollectionsViewModel @Inject constructor(
 
 class CollectionsStateReducer @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {
     override fun invoke(state: CollectionsViewState, event: CollectionsEvent): Next<CollectionsViewState, CollectionsEffect> = when (event) {
@@ -162,7 +155,7 @@ class CollectionsStateReducer @Inject constructor(
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, emptyState = event.errorState),
+                    contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
                     items = emptyList(),
                     collectionItems = emptyList(),
                     hasMore = false))
@@ -181,7 +174,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(isLoadingMore = false, items = state.collectionItems, snackbarState = SnackbarState.Message(event.errorMessage)))
+            next(state.copy(isLoadingMore = false, items = state.collectionItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -193,7 +186,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(event.errorMessage)))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RetryClickEvent -> {

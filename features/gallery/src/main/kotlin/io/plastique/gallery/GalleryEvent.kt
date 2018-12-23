@@ -10,7 +10,7 @@ sealed class GalleryEvent : Event() {
                 "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
     }
 
-    data class LoadErrorEvent(val error: Throwable, val username: String?) : GalleryEvent()
+    data class LoadErrorEvent(val error: Throwable) : GalleryEvent()
 
     object LoadMoreEvent : GalleryEvent()
     object LoadMoreFinishedEvent : GalleryEvent()

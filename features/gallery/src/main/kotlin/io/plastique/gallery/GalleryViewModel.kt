@@ -8,7 +8,6 @@ import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -93,7 +92,7 @@ class GalleryViewModel @Inject constructor(
                             .bindToLifecycle()
                             .map<GalleryEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error, username = effect.params.username) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
@@ -156,13 +155,8 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
-            val errorState = when (event.error) {
-                is ApiResponseException -> EmptyState(
-                        message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(event.username)), 0))
-                else -> errorMessageProvider.getErrorState(event.error)
-            }
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, emptyState = errorState),
+                    contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
                     items = emptyList(),
                     galleryItems = emptyList(),
                     hasMore = false))

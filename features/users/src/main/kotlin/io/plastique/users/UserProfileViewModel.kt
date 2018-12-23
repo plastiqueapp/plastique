@@ -1,13 +1,10 @@
 package io.plastique.users
 
-import android.text.TextUtils
-import androidx.core.text.HtmlCompat
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -37,9 +34,7 @@ class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
     private val clipboard: Clipboard,
     private val userProfileRepository: UserProfileRepository,
-    private val watchManager: WatchManager,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val watchManager: WatchManager
 ) : ViewModel() {
     lateinit var state: Observable<UserProfileViewState>
     private val loop = MainLoop(
@@ -69,7 +64,7 @@ class UserProfileViewModel @Inject constructor(
                     userProfileRepository.getUserProfileByName(effect.username)
                             .map<UserProfileEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(getErrorState(error)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         val copyProfileLinkEvents = effects.ofType<CopyProfileLinkEffect>()
@@ -86,12 +81,6 @@ class UserProfileViewModel @Inject constructor(
                 }
 
         return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents)
-    }
-
-    private fun getErrorState(error: Throwable): EmptyState = when (error) {
-        is NoSuchUserException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username)), 0))
-        else -> errorMessageProvider.getErrorState(error)
     }
 
     companion object {
@@ -112,7 +101,7 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(event.emptyState, isError = true)))
+            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
         }
 
         RetryClickEvent -> {

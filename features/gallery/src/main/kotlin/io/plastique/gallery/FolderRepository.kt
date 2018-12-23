@@ -1,14 +1,18 @@
 package io.plastique.gallery
 
 import androidx.room.RoomDatabase
+import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.common.ErrorType
 import io.plastique.api.gallery.GalleryService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
@@ -69,6 +73,13 @@ class FolderRepository @Inject constructor(
                     val entities = folderList.results.map { folder -> folder.toFolderEntity() }
                     persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
+                }
+                .mapError { error ->
+                    if (params.username != null && error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                        UserNotFoundException(params.username, error)
+                    } else {
+                        error
+                    }
                 }
     }
 

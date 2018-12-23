@@ -8,7 +8,6 @@ import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
@@ -159,7 +158,7 @@ class WatcherListStateReducer @Inject constructor(
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(getErrorState(event.error, state.username), isError = true, error = event.error),
+                    contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorMessageProvider.getErrorState(event.error)),
                     items = emptyList(),
                     watcherItems = emptyList(),
                     hasMore = false))
@@ -233,11 +232,5 @@ class WatcherListStateReducer @Inject constructor(
                 next(state)
             }
         }
-    }
-
-    private fun getErrorState(error: Throwable, username: String?): EmptyState = when (error) {
-        is ApiResponseException -> EmptyState(
-                message = HtmlCompat.fromHtml(resourceProvider.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(username)), 0))
-        else -> errorMessageProvider.getErrorState(error)
     }
 }
