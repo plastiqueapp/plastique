@@ -8,6 +8,7 @@
     <style name="Theme.App.Dark" parent="Base.Theme.App.Dark">
         <item name="android:listDivider">@drawable/list_divider</item>
         <item name="android:textColorHint">#80ffffff</item>
+        <item name="android:navigationBarColor">?colorPrimaryDark</item>
         <item name="android:windowBackground">@color/dark_window_background</item>
 
         <item name="colorPrimary">#333333</item>
