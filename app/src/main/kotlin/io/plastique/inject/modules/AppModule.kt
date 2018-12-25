@@ -11,7 +11,6 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plastique.BuildConfig
-import io.plastique.MainFragmentFactoryImpl
 import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
@@ -26,6 +25,9 @@ import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.SessionManager
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.main.MainFragmentFactory
+import io.plastique.main.MainFragmentFactoryImpl
+import io.plastique.users.UserProfilePageProvider
+import io.plastique.users.UserProfilePageProviderImpl
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
@@ -48,6 +50,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
+
+    @Binds
+    abstract fun bindUserProfilePageProvider(impl: UserProfilePageProviderImpl): UserProfilePageProvider
 
     @Binds
     abstract fun bindFavoritesModel(impl: FavoritesModelImpl): FavoritesModel

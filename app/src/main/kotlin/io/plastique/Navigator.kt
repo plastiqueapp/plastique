@@ -2,7 +2,6 @@ package io.plastique
 
 import io.plastique.auth.LoginActivity
 import io.plastique.collections.CollectionFolderId
-import io.plastique.collections.CollectionsActivity
 import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsNavigator
@@ -12,7 +11,6 @@ import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.feed.FeedNavigator
-import io.plastique.gallery.GalleryActivity
 import io.plastique.gallery.GalleryFolderId
 import io.plastique.gallery.GalleryNavigator
 import io.plastique.main.MainNavigator
@@ -45,10 +43,6 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         UsersNavigator,
         WatchNavigator {
 
-    override fun openCollections(navigationContext: NavigationContext, username: String) {
-        navigationContext.startActivity(CollectionsActivity.createIntent(navigationContext.context, username))
-    }
-
     override fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String) {
         navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, CollectionFolderId(folderId, username), folderName))
     }
@@ -59,10 +53,6 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
 
     override fun openDeviation(navigationContext: NavigationContext, deviationId: String) {
         navigationContext.startActivity(DeviationViewerActivity.createIntent(navigationContext.context, deviationId))
-    }
-
-    override fun openGallery(navigationContext: NavigationContext, username: String) {
-        navigationContext.startActivity(GalleryActivity.createIntent(navigationContext.context, username))
     }
 
     override fun openGalleryFolder(navigationContext: NavigationContext, folderId: GalleryFolderId, folderName: String) {

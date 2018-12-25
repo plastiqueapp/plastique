@@ -3,10 +3,6 @@
     package="io.plastique.gallery">
 
     <application>
-        <activity
-            android:name=".GalleryActivity"
-            android:label="@string/gallery_title" />
-
         <activity android:name=".FolderDeviationListActivity" />
     </application>
 </manifest>

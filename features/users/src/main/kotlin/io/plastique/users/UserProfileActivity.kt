@@ -9,9 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
-import io.plastique.comments.CommentThreadId
+import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.MvvmActivity
+import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
@@ -26,6 +29,7 @@ import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.UserProfileEvent.RetryClickEvent
 import io.plastique.users.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.UserProfileEvent.SnackbarShownEvent
+import io.plastique.util.SimpleOnTabSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -39,6 +43,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var snackbarController: SnackbarController
     private lateinit var state: UserProfileViewState
     @Inject lateinit var navigator: UsersNavigator
+    @Inject lateinit var pageProvider: UserProfilePageProvider
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
         if (intent.hasExtra(EXTRA_USERNAME)) {
@@ -56,6 +61,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
+        initTabs()
 
         rootView = findViewById(android.R.id.content)
         avatarView = findViewById(R.id.user_avatar)
@@ -82,18 +88,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.users_action_view_collections -> {
-            navigator.openCollections(navigationContext, username)
-            true
-        }
-        R.id.users_action_view_gallery -> {
-            navigator.openGallery(navigationContext, username)
-            true
-        }
-        R.id.users_action_view_comments -> {
-            navigator.openComments(navigationContext, CommentThreadId.Profile(username))
-            true
-        }
         R.id.users_action_copy_profile_link -> {
             viewModel.dispatch(CopyProfileLinkClickEvent)
             true
@@ -142,6 +136,23 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }
+    }
+
+    private fun initTabs() {
+        val tabAdapter = FragmentListPagerAdapter(this, supportFragmentManager, pageProvider.getPages(username))
+        val pager: ViewPager = findViewById(R.id.pager)
+        pager.adapter = tabAdapter
+
+        val tabsView: TabLayout = findViewById(R.id.tabs)
+        tabsView.setupWithViewPager(pager)
+        tabsView.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                val fragment = tabAdapter.getFragmentAtPosition(tab.position)
+                if (fragment is ScrollableToTop) {
+                    fragment.scrollToTop()
+                }
+            }
+        })
     }
 
     private fun Menu.update(userProfile: UserProfile) {

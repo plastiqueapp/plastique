@@ -24,7 +24,6 @@ import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.args
-import io.plastique.core.extensions.withArguments
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
@@ -223,8 +222,8 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
 
-        fun newInstance(username: String? = null): GalleryFragment {
-            return GalleryFragment().withArguments {
+        fun newArgs(username: String? = null): Bundle {
+            return Bundle().apply {
                 putString(ARG_USERNAME, username)
             }
         }

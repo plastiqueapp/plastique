@@ -9,21 +9,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/users_action_view_collections"
-        android:title="@string/users_action_view_collections"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/users_action_view_gallery"
-        android:title="@string/users_action_view_gallery"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/users_action_view_comments"
-        android:title="@string/users_action_view_comments"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/users_action_view_watchers"
         android:title="@string/users_action_view_watchers"
         app:showAsAction="never" />

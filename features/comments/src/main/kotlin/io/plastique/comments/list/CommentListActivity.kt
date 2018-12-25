@@ -23,7 +23,7 @@ class CommentListActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             val username = intent.getParcelableExtra<CommentThreadId>(EXTRA_THREAD_ID)!!
-            contentFragment = CommentListFragment.newInstance(username)
+            contentFragment = CommentListFragment().apply { arguments = CommentListFragment.newArgs(username) }
             supportFragmentManager.beginTransaction()
                     .add(R.id.comments_container, contentFragment)
                     .commit()

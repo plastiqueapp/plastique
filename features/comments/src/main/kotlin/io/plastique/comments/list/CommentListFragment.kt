@@ -23,7 +23,6 @@ import io.plastique.core.extensions.actionBar
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.smartScrollToPosition
-import io.plastique.core.extensions.withArguments
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
@@ -92,7 +91,9 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     }
 
     private fun renderState(state: CommentListViewState, prevState: CommentListViewState?, listUpdateData: ListUpdateData<ListItem>) {
-        actionBar.subtitle = state.title
+        if (activity is CommentListActivity) {
+            actionBar.subtitle = state.title
+        }
 
         contentViewController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
@@ -137,8 +138,8 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     companion object {
         private const val ARG_THREAD_ID = "thread_id"
 
-        fun newInstance(threadId: CommentThreadId): CommentListFragment {
-            return CommentListFragment().withArguments {
+        fun newArgs(threadId: CommentThreadId): Bundle {
+            return Bundle().apply {
                 putParcelable(ARG_THREAD_ID, threadId)
             }
         }
