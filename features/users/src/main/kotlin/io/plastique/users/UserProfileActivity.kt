@@ -119,6 +119,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             GlideApp.with(this)
                     .load(state.userProfile.user.avatarUrl)
                     .circleCrop()
+                    .dontAnimate()
                     .into(avatarView)
 
             optionsMenu?.update(state.userProfile)
