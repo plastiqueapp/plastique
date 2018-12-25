@@ -145,7 +145,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         pager.adapter = tabAdapter
 
         val tabsView: TabLayout = findViewById(R.id.tabs)
-        tabsView.setupWithViewPager(pager)
         tabsView.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 val fragment = tabAdapter.getFragmentAtPosition(tab.position)

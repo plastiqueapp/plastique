@@ -52,7 +52,7 @@
         android:id="@+id/profile_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="user_avatar, user_real_name"
+        app:constraint_referenced_ids="user_avatar, user_real_name, pager"
         tools:ignore="MissingConstraints" />
 
     <ProgressBar
@@ -78,24 +78,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_avatar"
-        app:tabIndicatorColor="?colorAccent"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="?colorAccent" />
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabs" />
+        app:layout_constraintTop_toBottomOf="@id/user_avatar">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabIndicatorColor="?colorAccent"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="?colorAccent" />
+    </androidx.viewpager.widget.ViewPager>
 </androidx.constraintlayout.widget.ConstraintLayout>
