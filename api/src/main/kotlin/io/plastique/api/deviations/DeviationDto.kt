@@ -4,6 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.common.ImageDto
 import io.plastique.api.users.UserDto
+import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 
 @JsonClass(generateAdapter = true)
@@ -16,6 +17,12 @@ data class DeviationDto(
 
     @Json(name = "url")
     val url: String,
+
+    @Json(name = "category_path")
+    val categoryPath: String,
+
+    @Json(name = "published_time")
+    val publishTime: Instant,
 
     @Json(name = "is_downloadable")
     val isDownloadable: Boolean = false,

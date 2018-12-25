@@ -57,6 +57,7 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val excerptView: TextView = findViewById(R.id.deviation_excerpt)
                 headerView.user = share.author
+                headerView.date = if (share.isJournal) share.date else null
                 titleView.text = share.title
                 excerptView.text = share.excerpt.value
             }

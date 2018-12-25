@@ -39,6 +39,7 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
+import org.threeten.bp.ZoneId
 import java.util.concurrent.Callable
 import javax.inject.Inject
 import kotlin.math.max
@@ -219,6 +220,8 @@ private fun FeedDeviationEntityWithRelations.toDeviation(): Deviation = Deviatio
         id = deviation.id,
         title = deviation.title,
         url = deviation.url,
+        categoryPath = deviation.categoryPath,
+        publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
         content = images.asSequence()
                 .filter { it.type == DeviationImageType.Content }
                 .map { it.toImage() }

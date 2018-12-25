@@ -8,6 +8,8 @@ data class Deviation(
     val id: String,
     val title: String,
     val url: String,
+    val categoryPath: String,
+    val publishTime: ZonedDateTime,
     val author: User,
     val properties: Properties,
     val stats: Stats,

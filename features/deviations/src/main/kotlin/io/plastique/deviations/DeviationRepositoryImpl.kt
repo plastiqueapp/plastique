@@ -23,6 +23,7 @@ import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
+import org.threeten.bp.ZoneId
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
@@ -195,6 +196,8 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
         id = id,
         title = title,
         url = url,
+        categoryPath = categoryPath,
+        publishTime = publishTime,
         authorId = author.id,
         excerpt = excerpt,
         properties = DeviationPropertiesEntity(
@@ -212,6 +215,8 @@ fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
         id = deviation.id,
         title = deviation.title,
         url = deviation.url,
+        categoryPath = deviation.categoryPath,
+        publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
         author = author.first().toUser(),
         properties = deviation.properties.toDeviationProperties(),
         stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),

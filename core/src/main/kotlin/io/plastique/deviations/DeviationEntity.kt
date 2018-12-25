@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.plastique.users.UserEntity
+import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 
 @Entity(tableName = "deviations",
@@ -28,6 +29,12 @@ data class DeviationEntity(
 
     @ColumnInfo(name = "url")
     val url: String,
+
+    @ColumnInfo(name = "category_path")
+    val categoryPath: String,
+
+    @ColumnInfo(name = "publish_time")
+    val publishTime: Instant,
 
     @ColumnInfo(name = "excerpt")
     val excerpt: String? = null,

@@ -19,8 +19,10 @@ sealed class ShareUiModel {
     data class LiteratureDeviation(
         val deviationId: String,
         val author: User,
+        val date: ZonedDateTime,
         val title: String,
-        val excerpt: SpannedWrapper
+        val excerpt: SpannedWrapper,
+        val isJournal: Boolean
     ) : ShareUiModel()
 
     data class Status(
@@ -47,9 +49,11 @@ fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter): ShareUiMo
             deviation.isLiterature -> {
                 ShareUiModel.LiteratureDeviation(
                         deviationId = deviation.id,
+                        date = deviation.publishTime,
                         author = deviation.author,
                         title = deviation.title,
-                        excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
+                        excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)),
+                        isJournal = deviation.categoryPath.startsWith("journals"))
             }
             else -> ShareUiModel.ImageDeviation(
                     deviationId = deviation.id,

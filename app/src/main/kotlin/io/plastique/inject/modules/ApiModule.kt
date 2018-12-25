@@ -18,6 +18,7 @@ import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.FallbackJsonAdapterFactory
+import io.plastique.core.adapters.InstantAdapter
 import io.plastique.core.adapters.NullIfDeletedJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.StringCursorAdapter
@@ -96,6 +97,7 @@ object ApiModule {
     fun provideMoshi(): Moshi {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
         return Moshi.Builder()
+                .add(InstantAdapter())
                 .add(ZonedDateTimeAdapter(dateTimeFormatter))
                 .add(OffsetCursorAdapter())
                 .add(StringCursorAdapter())

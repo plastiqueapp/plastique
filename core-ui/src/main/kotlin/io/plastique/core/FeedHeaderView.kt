@@ -30,7 +30,6 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     var date: ZonedDateTime? = null
         set(value) {
-            requireNotNull(value)
             if (field != value) {
                 field = value
                 renderDate(value)
@@ -60,7 +59,7 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
                 .into(avatarView)
     }
 
-    private fun renderDate(dateTime: ZonedDateTime) {
-        dateView.text = ElapsedTimeFormatter.format(context, dateTime, ZonedDateTime.now())
+    private fun renderDate(dateTime: ZonedDateTime?) {
+        dateView.text = if (dateTime != null) ElapsedTimeFormatter.format(context, dateTime, ZonedDateTime.now()) else null
     }
 }
