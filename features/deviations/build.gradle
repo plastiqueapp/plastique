@@ -14,6 +14,6 @@ dependencies {
 
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 
-    implementation "com.github.hotchemi:permissionsdispatcher:$versions.permissionsDispatcher"
-    kapt "com.github.hotchemi:permissionsdispatcher-processor:$versions.permissionsDispatcher"
+    implementation "org.permissionsdispatcher:permissionsdispatcher:$versions.permissionsDispatcher"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:$versions.permissionsDispatcher"
 }
