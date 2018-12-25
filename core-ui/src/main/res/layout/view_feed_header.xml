@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/feed_element_avatar_size"
-        android:layout_height="@dimen/feed_element_avatar_size"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/feed_element_avatar_size"
+        android:minHeight="32dp"
         android:paddingEnd="12dp"
         android:paddingStart="12dp"
         android:textAppearance="?textAppearanceSubtitle2"

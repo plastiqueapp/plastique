@@ -18,6 +18,7 @@ import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsActivity
 import io.plastique.settings.SettingsNavigator
 import io.plastique.statuses.ShareObjectId
+import io.plastique.statuses.StatusesNavigator
 import io.plastique.users.User
 import io.plastique.users.UserProfileActivity
 import io.plastique.users.UserType
@@ -40,6 +41,7 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         MainNavigator,
         ProfileNavigator,
         SettingsNavigator,
+        StatusesNavigator,
         UsersNavigator,
         WatchNavigator {
 

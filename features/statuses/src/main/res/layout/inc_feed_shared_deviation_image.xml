@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <io.plastique.feed.FeedElementHeaderView
+    <io.plastique.core.FeedHeaderView
         android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

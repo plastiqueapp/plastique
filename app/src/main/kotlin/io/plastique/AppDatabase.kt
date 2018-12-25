@@ -29,6 +29,7 @@ import io.plastique.feed.FeedElementEntity
 import io.plastique.gallery.GalleryDao
 import io.plastique.statuses.StatusDao
 import io.plastique.statuses.StatusEntity
+import io.plastique.statuses.StatusLinkage
 import io.plastique.users.UserDao
 import io.plastique.users.UserEntity
 import io.plastique.users.UserProfileEntity
@@ -62,6 +63,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     GalleryFolderLinkage::class,
 
     StatusEntity::class,
+    StatusLinkage::class,
 
     UserEntity::class,
     UserProfileEntity::class,

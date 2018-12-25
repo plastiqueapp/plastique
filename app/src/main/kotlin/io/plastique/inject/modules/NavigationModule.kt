@@ -11,6 +11,7 @@ import io.plastique.gallery.GalleryNavigator
 import io.plastique.main.MainNavigator
 import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsNavigator
+import io.plastique.statuses.StatusesNavigator
 import io.plastique.users.UsersNavigator
 import io.plastique.watch.WatchNavigator
 
@@ -39,6 +40,9 @@ interface NavigationModule {
 
     @Binds
     fun bindSettingsNavigator(impl: Navigator): SettingsNavigator
+
+    @Binds
+    fun bindStatusesNavigator(impl: Navigator): StatusesNavigator
 
     @Binds
     fun bindUsersNavigator(impl: Navigator): UsersNavigator

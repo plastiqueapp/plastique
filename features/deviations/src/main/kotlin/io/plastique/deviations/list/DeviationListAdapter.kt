@@ -24,6 +24,7 @@ import io.plastique.deviations.R
 import io.plastique.glide.GlideApp
 import io.plastique.statuses.ShareObjectId
 import io.plastique.util.Size
+import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.min
@@ -61,7 +62,7 @@ private class ListImageDeviationItemDelegate(
         val image = chooseImage(item.deviation, holder.maxImageWidth)
         val size = calculateOptimalImageSize(image, holder.maxImageWidth)
         val layoutParams = holder.imageView.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = "${size.width}:${size.height}"
+        layoutParams.dimensionRatio = size.dimensionRatio
 
         GlideApp.with(holder.itemView.context)
                 .load(image.url)

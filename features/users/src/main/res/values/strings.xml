@@ -6,6 +6,7 @@
     <string name="users_action_watch">Watch</string>
     <string name="users_action_unwatch">Unwatch</string>
 
+    <string name="users_profile_tab_activity">Activity</string>
     <string name="users_profile_tab_comments">Comments</string>
     <string name="users_profile_tab_favorites">Favorites</string>
     <string name="users_profile_tab_gallery">Gallery</string>

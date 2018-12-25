@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="statuses_message_empty">&lt;b&gt;%1$s&lt;/b&gt; has not posted anything yet</string>
+    <string name="statuses_shared_deviation_deleted">Deviation has since been deleted</string>
+    <string name="statuses_shared_status_deleted">Status has since been deleted</string>
+</resources>

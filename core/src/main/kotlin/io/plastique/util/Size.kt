@@ -8,3 +8,6 @@ import java.io.Serializable
 data class Size(val width: Int, val height: Int) : Serializable, Parcelable {
     override fun toString(): String = width.toString() + "x" + height
 }
+
+val Size.dimensionRatio: String
+    get() = "$width:$height"

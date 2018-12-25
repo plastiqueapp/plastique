@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.CommentThreadId
+import io.plastique.core.FeedHeaderView
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
@@ -25,8 +26,10 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.glide.GlideApp
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
+import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
 import io.plastique.users.User
+import io.plastique.util.dimensionRatio
 
 private class CollectionUpdateItemDelegate(
     private val itemSizeCallback: ItemSizeCallback,
@@ -63,7 +66,7 @@ private class CollectionUpdateItemDelegate(
         onDeviationClick: OnDeviationClickListener,
         private val onClickListener: OnViewHolderClickListener
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val folderNameView: TextView = itemView.findViewById(R.id.folder_name)
         val folderItemsView: RecyclerView = itemView.findViewById(R.id.thumbnails)
         val folderItemsAdapter: DeviationsAdapter = DeviationsAdapter(folderItemsView.context, itemSizeCallback, onDeviationClick)
@@ -102,7 +105,7 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
         holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
 
         val image = item.deviation.preview ?: item.deviation.content!!
-        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "${image.size.width}:${image.size.height}"
+        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = image.size.dimensionRatio
 
         GlideApp.with(holder.imageView)
                 .load(image.url)
@@ -111,7 +114,7 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
@@ -153,7 +156,7 @@ private class LiteratureDeviationItemDelegate(private val onViewHolderClickListe
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: TextView = itemView.findViewById(R.id.deviation_excerpt)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
@@ -212,7 +215,7 @@ private class MultipleDeviationsItemDelegate(
         onDeviationClick: OnDeviationClickListener,
         private val onClickListener: OnViewHolderClickListener
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
         val deviationsView: RecyclerView = itemView.findViewById(R.id.deviations)
         val adapter: DeviationsAdapter = DeviationsAdapter(itemView.context, gridItemSizeCallback, onDeviationClick)
@@ -245,71 +248,14 @@ private class StatusItemDelegate(private val onViewHolderClickListener: OnViewHo
         holder.commentsButton.text = item.commentCount.toString()
         holder.shareButton.isVisible = !item.share.isDeleted
 
-        holder.shareContainer.removeAllViews()
-        holder.shareContainer.isVisible = item.share !== ShareUiModel.None
-        holder.shareContainer.setOnClickListener(if (!item.share.isDeleted) holder else null)
-        holder.shareContainer.setBackgroundResource(if (!item.share.isDeleted) R.drawable.feed_status_shared_object_background else R.drawable.feed_status_shared_object_deleted_background)
-        renderShare(item.share, holder.shareContainer)
-    }
-
-    private fun renderShare(share: ShareUiModel, parent: ViewGroup) {
-        when (share) {
-            is ShareUiModel.ImageDeviation -> {
-                val shareView = View.inflate(parent.context, R.layout.inc_feed_shared_deviation_image, parent)
-
-                val headerView: FeedElementHeaderView = shareView.findViewById(R.id.header)
-                val titleView: TextView = shareView.findViewById(R.id.deviation_title)
-                val imageView: ImageView = shareView.findViewById(R.id.deviation_image)
-                headerView.user = share.author
-                titleView.text = share.title
-
-                val preview = share.preview
-                (imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "${preview.size.width}:${preview.size.height}"
-
-                GlideApp.with(imageView)
-                        .load(preview.url)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
-            }
-
-            is ShareUiModel.LiteratureDeviation -> {
-                val shareView = View.inflate(parent.context, R.layout.inc_feed_shared_deviation_literature, parent)
-                val headerView: FeedElementHeaderView = shareView.findViewById(R.id.header)
-                val titleView: TextView = shareView.findViewById(R.id.deviation_title)
-                val excerptView: TextView = shareView.findViewById(R.id.deviation_excerpt)
-                headerView.user = share.author
-                titleView.text = share.title
-                excerptView.text = share.excerpt.value
-            }
-
-            is ShareUiModel.Status -> {
-                val shareView = View.inflate(parent.context, R.layout.inc_feed_shared_status, parent)
-                val headerView: FeedElementHeaderView = shareView.findViewById(R.id.header)
-                val statusTextView: TextView = shareView.findViewById(R.id.status_text)
-                headerView.user = share.author
-                headerView.date = share.date
-                statusTextView.text = share.text.value
-            }
-
-            ShareUiModel.DeletedDeviation -> {
-                val shareView = View.inflate(parent.context, R.layout.inc_feed_shared_object_deleted, parent)
-                val textView: TextView = shareView.findViewById(R.id.text)
-                textView.setText(R.string.feed_status_shared_deviation_deleted)
-            }
-
-            ShareUiModel.DeletedStatus -> {
-                val shareView = View.inflate(parent.context, R.layout.inc_feed_shared_object_deleted, parent)
-                val textView: TextView = shareView.findViewById(R.id.text)
-                textView.setText(R.string.feed_status_shared_status_deleted)
-            }
-        }
+        holder.shareView.share = item.share
+        holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val statusTextView: TextView = itemView.findViewById(R.id.status_text)
-        val shareContainer: ViewGroup = itemView.findViewById(R.id.share_container)
+        val shareView: ShareView = itemView.findViewById(R.id.status_share)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
         val shareButton: View = itemView.findViewById(R.id.button_share)
 
@@ -343,7 +289,7 @@ private class UsernameChangeItemDelegate(private val onViewHolderClickListener: 
     }
 
     private class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val headerView: FeedElementHeaderView = itemView.findViewById(R.id.header)
+        val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
 
         init {
@@ -383,7 +329,7 @@ class FeedAdapter(
         val item = items[position]
 
         when {
-            view is FeedElementHeaderView -> onUserClick(view.user!!)
+            view is FeedHeaderView -> onUserClick(view.user!!)
             view.id == R.id.button_comments -> {
                 val threadId = when (item) {
                     is DeviationItem -> CommentThreadId.Deviation(item.deviation.id)
@@ -408,13 +354,13 @@ class FeedAdapter(
                 val statusId = (item as StatusUpdateItem).statusId
                 onStatusClick(statusId)
             }
-            view.id == R.id.share_container -> {
+            view.id == R.id.status_share -> {
                 val share = (item as StatusUpdateItem).share
                 when (share) {
                     is ShareUiModel.ImageDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.LiteratureDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.Status -> onStatusClick(share.statusId)
-                    else -> throw IllegalStateException("Unexpected shared item $share")
+                    else -> throw IllegalStateException("Unexpected share $share")
                 }
             }
             view.id == R.id.folder_name -> {

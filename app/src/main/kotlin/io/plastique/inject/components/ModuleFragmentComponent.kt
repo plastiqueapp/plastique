@@ -10,6 +10,7 @@ import io.plastique.inject.FragmentComponent
 import io.plastique.inject.scopes.FragmentScope
 import io.plastique.profile.ProfileFragmentComponent
 import io.plastique.settings.SettingsFragmentComponent
+import io.plastique.statuses.StatusesFragmentComponent
 
 @FragmentScope
 @Subcomponent
@@ -21,4 +22,5 @@ interface ModuleFragmentComponent :
         FeedFragmentComponent,
         GalleryFragmentComponent,
         ProfileFragmentComponent,
-        SettingsFragmentComponent
+        SettingsFragmentComponent,
+        StatusesFragmentComponent

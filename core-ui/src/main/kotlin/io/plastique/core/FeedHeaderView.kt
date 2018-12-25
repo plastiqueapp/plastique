@@ -1,4 +1,4 @@
-package io.plastique.feed
+package io.plastique.core
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,12 +6,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.plastique.core.ui.R
 import io.plastique.glide.GlideApp
 import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
 import org.threeten.bp.ZonedDateTime
 
-class FeedElementHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val avatarView: ImageView
