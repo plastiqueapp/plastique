@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.app.ShareCompat
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import com.github.chrisbanes.photoview.PhotoView
@@ -146,12 +147,16 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             downloadOriginalWithPermissionCheck()
             true
         }
-        R.id.deviations_viewer_action_open_in_browser -> {
-            openInBrowser()
-            true
-        }
         R.id.deviations_viewer_action_copy_link -> {
             copyLinkToClipboard()
+            true
+        }
+        R.id.deviations_viewer_action_send_link -> {
+            sendLink()
+            true
+        }
+        R.id.deviations_viewer_action_open_in_browser -> {
+            openInBrowser()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -209,6 +214,13 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private fun copyLinkToClipboard() {
         clipboard.setText(state.deviation!!.url)
         Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun sendLink() {
+        ShareCompat.IntentBuilder.from(this)
+                .setType("text/plain")
+                .setText(state.deviation!!.url)
+                .startChooser()
     }
 
     private fun initBottomSheet() {
