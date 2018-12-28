@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -16,6 +17,7 @@ import android.widget.TextView
 import androidx.core.app.ShareCompat
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
+import com.bumptech.glide.request.target.ImageViewTarget
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -191,10 +193,21 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
                         }
                     }
 
-            // TODO: Preserve zoom when higher-resolution image is loaded
             glide.load(contentUrl)
                     .thumbnail(thumbnailRequest!!)
-                    .into(photoView)
+                    .into(object : ImageViewTarget<Drawable>(photoView) {
+                        override fun setResource(resource: Drawable?) {
+                            if (resource != null) {
+                                require(view is PhotoView)
+                                val matrix = Matrix()
+                                view.getSuppMatrix(matrix)
+                                view.setImageDrawable(resource)
+                                view.setSuppMatrix(matrix)
+                            } else {
+                                view.setImageDrawable(resource)
+                            }
+                        }
+                    })
         }
 
         if (state.menuState != prevState?.menuState) {
