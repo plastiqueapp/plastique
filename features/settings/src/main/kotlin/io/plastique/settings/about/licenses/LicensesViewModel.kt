@@ -23,8 +23,7 @@ import javax.inject.Inject
 @ActivityScope
 class LicensesViewModel @Inject constructor(
     stateReducer: LicensesStateReducer,
-    private val licenseRepository: LicenseRepository,
-    private val errorMessageProvider: ErrorMessageProvider
+    private val licenseRepository: LicenseRepository
 ) : ViewModel() {
     private val loop = MainLoop(
             reducer = stateReducer,
@@ -41,7 +40,7 @@ class LicensesViewModel @Inject constructor(
                     loadItems()
                             .map<LicensesEvent> { items -> LoadFinishedEvent(items) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(errorMessageProvider.getErrorState(error)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
     }
 
@@ -58,14 +57,16 @@ class LicensesViewModel @Inject constructor(
     }
 }
 
-class LicensesStateReducer @Inject constructor() : Reducer<LicensesEvent, LicensesViewState, LicensesEffect> {
+class LicensesStateReducer @Inject constructor(
+    private val errorMessageProvider: ErrorMessageProvider
+) : Reducer<LicensesEvent, LicensesViewState, LicensesEffect> {
     override fun invoke(state: LicensesViewState, event: LicensesEvent): Next<LicensesViewState, LicensesEffect> = when (event) {
         is LoadFinishedEvent -> {
             next(state.copy(contentState = ContentState.Content, items = event.items))
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(event.emptyState, isError = true)))
+            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
         }
     }
 }

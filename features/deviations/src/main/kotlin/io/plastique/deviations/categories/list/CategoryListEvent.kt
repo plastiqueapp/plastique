@@ -1,7 +1,6 @@
 package io.plastique.deviations.categories.list
 
 import io.plastique.core.breadcrumbs.Breadcrumb
-import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.Event
 import io.plastique.deviations.categories.Category
 
@@ -14,10 +13,7 @@ sealed class CategoryListEvent : Event() {
                 "LoadCategoryFinishEvent(category=$category, subcategories=${subcategories.size})"
     }
 
-    data class LoadCategoryErrorEvent(
-        val category: Category,
-        val emptyState: EmptyState
-    ) : CategoryListEvent()
+    data class LoadCategoryErrorEvent(val category: Category, val error: Throwable) : CategoryListEvent()
 
     object RetryClickEvent : CategoryListEvent()
     object SnackbarShownEvent : CategoryListEvent()

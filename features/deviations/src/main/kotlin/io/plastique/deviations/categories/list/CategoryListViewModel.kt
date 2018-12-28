@@ -32,8 +32,7 @@ import javax.inject.Inject
 @ActivityScope
 class CategoryListViewModel @Inject constructor(
     stateReducer: CategoryListStateReducer,
-    private val categoryRepository: CategoryRepository,
-    private val errorMessageProvider: ErrorMessageProvider
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
     lateinit var state: Observable<CategoryListViewState>
@@ -63,7 +62,7 @@ class CategoryListViewModel @Inject constructor(
                     categoryRepository.getCategories(effect.category)
                             .map<CategoryListEvent> { subcategories -> LoadCategoryFinishEvent(effect.category, subcategories) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadCategoryErrorEvent(effect.category, errorMessageProvider.getErrorState(error)) }
+                            .onErrorReturn { error -> LoadCategoryErrorEvent(effect.category, error) }
                 }
     }
 
@@ -73,6 +72,7 @@ class CategoryListViewModel @Inject constructor(
 }
 
 class CategoryListStateReducer @Inject constructor(
+    private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
     override fun invoke(state: CategoryListViewState, event: CategoryListEvent): Next<CategoryListViewState, CategoryListEffect> = when (event) {
@@ -114,7 +114,7 @@ class CategoryListStateReducer @Inject constructor(
 
         is LoadCategoryErrorEvent -> {
             if (state.contentState === ContentState.Loading) {
-                next(state.copy(contentState = ContentState.Empty(event.emptyState, isError = true)))
+                next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
             } else {
                 val items = state.items.replaceIf(
                         { item -> item.category == event.category },

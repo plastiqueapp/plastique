@@ -17,7 +17,7 @@ import java.io.IOException
 class LicensesViewModelTest {
     private val licenseRepository = mock<LicenseRepository>()
     private val errorMessageProvider = mock<ErrorMessageProvider>()
-    private val viewModel = LicensesViewModel(LicensesStateReducer(), licenseRepository, errorMessageProvider)
+    private val viewModel = LicensesViewModel(LicensesStateReducer(errorMessageProvider), licenseRepository)
 
     @AfterEach
     fun tearDown() {
@@ -43,7 +43,7 @@ class LicensesViewModelTest {
         viewModel.state.test()
                 .assertValuesOnly(
                         LicensesViewState(contentState = ContentState.Loading),
-                        LicensesViewState(contentState = ContentState.Empty(errorState, isError = true)))
+                        LicensesViewState(contentState = ContentState.Empty(isError = true, emptyState = errorState)))
     }
 
     @Test

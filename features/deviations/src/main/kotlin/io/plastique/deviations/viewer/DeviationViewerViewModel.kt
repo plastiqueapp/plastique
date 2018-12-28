@@ -45,7 +45,6 @@ class DeviationViewerViewModel @Inject constructor(
     private val downloadInfoRepository: DownloadInfoRepository,
     private val downloader: FileDownloader,
     private val favoritesModel: FavoritesModel,
-    private val errorMessageProvider: ErrorMessageProvider,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
@@ -77,7 +76,7 @@ class DeviationViewerViewModel @Inject constructor(
                     deviationRepository.getDeviationById(effect.deviationId)
                             .map<DeviationViewerEvent> { deviation -> DeviationLoadedEvent(deviation) }
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(errorMessageProvider.getErrorState(error)) }
+                            .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
         val downloadOriginalEvents = effects.ofType<DownloadOriginalEffect>()
@@ -87,7 +86,7 @@ class DeviationViewerViewModel @Inject constructor(
                             .ignoreElement()
                             .toMaybe<DeviationViewerEvent>()
                             .doOnError(Timber::e)
-                            .onErrorReturn { error -> DownloadOriginalErrorEvent(errorMessageProvider.getErrorMessage(error, R.string.deviations_viewer_message_download_error)) }
+                            .onErrorReturn { error -> DownloadOriginalErrorEvent(error) }
                 }
 
         val setFavoriteEvents = effects.ofType<SetFavoriteEffect>()
@@ -129,7 +128,7 @@ class DeviationViewerStateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(event.emptyState, isError = true)))
+            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
         }
 
         RetryClickEvent -> {
@@ -141,7 +140,8 @@ class DeviationViewerStateReducer @Inject constructor(
         }
 
         is DownloadOriginalErrorEvent -> {
-            next(state.copy(snackbarState = SnackbarState.Message(event.errorMessage)))
+            val errorMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_viewer_message_download_error)
+            next(state.copy(snackbarState = SnackbarState.Message(errorMessage)))
         }
 
         is SetFavoriteEvent -> {

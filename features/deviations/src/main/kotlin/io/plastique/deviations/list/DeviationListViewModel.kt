@@ -172,7 +172,7 @@ class DeviationListStateReducer @Inject constructor(
         is LoadErrorEvent -> {
             val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
             next(state.copy(
-                    contentState = ContentState.Empty(errorState, isError = true, error = event.error),
+                    contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
                     items = emptyList(),
                     deviationItems = emptyList()))
         }
