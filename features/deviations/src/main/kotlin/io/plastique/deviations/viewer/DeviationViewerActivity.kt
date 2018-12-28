@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
@@ -39,6 +40,7 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequest
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.Clipboard
@@ -175,8 +177,23 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
 
         if (state.deviation?.content?.url != prevState?.deviation?.content?.url) {
-            GlideApp.with(this)
-                    .load(state.deviation!!.content!!.url)
+            val contentUrl = state.deviation!!.content!!.url
+            val previewUrl = state.deviation.preview!!.url
+
+            val glide = GlideApp.with(this)
+            val thumbnailRequest = (state.deviation.thumbnails.asSequence().map { it.url } + sequenceOf(previewUrl))
+                    .fold<String, GlideRequest<Drawable>?>(null) { previous, url ->
+                        val current = glide.load(url).onlyRetrieveFromCache(true)
+                        if (previous != null) {
+                            current.thumbnail(previous)
+                        } else {
+                            current
+                        }
+                    }
+
+            // TODO: Preserve zoom when higher-resolution image is loaded
+            glide.load(contentUrl)
+                    .thumbnail(thumbnailRequest!!)
                     .into(photoView)
         }
 

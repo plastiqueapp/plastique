@@ -147,6 +147,7 @@ class GridImageDeviationItemDelegate(
         val image = chooseImage(item.deviation, itemSize.width)
         GlideApp.with(holder.thumbnail)
                 .load(image.url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail)
     }
 
