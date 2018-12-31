@@ -44,7 +44,7 @@ ext.versions = [
         rxandroid            : "2.1.0",
         rxkotlin             : "2.3.0",
         rxjava2Extensions    : "0.20.5",
-        rxJava2ExtensionsSch : "0.0.5",
+        rxJava2ExtensionsSch : "0.0.6",
         sqlite               : "3.26.0",
         stetho               : "1.5.0",
         stethoTimber         : "1.0.0",
