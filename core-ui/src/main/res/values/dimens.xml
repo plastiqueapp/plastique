@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="common_divider_thickness">0.5dp</dimen>
+    <dimen name="common_button_drawable_padding">8dp</dimen>
     <dimen name="common_empty_view_horizontal_margin">32dp</dimen>
     <dimen name="common_loading_indicator_padding">10dp</dimen>
     <dimen name="common_progress_bar_size_medium">32dp</dimen>
