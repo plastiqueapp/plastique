@@ -34,7 +34,8 @@ data class Deviation(
         val isDownloadable: Boolean,
         val isFavorite: Boolean,
         val isMature: Boolean,
-        val allowsComments: Boolean
+        val allowsComments: Boolean,
+        val downloadFileSize: Long
     )
 
     data class Stats(

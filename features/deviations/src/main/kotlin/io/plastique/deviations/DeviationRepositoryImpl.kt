@@ -204,7 +204,8 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
                 isDownloadable = isDownloadable,
                 isFavorite = isFavorite,
                 isMature = isMature,
-                allowsComments = allowsComments),
+                allowsComments = allowsComments,
+                downloadFileSize = downloadFileSize),
         stats = DeviationStatsEntity(comments = stats.comments, favorites = stats.favorites),
         dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
 
@@ -245,11 +246,12 @@ private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.
     return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
 
-private fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
+fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
         isDownloadable = isDownloadable,
         isFavorite = isFavorite,
         isMature = isMature,
-        allowsComments = allowsComments)
+        allowsComments = allowsComments,
+        downloadFileSize = downloadFileSize)
 
 private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
 

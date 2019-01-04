@@ -16,8 +16,9 @@ data class DeviationViewerViewState(
     val showProgressDialog: Boolean = false
 ) {
     data class MenuState(
-        val showFavorite: Boolean = false,
         val showDownload: Boolean = false,
+        val downloadFileSize: Long = 0,
+        val showFavorite: Boolean = false,
         val isFavoriteChecked: Boolean = false
     )
 }

@@ -27,6 +27,7 @@ import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationImageEntity
 import io.plastique.deviations.DeviationImageType
 import io.plastique.deviations.DeviationRepository
+import io.plastique.deviations.toDeviationProperties
 import io.plastique.statuses.StatusRepository
 import io.plastique.statuses.toStatus
 import io.plastique.users.UserEntity
@@ -237,11 +238,7 @@ private fun FeedDeviationEntityWithRelations.toDeviation(): Deviation = Deviatio
                 .toList(),
         excerpt = deviation.excerpt,
         author = author.first().toUser(),
-        properties = Deviation.Properties(
-                isDownloadable = deviation.properties.isDownloadable,
-                isFavorite = deviation.properties.isFavorite,
-                isMature = deviation.properties.isMature,
-                allowsComments = deviation.properties.allowsComments),
+        properties = deviation.properties.toDeviationProperties(),
         stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
         dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
 

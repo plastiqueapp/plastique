@@ -118,6 +118,7 @@ class DeviationViewerStateReducer @Inject constructor(
         is DeviationLoadedEvent -> {
             val menuState = MenuState(
                     showDownload = event.deviation.properties.isDownloadable,
+                    downloadFileSize = event.deviation.properties.downloadFileSize,
                     showFavorite = showFavorite(event.deviation, state.session),
                     isFavoriteChecked = event.deviation.properties.isFavorite)
 

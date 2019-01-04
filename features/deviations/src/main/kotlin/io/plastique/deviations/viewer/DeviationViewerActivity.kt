@@ -52,6 +52,7 @@ import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.ln
 import kotlin.math.max
 
 @RuntimePermissions
@@ -133,7 +134,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.deviation_viewer, menu)
+        inflater.inflate(R.menu.activity_deviation_viewer, menu)
         menu.update(state.menuState)
     }
 
@@ -288,6 +289,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     private fun Menu.update(menuState: MenuState) {
         findItem(R.id.deviations_viewer_action_download).apply {
+            title = getString(R.string.deviations_viewer_action_download, humanReadableByteCount(menuState.downloadFileSize))
             isVisible = menuState.showDownload
         }
 
@@ -301,6 +303,14 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     override fun injectDependencies() {
         getComponent<DeviationsActivityComponent>().inject(this)
+    }
+
+    private fun humanReadableByteCount(bytes: Long, si: Boolean = false): String {
+        val unit = if (si) 1000 else 1024
+        if (bytes < unit) return "$bytes B"
+        val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
+        val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
+        return String.format("%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
     }
 
     companion object {

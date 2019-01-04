@@ -54,6 +54,9 @@ data class DeviationDto(
     @Json(name = "stats")
     val stats: Stats,
 
+    @Json(name = "download_filesize")
+    val downloadFileSize: Long = 0,
+
     @Json(name = "daily_deviation")
     val dailyDeviation: DailyDeviation? = null
 ) {

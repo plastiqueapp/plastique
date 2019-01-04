@@ -75,7 +75,10 @@ data class DeviationPropertiesEntity(
     val isMature: Boolean,
 
     @ColumnInfo(name = "allows_comments")
-    val allowsComments: Boolean
+    val allowsComments: Boolean,
+
+    @ColumnInfo(name = "download_size")
+    val downloadFileSize: Long
 )
 
 data class DeviationStatsEntity(
