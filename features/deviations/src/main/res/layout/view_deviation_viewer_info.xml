@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="112dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="48dp" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/common_divider_thickness"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="#4cffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guide_buttons" />
+
+    <ImageView
+        android:id="@+id/deviation_author_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toTopOf="@id/guide_buttons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guide_top"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/deviation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="?textAppearanceSubtitle1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/deviation_author"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/guide_top"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/deviation_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="#b3ffffff"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/guide_buttons"
+        app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/deviation_title"
+        tools:text="user" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_33_pct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.33" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_66_pct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.66" />
+
+    <CheckedTextView
+        android:id="@+id/button_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawablePadding="@dimen/common_button_drawable_padding"
+        android:drawableStart="@drawable/ic_favorite_24dp"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guide_33_pct"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="24123"
+        tools:textColor="#fff" />
+
+    <TextView
+        android:id="@+id/button_comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:drawablePadding="@dimen/common_button_drawable_padding"
+        android:drawableStart="@drawable/ic_common_comment_24dp"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guide_66_pct"
+        app:layout_constraintStart_toEndOf="@id/guide_33_pct"
+        tools:text="829"
+        tools:textColor="#fff" />
+
+    <ImageView
+        android:id="@+id/button_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:contentDescription="@string/deviations_viewer_button_info"
+        android:minHeight="48dp"
+        android:minWidth="48dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_deviation_info_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guide_66_pct" />
+</merge>

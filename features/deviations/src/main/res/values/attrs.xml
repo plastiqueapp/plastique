@@ -9,9 +9,4 @@
         <attr name="tagMargin" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="Theme.App.Deviation.Viewer">
-        <attr name="deviationViewerTitleTextColor" format="color" />
-        <attr name="deviationViewerAuthorTextColor" format="color" />
-    </declare-styleable>
-
 </resources>

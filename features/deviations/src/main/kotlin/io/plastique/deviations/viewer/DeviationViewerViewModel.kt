@@ -11,10 +11,8 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
-import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
@@ -118,9 +116,7 @@ class DeviationViewerStateReducer @Inject constructor(
         is DeviationLoadedEvent -> {
             val menuState = MenuState(
                     showDownload = event.deviation.properties.isDownloadable,
-                    downloadFileSize = event.deviation.properties.downloadFileSize,
-                    showFavorite = showFavorite(event.deviation, state.session),
-                    isFavoriteChecked = event.deviation.properties.isFavorite)
+                    downloadFileSize = event.deviation.properties.downloadFileSize)
 
             next(state.copy(
                     contentState = ContentState.Content,
@@ -163,13 +159,7 @@ class DeviationViewerStateReducer @Inject constructor(
         }
 
         is SessionChangedEvent -> {
-            next(state.copy(
-                    session = event.session,
-                    menuState = state.menuState.copy(showFavorite = state.deviation != null && showFavorite(state.deviation, event.session))))
+            next(state.copy(session = event.session))
         }
-    }
-
-    private fun showFavorite(deviation: Deviation, session: Session): Boolean {
-        return session is Session.User && deviation.author.id != session.userId
     }
 }

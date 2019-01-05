@@ -17,8 +17,12 @@ data class DeviationViewerViewState(
 ) {
     data class MenuState(
         val showDownload: Boolean = false,
-        val downloadFileSize: Long = 0,
-        val showFavorite: Boolean = false,
-        val isFavoriteChecked: Boolean = false
+        val downloadFileSize: Long = 0
     )
+
+    val isSignedIn: Boolean
+        get() = session is Session.User
+
+    val isOwnDeviation: Boolean
+        get() = deviation != null && session is Session.User && deviation.author.id == session.userId
 }

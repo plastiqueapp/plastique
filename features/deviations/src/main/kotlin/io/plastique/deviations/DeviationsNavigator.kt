@@ -10,6 +10,8 @@ interface DeviationsNavigator {
 
     fun openDeviation(navigationContext: NavigationContext, deviationId: String)
 
+    fun openLogin(navigationContext: NavigationContext)
+
     fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?)
 
     fun openUserProfile(navigationContext: NavigationContext, user: User)

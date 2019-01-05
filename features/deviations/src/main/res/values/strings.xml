@@ -29,14 +29,12 @@
     <string name="deviations_categories_load_error">Error loading category</string>
 
     <string name="deviations_viewer_title" />
-    <string name="deviations_viewer_action_add_to_favorites">Add to favorites</string>
-    <string name="deviations_viewer_action_remove_from_favorites">Remove from favorites</string>
-    <string name="deviations_viewer_action_download">Download (%s)</string>
     <string name="deviations_viewer_action_copy_link">Copy link</string>
     <string name="deviations_viewer_action_send_link">Send link</string>
+    <string name="deviations_viewer_action_download">Download (%s)</string>
     <string name="deviations_viewer_action_open_in_browser">Open in Browser</string>
-    <string name="deviations_viewer_button_view_comments">View comments</string>
     <string name="deviations_viewer_message_download_error">Unable to download image</string>
     <string name="deviations_viewer_message_no_apps_to_open_url">No apps can open the URL</string>
+    <string name="deviations_viewer_button_info">Information</string>
 
 </resources>
