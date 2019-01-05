@@ -10,6 +10,12 @@ if [[ ! -z "$(git status --porcelain)" ]]; then
     exit 1
 fi
 
+# Ensure that google-services.json exists
+if [[ ! -f "app/google-services.json" ]]; then
+    echo "google-services.json is missing"
+    exit 1
+fi
+
 # Increment versionCode
 version_code_pattern="\(.*versionCode: \)\([0-9]*\),"
 version_code=$(sed -n "s/$version_code_pattern/\2/p" "$version_file")
