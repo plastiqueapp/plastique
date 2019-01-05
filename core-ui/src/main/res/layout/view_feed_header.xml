@@ -22,11 +22,14 @@
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:minHeight="32dp"
         android:paddingEnd="12dp"
         android:paddingStart="12dp"
+        android:singleLine="true"
         android:textAppearance="?textAppearanceSubtitle2"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintHorizontal_bias="0"
@@ -42,5 +45,5 @@
         android:textAppearance="?textAppearanceCaption"
         app:layout_constraintBaseline_toBaselineOf="@id/username"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="2 days ago" />
+        tools:text="2d" />
 </merge>
