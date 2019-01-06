@@ -21,6 +21,7 @@ import io.plastique.settings.R
 import io.plastique.settings.SettingsFragmentComponent
 import io.plastique.settings.SettingsNavigator
 import io.plastique.settings.about.licenses.LicensesActivity
+import io.plastique.settings.forEach
 import io.plastique.util.Intents
 import io.plastique.util.VersionNumberComparator
 import java.util.regex.Pattern
@@ -121,17 +122,6 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
     private fun openPlayStore(context: Context) {
         val packageName = DEV_PACKAGE_NAME_SUFFIX.matcher(context.packageName).replaceFirst("")
         navigator.openPlayStore(navigationContext, packageName)
-    }
-
-    private fun PreferenceGroup.forEach(action: (preference: Preference) -> Unit) {
-        for (i in 0 until preferenceCount) {
-            val preference = getPreference(i)
-            action(preference)
-
-            if (preference is PreferenceGroup) {
-                preference.forEach(action)
-            }
-        }
     }
 
     companion object {
