@@ -12,7 +12,7 @@ import io.plastique.api.users.UserDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
-import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.exceptions.UserNotFoundException
@@ -42,28 +42,31 @@ class StatusRepositoryImpl @Inject constructor(
     private val timeProvider: TimeProvider
 ) : StatusRepository {
 
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
-
-    fun getStatusesByUsername(username: String): Observable<PagedData<List<Status>, OffsetCursor>> {
-        val cacheKey = getCacheKey(username)
+    fun getStatuses(params: StatusListLoadParams): Observable<PagedData<List<Status>, OffsetCursor>> {
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+            val metadata = cacheMetadataConverter.fromJson<StatusListCacheMetadata>(serializedMetadata)
+            metadata?.params == params
+        }
+        val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
+        val cacheKey = getCacheKey(params)
         return cacheHelper.createObservable(
                 cacheKey = cacheKey,
                 cachedData = getStatusesFromDb(cacheKey),
-                updater = fetch(username, null).ignoreElement())
+                updater = fetch(params, null).ignoreElement())
     }
 
-    fun fetch(username: String, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
+    fun fetch(params: StatusListLoadParams, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
-        return statusService.getStatuses(username, offset, STATUSES_PER_PAGE, matureContent = true)
+        return statusService.getStatuses(params.username, offset, STATUSES_PER_PAGE, params.matureContent)
                 .map { statusList ->
-                    val cacheMetadata = StatusListCacheMetadata(statusList.nextCursor)
-                    val cacheEntry = CacheEntry(key = getCacheKey(username), timestamp = timeProvider.currentInstant, metadata = cacheMetadataConverter.toJson(cacheMetadata))
+                    val cacheMetadata = StatusListCacheMetadata(params, statusList.nextCursor)
+                    val cacheEntry = CacheEntry(key = getCacheKey(params), timestamp = timeProvider.currentInstant, metadata = cacheMetadataConverter.toJson(cacheMetadata))
                     persist(cacheEntry = cacheEntry, statuses = statusList.results, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
                 }
                 .mapError { error ->
                     if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
-                        UserNotFoundException(username, error)
+                        UserNotFoundException(params.username, error)
                     } else {
                         error
                     }
@@ -156,7 +159,7 @@ class StatusRepositoryImpl @Inject constructor(
                 sharedStatusId = sharedStatusId)
     }
 
-    private fun getCacheKey(username: String): String = "statuses-$username"
+    private fun getCacheKey(params: StatusListLoadParams): String = "statuses-${params.username}"
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)
@@ -179,6 +182,9 @@ private fun StatusDto.toStatusEntity(shareType: ShareType, sharedDeviationId: St
 
 @JsonClass(generateAdapter = true)
 data class StatusListCacheMetadata(
+    @Json(name = "params")
+    val params: StatusListLoadParams,
+
     @Json(name = "next_cursor")
     val nextCursor: OffsetCursor?
 )

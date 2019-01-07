@@ -3,9 +3,10 @@ package io.plastique.statuses.list
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.statuses.StatusListLoadParams
 
 data class StatusListViewState(
-    val username: String,
+    val params: StatusListLoadParams,
 
     val contentState: ContentState,
     val items: List<ListItem> = emptyList(),
@@ -21,7 +22,7 @@ data class StatusListViewState(
 
     override fun toString(): String {
         return "StatusListViewState(" +
-                "username='$username', " +
+                "params=$params, " +
                 "contentState=$contentState, " +
                 "items=${items.size}, " +
                 "statusItems=${statusItems.size}, " +

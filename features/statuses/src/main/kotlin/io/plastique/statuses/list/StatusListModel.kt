@@ -5,6 +5,7 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.statuses.Status
+import io.plastique.statuses.StatusListLoadParams
 import io.plastique.statuses.StatusRepositoryImpl
 import io.plastique.statuses.toShareUiModel
 import io.reactivex.Completable
@@ -16,12 +17,12 @@ class StatusListModel @Inject constructor(
     private val statusRepositoryImpl: StatusRepositoryImpl,
     private val richTextFormatter: RichTextFormatter
 ) {
-    private val username = AtomicReference<String>()
+    private val params = AtomicReference<StatusListLoadParams>()
     private val nextCursor = AtomicReference<OffsetCursor>()
 
-    fun getItems(username: String): Observable<ItemsData> {
-        this.username.set(username)
-        return statusRepositoryImpl.getStatusesByUsername(username)
+    fun getItems(params: StatusListLoadParams): Observable<ItemsData> {
+        this.params.set(params)
+        return statusRepositoryImpl.getStatuses(params)
                 .map { pagedData ->
                     val items = pagedData.value.map { createStatusItem(it) }
                     ItemsData(items, pagedData.hasMore)
@@ -29,13 +30,13 @@ class StatusListModel @Inject constructor(
     }
 
     fun loadMore(): Completable {
-        return statusRepositoryImpl.fetch(username.get(), nextCursor.get()!!)
+        return statusRepositoryImpl.fetch(params.get(), nextCursor.get()!!)
                 .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
                 .ignoreElement()
     }
 
     fun refresh(): Completable {
-        return statusRepositoryImpl.fetch(username.get(), null)
+        return statusRepositoryImpl.fetch(params.get(), null)
                 .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
                 .ignoreElement()
     }

@@ -18,6 +18,7 @@ import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.statuses.R
+import io.plastique.statuses.StatusListLoadParams
 import io.plastique.statuses.list.StatusListEffect.LoadMoreEffect
 import io.plastique.statuses.list.StatusListEffect.LoadStatusesEffect
 import io.plastique.statuses.list.StatusListEffect.RefreshEffect
@@ -55,11 +56,12 @@ class StatusListViewModel @Inject constructor(
     fun init(username: String) {
         if (::state.isInitialized) return
 
+        val params = StatusListLoadParams(username = username, matureContent = contentSettings.showMature)
         val initialState = StatusListViewState(
-                username = username,
+                params = params,
                 contentState = ContentState.Loading)
 
-        state = loop.loop(initialState, LoadStatusesEffect(username)).disposeOnDestroy()
+        state = loop.loop(initialState, LoadStatusesEffect(params)).disposeOnDestroy()
     }
 
     fun dispatch(event: StatusListEvent) {
@@ -69,7 +71,7 @@ class StatusListViewModel @Inject constructor(
     private fun effectHandler(effects: Observable<StatusListEffect>): Observable<StatusListEvent> {
         val itemEvents = effects.ofType<LoadStatusesEffect>()
                 .switchMap { effect ->
-                    statusListModel.getItems(effect.username)
+                    statusListModel.getItems(effect.params)
                             .bindToLifecycle()
                             .map<StatusListEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
@@ -120,7 +122,7 @@ class StatusListStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, TextUtils.htmlEncode(state.username)), 0)
+                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, TextUtils.htmlEncode(state.params.username)), 0)
                 ContentState.Empty(EmptyState(message = emptyMessage))
             }
             next(state.copy(
@@ -167,7 +169,7 @@ class StatusListStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadStatusesEffect(state.username))
+            next(state.copy(contentState = ContentState.Loading), LoadStatusesEffect(state.params))
         }
 
         SnackbarShownEvent -> {
@@ -180,8 +182,17 @@ class StatusListStateReducer @Inject constructor(
         }
 
         is ShowMatureChangedEvent -> {
-            // TODO
-            next(state)
+            if (state.params.matureContent != event.showMature) {
+                val params = state.params.copy(matureContent = event.showMature)
+                next(state.copy(
+                        params = params,
+                        contentState = ContentState.Loading,
+                        items = emptyList(),
+                        statusItems = emptyList()),
+                        LoadStatusesEffect(params))
+            } else {
+                next(state)
+            }
         }
     }
 }
