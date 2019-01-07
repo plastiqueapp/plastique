@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.core.FeedHeaderView
 import io.plastique.glide.GlideApp
@@ -38,15 +39,25 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val imageView: ImageView = findViewById(R.id.deviation_image)
+                val matureContentView: TextView = findViewById(R.id.mature_content)
                 headerView.user = share.author
                 titleView.text = share.title
+                matureContentView.isVisible = share.isConcealedMature
                 (imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = share.preview.size.dimensionRatio
 
-                GlideApp.with(imageView)
-                        .load(share.preview.url)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
+                if (share.isConcealedMature) {
+                    GlideApp.with(imageView).clear(imageView)
+                    imageView.setImageDrawable(null)
+                    imageView.setBackgroundResource(R.color.statuses_placeholder_background)
+                } else {
+                    imageView.setBackgroundResource(0)
+
+                    GlideApp.with(imageView)
+                            .load(share.preview.url)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imageView)
+                }
             }
 
             is ShareUiModel.LiteratureDeviation -> {

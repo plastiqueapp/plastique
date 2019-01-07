@@ -7,4 +7,4 @@
     android:gravity="center"
     android:minHeight="56dp"
     android:textAppearance="?textAppearanceCaption"
-    tools:text="@string/feed_status_shared_deviation_deleted" />
+    tools:text="@string/statuses_shared_deviation_deleted" />

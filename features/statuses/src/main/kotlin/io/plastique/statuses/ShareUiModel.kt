@@ -13,7 +13,8 @@ sealed class ShareUiModel {
         val deviationId: String,
         val author: User,
         val title: String,
-        val preview: Deviation.Image
+        val preview: Deviation.Image,
+        val isConcealedMature: Boolean
     ) : ShareUiModel()
 
     data class LiteratureDeviation(
@@ -39,7 +40,7 @@ sealed class ShareUiModel {
 val ShareUiModel.isDeleted: Boolean
     get() = this === ShareUiModel.DeletedDeviation || this === ShareUiModel.DeletedStatus
 
-fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter): ShareUiModel = when (this) {
+fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter, matureContent: Boolean): ShareUiModel = when (this) {
     Status.Share.None -> ShareUiModel.None
 
     is Status.Share.DeviationShare -> {
@@ -59,7 +60,8 @@ fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter): ShareUiMo
                     deviationId = deviation.id,
                     author = deviation.author,
                     title = deviation.title,
-                    preview = deviation.preview!!)
+                    preview = deviation.preview!!,
+                    isConcealedMature = deviation.properties.isMature && !matureContent)
         }
     }
 

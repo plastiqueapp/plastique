@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -11,7 +12,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:maxHeight="48dp" />
 
     <ImageView
         android:id="@+id/deviation_image"
@@ -19,7 +21,23 @@
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header" />
+        app:layout_constraintTop_toBottomOf="@id/header"
+        tools:layout_constraintDimensionRatio="1:1"
+        tools:src="@color/statuses_placeholder_background" />
+
+    <TextView
+        android:id="@+id/mature_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/statuses_message_mature_content"
+        android:textAppearance="?textAppearanceCaption"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/deviation_image"
+        app:layout_constraintEnd_toEndOf="@id/deviation_image"
+        app:layout_constraintStart_toStartOf="@id/deviation_image"
+        app:layout_constraintTop_toTopOf="@id/deviation_image"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/deviation_title"
@@ -34,5 +52,6 @@
         android:textAppearance="?textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deviation_image" />
+        app:layout_constraintTop_toBottomOf="@id/deviation_image"
+        tools:text="@tools:sample/lorem" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,7 +24,7 @@ class StatusListModel @Inject constructor(
         this.params.set(params)
         return statusRepositoryImpl.getStatuses(params)
                 .map { pagedData ->
-                    val items = pagedData.value.map { createStatusItem(it) }
+                    val items = pagedData.value.map { createStatusItem(it, params.matureContent) }
                     ItemsData(items, pagedData.hasMore)
                 }
     }
@@ -41,11 +41,11 @@ class StatusListModel @Inject constructor(
                 .ignoreElement()
     }
 
-    private fun createStatusItem(status: Status): StatusItem = StatusItem(
+    private fun createStatusItem(status: Status, matureContent: Boolean): StatusItem = StatusItem(
             statusId = status.id,
             author = status.author,
             date = status.date,
             statusText = SpannedWrapper(richTextFormatter.format(status.body)),
             commentCount = status.commentCount,
-            share = status.share.toShareUiModel(richTextFormatter))
+            share = status.share.toShareUiModel(richTextFormatter, matureContent))
 }

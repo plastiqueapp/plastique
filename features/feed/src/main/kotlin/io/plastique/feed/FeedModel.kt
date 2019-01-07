@@ -29,7 +29,7 @@ class FeedModel @Inject constructor(
         return feedRepository.getFeed(matureContent)
                 .map { pagedData ->
                     nextCursor.set(pagedData.nextCursor)
-                    val items = pagedData.value.map { createItem(it) }
+                    val items = pagedData.value.map { createItem(it, matureContent) }
                     ItemsData(items, hasMore = pagedData.nextCursor != null)
                 }
     }
@@ -46,7 +46,7 @@ class FeedModel @Inject constructor(
                 .ignoreElement()
     }
 
-    private fun createItem(feedElement: FeedElement): ListItem = when (feedElement) {
+    private fun createItem(feedElement: FeedElement, matureContent: Boolean): ListItem = when (feedElement) {
         is CollectionUpdate -> CollectionUpdateItem(
                 id = feedElement.timestamp.toString(),
                 date = feedElement.timestamp,
@@ -91,7 +91,7 @@ class FeedModel @Inject constructor(
                 statusId = feedElement.status.id,
                 text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
                 commentCount = feedElement.status.commentCount,
-                share = feedElement.status.share.toShareUiModel(richTextFormatter))
+                share = feedElement.status.share.toShareUiModel(richTextFormatter, matureContent))
 
         is UsernameChange -> UsernameChangeItem(
                 id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
