@@ -4,4 +4,6 @@ import io.plastique.settings.about.AboutFragment
 
 interface SettingsFragmentComponent {
     fun inject(fragment: AboutFragment)
+
+    fun inject(fragment: SettingsFragment)
 }

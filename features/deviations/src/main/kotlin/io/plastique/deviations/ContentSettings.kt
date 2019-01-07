@@ -1,12 +1,16 @@
 package io.plastique.deviations
 
+import io.plastique.core.session.Session
+import io.plastique.core.session.SessionManager
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.util.Preferences
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables
 import javax.inject.Inject
 
 class ContentSettings @Inject constructor(
-    private val preferences: Preferences
+    private val preferences: Preferences,
+    private val sessionManager: SessionManager
 ) {
     val showLiterature: Boolean
         get() = preferences.getBoolean(PREF_SHOW_LITERATURE, true)
@@ -15,10 +19,12 @@ class ContentSettings @Inject constructor(
         get() = preferences.observable().getBoolean(PREF_SHOW_LITERATURE, true)
 
     val showMature: Boolean
-        get() = preferences.getBoolean(PREF_SHOW_MATURE_CONTENT, false)
+        get() = preferences.getBoolean(PREF_SHOW_MATURE_CONTENT, false) && sessionManager.session is Session.User
 
     val showMatureChanges: Observable<Boolean>
-        get() = preferences.observable().getBoolean(PREF_SHOW_MATURE_CONTENT, false)
+        get() = Observables.combineLatest(
+                preferences.observable().getBoolean(PREF_SHOW_MATURE_CONTENT, false),
+                sessionManager.sessionChanges) { showMatureContent, session -> showMatureContent && session is Session.User }
 
     var layoutMode: LayoutMode
         get() = preferences.get(PREF_LAYOUT_MODE, LayoutMode.DEFAULT)

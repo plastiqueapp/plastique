@@ -9,14 +9,12 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import io.plastique.core.BrowserLauncher
 import io.plastique.core.config.AppConfig
 import io.plastique.core.navigation.navigationContext
-import io.plastique.inject.ActivityComponent
-import io.plastique.inject.FragmentComponent
 import io.plastique.inject.getComponent
+import io.plastique.settings.BasePreferenceFragment
 import io.plastique.settings.R
 import io.plastique.settings.SettingsFragmentComponent
 import io.plastique.settings.SettingsNavigator
@@ -27,11 +25,7 @@ import io.plastique.util.VersionNumberComparator
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener, FragmentComponent.Holder {
-    override val fragmentComponent: FragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
-        requireActivity().getComponent<ActivityComponent>().createFragmentComponent()
-    }
-
+class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
     @Inject lateinit var appConfig: AppConfig
     @Inject lateinit var browserLauncher: BrowserLauncher
     @Inject lateinit var navigator: SettingsNavigator
@@ -122,6 +116,10 @@ class AboutFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickLi
     private fun openPlayStore(context: Context) {
         val packageName = DEV_PACKAGE_NAME_SUFFIX.matcher(context.packageName).replaceFirst("")
         navigator.openPlayStore(navigationContext, packageName)
+    }
+
+    override fun injectDependencies() {
+        getComponent<SettingsFragmentComponent>().inject(this)
     }
 
     companion object {

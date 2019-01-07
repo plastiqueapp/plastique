@@ -17,7 +17,7 @@
             android:key="content.show_literature"
             android:title="@string/settings_content_show_literature" />
 
-        <SwitchPreference
+        <io.plastique.settings.MatureContentPreference
             android:defaultValue="false"
             android:key="content.show_mature"
             android:title="@string/settings_content_show_mature" />
