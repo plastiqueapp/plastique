@@ -1,6 +1,8 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
+import com.sch.rxjava2.extensions.mapError
+import io.plastique.api.common.ErrorType
 import io.plastique.api.common.ImageDto
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationMetadataDto
@@ -9,6 +11,7 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserEntity
@@ -166,6 +169,13 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun getDeviationByIdFromServer(deviationId: String): Single<DeviationDto> {
         return deviationService.getDeviationById(deviationId)
                 .doOnSuccess { deviation -> put(listOf(deviation)) }
+                .mapError { error ->
+                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                        DeviationNotFoundException(deviationId, error)
+                    } else {
+                        error
+                    }
+                }
     }
 
     override fun getDeviationTitleById(deviationId: String): Single<String> {

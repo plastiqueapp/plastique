@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
+import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentViewController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
@@ -54,6 +55,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private lateinit var appBar: AppBarLayout
     private lateinit var imageView: PhotoView
     private lateinit var infoPanelView: InfoPanelView
+    private lateinit var emptyView: EmptyView
     private lateinit var contentViewController: ContentViewController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
@@ -107,7 +109,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
-        val emptyView = findViewById<EmptyView>(android.R.id.empty)
+        emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(deviationId)
@@ -153,6 +155,9 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         setHasOptionsMenu(state.deviation != null)
 
         contentViewController.state = state.contentState
+        if (state.contentState is ContentState.Empty) {
+            emptyView.setState(state.contentState.emptyState)
+        }
 
         if (state.deviation != null) {
             infoPanelView.render(state.deviation)

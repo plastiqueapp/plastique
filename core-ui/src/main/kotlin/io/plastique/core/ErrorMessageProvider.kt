@@ -8,6 +8,7 @@ import io.plastique.core.content.EmptyState
 import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.ui.R
+import io.plastique.deviations.DeviationNotFoundException
 import javax.inject.Inject
 
 class ErrorMessageProvider @Inject constructor(
@@ -25,6 +26,8 @@ class ErrorMessageProvider @Inject constructor(
 
         is UserNotFoundException -> EmptyState(
                 message = HtmlCompat.fromHtml(context.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username)), 0))
+
+        is DeviationNotFoundException -> EmptyState(context.getString(R.string.common_message_deviation_not_found))
 
         else -> EmptyState(
                 message = context.getString(defaultMessageId),
