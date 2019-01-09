@@ -16,12 +16,12 @@ import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationEntity
 import io.plastique.deviations.DeviationImageEntity
 import io.plastique.deviations.DeviationLinkage
-import io.plastique.deviations.DeviationMetadataDao
-import io.plastique.deviations.DeviationMetadataEntity
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.categories.CategoryEntity
 import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.deviations.download.DownloadInfoEntity
+import io.plastique.deviations.info.DeviationMetadataDao
+import io.plastique.deviations.info.DeviationMetadataEntity
 import io.plastique.feed.FeedDao
 import io.plastique.feed.FeedDeviationEntityWithRelations
 import io.plastique.feed.FeedElementDeviation

@@ -13,6 +13,8 @@
                 android:resource="@style/Theme.App.Dark.Categories" />
         </activity>
 
+        <activity android:name=".info.DeviationInfoActivity" />
+
         <activity
             android:name=".viewer.DeviationViewerActivity"
             android:label="@string/deviations_viewer_title"

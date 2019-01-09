@@ -9,5 +9,8 @@ data class DeviationMetadataDto(
     val deviationId: String,
 
     @Json(name = "description")
-    val description: String? = null
+    val description: String,
+
+    @Json(name = "tags")
+    val tags: List<DeviationTagDto>
 )

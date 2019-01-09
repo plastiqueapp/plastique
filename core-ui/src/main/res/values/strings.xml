@@ -16,7 +16,6 @@
     <string name="common_message_please_wait">Please wait…</string>
     <string name="common_message_user_not_found">User &lt;b&gt;%1$s&lt;/b&gt; not found</string>
     <string name="common_message_deviation_not_found">Deviation not found</string>
-    <string name="common_message_coming_soon">Coming soon!</string>
 
     <string name="common_just_now">just now</string>
     <string name="common_abbr_seconds">%ds</string>

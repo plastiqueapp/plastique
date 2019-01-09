@@ -7,9 +7,9 @@ import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.core.cache.CacheEntryDao
 import io.plastique.deviations.DeviationDao
-import io.plastique.deviations.DeviationMetadataDao
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.download.DownloadInfoDao
+import io.plastique.deviations.info.DeviationMetadataDao
 import io.plastique.feed.FeedDao
 import io.plastique.gallery.GalleryDao
 import io.plastique.statuses.StatusDao

@@ -103,7 +103,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             }
         }
         infoPanelView.setOnCommentsClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
-        infoPanelView.setOnInfoClickListener { Snackbar.make(rootView, R.string.common_message_coming_soon, Snackbar.LENGTH_SHORT).show() }
+        infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(navigationContext, deviationId) }
 
         contentViewController = ContentViewController(this, R.id.content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(supportFragmentManager)

@@ -13,7 +13,7 @@ object UpdateIfNotActualStrategy : CacheStrategy {
         CacheStatus.Actual -> data
         CacheStatus.Outdated -> data.mergeWith(updater
                 .doOnError(Timber::e)
-                .onErrorComplete())
+                .onErrorComplete()) // TODO: Distinguish non-fatal and fatal errors, e.g. when the requested entity was deleted.
         CacheStatus.Absent -> updater.andThen(data)
     }
 }

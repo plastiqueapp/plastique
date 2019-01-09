@@ -5,7 +5,6 @@ import com.sch.rxjava2.extensions.mapError
 import io.plastique.api.common.ErrorType
 import io.plastique.api.common.ImageDto
 import io.plastique.api.deviations.DeviationDto
-import io.plastique.api.deviations.DeviationMetadataDto
 import io.plastique.api.deviations.DeviationService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
@@ -32,7 +31,6 @@ import javax.inject.Inject
 class DeviationRepositoryImpl @Inject constructor(
     private val database: RoomDatabase,
     private val deviationDao: DeviationDao,
-    private val deviationMetadataDao: DeviationMetadataDao,
     private val deviationService: DeviationService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val fetcherFactory: DeviationFetcherFactory,
@@ -182,18 +180,6 @@ class DeviationRepositoryImpl @Inject constructor(
         return deviationDao.getDeviationTitleById(deviationId)
                 .switchIfEmpty(getDeviationByIdFromServer(deviationId)
                         .map { deviation -> deviation.title })
-    }
-
-    private fun getMetadataById(deviationId: String): Single<DeviationMetadataDto> {
-        return deviationService.getMetadataByIds(listOf(deviationId))
-                .doOnSuccess { response -> persist(response.metadata) }
-                .flattenAsObservable { response -> response.metadata }
-                .firstOrError()
-    }
-
-    private fun persist(metadataList: List<DeviationMetadataDto>) {
-        val entities = metadataList.map { metadata -> metadata.toDeviationMetadataEntity() }
-        deviationMetadataDao.insertOrUpdate(entities)
     }
 
     companion object {

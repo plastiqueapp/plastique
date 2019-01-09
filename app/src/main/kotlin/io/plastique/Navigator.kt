@@ -9,6 +9,7 @@ import io.plastique.comments.list.CommentListActivity
 import io.plastique.core.BrowserLauncher
 import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
+import io.plastique.deviations.info.DeviationInfoActivity
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.feed.FeedNavigator
 import io.plastique.gallery.GalleryFolderId
@@ -57,6 +58,10 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         navigationContext.startActivity(DeviationViewerActivity.createIntent(navigationContext.context, deviationId))
     }
 
+    override fun openDeviationInfo(navigationContext: NavigationContext, deviationId: String) {
+        navigationContext.startActivity(DeviationInfoActivity.createIntent(navigationContext.context, deviationId))
+    }
+
     override fun openGalleryFolder(navigationContext: NavigationContext, folderId: GalleryFolderId, folderName: String) {
         navigationContext.startActivity(GalleryFolderDeviationListActivity.createIntent(navigationContext.context, folderId, folderName))
     }
@@ -79,6 +84,10 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
     }
 
     override fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?) {
+        // TODO
+    }
+
+    override fun openTag(navigationContext: NavigationContext, tag: String) {
         // TODO
     }
 
