@@ -19,7 +19,6 @@ import io.plastique.util.RxRoom
 import io.plastique.util.Size
 import io.plastique.util.TimeProvider
 import io.plastique.util.toOptional
-import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -170,7 +169,7 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     override fun getDeviationTitleById(deviationId: String): Single<String> {
-        return Maybe.fromCallable<String> { deviationDao.getDeviationTitleById(deviationId) }
+        return deviationDao.getDeviationTitleById(deviationId)
                 .switchIfEmpty(getDeviationByIdFromServer(deviationId)
                         .map { deviation -> deviation.title })
     }

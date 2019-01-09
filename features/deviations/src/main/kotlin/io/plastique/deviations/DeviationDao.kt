@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import io.reactivex.Maybe
 import io.reactivex.Observable
 
 @Dao
@@ -19,7 +20,7 @@ interface DeviationDao {
     fun getDeviationsByKey(key: String): List<DeviationEntityWithRelations>
 
     @Query("SELECT title FROM deviations WHERE id = :deviationId")
-    fun getDeviationTitleById(deviationId: String): String?
+    fun getDeviationTitleById(deviationId: String): Maybe<String>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(deviation: DeviationEntity): Long
