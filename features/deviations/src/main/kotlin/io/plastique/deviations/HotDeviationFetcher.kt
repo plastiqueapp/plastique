@@ -19,6 +19,7 @@ data class HotParams(
     @Json(name = "show_literature")
     override val showLiterature: Boolean = false,
 
+    @Json(name = "category")
     val category: Category = Category.ALL // TODO: Persist only path
 ) : FetchParams {
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {

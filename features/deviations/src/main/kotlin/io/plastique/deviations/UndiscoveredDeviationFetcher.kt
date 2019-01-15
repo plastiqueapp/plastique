@@ -19,6 +19,7 @@ data class UndiscoveredParams(
     @Json(name = "show_literature")
     override val showLiterature: Boolean = false,
 
+    @Json(name = "category")
     val category: Category = Category.ALL
 ) : FetchParams {
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {

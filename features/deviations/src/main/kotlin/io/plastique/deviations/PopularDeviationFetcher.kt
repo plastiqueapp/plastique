@@ -20,7 +20,10 @@ data class PopularParams(
     @Json(name = "show_literature")
     override val showLiterature: Boolean = false,
 
+    @Json(name = "category")
     val category: Category = Category.ALL,
+
+    @Json(name = "time_range")
     val timeRange: TimeRange = TimeRange.Days3
 ) : FetchParams {
     override fun with(showMatureContent: Boolean, showLiterature: Boolean): FetchParams {
