@@ -44,7 +44,6 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
             Timber.plant(CrashlyticsTree())
         }
 
-        LeakCanary.install(this)
         injectDependencies()
         initRxJava()
         initWorkManager()
