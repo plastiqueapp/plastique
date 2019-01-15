@@ -17,7 +17,6 @@ import io.plastique.api.statuses.StatusService
 import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
-import io.plastique.core.adapters.FallbackJsonAdapterFactory
 import io.plastique.core.adapters.InstantAdapter
 import io.plastique.core.adapters.NullIfDeletedJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
@@ -101,17 +100,17 @@ object ApiModule {
                 .add(ZonedDateTimeAdapter(dateTimeFormatter))
                 .add(OffsetCursorAdapter())
                 .add(StringCursorAdapter())
-                .add(FallbackJsonAdapterFactory(FeedElementDto::class.java, FeedElementDto.Unknown))
                 .add(PolymorphicJsonAdapterFactory.of(FeedElementDto::class.java, "type")
                         .withSubtype(FeedElementDto.CollectionUpdate::class.java, FeedElementTypes.COLLECTION_UPDATE)
                         .withSubtype(FeedElementDto.DeviationSubmitted::class.java, FeedElementTypes.DEVIATION_SUBMITTED)
                         .withSubtype(FeedElementDto.JournalSubmitted::class.java, FeedElementTypes.JOURNAL_SUBMITTED)
                         .withSubtype(FeedElementDto.StatusUpdate::class.java, FeedElementTypes.STATUS_UPDATE)
-                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementTypes.USERNAME_CHANGE))
-                .add(FallbackJsonAdapterFactory(StatusDto.EmbeddedItem::class.java, StatusDto.EmbeddedItem.Unknown))
+                        .withSubtype(FeedElementDto.UsernameChange::class.java, FeedElementTypes.USERNAME_CHANGE)
+                        .withDefaultValue(FeedElementDto.Unknown))
                 .add(PolymorphicJsonAdapterFactory.of(StatusDto.EmbeddedItem::class.java, "type")
                         .withSubtype(StatusDto.EmbeddedItem.SharedDeviation::class.java, StatusDto.EmbeddedItem.TYPE_DEVIATION)
-                        .withSubtype(StatusDto.EmbeddedItem.SharedStatus::class.java, StatusDto.EmbeddedItem.TYPE_STATUS))
+                        .withSubtype(StatusDto.EmbeddedItem.SharedStatus::class.java, StatusDto.EmbeddedItem.TYPE_STATUS)
+                        .withDefaultValue(StatusDto.EmbeddedItem.Unknown))
                 .add(NullIfDeletedJsonAdapterFactory())
                 .build()
     }
