@@ -72,17 +72,16 @@ class DeviationListViewModel @Inject constructor(
     fun init(params: FetchParams) {
         if (::state.isInitialized) return
 
-        val layoutMode = contentSettings.layoutMode
-        val newParams = params.with(
+        val actualParams = params.with(
                 showLiterature = contentSettings.showLiterature,
                 showMatureContent = contentSettings.showMature)
         val initialState = DeviationListViewState(
-                layoutMode = layoutMode,
-                params = newParams,
-                tags = createTags(tagFactory, params),
+                layoutMode = contentSettings.layoutMode,
+                params = actualParams,
+                tags = createTags(tagFactory, actualParams),
                 contentState = ContentState.Loading)
 
-        state = loop.loop(initialState, LoadDeviationsEffect(newParams)).disposeOnDestroy()
+        state = loop.loop(initialState, LoadDeviationsEffect(actualParams)).disposeOnDestroy()
     }
 
     fun dispatch(event: DeviationListEvent) {

@@ -17,7 +17,7 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_CATEGORY && resultCode == Activity.RESULT_OK && data != null) {
             val category = data.getParcelableExtra<Category>(CategoryListActivity.RESULT_SELECTED_CATEGORY)
-            setNewParams(params.copy(category = category))
+            updateParams(params.copy(category = category))
         }
     }
 
@@ -35,7 +35,7 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
     }
 
     override fun onTimeRangeSelected(timeRange: TimeRange) {
-        setNewParams(params.copy(timeRange = timeRange))
+        updateParams(params.copy(timeRange = timeRange))
     }
 
     override fun injectDependencies() {

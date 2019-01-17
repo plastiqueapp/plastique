@@ -16,7 +16,7 @@ class HotDeviationsFragment : BaseDeviationListFragment<HotParams>() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_CATEGORY && resultCode == Activity.RESULT_OK && data != null) {
             val category = data.getParcelableExtra<Category>(CategoryListActivity.RESULT_SELECTED_CATEGORY)
-            setNewParams(params.copy(category = category))
+            updateParams(params.copy(category = category))
         }
     }
 

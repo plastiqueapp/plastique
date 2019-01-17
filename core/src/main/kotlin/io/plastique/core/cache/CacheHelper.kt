@@ -2,6 +2,7 @@ package io.plastique.core.cache
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import timber.log.Timber
 
 class CacheHelper(
     private val cacheEntryRepository: CacheEntryRepository,
@@ -9,11 +10,19 @@ class CacheHelper(
     private val cacheStrategy: CacheStrategy = UpdateIfNotActualStrategy
 ) {
     fun <T> createObservable(cacheKey: String, cachedData: Observable<T>, updater: Completable): Observable<T> {
-        return Observable.defer { cacheStrategy.apply(getCacheStatus(cacheKey), cachedData, updater) }
+        return Observable.defer {
+            val cacheStatus = getCacheStatus(cacheKey)
+            Timber.tag(LOG_TAG).d("Cache status for '%s': %s", cacheKey, cacheStatus)
+            cacheStrategy.apply(cacheStatus, cachedData, updater)
+        }
     }
 
     private fun getCacheStatus(cacheKey: String): CacheStatus {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         return cacheEntry?.let(cacheEntryChecker::getCacheStatus) ?: CacheStatus.Absent
+    }
+
+    companion object {
+        private const val LOG_TAG = "CacheHelper"
     }
 }

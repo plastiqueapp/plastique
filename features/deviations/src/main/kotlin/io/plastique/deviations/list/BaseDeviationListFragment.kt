@@ -156,6 +156,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     private fun renderState(state: DeviationListViewState, prevState: DeviationListViewState?, listUpdateData: ListUpdateData<ListItem>) {
         this.state = state
+        @Suppress("UNCHECKED_CAST")
+        params = state.params as ParamsType
         tags = state.tags
 
         contentViewController.state = state.contentState
@@ -205,8 +207,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     override fun onTagClick(tag: Tag) {
     }
 
-    protected fun setNewParams(params: ParamsType) {
-        this.params = params
+    protected fun updateParams(params: ParamsType) {
         viewModel.dispatch(ParamsChangedEvent(params))
     }
 
