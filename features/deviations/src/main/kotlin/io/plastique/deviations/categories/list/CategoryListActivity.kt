@@ -37,7 +37,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     private lateinit var adapter: CategoriesAdapter
 
     private val parentCategory: Category
-        get() = intent.getSerializableExtra(EXTRA_PARENT_CATEGORY) as Category
+        get() = intent.getParcelableExtra(EXTRA_PARENT_CATEGORY)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

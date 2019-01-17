@@ -15,13 +15,13 @@ class UndiscoveredDeviationsFragment : BaseDeviationListFragment<UndiscoveredPar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_CATEGORY && resultCode == Activity.RESULT_OK && data != null) {
-            val category = data.getSerializableExtra(CategoryListActivity.RESULT_SELECTED_CATEGORY) as Category
+            val category = data.getParcelableExtra<Category>(CategoryListActivity.RESULT_SELECTED_CATEGORY)
             setNewParams(params.copy(category = category))
         }
     }
 
     override fun onTagClick(tag: Tag) {
-        val intent = CategoryListActivity.createIntent(requireContext(), tag.value as Category)
+        val intent = CategoryListActivity.createIntent(requireContext(), tag.payload as Category)
         startActivityForResult(intent, REQUEST_CODE_SELECT_CATEGORY)
     }
 

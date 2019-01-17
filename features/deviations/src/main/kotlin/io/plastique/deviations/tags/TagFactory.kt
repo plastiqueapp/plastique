@@ -27,7 +27,7 @@ class TagFactory @Inject constructor(private val context: Context) {
     }
 
     fun createTimeRangeTag(timeRange: TimeRange): Tag {
-        return Tag(Tag.TYPE_TIME_RANGE, context.getString(getTimeRangeTagTextId(timeRange)), timeRange)
+        return Tag(Tag.TYPE_TIME_RANGE, context.getString(getTimeRangeTagTextId(timeRange)))
     }
 
     @StringRes

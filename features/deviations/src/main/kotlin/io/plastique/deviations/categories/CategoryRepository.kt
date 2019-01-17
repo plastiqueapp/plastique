@@ -1,5 +1,6 @@
 package io.plastique.deviations.categories
 
+import io.plastique.api.deviations.CategoryDto
 import io.plastique.api.deviations.CategoryList
 import io.plastique.api.deviations.DeviationService
 import io.reactivex.Maybe
@@ -37,4 +38,14 @@ class CategoryRepository @Inject constructor(
         categoryDao.insertOrUpdate(categories)
         return categories
     }
+}
+
+private fun CategoryDto.toCategoryEntity(): CategoryEntity =
+        CategoryEntity(path = path, parent = parent, title = title, hasChildren = hasChildren)
+
+private fun CategoryEntity.toCategory(parent: Category): Category {
+    if (parent.path != this.parent) {
+        throw IllegalArgumentException("Expected Category with id ${this.parent} but got ${parent.path}")
+    }
+    return Category(path = path, title = title, parent = parent, hasChildren = hasChildren)
 }

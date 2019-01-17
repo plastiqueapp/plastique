@@ -2,13 +2,12 @@ package io.plastique.deviations.tags
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.io.Serializable
 
 @Parcelize
 data class Tag(
     val type: Int,
     val text: String,
-    val value: Serializable
+    val payload: Parcelable? = null
 ) : Parcelable {
 
     companion object {

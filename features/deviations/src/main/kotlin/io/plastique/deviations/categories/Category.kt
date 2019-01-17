@@ -1,9 +1,11 @@
 package io.plastique.deviations.categories
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class Category(
     @Json(name = "path")
@@ -17,20 +19,13 @@ data class Category(
 
     @Json(name = "has_children")
     val hasChildren: Boolean = false
-) : Serializable {
+) : Parcelable {
 
     override fun toString(): String {
         return "Category(path=$path, title=$title, parent=${parent?.path}, hasChildren=$hasChildren)"
     }
 
     companion object {
-        val ALL = Category("/", "All categories", null, true)
+        val ALL = Category(path = "/", title = "All categories", parent = null, hasChildren = true)
     }
-}
-
-fun CategoryEntity.toCategory(parentCategory: Category): Category {
-    if (parentCategory.path != parent) {
-        throw IllegalArgumentException("Expected Category with id $parent but got ${parentCategory.path}")
-    }
-    return Category(path = path, title = title, parent = parentCategory, hasChildren = hasChildren)
 }
