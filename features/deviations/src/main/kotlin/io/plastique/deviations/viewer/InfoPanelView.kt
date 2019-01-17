@@ -60,6 +60,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
     fun setOnAuthorClickListener(listener: (View) -> Unit) {
         authorView.setOnClickListener(listener)
         avatarView.setOnClickListener(listener)
+        titleView.setOnClickListener(listener)
     }
 
     fun setOnFavoriteClickListener(listener: (View, isChecked: Boolean) -> Unit) {
