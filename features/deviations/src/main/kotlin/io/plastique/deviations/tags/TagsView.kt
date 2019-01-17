@@ -33,6 +33,7 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
 
         layoutManager = FlexboxLayoutManager(context)
         adapter = TagsAdapter(tagBackgroundResId, tagTextAppearance, tagMargin)
+        adapter.items = tags
         setAdapter(adapter)
     }
 
@@ -41,12 +42,10 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
             val diffResult = DiffUtil.calculateDiff(ListDiffCallback(this.tags, tags, TagDiffCallback(this.tags, tags)))
             this.tags.clear()
             this.tags.addAll(tags)
-            adapter.items = tags
             diffResult.dispatchUpdatesTo(adapter)
-        } else {
+        } else if (this.tags != tags) {
             this.tags.clear()
             this.tags.addAll(tags)
-            adapter.items = tags
             adapter.notifyDataSetChanged()
         }
     }
