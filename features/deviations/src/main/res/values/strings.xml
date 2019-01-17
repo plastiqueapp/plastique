@@ -34,7 +34,6 @@
     <string name="deviations_viewer_action_download">Download (%s)</string>
     <string name="deviations_viewer_action_open_in_browser">Open in Browser</string>
     <string name="deviations_viewer_message_download_error">Unable to download image</string>
-    <string name="deviations_viewer_message_no_apps_to_open_url">No apps can open the URL</string>
     <string name="deviations_viewer_button_info">Information</string>
 
 </resources>

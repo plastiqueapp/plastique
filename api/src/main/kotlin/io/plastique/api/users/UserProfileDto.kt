@@ -9,7 +9,7 @@ data class UserProfileDto(
     val user: UserDto,
 
     @Json(name = "profile_url")
-    val profileUrl: String,
+    val url: String,
 
     @Json(name = "real_name")
     val realName: String?,

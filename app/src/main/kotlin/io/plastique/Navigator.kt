@@ -93,7 +93,7 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
 
     override fun openUserProfile(navigationContext: NavigationContext, user: User) {
         if (user.type == UserType.Group) {
-            browserLauncher.openUrl(navigationContext.context, "https://www.deviantart.com/${user.name}")
+            openUrl(navigationContext, "https://www.deviantart.com/${user.name}")
         } else {
             navigationContext.startActivity(UserProfileActivity.createIntent(navigationContext.context, user.name))
         }
@@ -101,5 +101,9 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
 
     override fun openWatchers(navigationContext: NavigationContext, username: String?) {
         navigationContext.startActivity(WatcherListActivity.createIntent(navigationContext.context, username))
+    }
+
+    override fun openUrl(navigationContext: NavigationContext, url: String) {
+        browserLauncher.openUrl(navigationContext.context, url)
     }
 }

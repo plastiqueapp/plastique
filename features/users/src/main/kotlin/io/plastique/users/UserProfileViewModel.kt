@@ -110,7 +110,7 @@ class UserProfileStateReducer @Inject constructor(
 
         CopyProfileLinkClickEvent -> {
             next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.common_message_link_copied))),
-                    CopyProfileLinkEffect(state.userProfile!!.profileUrl))
+                    CopyProfileLinkEffect(state.userProfile!!.url))
         }
 
         SnackbarShownEvent -> {

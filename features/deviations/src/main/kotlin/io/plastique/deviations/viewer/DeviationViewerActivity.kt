@@ -1,7 +1,6 @@
 package io.plastique.deviations.viewer
 
 import android.Manifest
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Matrix
@@ -42,7 +41,6 @@ import io.plastique.glide.GlideRequest
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.Clipboard
-import io.plastique.util.Intents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -144,7 +142,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             true
         }
         R.id.deviations_viewer_action_open_in_browser -> {
-            openInBrowser()
+            navigator.openUrl(navigationContext, state.deviation!!.url)
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -218,14 +216,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadOriginal() {
         viewModel.dispatch(DownloadOriginalClickEvent)
-    }
-
-    private fun openInBrowser() {
-        try {
-            startActivity(Intents.openUrl(state.deviation!!.url))
-        } catch (e: ActivityNotFoundException) {
-            Snackbar.make(rootView, R.string.deviations_viewer_message_no_apps_to_open_url, Snackbar.LENGTH_SHORT).show()
-        }
     }
 
     private fun copyLinkToClipboard() {

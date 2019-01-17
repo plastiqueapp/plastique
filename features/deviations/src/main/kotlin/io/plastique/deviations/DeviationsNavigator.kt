@@ -19,4 +19,6 @@ interface DeviationsNavigator {
     fun openTag(navigationContext: NavigationContext, tag: String)
 
     fun openUserProfile(navigationContext: NavigationContext, user: User)
+
+    fun openUrl(navigationContext: NavigationContext, url: String)
 }

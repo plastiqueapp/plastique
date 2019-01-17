@@ -88,15 +88,19 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.users_action_copy_profile_link -> {
+        R.id.users_profile_action_copy_profile_link -> {
             viewModel.dispatch(CopyProfileLinkClickEvent)
             true
         }
-        R.id.users_action_view_watchers -> {
+        R.id.users_profile_action_open_in_browser -> {
+            navigator.openUrl(navigationContext, state.userProfile!!.url)
+            true
+        }
+        R.id.users_profile_action_view_watchers -> {
             navigator.openWatchers(navigationContext, username)
             true
         }
-        R.id.users_action_watch -> {
+        R.id.users_profile_action_watch -> {
             viewModel.dispatch(SetWatchingEvent(!item.isChecked))
             true
         }
@@ -156,10 +160,10 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     }
 
     private fun Menu.update(userProfile: UserProfile) {
-        findItem(R.id.users_action_watch).apply {
+        findItem(R.id.users_profile_action_watch).apply {
             isChecked = userProfile.isWatching
             setIcon(if (isChecked) R.drawable.ic_users_watch_checked_24dp else R.drawable.ic_users_watch_unchecked_24dp)
-            setTitle(if (isChecked) R.string.users_action_unwatch else R.string.users_action_watch)
+            setTitle(if (isChecked) R.string.users_profile_action_unwatch else R.string.users_profile_action_watch)
         }
     }
 
