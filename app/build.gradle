@@ -2,21 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "kotlin-kapt"
-}
-
-def publishKeysFile = file("publish-keys.json")
-if (publishKeysFile.exists()) {
-    apply plugin: "com.github.triplet.play"
-
-    play {
-        defaultToAppBundles = true
-        serviceAccountCredentials publishKeysFile
-        track = "internal"
-    }
-
-    tasks.matching { it.name.startsWith("publishDevRelease") }.configureEach {
-        it.enabled = false
-    }
+    id "com.github.triplet.play" version "2.1.0"
 }
 
 def googleServicesEnabled = file("google-services.json").exists()
@@ -150,6 +136,16 @@ if (signingPropertiesFile.exists()) {
     android.signingConfigs.release.storePassword = signingProperties.getProperty("store.password")
     android.signingConfigs.release.keyAlias = signingProperties.getProperty("key.alias")
     android.signingConfigs.release.keyPassword = signingProperties.getProperty("key.password")
+}
+
+play {
+    defaultToAppBundles = true
+    serviceAccountCredentials file("publish-keys.json")
+    track = "internal"
+}
+
+tasks.matching { it.name.startsWith("publishDevRelease") }.configureEach {
+    it.enabled = false
 }
 
 if (googleServicesEnabled) {
