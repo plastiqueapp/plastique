@@ -27,9 +27,6 @@ interface DeviationFetcher<TParams : FetchParams, TCursor : Cursor> {
     fun createMetadataSerializer(): DeviationCacheMetadataSerializer
 
     fun fetch(params: TParams, cursor: TCursor?): Single<FetchResult<TCursor>>
-
-    val Category.pathOrNull: String?
-        get() = if (path != Category.ALL.path) path else null
 }
 
 class DeviationFetcherFactory @Inject constructor(
@@ -39,4 +36,8 @@ class DeviationFetcherFactory @Inject constructor(
         @Suppress("UNCHECKED_CAST")
         return factories.getValue(params.javaClass).get() as DeviationFetcher<FetchParams, Cursor>
     }
+}
+
+internal fun normalizeCategoryPath(path: String): String? {
+    return if (path != Category.ALL.path) path else null
 }
