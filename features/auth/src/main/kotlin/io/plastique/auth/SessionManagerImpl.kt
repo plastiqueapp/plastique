@@ -1,10 +1,12 @@
 package io.plastique.auth
 
+import com.sch.rxjava2.extensions.mapError
 import com.sch.rxjava2.extensions.sneakyGet
 import io.plastique.api.auth.AuthService
-import io.plastique.api.common.ErrorData
+import io.plastique.api.common.ErrorType
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.session.AuthenticationExpiredException
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.SessionStorage
@@ -45,9 +47,12 @@ class SessionManagerImpl @Inject constructor(
                 localSession = session
                 if (localSession === Session.None || invalidatedAccessToken != null && localSession.accessToken == invalidatedAccessToken) {
                     session = refreshAccessToken(localSession)
-                            .doOnError { error ->
-                                if (error is ApiResponseException && isTokenInvalidated(error.errorData)) {
+                            .mapError { error ->
+                                if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
                                     logout()
+                                    AuthenticationExpiredException(error)
+                                } else {
+                                    error
                                 }
                             }
                             .sneakyGet()
@@ -67,10 +72,6 @@ class SessionManagerImpl @Inject constructor(
 
         else -> authService.requestAccessToken(apiConfig.clientId, apiConfig.clientSecret)
                 .map { result -> Session.Anonymous(accessToken = result.accessToken) }
-    }
-
-    private fun isTokenInvalidated(errorData: ErrorData): Boolean {
-        return errorData.type != null
     }
 
     private val Session.accessToken: String
