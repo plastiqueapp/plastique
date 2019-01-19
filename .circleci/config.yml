@@ -15,6 +15,12 @@ jobs:
       - checkout
 
       - run:
+          name: Update Android SDK
+          command: |
+            yes | sdkmanager --licenses || true
+            yes | sdkmanager --update || true
+
+      - run:
           name: Check Environment
           command: java -version
 
