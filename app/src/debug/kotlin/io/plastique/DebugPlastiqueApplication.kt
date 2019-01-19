@@ -29,6 +29,6 @@ class DebugPlastiqueApplication : BasePlastiqueApplication(), AppComponent.Holde
     }
 
     private val isLeakCanaryDisabled: Boolean
-        // Samsung's Android 8.0.0 has too many memory leaks.
-        get() = Build.MANUFACTURER.equals("Samsung", ignoreCase = true) && Build.VERSION.RELEASE == "8.0.0"
+        // Samsung's Android 9.0.0 has too many memory leaks.
+        get() = Build.MANUFACTURER.equals("Samsung", ignoreCase = true) && Build.VERSION.SDK_INT == 28
 }
