@@ -3,6 +3,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
         maven { url "https://maven.fabric.io/public" }
     }
     dependencies {
@@ -40,6 +41,7 @@ subprojects {
             }
         }
         jcenter()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
         maven { url "https://dl.bintray.com/sch/maven" }
         maven { url "https://jitpack.io" }
     }

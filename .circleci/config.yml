@@ -41,12 +41,12 @@ jobs:
             cp *.hprof /tmp/heap_dumps 2>/dev/null || :
           when: on_fail
 
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-            - ~/.m2/repository
-          key: v2-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
+#      - save_cache:
+#          paths:
+#            - ~/.gradle/caches
+#            - ~/.gradle/wrapper
+#            - ~/.m2/repository
+#          key: v2-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
 
       - store_artifacts:
           path: app/build/reports
