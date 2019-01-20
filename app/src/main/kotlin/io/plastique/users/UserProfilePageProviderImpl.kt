@@ -7,6 +7,7 @@ import io.plastique.comments.list.CommentListFragment
 import io.plastique.core.FragmentListPagerAdapter.Page
 import io.plastique.gallery.GalleryFragment
 import io.plastique.statuses.list.StatusListFragment
+import io.plastique.users.profile.UserProfilePageProvider
 import javax.inject.Inject
 
 class UserProfilePageProviderImpl @Inject constructor() : UserProfilePageProvider {

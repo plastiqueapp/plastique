@@ -1,4 +1,4 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
@@ -12,17 +12,18 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
-import io.plastique.users.UserProfileEffect.CopyProfileLinkEffect
-import io.plastique.users.UserProfileEffect.LoadUserProfileEffect
-import io.plastique.users.UserProfileEffect.SetWatchingEffect
-import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
-import io.plastique.users.UserProfileEvent.LoadErrorEvent
-import io.plastique.users.UserProfileEvent.RetryClickEvent
-import io.plastique.users.UserProfileEvent.SetWatchingErrorEvent
-import io.plastique.users.UserProfileEvent.SetWatchingEvent
-import io.plastique.users.UserProfileEvent.SetWatchingFinishedEvent
-import io.plastique.users.UserProfileEvent.SnackbarShownEvent
-import io.plastique.users.UserProfileEvent.UserProfileChangedEvent
+import io.plastique.users.R
+import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
+import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
+import io.plastique.users.profile.UserProfileEffect.SetWatchingEffect
+import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
+import io.plastique.users.profile.UserProfileEvent.LoadErrorEvent
+import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
+import io.plastique.users.profile.UserProfileEvent.SetWatchingErrorEvent
+import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
+import io.plastique.users.profile.UserProfileEvent.SetWatchingFinishedEvent
+import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
+import io.plastique.users.profile.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
 import io.plastique.watch.WatchManager
 import io.reactivex.Observable

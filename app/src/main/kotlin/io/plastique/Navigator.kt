@@ -21,9 +21,9 @@ import io.plastique.settings.SettingsNavigator
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.StatusesNavigator
 import io.plastique.users.User
-import io.plastique.users.UserProfileActivity
 import io.plastique.users.UserType
 import io.plastique.users.UsersNavigator
+import io.plastique.users.profile.UserProfileActivity
 import io.plastique.util.Intents
 import io.plastique.watch.WatchNavigator
 import io.plastique.watch.WatcherListActivity

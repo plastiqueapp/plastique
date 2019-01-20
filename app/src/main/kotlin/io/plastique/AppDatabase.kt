@@ -32,7 +32,7 @@ import io.plastique.statuses.StatusEntity
 import io.plastique.statuses.StatusLinkage
 import io.plastique.users.UserDao
 import io.plastique.users.UserEntity
-import io.plastique.users.UserProfileEntity
+import io.plastique.users.profile.UserProfileEntity
 import io.plastique.watch.WatchDao
 import io.plastique.watch.WatcherEntity
 import io.plastique.collections.FolderEntity as CollectionFolderEntity

@@ -1,4 +1,4 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import androidx.room.RoomDatabase
 import com.sch.rxjava2.extensions.mapError
@@ -11,6 +11,8 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.exceptions.ApiResponseException
 import io.plastique.core.exceptions.UserNotFoundException
+import io.plastique.users.UserDao
+import io.plastique.users.toUserEntity
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable

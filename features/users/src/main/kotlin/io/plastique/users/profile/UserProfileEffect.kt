@@ -1,4 +1,4 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import io.plastique.core.flow.Effect
 

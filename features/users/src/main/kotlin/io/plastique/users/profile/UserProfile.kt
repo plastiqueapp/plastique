@@ -1,4 +1,7 @@
-package io.plastique.users
+package io.plastique.users.profile
+
+import io.plastique.users.User
+import io.plastique.users.toUser
 
 data class UserProfile(
     val user: User,

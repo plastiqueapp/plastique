@@ -1,10 +1,11 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import io.plastique.api.users.UserProfileDto
+import io.plastique.users.UserEntity
 
 @Entity(tableName = "user_profiles",
         foreignKeys = [

@@ -1,4 +1,4 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import io.plastique.core.content.ContentState
 import io.plastique.core.snackbar.SnackbarState

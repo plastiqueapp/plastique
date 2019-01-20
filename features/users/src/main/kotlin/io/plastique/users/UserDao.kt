@@ -6,6 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import io.plastique.users.profile.UserProfileEntity
+import io.plastique.users.profile.UserProfileEntityWithRelations
 import io.reactivex.Maybe
 import io.reactivex.Observable
 

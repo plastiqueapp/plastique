@@ -26,8 +26,8 @@ import io.plastique.core.session.SessionManager
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
-import io.plastique.users.UserProfilePageProvider
 import io.plastique.users.UserProfilePageProviderImpl
+import io.plastique.users.profile.UserProfilePageProvider
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences

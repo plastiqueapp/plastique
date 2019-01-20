@@ -3,7 +3,7 @@
     package="io.plastique.users">
 
     <application>
-        <activity android:name=".UserProfileActivity">
+        <activity android:name=".profile.UserProfileActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

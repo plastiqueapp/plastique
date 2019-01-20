@@ -1,4 +1,4 @@
-package io.plastique.users
+package io.plastique.users.profile
 
 import android.content.Context
 import android.content.Intent
@@ -25,10 +25,13 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
-import io.plastique.users.UserProfileEvent.CopyProfileLinkClickEvent
-import io.plastique.users.UserProfileEvent.RetryClickEvent
-import io.plastique.users.UserProfileEvent.SetWatchingEvent
-import io.plastique.users.UserProfileEvent.SnackbarShownEvent
+import io.plastique.users.R
+import io.plastique.users.UsersActivityComponent
+import io.plastique.users.UsersNavigator
+import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
+import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
+import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
+import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.plastique.util.SimpleOnTabSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
