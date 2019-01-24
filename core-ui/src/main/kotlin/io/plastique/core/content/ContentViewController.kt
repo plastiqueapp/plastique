@@ -6,6 +6,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.core.view.ViewCompat.requireViewById
 import androidx.core.view.isVisible
 import io.plastique.util.Animations
 import timber.log.Timber
@@ -42,9 +43,9 @@ class ContentViewController(
             : this(activity.window.decorView, contentViewId, progressViewId, emptyViewId)
 
     init {
-        contentView = findViewById(rootView, contentViewId)
-        progressView = if (progressViewId != View.NO_ID) findViewById(rootView, progressViewId) else null
-        emptyView = if (emptyViewId != View.NO_ID) findViewById(rootView, emptyViewId) else null
+        contentView = requireViewById(rootView, contentViewId)
+        progressView = if (progressViewId != View.NO_ID) requireViewById(rootView, progressViewId) else null
+        emptyView = if (emptyViewId != View.NO_ID) requireViewById(rootView, emptyViewId) else null
         applyState(ContentState.None, false)
     }
 
@@ -87,10 +88,6 @@ class ContentViewController(
         } else {
             isVisible = visible
         }
-    }
-
-    private fun findViewById(rootView: View, @IdRes viewId: Int): View {
-        return rootView.findViewById(viewId) ?: throw IllegalArgumentException("View with id $viewId doesn't exist")
     }
 
     private companion object {
