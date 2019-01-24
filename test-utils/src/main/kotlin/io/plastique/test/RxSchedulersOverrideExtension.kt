@@ -8,6 +8,7 @@ import io.reactivex.plugins.RxJavaPlugins
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
+import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 class RxSchedulersOverrideExtension : BeforeEachCallback, AfterEachCallback {
@@ -30,7 +31,7 @@ class RxSchedulersOverrideExtension : BeforeEachCallback, AfterEachCallback {
         }
 
         override fun createWorker(): Scheduler.Worker {
-            return ExecutorScheduler.ExecutorWorker { it.run() }
+            return ExecutorScheduler.ExecutorWorker(Executor { it.run() }, false)
         }
     }
 }
