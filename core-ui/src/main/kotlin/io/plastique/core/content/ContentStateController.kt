@@ -12,24 +12,12 @@ import io.plastique.util.Animations
 import timber.log.Timber
 import kotlin.math.max
 
-class ContentStateController(
-    rootView: View,
-    @IdRes contentViewId: Int,
-    @IdRes progressViewId: Int = View.NO_ID,
-    @IdRes emptyViewId: Int = View.NO_ID
-) {
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
-    private val contentView: View
-    private val progressView: View?
-    private val emptyView: View?
-
-    private var setStateRunnable: Runnable? = null
-    private var lastSwitchTime: Long = 0
-
-    var minProgressDisplayTime: Int = 500
-    var progressShowDelay: Int = 200
-
+class ContentStateController(private val onSwitchStateListener: OnSwitchStateListener) {
     private var displayedState: ContentState = ContentState.None
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
+    private var switchStateRunnable: Runnable? = null
+    private var lastSwitchTime: Long = 0L
+
     var state: ContentState = ContentState.None
         set(value) {
             require(value !== ContentState.None) { "Cannot switch state to $value" }
@@ -39,40 +27,78 @@ class ContentStateController(
             }
         }
 
-    constructor(activity: Activity, @IdRes contentViewId: Int, @IdRes progressViewId: Int = View.NO_ID, @IdRes emptyViewId: Int = View.NO_ID)
-            : this(activity.window.decorView, contentViewId, progressViewId, emptyViewId)
+    var minProgressDisplayTime: Int = 500
+    var progressShowDelay: Int = 200
+
+    constructor(rootView: View,
+                @IdRes contentViewId: Int,
+                @IdRes progressViewId: Int = View.NO_ID,
+                @IdRes emptyViewId: Int = View.NO_ID)
+            : this(ContentStateApplier(rootView, contentViewId, progressViewId, emptyViewId))
+
+    constructor(activity: Activity,
+                @IdRes contentViewId: Int,
+                @IdRes progressViewId: Int = View.NO_ID,
+                @IdRes emptyViewId: Int = View.NO_ID)
+            : this(ContentStateApplier(activity.window.decorView, contentViewId, progressViewId, emptyViewId))
 
     init {
-        contentView = requireViewById(rootView, contentViewId)
-        progressView = if (progressViewId != View.NO_ID) requireViewById(rootView, progressViewId) else null
-        emptyView = if (emptyViewId != View.NO_ID) requireViewById(rootView, emptyViewId) else null
-        applyState(ContentState.None, false)
+        dispatchSwitchState(displayedState, false)
     }
 
     private fun switchState(state: ContentState) {
-        mainThreadHandler.removeCallbacks(setStateRunnable)
+        mainThreadHandler.removeCallbacks(switchStateRunnable)
 
-        var delay: Long = 0
+        var delay = 0L
         if (displayedState === ContentState.Loading) {
             val elapsedTime = SystemClock.elapsedRealtime() - lastSwitchTime
-            delay = max(0, minProgressDisplayTime - elapsedTime)
+            delay = max(0L, minProgressDisplayTime - elapsedTime)
         } else if (state === ContentState.Loading) {
             delay = progressShowDelay.toLong()
         }
 
         if (delay != 0L) {
-            setStateRunnable = Runnable { applyState(state, true) }
-            mainThreadHandler.postDelayed(setStateRunnable, delay)
+            switchStateRunnable = Runnable { dispatchSwitchState(state, true) }
+            mainThreadHandler.postDelayed(switchStateRunnable, delay)
         } else {
-            applyState(state, true)
+            dispatchSwitchState(state, true)
         }
     }
 
-    private fun applyState(state: ContentState, animated: Boolean) {
-        Timber.tag(LOG_TAG).d("Applying state %s", state)
+    private fun dispatchSwitchState(state: ContentState, animated: Boolean) {
+        Timber.tag(LOG_TAG).d("Switching state to %s", state)
         displayedState = state
         lastSwitchTime = SystemClock.elapsedRealtime()
 
+        onSwitchStateListener.onSwitchState(state, animated)
+    }
+
+    interface OnSwitchStateListener {
+        fun onSwitchState(state: ContentState, animated: Boolean)
+    }
+
+    private companion object {
+        private const val LOG_TAG = "ContentStateController"
+    }
+}
+
+private class ContentStateApplier(
+    rootView: View,
+    @IdRes contentViewId: Int,
+    @IdRes progressViewId: Int,
+    @IdRes emptyViewId: Int
+) : ContentStateController.OnSwitchStateListener {
+    private val contentView: View
+    private val progressView: View?
+    private val emptyView: View?
+
+    init {
+        contentView = requireViewById(rootView, contentViewId)
+        progressView = if (progressViewId != View.NO_ID) requireViewById(rootView, progressViewId) else null
+        emptyView = if (emptyViewId != View.NO_ID) requireViewById(rootView, emptyViewId) else null
+    }
+
+    override fun onSwitchState(state: ContentState, animated: Boolean) {
         contentView.setVisible(state === ContentState.Content, animated)
         progressView?.setVisible(state === ContentState.Loading, animated)
         emptyView?.setVisible(state is ContentState.Empty, animated)
@@ -88,9 +114,5 @@ class ContentStateController(
         } else {
             isVisible = visible
         }
-    }
-
-    private companion object {
-        private const val LOG_TAG = "ContentStateController"
     }
 }
