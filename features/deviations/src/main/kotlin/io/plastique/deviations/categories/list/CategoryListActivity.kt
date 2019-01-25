@@ -10,7 +10,7 @@ import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.MvvmActivity
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
@@ -32,7 +32,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     private lateinit var categoriesView: RecyclerView
     private lateinit var breadcrumbsView: BreadcrumbsView
     private lateinit var emptyView: EmptyView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: CategoriesAdapter
 
@@ -55,7 +55,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         categoriesView.layoutManager = LinearLayoutManager(this)
         categoriesView.adapter = adapter
 
-        contentViewController = ContentViewController(this, R.id.categories, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.categories, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(categoriesView)
 
         emptyView = findViewById(android.R.id.empty)
@@ -79,7 +79,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     }
 
     private fun renderState(state: CategoryListViewState, prevState: CategoryListViewState?, listUpdateData: ListUpdateData<CategoryItem>) {
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
@@ -33,7 +33,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
     private lateinit var descriptionView: TextView
     private lateinit var publishDateView: TextView
     private lateinit var emptyView: EmptyView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var tagsView: RecyclerView
     private lateinit var tagListAdapter: TagListAdapter
     @Inject lateinit var navigator: DeviationsNavigator
@@ -60,7 +60,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
         tagsView.adapter = tagListAdapter
         tagsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        contentViewController = ContentViewController(this, R.id.content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
 
         val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)
@@ -73,10 +73,10 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
     private fun renderState(state: DeviationInfoViewState) {
         when (state) {
             is DeviationInfoViewState.Loading -> {
-                contentViewController.state = ContentState.Loading
+                contentStateController.state = ContentState.Loading
             }
             is DeviationInfoViewState.Content -> {
-                contentViewController.state = ContentState.Content
+                contentStateController.state = ContentState.Content
                 titleView.text = state.title
                 authorNameView.text = state.author.name
                 descriptionView.text = state.description.value
@@ -93,7 +93,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
                 tagsView.isVisible = state.tags.isNotEmpty()
             }
             is DeviationInfoViewState.Error -> {
-                contentViewController.state = ContentState.Empty(state.emptyViewState)
+                contentStateController.state = ContentState.Empty(state.emptyViewState)
                 emptyView.setState(state.emptyViewState)
             }
         }

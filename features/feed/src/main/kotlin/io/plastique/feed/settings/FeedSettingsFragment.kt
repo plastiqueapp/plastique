@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.findCallback
@@ -33,7 +33,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
     private lateinit var optionsView: RecyclerView
     private lateinit var emptyView: EmptyView
     private lateinit var optionsAdapter: OptionsAdapter
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var state: FeedSettingsViewState
     @Inject lateinit var viewModel: FeedSettingsViewModel
     private val disposables = CompositeDisposable()
@@ -71,7 +71,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        contentViewController = ContentViewController(view, R.id.options, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(view, R.id.options, android.R.id.progress, android.R.id.empty)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,7 +114,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
 
     private fun renderState(state: FeedSettingsViewState, listUpdateData: ListUpdateData<OptionItem>) {
         this.state = state
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
 
         when (state.contentState) {
             ContentState.Content ->

@@ -16,7 +16,7 @@ import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.setActionBar
@@ -41,7 +41,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var avatarView: ImageView
     private lateinit var realNameView: TextView
     private lateinit var emptyView: EmptyView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
     private lateinit var state: UserProfileViewState
@@ -70,7 +70,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         avatarView = findViewById(R.id.user_avatar)
         realNameView = findViewById(R.id.user_real_name)
 
-        contentViewController = ContentViewController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
@@ -115,7 +115,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         supportActionBar!!.title = state.title
         setHasOptionsMenu(state.userProfile != null)
 
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

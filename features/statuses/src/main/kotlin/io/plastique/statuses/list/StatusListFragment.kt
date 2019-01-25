@@ -13,7 +13,7 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.args
@@ -43,7 +43,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
     private lateinit var emptyView: EmptyView
     private lateinit var statusesAdapter: StatusListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     @Inject lateinit var navigator: StatusesNavigator
 
@@ -73,7 +73,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(view)
     }
 
@@ -91,7 +91,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
     }
 
     private fun renderState(state: StatusListViewState, prevState: StatusListViewState?, listUpdateData: ListUpdateData<ListItem>) {
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

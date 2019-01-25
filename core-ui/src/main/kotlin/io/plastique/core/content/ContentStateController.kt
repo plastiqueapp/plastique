@@ -12,13 +12,13 @@ import io.plastique.util.Animations
 import timber.log.Timber
 import kotlin.math.max
 
-class ContentViewController(
+class ContentStateController(
     rootView: View,
     @IdRes contentViewId: Int,
     @IdRes progressViewId: Int = View.NO_ID,
     @IdRes emptyViewId: Int = View.NO_ID
 ) {
-    private val handler = Handler(Looper.getMainLooper())
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
     private val contentView: View
     private val progressView: View?
     private val emptyView: View?
@@ -50,7 +50,7 @@ class ContentViewController(
     }
 
     private fun switchState(state: ContentState) {
-        handler.removeCallbacks(setStateRunnable)
+        mainThreadHandler.removeCallbacks(setStateRunnable)
 
         var delay: Long = 0
         if (displayedState === ContentState.Loading) {
@@ -62,7 +62,7 @@ class ContentViewController(
 
         if (delay != 0L) {
             setStateRunnable = Runnable { applyState(state, true) }
-            handler.postDelayed(setStateRunnable, delay)
+            mainThreadHandler.postDelayed(setStateRunnable, delay)
         } else {
             applyState(state, true)
         }
@@ -91,6 +91,6 @@ class ContentViewController(
     }
 
     private companion object {
-        private const val LOG_TAG = "ContentViewController"
+        private const val LOG_TAG = "ContentStateController"
     }
 }

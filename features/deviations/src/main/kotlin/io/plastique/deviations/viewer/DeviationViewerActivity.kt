@@ -21,7 +21,7 @@ import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.setActionBar
@@ -54,7 +54,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private lateinit var imageView: PhotoView
     private lateinit var infoPanelView: InfoPanelView
     private lateinit var emptyView: EmptyView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
     @Inject lateinit var clipboard: Clipboard
@@ -103,7 +103,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         infoPanelView.setOnCommentsClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
         infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(navigationContext, deviationId) }
 
-        contentViewController = ContentViewController(this, R.id.content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
@@ -152,7 +152,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         this.state = state
         setHasOptionsMenu(state.deviation != null)
 
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

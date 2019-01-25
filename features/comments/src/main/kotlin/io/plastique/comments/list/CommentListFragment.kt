@@ -17,7 +17,7 @@ import io.plastique.comments.R
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.actionBar
 import io.plastique.core.extensions.add
@@ -40,7 +40,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     private lateinit var emptyView: EmptyView
     private lateinit var composeView: ComposeCommentView
     private lateinit var adapter: CommentsAdapter
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
     @Inject lateinit var navigator: CommentsNavigator
@@ -70,7 +70,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(CommentListEvent.RefreshEvent) }
 
-        contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
 
         emptyView = view.findViewById(android.R.id.empty)
@@ -95,7 +95,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
             actionBar.subtitle = state.title
         }
 
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

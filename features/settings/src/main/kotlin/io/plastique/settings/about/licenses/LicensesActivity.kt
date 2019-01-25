@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.BrowserLauncher
 import io.plastique.core.MvvmActivity
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.DividerItemDecoration
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 class LicensesActivity : MvvmActivity<LicensesViewModel>() {
     private lateinit var adapter: LicensesAdapter
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     @Inject lateinit var browserLauncher: BrowserLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +44,7 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
                 .viewTypes(LicensesAdapter.TYPE_LICENSE)
                 .build())
 
-        contentViewController = ContentViewController(this, R.id.licenses, android.R.id.progress)
+        contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress)
 
         viewModel.state
                 .pairwiseWithPrevious()
@@ -55,7 +55,7 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
     }
 
     private fun renderState(state: LicensesViewState, listUpdateData: ListUpdateData<ListItem>) {
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         listUpdateData.applyTo(adapter)
     }
 

@@ -10,7 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.MvvmActivity
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
@@ -36,7 +36,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
     private lateinit var watchersView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: WatcherListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
@@ -73,7 +73,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
             }
         }
 
-        contentViewController = ContentViewController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
 
         viewModel.init(username)
@@ -88,7 +88,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
     private fun renderState(state: WatcherListViewState, prevState: WatcherListViewState?, listUpdateData: ListUpdateData<ListItem>) {
         this.state = state
 
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }

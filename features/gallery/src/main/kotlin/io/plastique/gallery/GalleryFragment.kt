@@ -18,7 +18,7 @@ import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
-import io.plastique.core.content.ContentViewController
+import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
@@ -52,7 +52,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: GalleryAdapter
     private lateinit var galleryView: RecyclerView
-    private lateinit var contentViewController: ContentViewController
+    private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var state: GalleryViewState
@@ -124,7 +124,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 viewModel.dispatch(RetryClickEvent)
             }
         }
-        contentViewController = ContentViewController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
     }
 
@@ -164,7 +164,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         this.state = state
         setHasOptionsMenu(state.showMenu)
 
-        contentViewController.state = state.contentState
+        contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }
