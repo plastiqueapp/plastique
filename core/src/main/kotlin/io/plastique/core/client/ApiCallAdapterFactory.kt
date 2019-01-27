@@ -9,7 +9,6 @@ import io.reactivex.disposables.Disposable
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
-import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -57,18 +56,12 @@ class ApiCallAdapterFactory @Inject constructor(
             val disposable = CallDisposable(callForObserver)
             emitter.setDisposable(disposable)
 
-            try {
-                val response = callExecutor.execute(callForObserver)
-                val body = response.body()
-                if (body != null) {
-                    emitter.onSuccess(body)
-                } else {
-                    emitter.onComplete()
-                }
-            } catch (e: IOException) {
-                if (!disposable.isDisposed) {
-                    emitter.onError(e)
-                }
+            val response = callExecutor.execute(callForObserver)
+            val body = response.body()
+            if (body != null) {
+                emitter.onSuccess(body)
+            } else {
+                emitter.onComplete()
             }
         }
     }
