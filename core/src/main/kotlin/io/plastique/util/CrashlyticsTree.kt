@@ -1,17 +1,16 @@
 package io.plastique.util
 
 import com.crashlytics.android.Crashlytics
-import io.plastique.core.exceptions.ApiException
 import timber.log.Timber
+import java.io.IOException
 
 class CrashlyticsTree : Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (t != null && !isIgnored(t)) {
+        if (t != null && !t.isIgnored) {
             Crashlytics.logException(t)
         }
     }
 
-    private fun isIgnored(e: Throwable): Boolean {
-        return e is ApiException
-    }
+    private val Throwable.isIgnored: Boolean
+        get() = this is IOException
 }
