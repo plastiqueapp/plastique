@@ -10,16 +10,12 @@ inline fun <reified T> Moshi.adapter(): JsonAdapter<T> {
     return adapter<T>(type)
 }
 
-@Suppress("unused")
 abstract class TypeToken<in T> {
     val type: Type = getSuperclassTypeParameter(javaClass)
 
     private fun getSuperclassTypeParameter(subclass: Class<*>): Type {
-        val superclass = subclass.genericSuperclass
-        if (superclass is Class<*>) {
-            throw RuntimeException("Missing type parameter")
-        }
-        val parameterized = superclass as ParameterizedType
-        return parameterized.actualTypeArguments[0]
+        val superclass = subclass.genericSuperclass as? ParameterizedType
+                ?: throw IllegalArgumentException("Super class of $subclass must be parametrized")
+        return superclass.actualTypeArguments[0]
     }
 }
