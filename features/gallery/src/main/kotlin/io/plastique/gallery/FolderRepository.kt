@@ -11,7 +11,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
@@ -75,7 +75,7 @@ class FolderRepository @Inject constructor(
                     cacheMetadata.nextCursor.toOptional()
                 }
                 .mapError { error ->
-                    if (params.username != null && error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                    if (params.username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         UserNotFoundException(params.username, error)
                     } else {
                         error

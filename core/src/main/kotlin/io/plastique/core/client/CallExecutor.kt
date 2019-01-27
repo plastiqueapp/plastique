@@ -1,7 +1,6 @@
 package io.plastique.core.client
 
-import io.plastique.core.exceptions.ApiException
-import io.plastique.core.exceptions.ApiTransportException
+import io.plastique.core.exceptions.HttpTransportException
 import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.util.NetworkConnectivityMonitor
 import retrofit2.Call
@@ -13,7 +12,6 @@ class CallExecutor @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val errorResponseParser: ErrorResponseParser
 ) {
-    @Throws(ApiException::class)
     fun <T> execute(call: Call<T>): Response<T> {
         if (!connectivityMonitor.isConnectedToNetwork) {
             throw NoNetworkConnectionException()
@@ -21,7 +19,7 @@ class CallExecutor @Inject constructor(
         val response = try {
             call.execute()
         } catch (e: IOException) {
-            throw ApiTransportException(e)
+            throw HttpTransportException(e)
         }
 
         if (!response.isSuccessful) {

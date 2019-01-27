@@ -12,7 +12,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
@@ -73,7 +73,7 @@ class WatcherRepository @Inject constructor(
                     cacheMetadata.nextCursor.toOptional()
                 }
                 .mapError { error ->
-                    if (username != null && error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                    if (username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         UserNotFoundException(username, error)
                     } else {
                         error

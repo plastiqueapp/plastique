@@ -4,30 +4,29 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import io.plastique.api.common.ErrorData
 import io.plastique.core.exceptions.ApiException
-import io.plastique.core.exceptions.ApiHttpException
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.HttpException
 import io.plastique.util.adapter
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
 
-class ErrorResponseParser @Inject constructor(
-    private val moshi: Moshi
-) {
+class ErrorResponseParser @Inject constructor(moshi: Moshi) {
+    private val errorDataAdapter = moshi.adapter<ErrorData>()
 
-    fun parse(response: Response<*>): ApiException {
+    fun parse(response: Response<*>): HttpException {
         val errorBody = response.errorBody()
-        if (isClientHttpError(response.code()) && errorBody != null) {
+        if (errorBody != null && isClientHttpError(response.code())) {
             try {
-                val errorData = moshi.adapter<ErrorData>().fromJson(errorBody.source())
-                return ApiResponseException(errorData!!)
-            } catch (ignored: IOException) {
+                val errorData = errorDataAdapter.fromJson(errorBody.source())
+                return ApiException(response.code(), errorData!!)
+            } catch (e: IOException) {
+                Timber.e(e)
             } catch (e: JsonDataException) {
                 Timber.e(e)
             }
         }
-        return ApiHttpException(response.code())
+        return HttpException(response.code())
     }
 
     private fun isClientHttpError(responseCode: Int): Boolean {

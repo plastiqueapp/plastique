@@ -10,7 +10,7 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserEntity
@@ -168,7 +168,7 @@ class DeviationRepositoryImpl @Inject constructor(
         return deviationService.getDeviationById(deviationId)
                 .doOnSuccess { deviation -> put(listOf(deviation)) }
                 .mapError { error ->
-                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         DeviationNotFoundException(deviationId, error)
                     } else {
                         error

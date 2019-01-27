@@ -14,7 +14,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
@@ -90,7 +90,7 @@ class CommentRepository @Inject constructor(
         is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
         is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
                 .mapError { error ->
-                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         UserNotFoundException(threadId.username, error)
                     } else {
                         error

@@ -1,7 +1,7 @@
 package io.plastique.collections
 
 import io.plastique.api.collections.CollectionService
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.deviations.DeviationDao
 import io.plastique.util.Result
 import io.plastique.util.toResult
@@ -29,7 +29,7 @@ class FavoritesModelImpl @Inject constructor(
 
                         is Result.Error -> {
                             val error = result.error
-                            if (error is ApiResponseException && error.errorData.code == ERROR_CODE_ALREADY_FAVORITE) {
+                            if (error is ApiException && error.errorData.code == ERROR_CODE_ALREADY_FAVORITE) {
                                 deviationDao.setFavorite(deviationId, true)
                             } else {
                                 throw result.error
@@ -50,7 +50,7 @@ class FavoritesModelImpl @Inject constructor(
 
                         is Result.Error -> {
                             val error = result.error
-                            if (error is ApiResponseException && error.errorData.code == ERROR_CODE_NOT_FAVORITE) {
+                            if (error is ApiException && error.errorData.code == ERROR_CODE_NOT_FAVORITE) {
                                 deviationDao.setFavorite(deviationId, false)
                             } else {
                                 throw result.error

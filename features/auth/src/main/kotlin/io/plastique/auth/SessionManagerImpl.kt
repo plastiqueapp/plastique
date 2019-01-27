@@ -5,7 +5,7 @@ import com.sch.rxjava2.extensions.sneakyGet
 import io.plastique.api.auth.AuthService
 import io.plastique.api.common.ErrorType
 import io.plastique.core.client.ApiConfiguration
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.session.AuthenticationExpiredException
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
@@ -48,7 +48,7 @@ class SessionManagerImpl @Inject constructor(
                 if (localSession === Session.None || invalidatedAccessToken != null && localSession.accessToken == invalidatedAccessToken) {
                     session = refreshAccessToken(localSession)
                             .mapError { error ->
-                                if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest) {
+                                if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                                     logout()
                                     AuthenticationExpiredException(error)
                                 } else {

@@ -9,7 +9,7 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
-import io.plastique.core.exceptions.ApiResponseException
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.users.UserDao
 import io.plastique.users.toUserEntity
@@ -49,7 +49,7 @@ class UserProfileRepository @Inject constructor(
                     persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
                 }
                 .mapError { error ->
-                    if (error is ApiResponseException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.code == ERROR_CODE_USER_NOT_FOUND) {
+                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.code == ERROR_CODE_USER_NOT_FOUND) {
                         deleteUser(username, cacheKey)
                         UserNotFoundException(username, error)
                     } else {
