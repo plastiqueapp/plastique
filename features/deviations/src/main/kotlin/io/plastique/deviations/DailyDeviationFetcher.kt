@@ -2,12 +2,13 @@ package io.plastique.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.common.ListResult
+import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationService
 import io.plastique.core.paging.DateCursor
 import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
-import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
@@ -35,14 +36,19 @@ class DailyDeviationFetcher @Inject constructor(
             DeviationCacheMetadataSerializer(paramsType = DailyParams::class.java, cursorType = DateCursor::class.java)
 
     override fun fetch(params: DailyParams, cursor: DateCursor?): Single<FetchResult<DateCursor>> {
-        val date = cursor?.date ?: LocalDate.now(ZoneOffset.UTC)
-        return deviationService.getDailyDeviations(date.format(DATE_FORMAT), params.showMatureContent)
+        val date = cursor?.date
+        return deviationService.getDailyDeviations(date?.format(DATE_FORMAT), params.showMatureContent)
                 .map { deviationList ->
+                    val previousDate = (date ?: getDailyDeviationsDate(deviationList)).minusDays(1)
                     FetchResult(
                             deviations = deviationList.results,
-                            nextCursor = DateCursor(date.minusDays(1)),
+                            nextCursor = DateCursor(previousDate),
                             replaceExisting = cursor == null)
                 }
+    }
+
+    private fun getDailyDeviationsDate(deviationList: ListResult<DeviationDto>): LocalDate {
+        return deviationList.results.first().dailyDeviation!!.date.toLocalDate()
     }
 
     companion object {
