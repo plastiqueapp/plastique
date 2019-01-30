@@ -38,6 +38,9 @@ subprojects {
             mavenContent {
                 snapshotsOnly()
             }
+            content {
+                includeGroup "com.squareup.moshi"
+            }
         }
         jcenter()
         maven { url "https://dl.bintray.com/sch/maven" }
