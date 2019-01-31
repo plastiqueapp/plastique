@@ -3,6 +3,7 @@ package io.plastique.core.extensions
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewParent
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -136,4 +137,15 @@ fun Toolbar.setSubtitleOnClickListener(onClickListener: View.OnClickListener) {
     } catch (e: IllegalAccessException) {
         throw RuntimeException(e)
     }
+}
+
+fun <T : ViewParent> View.findParentOfType(type: Class<T>): T? {
+    var p = parent
+    while (p != null) {
+        if (type.isInstance(p)) {
+            return type.cast(p)
+        }
+        p = p.parent
+    }
+    return null
 }

@@ -6,11 +6,15 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
@@ -19,6 +23,8 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
+import io.plastique.core.extensions.findParentOfType
+import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
@@ -201,6 +207,15 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     }
 
     override fun scrollToTop() {
+        val coordinatorLayout = deviationsView.findParentOfType(CoordinatorLayout::class.java)
+        coordinatorLayout?.children?.forEach { child ->
+            if (child is BottomNavigationView) {
+                val behavior = child.getLayoutBehavior<HideBottomViewOnScrollBehavior<BottomNavigationView>>()
+                behavior.slideUp(child)
+                return@forEach
+            }
+        }
+
         deviationsView.scrollToPosition(0)
     }
 
