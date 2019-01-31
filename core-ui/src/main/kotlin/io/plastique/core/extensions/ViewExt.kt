@@ -7,13 +7,10 @@ import android.view.ViewParent
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
@@ -40,15 +37,6 @@ fun AppBarLayout.invalidateScrollRanges() {
         throw RuntimeException(e)
     } catch (e: InvocationTargetException) {
         throw RuntimeException(e)
-    }
-}
-
-// https://issuetracker.google.com/issues/115754572
-fun BottomNavigationView.fixLabelClipping() {
-    val menuView = getChildAt(0) as BottomNavigationMenuView
-    menuView.children.forEach { child ->
-        val largeLabel = child.findViewById<View>(com.google.android.material.R.id.largeLabel)
-        largeLabel.setPadding(0, 0, 0, 0)
     }
 }
 
