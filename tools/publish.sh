@@ -29,4 +29,4 @@ echo "New versionCode: $new_version_code"
 
 # Commit changes
 git add "$version_file"
-git commit -m "Bump versionCode"
+git commit -m "Bump versionCode for release"
