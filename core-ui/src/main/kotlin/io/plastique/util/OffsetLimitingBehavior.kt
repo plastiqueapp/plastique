@@ -16,8 +16,8 @@ class OffsetLimitingBehavior(context: Context, attrs: AttributeSet) : AppBarLayo
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, clampDy(dy), consumed, type)
     }
 
-    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, clampDy(dyUnconsumed), type)
+    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: AppBarLayout, target: View, dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int, consumed: IntArray) {
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, clampDy(dyUnconsumed), type, consumed)
     }
 
     private fun clampDy(dy: Int): Int {
