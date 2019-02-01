@@ -199,13 +199,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             optionsMenu?.update(state.menuState)
         }
 
-        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
-            if (state.showProgressDialog) {
-                progressDialogController.show()
-            } else {
-                progressDialogController.dismiss()
-            }
-        }
+        progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)

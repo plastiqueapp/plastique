@@ -174,14 +174,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         onScrollListener.isEnabled = state.pagingEnabled
         refreshLayout.isRefreshing = state.isRefreshing
         horizontalProgressViewController.isVisible = state.isApplyingSettings
-
-        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
-            if (state.showProgressDialog) {
-                progressDialogController.show()
-            } else {
-                progressDialogController.dismiss()
-            }
-        }
+        progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)

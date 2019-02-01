@@ -8,22 +8,30 @@ import io.plastique.core.ui.R
 
 class ProgressDialogController(
     private val fragmentManager: FragmentManager,
+    @StringRes private val titleId: Int = 0,
+    @StringRes private val messageId: Int = R.string.common_message_please_wait,
     private val tag: String = DEFAULT_TAG
 ) {
 
-    fun show(@StringRes titleId: Int = 0, @StringRes messageId: Int = R.string.common_message_please_wait) {
-        if (fragment == null) {
-            val fragment = ProgressDialogFragment.newInstance(titleId, messageId)
-            fragment.showAllowingStateLoss(fragmentManager, tag)
+    private var fragment: DialogFragment? = null
+
+    init {
+        fragment = fragmentManager.findFragmentByTag(tag) as DialogFragment?
+    }
+
+    var isShown: Boolean
+        get() = fragment != null
+        set(value) {
+            val fragment = this.fragment
+            if (value && fragment == null) {
+                val dialog = ProgressDialogFragment.newInstance(titleId, messageId)
+                dialog.showAllowingStateLoss(fragmentManager, tag)
+                this.fragment = dialog
+            } else if (!value && fragment != null) {
+                fragment.dismissAllowingStateLoss()
+                this.fragment = null
+            }
         }
-    }
-
-    fun dismiss() {
-        fragment?.dismissAllowingStateLoss()
-    }
-
-    private val fragment: DialogFragment?
-        get() = fragmentManager.findFragmentByTag(tag) as DialogFragment?
 
     companion object {
         private const val DEFAULT_TAG = "dialog.progress"

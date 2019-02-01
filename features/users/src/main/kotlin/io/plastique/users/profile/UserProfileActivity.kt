@@ -132,13 +132,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             optionsMenu?.update(state.userProfile)
         }
 
-        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
-            if (state.showProgressDialog) {
-                progressDialogController.show()
-            } else {
-                progressDialogController.dismiss()
-            }
-        }
+        progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)

@@ -187,17 +187,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         onScrollListener.isEnabled = state.isPagingEnabled
         refreshLayout.isRefreshing = state.isRefreshing
+        progressDialogController.isShown = state.showProgressDialog
 
         if (state.tags != prevState?.tags && visibleToUser) {
             tagManager?.setTags(tags, true)
-        }
-
-        if (state.showProgressDialog != (prevState?.showProgressDialog == true)) {
-            if (state.showProgressDialog) {
-                progressDialogController.show()
-            } else {
-                progressDialogController.dismiss()
-            }
         }
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {

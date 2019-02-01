@@ -40,7 +40,7 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
         webView.webChromeClient = LoginWebChromeClient()
         webView.webViewClient = LoginWebViewClient()
 
-        progressDialogController = ProgressDialogController(supportFragmentManager)
+        progressDialogController = ProgressDialogController(supportFragmentManager, titleId = R.string.login_progress_title)
 
         viewModel.state
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,15 +61,15 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
             webView.loadUrl(state.authUrl)
 
         LoginViewState.InProgress ->
-            progressDialogController.show(R.string.login_progress_title)
+            progressDialogController.isShown = true
 
         LoginViewState.Success -> {
-            progressDialogController.dismiss()
+            progressDialogController.isShown = false
             finish()
         }
 
         LoginViewState.Error -> {
-            progressDialogController.dismiss()
+            progressDialogController.isShown = false
             val dialog = MessageDialogFragment.newInstance(R.string.common_error, R.string.login_error_message)
             dialog.showAllowingStateLoss(supportFragmentManager, DIALOG_AUTH_ERROR)
         }
