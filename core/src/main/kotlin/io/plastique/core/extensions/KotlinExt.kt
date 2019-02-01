@@ -7,3 +7,5 @@ inline fun <T : Any> List<T>.replaceIf(crossinline predicate: (T) -> Boolean, cr
 }
 
 inline fun <A, B, C> Pair<A, B>.add(value: C): Triple<A, B, C> = Triple(first, second, value)
+
+inline fun String?.nullIfEmpty(): String? = if (isNullOrEmpty()) null else this

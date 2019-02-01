@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import io.plastique.api.users.UserProfileDto
 import io.plastique.users.UserEntity
 
 @Entity(tableName = "user_profiles",
@@ -22,12 +21,9 @@ data class UserProfileEntity(
     @ColumnInfo(name = "real_name")
     val realName: String?,
 
+    @ColumnInfo(name = "bio")
+    val bio: String?,
+
     @ColumnInfo(name = "is_watching")
     val isWatching: Boolean
 )
-
-fun UserProfileDto.toUserProfileEntity(): UserProfileEntity = UserProfileEntity(
-        userId = user.id,
-        url = url,
-        realName = realName,
-        isWatching = isWatching)

@@ -14,6 +14,9 @@ data class UserProfileDto(
     @Json(name = "real_name")
     val realName: String?,
 
+    @Json(name = "bio")
+    val bio: String?,
+
     @Json(name = "is_watching")
     val isWatching: Boolean
 )

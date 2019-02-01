@@ -11,7 +11,9 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
+import io.plastique.core.extensions.nullIfEmpty
 import io.plastique.users.UserDao
+import io.plastique.users.toUser
 import io.plastique.users.toUserEntity
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
@@ -83,3 +85,17 @@ class UserProfileRepository @Inject constructor(
         private const val ERROR_CODE_USER_NOT_FOUND = 2
     }
 }
+
+private fun UserProfileDto.toUserProfileEntity(): UserProfileEntity = UserProfileEntity(
+        userId = user.id,
+        url = url,
+        realName = realName.nullIfEmpty(),
+        bio = bio.nullIfEmpty(),
+        isWatching = isWatching)
+
+private fun UserProfileEntityWithRelations.toUserProfile(): UserProfile = UserProfile(
+        user = users.first().toUser(),
+        url = userProfile.url,
+        realName = userProfile.realName,
+        bio = userProfile.bio,
+        isWatching = userProfile.isWatching)
