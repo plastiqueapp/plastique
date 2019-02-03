@@ -34,7 +34,6 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, "screen_about")
-        getComponent<SettingsFragmentComponent>().inject(this)
 
         preferenceScreen.forEach { preference ->
             if (preference !is PreferenceGroup) {
