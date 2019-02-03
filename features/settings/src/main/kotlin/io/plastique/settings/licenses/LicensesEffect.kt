@@ -1,4 +1,4 @@
-package io.plastique.settings.about.licenses
+package io.plastique.settings.licenses
 
 import io.plastique.core.flow.Effect
 

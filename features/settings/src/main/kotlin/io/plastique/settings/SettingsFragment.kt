@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
-import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
@@ -24,7 +24,7 @@ class SettingsFragment : BasePreferenceFragment() {
     @Inject lateinit var sessionManager: SessionManager
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.preferences)
+        setPreferencesFromResource(R.xml.settings_main, rootKey)
 
         val matureContentPreference = findPreference<Preference>("content.show_mature")
         matureContentPreference.summaryProvider = Preference.SummaryProvider<Preference> { preference ->
@@ -43,6 +43,11 @@ class SettingsFragment : BasePreferenceFragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().title = preferenceScreen.title
+    }
+
     private fun getMatureContentSummary(): CharSequence {
         val signInText = getString(R.string.common_button_sign_in)
         return SpannableString.valueOf(getString(R.string.settings_content_show_mature_summary, signInText)).apply {
@@ -57,7 +62,7 @@ class SettingsFragment : BasePreferenceFragment() {
     }
 }
 
-class MatureContentPreference(context: Context, attrs: AttributeSet?) : SwitchPreference(context, attrs) {
+class MatureContentPreference(context: Context, attrs: AttributeSet?) : SwitchPreferenceCompat(context, attrs) {
     override fun syncSummaryView(holder: PreferenceViewHolder) {
         super.syncSummaryView(holder)
         val summaryView = holder.findViewById(android.R.id.summary) as TextView

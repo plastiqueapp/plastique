@@ -1,4 +1,4 @@
-package io.plastique.settings.about.licenses
+package io.plastique.settings.licenses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

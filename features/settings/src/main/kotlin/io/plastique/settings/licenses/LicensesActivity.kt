@@ -1,4 +1,4 @@
-package io.plastique.settings.about.licenses
+package io.plastique.settings.licenses
 
 import android.content.Context
 import android.content.Intent

@@ -4,17 +4,10 @@
 
     <application>
         <activity
-            android:name=".about.AboutActivity"
-            android:label="@string/about_title"
+            android:name=".licenses.LicensesActivity"
+            android:label="@string/licenses_title"
             android:parentActivityName=".SettingsActivity" />
 
-        <activity
-            android:name=".about.licenses.LicensesActivity"
-            android:label="@string/licenses_title"
-            android:parentActivityName=".about.AboutActivity" />
-
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/settings_title" />
+        <activity android:name=".SettingsActivity" />
     </application>
 </manifest>

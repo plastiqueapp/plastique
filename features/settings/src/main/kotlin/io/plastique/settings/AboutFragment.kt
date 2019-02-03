@@ -1,4 +1,4 @@
-package io.plastique.settings.about
+package io.plastique.settings
 
 import android.content.Context
 import android.graphics.Color
@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
@@ -14,12 +15,7 @@ import io.plastique.core.BrowserLauncher
 import io.plastique.core.config.AppConfig
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
-import io.plastique.settings.BasePreferenceFragment
-import io.plastique.settings.R
-import io.plastique.settings.SettingsFragmentComponent
-import io.plastique.settings.SettingsNavigator
-import io.plastique.settings.about.licenses.LicensesActivity
-import io.plastique.settings.forEach
+import io.plastique.settings.licenses.LicensesActivity
 import io.plastique.util.Intents
 import io.plastique.util.VersionNumberComparator
 import java.util.regex.Pattern
@@ -33,7 +29,7 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
     private var newVersionAvailable: Boolean = false
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences, "screen_about")
+        setPreferencesFromResource(R.xml.settings_about, rootKey)
 
         preferenceScreen.forEach { preference ->
             if (preference !is PreferenceGroup) {
@@ -63,6 +59,11 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
         } else {
             currentAppVersion
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().title = preferenceScreen.title
     }
 
     override fun onPreferenceClick(preference: Preference): Boolean {

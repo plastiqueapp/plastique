@@ -3,29 +3,41 @@ package io.plastique.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.FragmentTransaction
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceFragmentCompat.OnPreferenceStartScreenCallback
-import androidx.preference.PreferenceScreen
 import io.plastique.core.BaseActivity
 import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
-import io.plastique.settings.about.AboutActivity
 
-class SettingsActivity : BaseActivity(), OnPreferenceStartScreenCallback {
+class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
+
+        if (savedInstanceState == null) {
+            val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, SettingsFragment::class.java.name, null)
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.settings_container, fragment)
+                    .commit()
+        }
     }
 
-    override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, pref: PreferenceScreen): Boolean {
-        if (pref.key == "screen_about") {
-            startActivity(AboutActivity.createIntent(this))
-            return true
-        }
-        return false
+    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+        val args = pref.extras
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment, args)
+        fragment.arguments = args
+        fragment.setTargetFragment(caller, 0)
+
+        supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.settings_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        return true
     }
 
     override fun injectDependencies() {

@@ -1,4 +1,4 @@
-package io.plastique.settings.about.licenses
+package io.plastique.settings.licenses
 
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
@@ -11,9 +11,9 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.inject.scopes.ActivityScope
-import io.plastique.settings.about.licenses.LicensesEffect.LoadLicensesEffect
-import io.plastique.settings.about.licenses.LicensesEvent.LoadErrorEvent
-import io.plastique.settings.about.licenses.LicensesEvent.LoadFinishedEvent
+import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
+import io.plastique.settings.licenses.LicensesEvent.LoadErrorEvent
+import io.plastique.settings.licenses.LicensesEvent.LoadFinishedEvent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions

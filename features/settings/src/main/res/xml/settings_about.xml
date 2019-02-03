@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:title="@string/about_title">
+
+    <PreferenceCategory
+        android:title="@string/about_category_feedback"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="rate_app"
+            android:persistent="false"
+            android:title="@string/about_rate_app"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="send_feedback"
+            android:persistent="false"
+            android:title="@string/about_send_feedback"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about_category_legal"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="privacy_policy"
+            android:persistent="false"
+            android:title="@string/about_privacy_policy"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="deviantart_privacy_policy"
+            android:persistent="false"
+            android:title="@string/about_deviantart_privacy_policy"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="deviantart_tos"
+            android:persistent="false"
+            android:title="@string/about_deviantart_tos"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="licenses"
+            android:persistent="false"
+            android:title="@string/about_licenses"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about_category_other"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="app_version"
+            android:persistent="false"
+            android:title="@string/about_app_version"
+            app:iconSpaceReserved="false"
+            tools:summary="1.0" />
+    </PreferenceCategory>
+</PreferenceScreen>

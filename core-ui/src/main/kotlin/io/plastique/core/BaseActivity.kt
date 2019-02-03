@@ -71,7 +71,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
-            finish()
+            onBackPressed()
             true
         }
         else -> super.onOptionsItemSelected(item)

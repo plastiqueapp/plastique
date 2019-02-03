@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_title">
+
+    <PreferenceCategory
+        android:title="@string/settings_category_appearance"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            android:defaultValue="light"
+            android:entries="@array/settings_appearance_theme_names"
+            android:entryValues="@array/settings_appearance_theme_values"
+            android:key="ui.theme"
+            android:title="@string/settings_appearance_theme"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_content"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="content.show_literature"
+            android:title="@string/settings_content_show_literature"
+            app:iconSpaceReserved="false" />
+
+        <io.plastique.settings.MatureContentPreference
+            android:defaultValue="false"
+            android:key="content.show_mature"
+            android:title="@string/settings_content_show_mature"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_about"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:summary="@string/settings_about_summary"
+            android:title="@string/settings_about"
+            app:fragment="io.plastique.settings.AboutFragment"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
