@@ -14,12 +14,7 @@ class FragmentListPagerAdapter(
 
     override fun getItem(position: Int): Fragment {
         val page = pages[position]
-        return fragmentManager.fragmentFactory.instantiate(context.classLoader, page.fragmentClass.name, page.args).apply {
-            // Workaround for bug where arguments are ignored by FragmentFactory
-            if (arguments == null) {
-                arguments = page.args
-            }
-        }
+        return fragmentManager.fragmentFactory.instantiate(context.classLoader, page.fragmentClass.name, page.args)
     }
 
     override fun getCount(): Int = pages.size
@@ -28,5 +23,5 @@ class FragmentListPagerAdapter(
         return context.getString(pages[position].titleId)
     }
 
-    data class Page(@StringRes val titleId: Int, val fragmentClass: Class<out Fragment>, val args: Bundle = Bundle.EMPTY)
+    data class Page(@StringRes val titleId: Int, val fragmentClass: Class<out Fragment>, val args: Bundle? = null)
 }

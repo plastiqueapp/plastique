@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
-    @Inject lateinit var fragmentFactory: MainFragmentFactory
+    @Inject lateinit var mainFragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
@@ -52,7 +52,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.tab_content, fragmentFactory.createFragment(R.id.main_tab_browse))
+                    .replace(R.id.tab_content, mainFragmentFactory.createFragment(R.id.main_tab_browse))
                     .commit()
         }
     }
@@ -81,7 +81,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.tab_content, fragmentFactory.createFragment(item.itemId))
+                .replace(R.id.tab_content, mainFragmentFactory.createFragment(item.itemId))
                 .commit()
         return true
     }

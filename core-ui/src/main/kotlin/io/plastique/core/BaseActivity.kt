@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentFactory
 import io.plastique.core.config.AppConfig
 import io.plastique.core.themes.ThemeManager
 import io.plastique.inject.ActivityComponent
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, FragmentComponent.Factory {
     @Inject lateinit var appConfig: AppConfig
+    @Inject lateinit var fragmentFactory: FragmentFactory
     @Inject lateinit var themeManager: ThemeManager
 
     private lateinit var currentTheme: String
@@ -29,6 +31,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies()
+        supportFragmentManager.fragmentFactory = fragmentFactory
         currentTheme = themeManager.currentTheme
         themeManager.applyTheme(this, currentTheme)
         super.onCreate(savedInstanceState)
