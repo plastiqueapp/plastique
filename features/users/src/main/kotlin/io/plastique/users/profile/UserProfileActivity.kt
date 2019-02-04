@@ -71,7 +71,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         realNameView = findViewById(R.id.user_real_name)
 
         contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
-        progressDialogController = ProgressDialogController(supportFragmentManager)
+        progressDialogController = ProgressDialogController(this, supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
         emptyView = findViewById(android.R.id.empty)

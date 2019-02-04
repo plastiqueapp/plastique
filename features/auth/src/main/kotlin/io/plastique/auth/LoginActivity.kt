@@ -15,6 +15,7 @@ import io.plastique.core.MvvmActivity
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.showAllowingStateLoss
 import io.plastique.inject.getComponent
@@ -40,7 +41,7 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
         webView.webChromeClient = LoginWebChromeClient()
         webView.webViewClient = LoginWebViewClient()
 
-        progressDialogController = ProgressDialogController(supportFragmentManager, titleId = R.string.login_progress_title)
+        progressDialogController = ProgressDialogController(this, supportFragmentManager, titleId = R.string.login_progress_title)
 
         viewModel.state
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,7 +71,9 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
 
         LoginViewState.Error -> {
             progressDialogController.isShown = false
-            val dialog = MessageDialogFragment.newInstance(R.string.common_error, R.string.login_error_message)
+            val dialog = supportFragmentManager.fragmentFactory.instantiate<MessageDialogFragment>(this, args = MessageDialogFragment.newArgs(
+                    titleId = R.string.common_error,
+                    messageId = R.string.login_error_message))
             dialog.showAllowingStateLoss(supportFragmentManager, DIALOG_AUTH_ERROR)
         }
     }

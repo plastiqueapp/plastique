@@ -1,7 +1,7 @@
 package io.plastique.gallery
 
+import android.os.Bundle
 import io.plastique.core.extensions.args
-import io.plastique.core.extensions.withArguments
 import io.plastique.deviations.list.BaseDeviationListFragment
 import io.plastique.inject.getComponent
 
@@ -16,8 +16,8 @@ class FolderDeviationListFragment : BaseDeviationListFragment<GalleryDeviationPa
     companion object {
         private const val ARG_FOLDER_ID = "folder_id"
 
-        fun newInstance(folderId: GalleryFolderId): FolderDeviationListFragment {
-            return FolderDeviationListFragment().withArguments {
+        fun newArgs(folderId: GalleryFolderId): Bundle {
+            return Bundle().apply {
                 putParcelable(ARG_FOLDER_ID, folderId)
             }
         }

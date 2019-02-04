@@ -22,6 +22,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.content.ProgressViewController
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
@@ -122,7 +123,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)
-        progressDialogController = ProgressDialogController(childFragmentManager)
+        progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(refreshLayout)
     }
 
@@ -144,7 +145,8 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.feed_action_settings -> {
-            FeedSettingsFragment().show(childFragmentManager, DIALOG_FEED_SETTINGS)
+            val fragment = childFragmentManager.fragmentFactory.instantiate<FeedSettingsFragment>(requireContext())
+            fragment.show(childFragmentManager, DIALOG_FEED_SETTINGS)
             true
         }
         else -> super.onOptionsItemSelected(item)

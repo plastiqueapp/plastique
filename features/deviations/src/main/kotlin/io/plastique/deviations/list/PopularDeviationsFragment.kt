@@ -3,6 +3,7 @@ package io.plastique.deviations.list
 import android.app.Activity
 import android.content.Intent
 import io.plastique.api.deviations.TimeRange
+import io.plastique.core.extensions.instantiate
 import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.deviations.PopularParams
 import io.plastique.deviations.categories.Category
@@ -28,7 +29,7 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
                 startActivityForResult(intent, REQUEST_CODE_SELECT_CATEGORY)
             }
             Tag.TYPE_TIME_RANGE -> {
-                val dialog = TimeRangeDialogFragment.newInstance()
+                val dialog = childFragmentManager.fragmentFactory.instantiate<TimeRangeDialogFragment>(requireContext())
                 dialog.show(childFragmentManager, null)
             }
         }

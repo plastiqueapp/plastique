@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.annotation.StringRes
 import io.plastique.core.extensions.args
-import io.plastique.core.extensions.withArguments
 
 class ProgressDialogFragment : BaseDialogFragment() {
     init {
@@ -28,8 +27,8 @@ class ProgressDialogFragment : BaseDialogFragment() {
         private const val ARG_TITLE_ID = "title_id"
         private const val ARG_MESSAGE_ID = "message_id"
 
-        fun newInstance(@StringRes titleId: Int, @StringRes messageId: Int): ProgressDialogFragment {
-            return ProgressDialogFragment().withArguments {
+        fun newArgs(@StringRes titleId: Int, @StringRes messageId: Int): Bundle {
+            return Bundle().apply {
                 putInt(ARG_TITLE_ID, titleId)
                 putInt(ARG_MESSAGE_ID, messageId)
             }

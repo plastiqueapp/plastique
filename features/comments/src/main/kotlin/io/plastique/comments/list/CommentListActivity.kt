@@ -8,6 +8,7 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.R
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
@@ -23,7 +24,7 @@ class CommentListActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             val username = intent.getParcelableExtra<CommentThreadId>(EXTRA_THREAD_ID)!!
-            contentFragment = CommentListFragment().apply { arguments = CommentListFragment.newArgs(username) }
+            contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = CommentListFragment.newArgs(username))
             supportFragmentManager.beginTransaction()
                     .add(R.id.comments_container, contentFragment)
                     .commit()

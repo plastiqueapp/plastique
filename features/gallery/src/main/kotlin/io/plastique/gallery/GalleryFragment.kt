@@ -23,7 +23,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.add
-import io.plastique.core.extensions.args
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
@@ -131,7 +131,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = args.getString(ARG_USERNAME)
+        val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
                 .pairwiseWithPrevious()
@@ -181,11 +181,11 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
     }
 
     private fun showCreateFolderDialog() {
-        val dialog = InputDialogFragment.newInstance(
+        val dialog = childFragmentManager.fragmentFactory.instantiate<InputDialogFragment>(requireContext(), args = InputDialogFragment.newArgs(
                 title = R.string.gallery_action_create_folder,
                 hint = R.string.gallery_folder_name_hint,
                 positiveButton = R.string.gallery_button_create,
-                maxLength = FOLDER_NAME_MAX_LENGTH)
+                maxLength = FOLDER_NAME_MAX_LENGTH))
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 

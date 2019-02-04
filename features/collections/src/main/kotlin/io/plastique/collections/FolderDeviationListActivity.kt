@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
@@ -23,7 +24,7 @@ class FolderDeviationListActivity : BaseActivity() {
         initToolbar(folderId.username, folderName)
 
         if (savedInstanceState == null) {
-            contentFragment = FolderDeviationListFragment.newInstance(folderId)
+            contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = FolderDeviationListFragment.newArgs(folderId))
             supportFragmentManager.beginTransaction()
                     .add(R.id.deviations_container, contentFragment)
                     .commit()

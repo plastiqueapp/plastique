@@ -29,7 +29,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.add
-import io.plastique.core.extensions.args
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
@@ -133,7 +133,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = args.getString(ARG_USERNAME)
+        val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
                 .pairwiseWithPrevious()
@@ -183,11 +183,11 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
     }
 
     private fun showCreateFolderDialog() {
-        val dialog = InputDialogFragment.newInstance(
+        val dialog = childFragmentManager.fragmentFactory.instantiate<InputDialogFragment>(requireContext(), args = InputDialogFragment.newArgs(
                 title = R.string.collections_action_create_folder,
                 hint = R.string.collections_folder_name_hint,
                 positiveButton = R.string.collections_button_create,
-                maxLength = FOLDER_NAME_MAX_LENGTH)
+                maxLength = FOLDER_NAME_MAX_LENGTH))
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 

@@ -12,7 +12,6 @@ import com.google.android.material.textfield.TextInputLayout
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.doAfterTextChanged
 import io.plastique.core.extensions.findCallback
-import io.plastique.core.extensions.withArguments
 import io.plastique.core.ui.R
 
 interface OnInputDialogResultListener {
@@ -74,13 +73,13 @@ class InputDialogFragment : BaseDialogFragment() {
         private const val ARG_NEGATIVE_BUTTON = "negative_button"
         private const val ARG_MAX_LENGTH = "max_length"
 
-        fun newInstance(
+        fun newArgs(
             @StringRes title: Int,
             @StringRes hint: Int,
             @StringRes positiveButton: Int = R.string.common_button_ok,
             @StringRes negativeButton: Int = R.string.common_button_cancel,
             maxLength: Int = -1
-        ): InputDialogFragment = InputDialogFragment().withArguments {
+        ): Bundle = Bundle().apply {
             putInt(ARG_TITLE, title)
             putInt(ARG_HINT, hint)
             putInt(ARG_POSITIVE_BUTTON, positiveButton)

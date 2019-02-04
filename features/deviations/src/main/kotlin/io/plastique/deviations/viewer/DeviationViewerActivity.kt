@@ -104,7 +104,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(navigationContext, deviationId) }
 
         contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
-        progressDialogController = ProgressDialogController(supportFragmentManager)
+        progressDialogController = ProgressDialogController(this, supportFragmentManager)
         snackbarController = SnackbarController(rootView)
 
         emptyView = findViewById(android.R.id.empty)

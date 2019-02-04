@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import io.plastique.core.extensions.args
-import io.plastique.core.extensions.withArguments
 import io.plastique.core.ui.R
 
 class MessageDialogFragment : BaseDialogFragment() {
@@ -27,8 +26,8 @@ class MessageDialogFragment : BaseDialogFragment() {
         private const val ARG_MESSAGE = "message"
         private const val ARG_MESSAGE_ID = "message_id"
 
-        fun newInstance(@StringRes titleId: Int, @StringRes messageId: Int): MessageDialogFragment {
-            return MessageDialogFragment().withArguments {
+        fun newArgs(@StringRes titleId: Int, @StringRes messageId: Int): Bundle {
+            return Bundle().apply {
                 putInt(ARG_TITLE_ID, titleId)
                 putInt(ARG_MESSAGE_ID, messageId)
             }

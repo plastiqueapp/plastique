@@ -92,7 +92,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        progressDialogController = ProgressDialogController(childFragmentManager)
+        progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(refreshLayout)
     }
 

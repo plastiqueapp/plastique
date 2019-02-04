@@ -51,12 +51,6 @@ class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListene
         TimeRange.Month -> R.string.deviations_popular_time_range_1_month
         TimeRange.AllTime -> R.string.deviations_popular_time_range_all_time
     }
-
-    companion object {
-        fun newInstance(): TimeRangeDialogFragment {
-            return TimeRangeDialogFragment()
-        }
-    }
 }
 
 interface OnTimeRangeSelectedListener {

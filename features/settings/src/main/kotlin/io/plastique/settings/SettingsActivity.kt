@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import io.plastique.core.BaseActivity
+import io.plastique.core.extensions.instantiate
 import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
 
@@ -32,7 +33,7 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         if (savedInstanceState == null) {
-            val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, SettingsFragment::class.java.name, null)
+            val fragment = supportFragmentManager.fragmentFactory.instantiate<SettingsFragment>(this)
             supportFragmentManager.beginTransaction()
                     .add(R.id.settings_container, fragment)
                     .commit()

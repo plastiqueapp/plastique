@@ -52,7 +52,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.tab_content, mainFragmentFactory.createFragment(R.id.main_tab_browse))
+                    .add(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, R.id.main_tab_browse))
                     .commit()
         }
     }
@@ -81,7 +81,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.tab_content, mainFragmentFactory.createFragment(item.itemId))
+                .replace(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, item.itemId))
                 .commit()
         return true
     }
