@@ -3,6 +3,9 @@ package io.plastique.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -11,12 +14,22 @@ import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
 
 class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+    private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentViewCreated(fragmentManager: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
+            if (fragment is PreferenceFragmentCompat) {
+                title = fragment.preferenceScreen.title
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         if (savedInstanceState == null) {
             val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, SettingsFragment::class.java.name, null)

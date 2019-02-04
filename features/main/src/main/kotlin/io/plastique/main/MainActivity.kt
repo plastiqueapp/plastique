@@ -26,7 +26,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
     @Inject lateinit var navigator: MainNavigator
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
-        override fun onFragmentViewCreated(fm: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
+        override fun onFragmentViewCreated(fragmentManager: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
             if (fragment is MainPage) {
                 onPageCreated(fragment)
             }
@@ -55,11 +55,6 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
                     .replace(R.id.tab_content, fragmentFactory.createFragment(R.id.main_tab_browse))
                     .commit()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

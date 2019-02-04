@@ -43,11 +43,6 @@ class SettingsFragment : BasePreferenceFragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().title = preferenceScreen.title
-    }
-
     private fun getMatureContentSummary(): CharSequence {
         val signInText = getString(R.string.common_button_sign_in)
         return SpannableString.valueOf(getString(R.string.settings_content_show_mature_summary, signInText)).apply {

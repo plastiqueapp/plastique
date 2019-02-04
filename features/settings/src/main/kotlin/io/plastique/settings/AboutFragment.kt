@@ -7,7 +7,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import android.view.View
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
@@ -59,11 +58,6 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
         } else {
             currentAppVersion
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().title = preferenceScreen.title
     }
 
     override fun onPreferenceClick(preference: Preference): Boolean {
