@@ -59,13 +59,12 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            allWarningsAsErrors = true
-
             if (name.endsWith("TestKotlin")) {
                 jvmTarget = "1.8"
             }
 
             if (name.toLowerCase().contains("release")) {
+                allWarningsAsErrors = true
                 freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
             }
         }
