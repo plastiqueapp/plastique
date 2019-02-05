@@ -15,17 +15,6 @@ class UserRepositoryImpl @Inject constructor(
                 .map { user -> user.toUserEntity().also { userDao.insertOrUpdate(it) }.toUser() }
     }
 
-    override fun getUserByName(username: String): Single<User> {
-        return userDao.getUserByName(username)
-                .switchIfEmpty(getUserByNameFromServer(username))
-                .map { userEntity -> userEntity.toUser() }
-    }
-
-    private fun getUserByNameFromServer(username: String): Single<UserEntity> {
-        return userService.getUserProfile(username)
-                .map { userProfile -> userProfile.user.toUserEntity().also { userDao.insertOrUpdate(it) } }
-    }
-
     override fun put(user: UserDto) {
         userDao.insertOrUpdate(user.toUserEntity())
     }

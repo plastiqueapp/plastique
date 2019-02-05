@@ -6,14 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import io.reactivex.Observable
 
 @Dao
 interface StatusDao {
-    @Transaction
-    @Query("SELECT * FROM statuses WHERE id = :statusId")
-    fun getStatusById(statusId: String): Observable<List<StatusEntityWithRelations>>
-
     @Transaction
     @Query("SELECT statuses.* FROM statuses INNER JOIN user_statuses ON statuses.id = user_statuses.status_id WHERE user_statuses.`key` = :key ORDER BY user_statuses.`order`")
     fun getStatusesByKey(key: String): List<StatusEntityWithRelations>

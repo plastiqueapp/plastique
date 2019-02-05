@@ -8,17 +8,10 @@ import androidx.room.Transaction
 import androidx.room.Update
 import io.plastique.users.profile.UserProfileEntity
 import io.plastique.users.profile.UserProfileEntityWithRelations
-import io.reactivex.Maybe
 import io.reactivex.Observable
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM users WHERE id = :userId")
-    fun getUserById(userId: String): UserEntity?
-
-    @Query("SELECT * FROM USERS WHERE name = :username")
-    fun getUserByName(username: String): Maybe<UserEntity>
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(user: UserEntity): Long
 
