@@ -51,6 +51,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
             avatarUrl = deviation.author.avatarUrl
             GlideApp.with(this)
                     .load(avatarUrl)
+                    .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()
                     .into(avatarView)

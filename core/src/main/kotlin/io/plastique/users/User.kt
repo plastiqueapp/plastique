@@ -4,7 +4,7 @@ data class User(
     val id: String,
     val name: String,
     val type: UserType,
-    val avatarUrl: String
+    val avatarUrl: String?
 )
 
 enum class UserType {
@@ -26,5 +26,6 @@ fun UserEntity.toUser(): User {
         "banned" -> UserType.Banned
         else -> UserType.Regular
     }
+    val avatarUrl = if (avatarUrl != "https://a.deviantart.net/avatars/default.gif") avatarUrl else null
     return User(id = id, name = name, type = userType, avatarUrl = avatarUrl)
 }

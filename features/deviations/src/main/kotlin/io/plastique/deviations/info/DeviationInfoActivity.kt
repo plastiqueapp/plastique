@@ -84,6 +84,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
 
                 GlideApp.with(this)
                         .load(state.author.avatarUrl)
+                        .fallback(R.drawable.default_avatar_64dp)
                         .circleCrop()
                         .dontAnimate()
                         .into(authorAvatarView)

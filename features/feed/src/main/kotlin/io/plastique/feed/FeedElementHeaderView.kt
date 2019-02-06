@@ -54,6 +54,7 @@ class FeedElementHeaderView @JvmOverloads constructor(context: Context, attrs: A
 
         GlideApp.with(avatarView)
                 .load(user.avatarUrl)
+                .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
                 .into(avatarView)

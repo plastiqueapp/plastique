@@ -125,6 +125,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
 
             GlideApp.with(this)
                     .load(state.userProfile.user.avatarUrl)
+                    .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()
                     .into(avatarView)

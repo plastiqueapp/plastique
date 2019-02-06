@@ -47,6 +47,7 @@ private class CommentItemDelegate(
 
         GlideApp.with(holder.avatarView)
                 .load(item.comment.author.avatarUrl)
+                .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
                 .into(holder.avatarView)

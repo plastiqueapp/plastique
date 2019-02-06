@@ -27,6 +27,7 @@ private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewH
 
         GlideApp.with(holder.avatar)
                 .load(item.watcher.user.avatarUrl)
+                .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
                 .into(holder.avatar)
