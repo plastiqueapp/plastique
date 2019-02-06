@@ -10,7 +10,7 @@
     <string name="deviations_action_switch_layout_list">List</string>
     <string name="deviations_action_switch_layout_flex">Flex</string>
 
-    <string name="deviations_browse_title">Browse art</string>
+    <string name="deviations_browse_title">Browse</string>
     <string name="deviations_browse_page_hot">Hot</string>
     <string name="deviations_browse_page_popular">Popular</string>
     <string name="deviations_browse_page_undiscovered">Undiscovered</string>
