@@ -9,15 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
-import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
-import io.plastique.main.MainPage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
+class ProfileFragment : MvvmFragment<ProfileViewModel>() {
     private lateinit var signInButton: Button
     @Inject lateinit var navigator: ProfileNavigator
 
@@ -59,11 +57,6 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(), MainPage {
 
     private fun renderState(state: ProfileViewState) {
         signInButton.isVisible = state.showSignInButton
-    }
-
-    override fun getTitle(): Int = R.string.profile_title
-
-    override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }
 
     override fun injectDependencies() {

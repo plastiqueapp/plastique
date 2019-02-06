@@ -21,7 +21,7 @@
         android:title="@string/main_tab_gallery" />
 
     <item
-        android:id="@+id/main_tab_profile"
-        android:icon="@drawable/ic_tab_profile_24dp"
-        android:title="@string/main_tab_profile" />
+        android:id="@+id/main_tab_notifications"
+        android:icon="@drawable/ic_tab_notifications_24dp"
+        android:title="@string/main_tab_notifications" />
 </menu>

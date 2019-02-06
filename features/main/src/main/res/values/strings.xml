@@ -4,7 +4,7 @@
     <string name="main_tab_browse">Browse</string>
     <string name="main_tab_collections">Collections</string>
     <string name="main_tab_gallery">Gallery</string>
-    <string name="main_tab_profile">Profile</string>
+    <string name="main_tab_notifications">Notifications</string>
     <string name="main_tab_watch">Watch</string>
 
     <string name="main_action_settings">Settings</string>

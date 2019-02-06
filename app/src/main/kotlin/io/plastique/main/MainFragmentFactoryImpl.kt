@@ -10,7 +10,7 @@ import io.plastique.core.extensions.instantiate
 import io.plastique.deviations.BrowseDeviationsFragment
 import io.plastique.feed.FeedFragment
 import io.plastique.gallery.GalleryFragment
-import io.plastique.profile.ProfileFragment
+import io.plastique.notifications.NotificationsFragment
 import javax.inject.Inject
 
 class MainFragmentFactoryImpl @Inject constructor() : MainFragmentFactory {
@@ -18,7 +18,7 @@ class MainFragmentFactoryImpl @Inject constructor() : MainFragmentFactory {
         R.id.main_tab_browse -> fragmentFactory.instantiate<BrowseDeviationsFragment>(context)
         R.id.main_tab_collections -> fragmentFactory.instantiate<CollectionsFragment>(context)
         R.id.main_tab_gallery -> fragmentFactory.instantiate<GalleryFragment>(context)
-        R.id.main_tab_profile -> fragmentFactory.instantiate<ProfileFragment>(context)
+        R.id.main_tab_notifications -> fragmentFactory.instantiate<NotificationsFragment>(context)
         R.id.main_tab_watch -> fragmentFactory.instantiate<FeedFragment>(context)
         else -> throw IllegalArgumentException("Unhandled itemId $itemId")
     }
