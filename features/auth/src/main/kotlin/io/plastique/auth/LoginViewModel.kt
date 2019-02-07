@@ -1,7 +1,6 @@
 package io.plastique.auth
 
 import android.net.Uri
-import android.webkit.CookieManager
 import com.sch.rxjava2.extensions.ofType
 import io.plastique.auth.LoginEffect.AuthenticateEffect
 import io.plastique.auth.LoginEffect.GenerateAuthUrlEffect
@@ -24,8 +23,7 @@ import javax.inject.Inject
 @ActivityScope
 class LoginViewModel @Inject constructor(
     stateReducer: LoginStateReducer,
-    private val authenticator: Authenticator,
-    private val cookieManager: CookieManager
+    private val authenticator: Authenticator
 ) : ViewModel() {
     private val loop = MainLoop(
             reducer = stateReducer,
@@ -62,10 +60,7 @@ class LoginViewModel @Inject constructor(
         return effects.ofType<AuthenticateEffect>()
                 .switchMapSingle { effect ->
                     authenticator.onRedirect(effect.redirectUri)
-                            .doOnError { error ->
-                                Timber.e(error)
-                                cookieManager.removeAllCookies(null)
-                            }
+                            .doOnError(Timber::e)
                             .toSingleDefault<LoginEvent>(AuthSuccessEvent)
                             .onErrorReturn { error -> AuthErrorEvent(error) }
                 }

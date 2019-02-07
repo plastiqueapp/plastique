@@ -1,5 +1,6 @@
 package io.plastique.auth
 
+import android.webkit.CookieManager
 import com.sch.rxjava2.extensions.mapError
 import com.sch.rxjava2.extensions.sneakyGet
 import io.plastique.api.auth.AuthService
@@ -20,7 +21,8 @@ import javax.inject.Singleton
 class SessionManagerImpl @Inject constructor(
     private val apiConfig: ApiConfiguration,
     private val authService: AuthService,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val cookieManager: CookieManager
 ) : SessionManager {
 
     private val sessionSubject = BehaviorSubject.create<Session>().toSerialized()
@@ -64,6 +66,7 @@ class SessionManagerImpl @Inject constructor(
 
     override fun logout() {
         session = Session.None
+        cookieManager.removeAllCookies(null)
     }
 
     private fun refreshAccessToken(session: Session): Single<Session> = when (session) {

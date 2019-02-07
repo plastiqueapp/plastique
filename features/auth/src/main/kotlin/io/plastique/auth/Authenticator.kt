@@ -1,6 +1,7 @@
 package io.plastique.auth
 
 import android.net.Uri
+import android.webkit.CookieManager
 import io.plastique.api.auth.AuthService
 import io.plastique.api.users.UserService
 import io.plastique.core.client.ApiConfiguration
@@ -18,7 +19,8 @@ class Authenticator @Inject constructor(
     private val authService: AuthService,
     private val sessionManager: SessionManager,
     private val userRepository: UserRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val cookieManager: CookieManager
 ) {
     @Volatile private var csrfToken: String? = null
 
@@ -56,6 +58,7 @@ class Authenticator @Inject constructor(
                     authCode = authCode,
                     redirectUri = apiConfig.authUrl)
         }
+                .doOnError { cookieManager.removeAllCookies(null) }
                 .flatMap { tokenResult ->
                     csrfToken = null
                     userService.whoami(tokenResult.accessToken)
