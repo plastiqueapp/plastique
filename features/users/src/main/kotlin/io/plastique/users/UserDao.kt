@@ -12,6 +12,9 @@ import io.reactivex.Observable
 
 @Dao
 interface UserDao {
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun getUserById(userId: String): Observable<List<UserEntity>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(user: UserEntity): Long
 

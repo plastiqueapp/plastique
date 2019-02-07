@@ -1,12 +1,12 @@
 package io.plastique.users
 
 import io.plastique.api.users.UserDto
-import io.reactivex.Single
+import io.reactivex.Observable
 
 interface UserRepository {
-    fun getCurrentUser(accessToken: String): Single<User>
+    fun getCurrentUser(userId: String): Observable<User>
 
-    fun put(user: UserDto)
+    fun persistWithTimestamp(user: UserDto)
 
     fun put(users: Collection<UserDto>)
 

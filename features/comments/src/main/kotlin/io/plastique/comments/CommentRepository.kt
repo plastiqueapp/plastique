@@ -126,7 +126,7 @@ class CommentRepository @Inject constructor(
     fun persistComment(comment: CommentDto) {
         val commentEntity = comment.toCommentEntity()
         database.runInTransaction {
-            userRepository.put(comment.author)
+            userRepository.put(listOf(comment.author))
             commentDao.insertOrUpdate(commentEntity)
         }
     }

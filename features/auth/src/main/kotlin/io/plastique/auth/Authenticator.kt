@@ -2,6 +2,7 @@ package io.plastique.auth
 
 import android.net.Uri
 import io.plastique.api.auth.AuthService
+import io.plastique.api.users.UserService
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
@@ -16,7 +17,8 @@ class Authenticator @Inject constructor(
     private val apiConfig: ApiConfiguration,
     private val authService: AuthService,
     private val sessionManager: SessionManager,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userService: UserService
 ) {
     @Volatile private var csrfToken: String? = null
 
@@ -56,9 +58,9 @@ class Authenticator @Inject constructor(
         }
                 .flatMap { tokenResult ->
                     csrfToken = null
-
-                    userRepository.getCurrentUser(tokenResult.accessToken)
+                    userService.whoami(tokenResult.accessToken)
                             .map { user ->
+                                userRepository.persistWithTimestamp(user)
                                 Session.User(
                                         accessToken = tokenResult.accessToken,
                                         refreshToken = tokenResult.refreshToken!!,

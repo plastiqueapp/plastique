@@ -1,5 +1,6 @@
 package io.plastique.main
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,14 +17,18 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
+import io.plastique.glide.CustomDrawableTarget
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.util.DragDisabledCallback
+import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     @Inject lateinit var mainFragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
+    private lateinit var state: MainViewState
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fragmentManager: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
@@ -38,11 +43,10 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         setContentView(R.layout.activity_main)
         setActionBar(R.id.toolbar)
 
-        expandableToolbarLayout = findViewById(R.id.expandable_toolbar)
-
         val appBar = findViewById<AppBarLayout>(R.id.appbar)
         val appBarBehavior = appBar.getLayoutBehavior<AppBarLayout.Behavior>()
         appBarBehavior.setDragCallback(DragDisabledCallback)
+        expandableToolbarLayout = findViewById(R.id.expandable_toolbar)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
@@ -55,25 +59,25 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
                     .add(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, R.id.main_tab_browse))
                     .commit()
         }
+
+        viewModel.init()
+        viewModel.state
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { state -> renderState(state) }
+                .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val logoutItem = menu.findItem(R.id.main_action_logout)
-        logoutItem.isVisible = viewModel.isLoggedIn()
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.main_action_settings -> {
-            navigator.openSettings(navigationContext)
+        android.R.id.home -> {
+            state.user?.let { navigator.openUserProfile(navigationContext, it) }
             true
         }
-        R.id.main_action_logout -> {
-            viewModel.onLogoutClick()
+        R.id.main_action_settings -> {
+            navigator.openSettings(navigationContext)
             true
         }
         else -> false
@@ -93,6 +97,26 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         }
     }
 
+    private fun renderState(state: MainViewState) {
+        this.state = state
+
+        if (state.user != null) {
+            val avatarSize = resources.getDimensionPixelSize(R.dimen.main_avatar_size)
+            GlideApp.with(this)
+                    .load(state.user.avatarUrl)
+                    .placeholder(R.drawable.default_avatar_32dp)
+                    .error(R.drawable.default_avatar_32dp)
+                    .circleCrop()
+                    .into(object : CustomDrawableTarget(avatarSize, avatarSize) {
+                        override fun setDrawable(resource: Drawable?) {
+                            setCurrentUserIcon(resource)
+                        }
+                    })
+        } else {
+            setCurrentUserIcon(null)
+        }
+    }
+
     override fun injectDependencies() {
         getComponent<MainActivityComponent>().inject(this)
     }
@@ -103,5 +127,12 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
             expandableToolbarLayout.removeViews(1, expandableToolbarLayout.childCount - 1)
         }
         page.createAppBarViews(expandableToolbarLayout)
+    }
+
+    private fun setCurrentUserIcon(drawable: Drawable?) {
+        supportActionBar!!.apply {
+            setDisplayHomeAsUpEnabled(drawable != null)
+            setHomeAsUpIndicator(drawable)
+        }
     }
 }

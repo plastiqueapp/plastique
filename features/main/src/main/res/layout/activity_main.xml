@@ -24,7 +24,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:popupTheme="?toolbarPopupTheme" />
+                app:contentInsetStartWithNavigation="64dp"
+                app:popupTheme="?toolbarPopupTheme"
+                app:titleMarginStart="0dp" />
         </io.plastique.core.ExpandableToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
