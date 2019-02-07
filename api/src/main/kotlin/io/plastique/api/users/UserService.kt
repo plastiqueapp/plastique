@@ -16,7 +16,7 @@ interface UserService {
 
     @GET("user/whoami")
     @AccessScope("user")
-    fun whoami(@Query("access_token") accessToken: String): Single<UserDto>
+    fun whoami(@Query("access_token") accessToken: String? = null): Single<UserDto>
 
     @POST("user/whois")
     @FormUrlEncoded

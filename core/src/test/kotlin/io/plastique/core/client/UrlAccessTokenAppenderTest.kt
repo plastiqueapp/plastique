@@ -2,32 +2,12 @@ package io.plastique.core.client
 
 import okhttp3.Request
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class UrlAccessTokenAppenderTest {
     private val appender = UrlAccessTokenAppender()
-
-    @Test
-    @DisplayName("hasAccessToken returns true if request URL has access token")
-    fun hasAccessToken_true() {
-        val request = Request.Builder()
-                .url("https://acme.org?access_token=abc")
-                .build()
-        assertTrue(appender.hasAccessToken(request))
-    }
-
-    @Test
-    @DisplayName("hasAccessToken returns false if request URL has no access token")
-    fun hasAccessToken_false() {
-        val request = Request.Builder()
-                .url("https://acme.org")
-                .build()
-        assertFalse(appender.hasAccessToken(request))
-    }
 
     @Test
     @DisplayName("getAccessToken returns access token")

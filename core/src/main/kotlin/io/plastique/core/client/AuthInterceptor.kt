@@ -1,5 +1,6 @@
 package io.plastique.core.client
 
+import androidx.annotation.Keep
 import io.plastique.api.common.ApiConstants
 import io.plastique.core.BuildConfig
 import okhttp3.Authenticator
@@ -22,7 +23,7 @@ class AuthInterceptor @Inject constructor(
             return null
         }
         val request = response.request()
-        if (request.isAuthorized) {
+        if (request.isAuthorized && request.tag(AccessTokenProvidedTag::class.java) == null) {
             val previousAccessToken = accessTokenAppender.getAccessToken(request)!!
             val accessToken = accessTokenProvider.getAccessToken(previousAccessToken)
 
@@ -39,7 +40,10 @@ class AuthInterceptor @Inject constructor(
                 .header(HttpHeaders.API_VERSION, ApiConstants.VERSION)
                 .header(HttpHeaders.USER_AGENT, configuration.userAgent)
 
-        if (request.isAuthorized && !accessTokenAppender.hasAccessToken(request)) {
+        val providedAccessToken = request.url().queryParameter("access_token")
+        if (providedAccessToken != null) {
+            builder.tag(AccessTokenProvidedTag::class.java, AccessTokenProvidedTag)
+        } else if (request.isAuthorized) {
             val accessToken = accessTokenProvider.getAccessToken()
             accessTokenAppender.append(accessToken, request, builder)
         }
@@ -48,8 +52,8 @@ class AuthInterceptor @Inject constructor(
     }
 
     private val Request.isAuthorized: Boolean
-        get() {
-            val path = url().encodedPath()
-            return path.startsWith("/api/v1/oauth2") && !path.endsWith("whoami")
-        }
+        get() = url().encodedPath().startsWith("/api/v1/")
+
+    @Keep
+    private object AccessTokenProvidedTag
 }

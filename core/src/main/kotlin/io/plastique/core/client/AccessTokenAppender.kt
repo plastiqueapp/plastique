@@ -3,18 +3,12 @@ package io.plastique.core.client
 import okhttp3.Request
 
 interface AccessTokenAppender {
-    fun hasAccessToken(request: Request): Boolean
-
     fun getAccessToken(request: Request): String?
 
     fun append(accessToken: String, request: Request, builder: Request.Builder)
 }
 
 class HeaderAccessTokenAppender : AccessTokenAppender {
-    override fun hasAccessToken(request: Request): Boolean {
-        return request.header(HttpHeaders.AUTHORIZATION) != null
-    }
-
     override fun getAccessToken(request: Request): String? {
         return request.header(HttpHeaders.AUTHORIZATION)?.let { value ->
             val typeAndCredentials = value.split(' ')
@@ -31,10 +25,6 @@ class HeaderAccessTokenAppender : AccessTokenAppender {
 }
 
 class UrlAccessTokenAppender : AccessTokenAppender {
-    override fun hasAccessToken(request: Request): Boolean {
-        return request.url().queryParameter("access_token") != null
-    }
-
     override fun getAccessToken(request: Request): String? {
         return request.url().queryParameter("access_token")
     }
