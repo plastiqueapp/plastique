@@ -73,8 +73,10 @@ private class ListImageDeviationItemDelegate(
     }
 
     private fun chooseImage(deviation: Deviation, maxImageWidth: Int): Deviation.Image {
+        val content = deviation.content
         val preview = deviation.preview
-        return if (preview != null && preview.size.width >= maxImageWidth) preview else deviation.content!!
+        return if (preview != null && (content == null || preview.size.width >= maxImageWidth)) preview else content
+                ?: throw IllegalStateException("No preview available")
     }
 
     private fun calculateOptimalImageSize(image: Deviation.Image, maxImageWidth: Int): Size {
