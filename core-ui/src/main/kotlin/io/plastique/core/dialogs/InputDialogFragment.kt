@@ -8,9 +8,9 @@ import android.text.InputFilter
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 import io.plastique.core.extensions.args
-import io.plastique.core.extensions.doAfterTextChanged
 import io.plastique.core.extensions.findCallback
 import io.plastique.core.ui.R
 
@@ -61,7 +61,7 @@ class InputDialogFragment : BaseDialogFragment() {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = editText.text!!.isNotBlank()
         }
         editText.doAfterTextChanged { text ->
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = text.isNotBlank()
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = !text.isNullOrBlank()
         }
         return dialog
     }

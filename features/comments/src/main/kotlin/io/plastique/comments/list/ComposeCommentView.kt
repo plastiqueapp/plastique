@@ -15,8 +15,8 @@ import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import io.plastique.comments.R
-import io.plastique.core.extensions.doAfterTextChanged
 
 class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
     private val draftView: EditText
@@ -66,7 +66,7 @@ class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: Attr
         postProgressSwitcher = findViewById(R.id.comment_post_switcher)
 
         draftView = findViewById(R.id.comment_draft)
-        draftView.doAfterTextChanged { text -> postButton.isEnabled = text.isNotEmpty() }
+        draftView.doAfterTextChanged { text -> postButton.isEnabled = !text.isNullOrBlank() }
 
         replyingToView = findViewById(R.id.text_replying_to)
         cancelReplyButton = findViewById(R.id.button_cancel_reply)
