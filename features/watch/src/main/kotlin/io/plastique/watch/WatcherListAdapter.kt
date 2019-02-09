@@ -11,10 +11,14 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 
-private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
+private class WatcherItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is WatcherItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -25,8 +29,7 @@ private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewH
     override fun onBindViewHolder(item: WatcherItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.username.text = item.watcher.user.name
 
-        GlideApp.with(holder.avatar)
-                .load(item.watcher.user.avatarUrl)
+        glide.load(item.watcher.user.avatarUrl)
                 .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
@@ -51,11 +54,12 @@ private class WatcherItemDelegate(private val onViewHolderClickListener: OnViewH
 }
 
 class WatcherListAdapter(
+    glide: GlideRequests,
     private val onUserClick: OnUserClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(WatcherItemDelegate(this))
+        delegatesManager.addDelegate(WatcherItemDelegate(glide, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

@@ -158,7 +158,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
 
         if (state.deviation != null) {
-            infoPanelView.render(state.deviation)
+            infoPanelView.render(state.deviation, GlideApp.with(this))
             infoPanelView.isFavoriteEnabled = !state.isOwnDeviation
             infoPanelView.isVisible = true
         }

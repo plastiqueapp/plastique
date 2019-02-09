@@ -23,7 +23,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
@@ -32,20 +32,22 @@ import io.plastique.users.User
 import io.plastique.util.dimensionRatio
 
 private class CollectionUpdateItemDelegate(
+    private val glide: GlideRequests,
     private val itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<CollectionUpdateItem, ListItem, CollectionUpdateItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is CollectionUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_collection_update, parent, false)
-        return ViewHolder(view, itemSizeCallback, onDeviationClick, onViewHolderClickListener)
+        return ViewHolder(view, glide, itemSizeCallback, onDeviationClick, onViewHolderClickListener)
     }
 
     override fun onBindViewHolder(item: CollectionUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         holder.folderNameView.text = holder.itemView.resources.getString(R.string.feed_collection_folder_name, item.folderName, item.addedCount)
         holder.folderItemsAdapter.update(item.folderItems)
     }
@@ -62,6 +64,7 @@ private class CollectionUpdateItemDelegate(
 
     class ViewHolder(
         itemView: View,
+        glide: GlideRequests,
         itemSizeCallback: ItemSizeCallback,
         onDeviationClick: OnDeviationClickListener,
         private val onClickListener: OnViewHolderClickListener
@@ -69,7 +72,7 @@ private class CollectionUpdateItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val folderNameView: TextView = itemView.findViewById(R.id.folder_name)
         val folderItemsView: RecyclerView = itemView.findViewById(R.id.thumbnails)
-        val folderItemsAdapter: DeviationsAdapter = DeviationsAdapter(folderItemsView.context, itemSizeCallback, onDeviationClick)
+        val folderItemsAdapter: DeviationsAdapter = DeviationsAdapter(folderItemsView.context, glide, itemSizeCallback, onDeviationClick)
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(folderItemsView.context)
 
         init {
@@ -87,7 +90,11 @@ private class CollectionUpdateItemDelegate(
     }
 }
 
-private class ImageDeviationItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ImageDeviationItemDelegate.ViewHolder>() {
+private class ImageDeviationItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ImageDeviationItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is ImageDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -96,8 +103,8 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.deviation.title
         holder.commentsButton.text = item.deviation.stats.comments.toString()
         holder.commentsButton.isVisible = item.deviation.properties.allowsComments
@@ -107,8 +114,7 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
         val image = item.deviation.preview ?: item.deviation.content!!
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = image.size.dimensionRatio
 
-        GlideApp.with(holder.imageView)
-                .load(image.url)
+        glide.load(image.url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imageView)
     }
@@ -136,7 +142,11 @@ private class ImageDeviationItemDelegate(private val onViewHolderClickListener: 
     }
 }
 
-private class LiteratureDeviationItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, LiteratureDeviationItemDelegate.ViewHolder>() {
+private class LiteratureDeviationItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, LiteratureDeviationItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is LiteratureDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -145,8 +155,8 @@ private class LiteratureDeviationItemDelegate(private val onViewHolderClickListe
     }
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.deviation.title
         holder.excerptView.text = item.excerpt.value
         holder.commentsButton.text = item.deviation.stats.comments.toString()
@@ -179,20 +189,22 @@ private class LiteratureDeviationItemDelegate(private val onViewHolderClickListe
 }
 
 private class MultipleDeviationsItemDelegate(
+    private val glide: GlideRequests,
     private val gridItemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<MultipleDeviationsItem, ListItem, MultipleDeviationsItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is MultipleDeviationsItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_multiple_deviations, parent, false)
-        return ViewHolder(view, gridItemSizeCallback, onDeviationClick, onViewHolderClickListener)
+        return ViewHolder(view, glide, gridItemSizeCallback, onDeviationClick, onViewHolderClickListener)
     }
 
     override fun onBindViewHolder(item: MultipleDeviationsItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         val resources = holder.itemView.resources
         holder.descriptionView.text = resources.getString(R.string.feed_multiple_deviations_submitted_description,
                 resources.getQuantityString(R.plurals.feed_deviations, item.submittedTotal, item.submittedTotal))
@@ -211,6 +223,7 @@ private class MultipleDeviationsItemDelegate(
 
     class ViewHolder(
         itemView: View,
+        glide: GlideRequests,
         gridItemSizeCallback: ItemSizeCallback,
         onDeviationClick: OnDeviationClickListener,
         private val onClickListener: OnViewHolderClickListener
@@ -218,7 +231,7 @@ private class MultipleDeviationsItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
         val deviationsView: RecyclerView = itemView.findViewById(R.id.deviations)
-        val adapter: DeviationsAdapter = DeviationsAdapter(itemView.context, gridItemSizeCallback, onDeviationClick)
+        val adapter: DeviationsAdapter = DeviationsAdapter(itemView.context, glide, gridItemSizeCallback, onDeviationClick)
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(deviationsView.context)
 
         init {
@@ -233,7 +246,11 @@ private class MultipleDeviationsItemDelegate(
     }
 }
 
-private class StatusItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<StatusUpdateItem, ListItem, StatusItemDelegate.ViewHolder>() {
+private class StatusItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<StatusUpdateItem, ListItem, StatusItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is StatusUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -242,13 +259,13 @@ private class StatusItemDelegate(private val onViewHolderClickListener: OnViewHo
     }
 
     override fun onBindViewHolder(item: StatusUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         holder.statusTextView.text = item.text.value
         holder.commentsButton.text = item.commentCount.toString()
         holder.shareButton.isVisible = !item.share.isDeleted
 
-        holder.shareView.share = item.share
+        holder.shareView.setShare(item.share, glide)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
@@ -274,7 +291,11 @@ private class StatusItemDelegate(private val onViewHolderClickListener: OnViewHo
     }
 }
 
-private class UsernameChangeItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<UsernameChangeItem, ListItem, UsernameChangeItemDelegate.ViewHolder>() {
+private class UsernameChangeItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<UsernameChangeItem, ListItem, UsernameChangeItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is UsernameChangeItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -283,8 +304,8 @@ private class UsernameChangeItemDelegate(private val onViewHolderClickListener: 
     }
 
     override fun onBindViewHolder(item: UsernameChangeItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.user
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.user, glide)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.feed_username_change_description, TextUtils.htmlEncode(item.formerName)), 0)
     }
 
@@ -303,6 +324,7 @@ private class UsernameChangeItemDelegate(private val onViewHolderClickListener: 
 }
 
 class FeedAdapter(
+    glide: GlideRequests,
     gridItemSizeCallback: ItemSizeCallback,
     private val onCollectionFolderClick: OnCollectionFolderClickListener,
     private val onCommentsClick: OnCommentsClickListener,
@@ -314,12 +336,12 @@ class FeedAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(CollectionUpdateItemDelegate(gridItemSizeCallback, onDeviationClick, this))
-        delegatesManager.addDelegate(ImageDeviationItemDelegate(this))
-        delegatesManager.addDelegate(LiteratureDeviationItemDelegate(this))
-        delegatesManager.addDelegate(MultipleDeviationsItemDelegate(gridItemSizeCallback, onDeviationClick, this))
-        delegatesManager.addDelegate(StatusItemDelegate(this))
-        delegatesManager.addDelegate(UsernameChangeItemDelegate(this))
+        delegatesManager.addDelegate(CollectionUpdateItemDelegate(glide, gridItemSizeCallback, onDeviationClick, this))
+        delegatesManager.addDelegate(ImageDeviationItemDelegate(glide, this))
+        delegatesManager.addDelegate(LiteratureDeviationItemDelegate(glide, this))
+        delegatesManager.addDelegate(MultipleDeviationsItemDelegate(glide, gridItemSizeCallback, onDeviationClick, this))
+        delegatesManager.addDelegate(StatusItemDelegate(glide, this))
+        delegatesManager.addDelegate(UsernameChangeItemDelegate(glide, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 
@@ -329,7 +351,7 @@ class FeedAdapter(
         val item = items[position]
 
         when {
-            view is FeedHeaderView -> onUserClick(view.user!!)
+            view is FeedHeaderView -> onUserClick((item as FeedListItem).user)
             view.id == R.id.button_comments -> {
                 val threadId = when (item) {
                     is DeviationItem -> CommentThreadId.Deviation(item.deviation.id)

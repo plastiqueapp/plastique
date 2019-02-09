@@ -41,6 +41,7 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -82,6 +83,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
         adapter = CollectionsAdapter(
                 context = requireContext(),
+                glide = GlideApp.with(this),
                 itemSizeCallback = object : ItemSizeCallback {
                     override fun getColumnCount(item: IndexedItem): Int = when (item) {
                         is FolderItem -> folderParams.columnCount

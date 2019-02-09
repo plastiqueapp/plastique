@@ -30,6 +30,7 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -51,6 +52,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = CommentsAdapter(
+                glide = GlideApp.with(this),
                 onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
                 onReplyingToClick = { commentId -> scrollToComment(commentId) },
                 onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })

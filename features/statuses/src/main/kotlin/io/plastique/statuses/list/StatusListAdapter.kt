@@ -13,13 +13,18 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.glide.GlideRequests
 import io.plastique.statuses.R
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
 
-class StatusItemDelegate(private val onViewHolderClickListener: OnViewHolderClickListener) : BaseAdapterDelegate<StatusItem, ListItem, StatusItemDelegate.ViewHolder>() {
+class StatusItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<StatusItem, ListItem, StatusItemDelegate.ViewHolder>() {
+
     override fun isForViewType(item: ListItem): Boolean = item is StatusItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -28,13 +33,13 @@ class StatusItemDelegate(private val onViewHolderClickListener: OnViewHolderClic
     }
 
     override fun onBindViewHolder(item: StatusItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.user = item.author
         holder.headerView.date = item.date
+        holder.headerView.setUser(item.author, glide)
         holder.textView.text = item.statusText.value
         holder.commentsButton.text = item.commentCount.toString()
         holder.shareButton.isVisible = !item.share.isDeleted
 
-        holder.shareView.share = item.share
+        holder.shareView.setShare(item.share, glide)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
@@ -59,6 +64,7 @@ class StatusItemDelegate(private val onViewHolderClickListener: OnViewHolderClic
 }
 
 class StatusListAdapter(
+    glide: GlideRequests,
     private val onDeviationClick: OnDeviationClickListener,
     private val onStatusClick: OnStatusClickListener,
     private val onShareClick: OnShareClickListener,
@@ -66,7 +72,7 @@ class StatusListAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(StatusItemDelegate(this))
+        delegatesManager.addDelegate(StatusItemDelegate(glide, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

@@ -10,22 +10,23 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.core.FeedHeaderView
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.util.dimensionRatio
 
 class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
     private var layoutId: Int = 0
-    var share: ShareUiModel = ShareUiModel.None
-        set(value) {
-            if (field != value) {
-                field = value
-                renderShare(value)
-            }
-        }
+    private var share: ShareUiModel = ShareUiModel.None
 
-    private fun renderShare(share: ShareUiModel) {
+    fun setShare(share: ShareUiModel, glide: GlideRequests) {
+        if (this.share != share) {
+            this.share = share
+            renderShare(share, glide)
+        }
+    }
+
+    private fun renderShare(share: ShareUiModel, glide: GlideRequests) {
         when (share) {
             ShareUiModel.None -> {
                 setLayout(0)
@@ -40,20 +41,19 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val imageView: ImageView = findViewById(R.id.deviation_image)
                 val matureContentView: TextView = findViewById(R.id.mature_content)
-                headerView.user = share.author
+                headerView.setUser(share.author, glide)
                 titleView.text = share.title
                 matureContentView.isVisible = share.isConcealedMature
                 (imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = share.preview.size.dimensionRatio
 
                 if (share.isConcealedMature) {
-                    GlideApp.with(imageView).clear(imageView)
+                    glide.clear(imageView)
                     imageView.setImageDrawable(null)
                     imageView.setBackgroundResource(R.color.statuses_placeholder_background)
                 } else {
                     imageView.setBackgroundResource(0)
 
-                    GlideApp.with(imageView)
-                            .load(share.preview.url)
+                    glide.load(share.preview.url)
                             .centerCrop()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(imageView)
@@ -67,7 +67,7 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val excerptView: TextView = findViewById(R.id.deviation_excerpt)
-                headerView.user = share.author
+                headerView.setUser(share.author, glide)
                 headerView.date = if (share.isJournal) share.date else null
                 titleView.text = share.title
                 excerptView.text = share.excerpt.value
@@ -79,7 +79,7 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val statusTextView: TextView = findViewById(R.id.status_text)
-                headerView.user = share.author
+                headerView.setUser(share.author, glide)
                 headerView.date = share.date
                 statusTextView.text = share.text.value
             }

@@ -43,6 +43,7 @@ import io.plastique.feed.FeedEvent.SnackbarShownEvent
 import io.plastique.feed.settings.FeedSettings
 import io.plastique.feed.settings.FeedSettingsFragment
 import io.plastique.feed.settings.OnFeedSettingsChangedListener
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -80,6 +81,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
                 itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = FeedAdapter(
+                glide = GlideApp.with(this),
                 gridItemSizeCallback = object : ItemSizeCallback {
                     override fun getColumnCount(item: IndexedItem): Int = when (item) {
                         is DeviationItem -> deviationParams.columnCount

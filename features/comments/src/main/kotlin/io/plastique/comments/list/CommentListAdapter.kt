@@ -14,12 +14,13 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
 import org.threeten.bp.ZonedDateTime
 
 private class CommentItemDelegate(
+    private val glide: GlideRequests,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<CommentItem, ListItem, CommentItemDelegate.ViewHolder>() {
 
@@ -45,8 +46,7 @@ private class CommentItemDelegate(
         holder.replyingToView.isVisible = replyingTo != null
         holder.replyButton.isVisible = item.showReplyButton
 
-        GlideApp.with(holder.avatarView)
-                .load(item.comment.author.avatarUrl)
+        glide.load(item.comment.author.avatarUrl)
                 .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
@@ -79,13 +79,14 @@ private class CommentItemDelegate(
 }
 
 class CommentsAdapter(
+    glide: GlideRequests,
     private val onReplyClick: OnReplyClickListener,
     private val onReplyingToClick: OnReplyingToClickListener,
     private val onUserClick: OnUserClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(CommentItemDelegate(this))
+        delegatesManager.addDelegate(CommentItemDelegate(glide, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

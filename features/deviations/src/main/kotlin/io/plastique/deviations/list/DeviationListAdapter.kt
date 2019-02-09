@@ -20,7 +20,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
@@ -28,6 +28,7 @@ import java.util.Locale
 
 private class ListImageDeviationItemDelegate(
     context: Context,
+    private val glide: GlideRequests,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
@@ -58,8 +59,7 @@ private class ListImageDeviationItemDelegate(
         val layoutParams = holder.imageView.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.dimensionRatio = previewSize.dimensionRatio
 
-        GlideApp.with(holder.itemView.context)
-                .load(preview.url)
+        glide.load(preview.url)
                 .override(previewSize.width, previewSize.height)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -94,6 +94,7 @@ private class ListImageDeviationItemDelegate(
 
 class GridImageDeviationItemDelegate(
     context: Context,
+    private val glide: GlideRequests,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -121,8 +122,7 @@ class GridImageDeviationItemDelegate(
         }
 
         val thumbnail = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
-        GlideApp.with(holder.thumbnail)
-                .load(thumbnail.url)
+        glide.load(thumbnail.url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail)
     }
@@ -267,6 +267,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
 
 class DeviationsAdapter(
     context: Context,
+    glide: GlideRequests,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
@@ -276,8 +277,8 @@ class DeviationsAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, layoutModeProvider, this))
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, glide, layoutModeProvider, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(context, layoutModeProvider, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())

@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.plastique.core.ui.R
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
 import org.threeten.bp.ZonedDateTime
@@ -18,15 +18,6 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val avatarView: ImageView
     private val usernameView: TextView
     private val dateView: TextView
-
-    var user: User? = null
-        set(value) {
-            requireNotNull(value)
-            if (field != value) {
-                field = value
-                renderUser(value)
-            }
-        }
 
     var date: ZonedDateTime? = null
         set(value) {
@@ -43,21 +34,19 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
         dateView = findViewById(R.id.date)
     }
 
-    fun setOnUserClickListener(listener: View.OnClickListener) {
-        val wrapper = View.OnClickListener { listener.onClick(this) }
-        avatarView.setOnClickListener(wrapper)
-        usernameView.setOnClickListener(wrapper)
-    }
-
-    private fun renderUser(user: User) {
+    fun setUser(user: User, glide: GlideRequests) {
         usernameView.text = user.name
-
-        GlideApp.with(avatarView)
-                .load(user.avatarUrl)
+        glide.load(user.avatarUrl)
                 .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()
                 .into(avatarView)
+    }
+
+    fun setOnUserClickListener(listener: View.OnClickListener) {
+        val wrapper = View.OnClickListener { listener.onClick(this) }
+        avatarView.setOnClickListener(wrapper)
+        usernameView.setOnClickListener(wrapper)
     }
 
     private fun renderDate(dateTime: ZonedDateTime?) {

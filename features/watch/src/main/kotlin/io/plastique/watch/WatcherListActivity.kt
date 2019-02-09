@@ -24,6 +24,7 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.watch.WatcherListEvent.LoadMoreEvent
 import io.plastique.watch.WatcherListEvent.RefreshEvent
@@ -51,6 +52,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         initToolbar(username)
 
         adapter = WatcherListAdapter(
+                glide = GlideApp.with(this),
                 onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }

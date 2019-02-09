@@ -19,9 +19,10 @@ import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 
 private class FolderItemDelegate(
+    private val glide: GlideRequests,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener,
     private val onViewHolderLongClickListener: OnViewHolderLongClickListener
@@ -48,8 +49,7 @@ private class FolderItemDelegate(
         holder.size.text = item.folder.size.toString()
 
         // TODO: Placeholder for null thumbnailUrl
-        GlideApp.with(holder.thumbnail)
-                .load(item.folder.thumbnailUrl)
+        glide.load(item.folder.thumbnailUrl)
                 .centerCrop()
                 .into(holder.thumbnail)
     }
@@ -97,6 +97,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
 
 class CollectionsAdapter(
     context: Context,
+    glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onFolderClick: OnFolderClickListener,
     private val onFolderLongClick: OnFolderLongClickListener,
@@ -105,9 +106,9 @@ class CollectionsAdapter(
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(FolderItemDelegate(itemSizeCallback, this, this))
+        delegatesManager.addDelegate(FolderItemDelegate(glide, itemSizeCallback, this, this))
         delegatesManager.addDelegate(HeaderItemDelegate())
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }

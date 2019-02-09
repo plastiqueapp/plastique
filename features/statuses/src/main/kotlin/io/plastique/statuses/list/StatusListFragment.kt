@@ -26,6 +26,7 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.statuses.R
 import io.plastique.statuses.StatusesFragmentComponent
@@ -53,6 +54,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         statusesAdapter = StatusListAdapter(
+                glide = GlideApp.with(this),
                 onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
                 onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
                 onCommentsClick = { statusId -> navigator.openComments(navigationContext, CommentThreadId.Status(statusId)) },

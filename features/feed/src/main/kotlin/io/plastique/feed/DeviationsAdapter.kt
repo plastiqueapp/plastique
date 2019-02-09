@@ -11,16 +11,18 @@ import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
+import io.plastique.glide.GlideRequests
 
 class DeviationsAdapter(
     context: Context,
+    glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
     }
 

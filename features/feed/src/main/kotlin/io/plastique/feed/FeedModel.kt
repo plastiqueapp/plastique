@@ -1,12 +1,10 @@
 package io.plastique.feed
 
 import io.plastique.core.lists.ItemsData
-import io.plastique.core.lists.ListItem
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
-import io.plastique.deviations.list.ImageDeviationItem
 import io.plastique.feed.FeedElement.CollectionUpdate
 import io.plastique.feed.FeedElement.JournalSubmitted
 import io.plastique.feed.FeedElement.StatusUpdate
@@ -46,7 +44,7 @@ class FeedModel @Inject constructor(
                 .ignoreElement()
     }
 
-    private fun createItem(feedElement: FeedElement, matureContent: Boolean): ListItem = when (feedElement) {
+    private fun createItem(feedElement: FeedElement, matureContent: Boolean): FeedListItem = when (feedElement) {
         is CollectionUpdate -> CollectionUpdateItem(
                 id = feedElement.timestamp.toString(),
                 date = feedElement.timestamp,
@@ -63,7 +61,7 @@ class FeedModel @Inject constructor(
                     date = feedElement.timestamp,
                     user = feedElement.user,
                     submittedTotal = feedElement.submittedTotal,
-                    items = feedElement.deviations.map { deviation -> createDeviationItem(deviation, index++) })
+                    items = feedElement.deviations.map { deviation -> createInnerDeviationItem(deviation, index++) })
         }
 
         is FeedElement.DeviationSubmitted -> if (feedElement.deviation.isLiterature) {
@@ -100,9 +98,9 @@ class FeedModel @Inject constructor(
                 formerName = feedElement.formerName)
     }
 
-    private fun createDeviationItem(deviation: Deviation, index: Int): io.plastique.deviations.list.DeviationItem = if (deviation.isLiterature) {
+    private fun createInnerDeviationItem(deviation: Deviation, index: Int): io.plastique.deviations.list.DeviationItem = if (deviation.isLiterature) {
         io.plastique.deviations.list.LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
     } else {
-        ImageDeviationItem(deviation, index = index)
+        io.plastique.deviations.list.ImageDeviationItem(deviation, index = index)
     }
 }

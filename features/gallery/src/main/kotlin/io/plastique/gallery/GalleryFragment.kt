@@ -41,6 +41,7 @@ import io.plastique.gallery.GalleryEvent.LoadMoreEvent
 import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
+import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -81,6 +82,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
         adapter = GalleryAdapter(
                 context = requireContext(),
+                glide = GlideApp.with(this),
                 itemSizeCallback = object : ItemSizeCallback {
                     override fun getColumnCount(item: IndexedItem): Int = when (item) {
                         is FolderItem -> folderParams.columnCount

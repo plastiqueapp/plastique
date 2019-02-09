@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
-import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 
 class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val titleView: TextView
@@ -38,7 +38,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         infoButton = findViewById(R.id.button_info)
     }
 
-    fun render(deviation: Deviation) {
+    fun render(deviation: Deviation, glide: GlideRequests) {
         titleView.text = deviation.title
         authorView.text = deviation.author.name
         favoriteButton.text = deviation.stats.favorites.formatCount()
@@ -49,8 +49,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
 
         if (avatarUrl != deviation.author.avatarUrl) {
             avatarUrl = deviation.author.avatarUrl
-            GlideApp.with(this)
-                    .load(avatarUrl)
+            glide.load(avatarUrl)
                     .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()

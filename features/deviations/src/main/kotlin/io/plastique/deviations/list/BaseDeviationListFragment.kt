@@ -125,6 +125,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         adapter = DeviationsAdapter(
                 context = requireContext(),
+                glide = GlideApp.with(this),
                 layoutModeProvider = { state.layoutMode },
                 itemSizeCallback = object : ItemSizeCallback {
                     override fun getColumnCount(item: IndexedItem): Int = when (item) {
@@ -264,7 +265,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     }
 
     private fun createListPreloader(fragment: Fragment, recyclerView: RecyclerView, adapter: ListDelegationAdapter<List<ListItem>>): RecyclerViewPreloader<*> {
-        val requestManager = GlideApp.with(fragment)
+        val glide = GlideApp.with(fragment)
         val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
             override fun getPreloadItems(position: Int): List<DeviationItem> {
                 return when (val item = adapter.items[position]) {
@@ -277,8 +278,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
                 val preview = ImageHelper.choosePreview(item.deviation, maxImageWidth)
                 val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
-                return requestManager
-                        .load(preview.url)
+                return glide.load(preview.url)
                         .override(previewSize.width, previewSize.height)
                         .centerCrop()
                         .priority(Priority.LOW)
@@ -293,11 +293,11 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             intArrayOf(size.width, size.height)
         }
 
-        return RecyclerViewPreloader(requestManager, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_LIST)
+        return RecyclerViewPreloader(glide, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_LIST)
     }
 
     private fun createGridPreloader(fragment: Fragment, adapter: ListDelegationAdapter<List<ListItem>>, gridParams: GridParams): RecyclerViewPreloader<*> {
-        val requestManager = GlideApp.with(fragment)
+        val glide = GlideApp.with(fragment)
         val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
             override fun getPreloadItems(position: Int): List<DeviationItem> {
                 return when (val item = adapter.items[position]) {
@@ -309,8 +309,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             override fun getPreloadRequestBuilder(item: DeviationItem): RequestBuilder<*>? {
                 val itemSize = gridParams.getItemSize(item.index)
                 val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
-                return requestManager
-                        .load(image.url)
+                return glide.load(image.url)
                         .priority(Priority.LOW)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
             }
@@ -321,7 +320,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             intArrayOf(itemSize.width, itemSize.height)
         }
 
-        return RecyclerViewPreloader(requestManager, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
+        return RecyclerViewPreloader(glide, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
     }
 
     companion object {

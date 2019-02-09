@@ -7,57 +7,62 @@ import io.plastique.statuses.ShareUiModel
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
+abstract class FeedListItem : ListItem {
+    abstract val date: ZonedDateTime
+    abstract val user: User
+}
+
 data class CollectionUpdateItem(
     override val id: String,
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     val folderId: String,
     val folderName: String,
     val addedCount: Int,
     val folderItems: List<ListItem>
-) : ListItem
+) : FeedListItem()
 
-abstract class DeviationItem : ListItem {
+abstract class DeviationItem : FeedListItem() {
     abstract val deviation: Deviation
 
     override val id: String get() = deviation.id
 }
 
 data class ImageDeviationItem(
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     override val deviation: Deviation
 ) : DeviationItem()
 
 data class LiteratureDeviationItem(
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     override val deviation: Deviation,
     val excerpt: SpannedWrapper
 ) : DeviationItem()
 
 data class MultipleDeviationsItem(
     override val id: String,
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     val submittedTotal: Int,
     val items: List<ListItem>
-) : ListItem
+) : FeedListItem()
 
 data class StatusUpdateItem(
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     val statusId: String,
     val text: SpannedWrapper,
     val commentCount: Int,
     val share: ShareUiModel
-) : ListItem {
+) : FeedListItem() {
     override val id: String get() = statusId
 }
 
 data class UsernameChangeItem(
     override val id: String,
-    val date: ZonedDateTime,
-    val user: User,
+    override val date: ZonedDateTime,
+    override val user: User,
     val formerName: String
-) : ListItem
+) : FeedListItem()
