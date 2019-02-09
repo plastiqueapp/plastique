@@ -19,18 +19,12 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideApp
 import io.plastique.statuses.ShareObjectId
-import io.plastique.util.Size
 import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.math.min
-
-private const val MAX_IMAGE_WIDTH = 1080
-private const val MAX_ASPECT_RATIO = 2.5 // height / width
 
 private class ListImageDeviationItemDelegate(
     context: Context,
@@ -45,7 +39,7 @@ private class ListImageDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_list, parent, false)
-        return ViewHolder(view, onViewHolderClickListener, min(parent.width, MAX_IMAGE_WIDTH))
+        return ViewHolder(view, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -59,37 +53,17 @@ private class ListImageDeviationItemDelegate(
         holder.favoriteButton.text = item.deviation.stats.favorites.toString()
         holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
 
-        val image = chooseImage(item.deviation, holder.maxImageWidth)
-        val size = calculateOptimalImageSize(image, holder.maxImageWidth)
+        val preview = ImageHelper.choosePreview(item.deviation, holder.maxImageWidth)
+        val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
         val layoutParams = holder.imageView.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = size.dimensionRatio
+        layoutParams.dimensionRatio = previewSize.dimensionRatio
 
         GlideApp.with(holder.itemView.context)
-                .load(image.url)
-                .override(size.width, size.height)
+                .load(preview.url)
+                .override(previewSize.width, previewSize.height)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.imageView)
-    }
-
-    private fun chooseImage(deviation: Deviation, maxImageWidth: Int): Deviation.Image {
-        val content = deviation.content
-        val preview = deviation.preview
-        return if (preview != null && (content == null || preview.size.width >= maxImageWidth)) preview else content
-                ?: throw IllegalStateException("No preview available")
-    }
-
-    private fun calculateOptimalImageSize(image: Deviation.Image, maxImageWidth: Int): Size {
-        var imageWidth = image.size.width
-        var imageHeight = image.size.height
-        var aspectRatio = imageHeight / imageWidth.toDouble()
-        if (aspectRatio > MAX_ASPECT_RATIO || imageWidth > maxImageWidth) {
-            aspectRatio = min(aspectRatio, MAX_ASPECT_RATIO)
-            imageWidth = min(imageWidth, maxImageWidth)
-            imageHeight = (imageWidth * aspectRatio).toInt()
-            return Size(imageWidth, imageHeight)
-        }
-        return image.size
     }
 
     class ViewHolder(
@@ -146,15 +120,11 @@ class GridImageDeviationItemDelegate(
             topMargin = if (item.index >= columnCount) spacing else 0
         }
 
-        val image = chooseImage(item.deviation, itemSize.width)
+        val thumbnail = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
         GlideApp.with(holder.thumbnail)
-                .load(image.url)
+                .load(thumbnail.url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.thumbnail)
-    }
-
-    private fun chooseImage(deviation: Deviation, itemWidth: Int): Deviation.Image {
-        return deviation.thumbnails.firstOrNull { it.size.width >= itemWidth } ?: deviation.thumbnails.last()
     }
 
     class ViewHolder(
