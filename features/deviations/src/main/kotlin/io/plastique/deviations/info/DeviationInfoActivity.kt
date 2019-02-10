@@ -106,7 +106,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
 
     companion object {
         private const val EXTRA_DEVIATION_ID = "deviation_id"
-        private val PUBLISH_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yy", Locale.ENGLISH)
+        private val PUBLISH_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
 
         fun createIntent(context: Context, deviationId: String): Intent {
             return Intent(context, DeviationInfoActivity::class.java)

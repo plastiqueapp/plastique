@@ -1,6 +1,5 @@
 package io.plastique.deviations.info
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +15,12 @@ class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapt
         return ViewHolder(view, this)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(item: String, holder: ViewHolder, position: Int) {
-        holder.textView.text = "#$item"
+        holder.textView.text = holder.textView.resources.getString(R.string.common_hashtag, item)
+
+        (holder.textView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            leftMargin = if (position != 0) holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_info_tag_spacing) else 0
+        }
     }
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
