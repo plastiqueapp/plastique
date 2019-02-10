@@ -103,8 +103,6 @@ subprojects {
                     textReport true
                     textOutput "stdout"
                     explainIssues false
-
-                    disable 'DalvikOverride'
                 }
 
                 sourceSets {
