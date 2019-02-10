@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class CommentDataSource @Inject constructor(
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepositoryImpl
 ) : PagedDataSource<List<Comment>, CommentThreadId> {
     private val params = AtomicReference<CommentThreadId>()
     private val nextCursor = AtomicReference<OffsetCursor>()

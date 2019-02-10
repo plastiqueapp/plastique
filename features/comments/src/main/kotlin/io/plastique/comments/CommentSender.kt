@@ -12,7 +12,7 @@ class CommentSender @Inject constructor(
 ) {
     fun sendComment(threadId: CommentThreadId, text: String, parentCommentId: String?): Completable {
         return postCommentInternal(threadId, text, parentCommentId)
-                .doOnSuccess { comment -> commentRepository.persistComment(comment) }
+                .doOnSuccess { comment -> commentRepository.put(listOf(comment)) }
                 .ignoreElement()
     }
 

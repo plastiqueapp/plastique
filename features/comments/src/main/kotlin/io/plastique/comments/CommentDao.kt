@@ -14,19 +14,6 @@ interface CommentDao {
     fun getCommentsByKey(key: String): List<CommentEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(comment: CommentEntity): Long
-
-    @Update
-    fun update(comment: CommentEntity)
-
-    @Transaction
-    fun insertOrUpdate(comment: CommentEntity) {
-        if (insert(comment) == -1L) {
-            update(comment)
-        }
-    }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(comments: Collection<CommentEntity>)
 
     @Update

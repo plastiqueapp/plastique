@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import io.plastique.collections.CollectionFolderRepository
 import io.plastique.collections.CollectionFolderRepositoryImpl
+import io.plastique.comments.CommentRepository
+import io.plastique.comments.CommentRepositoryImpl
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.DeviationRepositoryImpl
 import io.plastique.statuses.StatusRepository
@@ -15,6 +17,9 @@ import io.plastique.users.UserRepositoryImpl
 interface RepositoryModule {
     @Binds
     fun bindCollectionFolderRepository(impl: CollectionFolderRepositoryImpl): CollectionFolderRepository
+
+    @Binds
+    fun bindCommentRepository(impl: CommentRepositoryImpl): CommentRepository
 
     @Binds
     fun bindDeviationRepository(impl: DeviationRepositoryImpl): DeviationRepository

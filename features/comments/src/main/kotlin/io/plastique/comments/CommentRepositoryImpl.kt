@@ -26,11 +26,10 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import org.threeten.bp.Instant
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-class CommentRepository @Inject constructor(
+class CommentRepositoryImpl @Inject constructor(
     private val database: RoomDatabase,
     private val commentDao: CommentDao,
     private val commentService: CommentService,
@@ -38,7 +37,8 @@ class CommentRepository @Inject constructor(
     private val metadataConverter: NullFallbackConverter,
     private val timeProvider: TimeProvider,
     private val userRepository: UserRepository
-) {
+) : CommentRepository {
+
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
@@ -54,7 +54,8 @@ class CommentRepository @Inject constructor(
         return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
                 .map { commentList ->
                     val cacheMetadata = CommentCacheMetadata(nextCursor = commentList.nextCursor)
-                    persist(threadId.cacheKey, commentList, timeProvider.currentInstant, cacheMetadata, offset == 0)
+                    val cacheEntry = CacheEntry(key = threadId.cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                    persist(cacheEntry = cacheEntry, comments = commentList.comments, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
                 }
 
@@ -99,35 +100,33 @@ class CommentRepository @Inject constructor(
         is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
     }
 
-    private fun persist(key: String, commentList: CommentList, timestamp: Instant, metadata: CommentCacheMetadata, replaceExisting: Boolean) {
-        val users = commentList.comments.asSequence()
-                .map { comment -> comment.author }
-                .distinctBy { user -> user.id }
+    override fun put(comments: Collection<CommentDto>) {
+        val entities = comments.map { it.toCommentEntity() }
+        val users = comments.asSequence()
+                .map { it.author }
+                .distinctBy { it.id }
                 .toList()
 
-        val comments = commentList.comments.map { comment -> comment.toCommentEntity() }
         database.runInTransaction {
             userRepository.put(users)
-            commentDao.insertOrUpdate(comments)
-            cacheEntryRepository.setEntry(CacheEntry(key, timestamp, metadataConverter.toJson(metadata)))
-
-            var order = if (replaceExisting) {
-                commentDao.deleteLinks(key)
-                1
-            } else {
-                commentDao.maxOrder(key) + 1
-            }
-
-            val links = comments.map { comment -> CommentLinkage(key, comment.id, order++) }
-            commentDao.insertLinks(links)
+            commentDao.insertOrUpdate(entities)
         }
     }
 
-    fun persistComment(comment: CommentDto) {
-        val commentEntity = comment.toCommentEntity()
+    private fun persist(cacheEntry: CacheEntry, comments: List<CommentDto>, replaceExisting: Boolean) {
         database.runInTransaction {
-            userRepository.put(listOf(comment.author))
-            commentDao.insertOrUpdate(commentEntity)
+            put(comments)
+            cacheEntryRepository.setEntry(cacheEntry)
+
+            var order = if (replaceExisting) {
+                commentDao.deleteLinks(cacheEntry.key)
+                1
+            } else {
+                commentDao.maxOrder(cacheEntry.key) + 1
+            }
+
+            val links = comments.map { comment -> CommentLinkage(cacheEntry.key, comment.id, order++) }
+            commentDao.insertLinks(links)
         }
     }
 
