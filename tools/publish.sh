@@ -25,7 +25,7 @@ sed -i '' -e "s/$version_code_pattern/\1$new_version_code,/" "$version_file"
 echo "New versionCode: $new_version_code"
 
 # Publish
-./gradlew clean :app:publishProdReleaseBundle
+./gradlew clean :app:lintProdRelease :app:publishProdReleaseBundle
 
 # Commit changes
 git add "$version_file"
