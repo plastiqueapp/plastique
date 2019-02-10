@@ -12,7 +12,7 @@ interface WatchDao {
     @Query("SELECT * FROM watchers WHERE `key` = :key ORDER BY `order`")
     fun getWatchersByKey(key: String): List<WatcherEntityWithRelations>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWatchers(watchers: Collection<WatcherEntity>)
 
     @Query("DELETE FROM watchers WHERE `key` = :key")

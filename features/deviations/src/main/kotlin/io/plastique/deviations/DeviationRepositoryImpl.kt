@@ -145,7 +145,6 @@ class DeviationRepositoryImpl @Inject constructor(
                 deviationDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            // TODO: Gracefully handle duplicates
             val links = deviations.map { deviation -> DeviationLinkage(cacheEntry.key, deviation.id, order++) }
             deviationDao.insertLinks(links)
         }

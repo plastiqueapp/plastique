@@ -53,7 +53,7 @@ interface DeviationDao {
     @Query("UPDATE deviations SET properties_is_favorite = :favorite, stats_favorites = :numFavorites WHERE id = :deviationId")
     fun setFavorite(deviationId: String, favorite: Boolean, numFavorites: Int)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLinks(links: Collection<DeviationLinkage>)
 
     @Query("DELETE FROM deviation_linkage WHERE `key` = :key")

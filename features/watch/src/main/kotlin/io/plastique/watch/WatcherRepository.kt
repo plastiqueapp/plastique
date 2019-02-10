@@ -106,7 +106,7 @@ class WatcherRepository @Inject constructor(
             }
 
             val watcherEntities = watchers.map { watcher -> WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = order++) }
-            watchDao.insertWatchers(watcherEntities) // TODO: Handle possible duplicates
+            watchDao.insertWatchers(watcherEntities)
         }
     }
 
