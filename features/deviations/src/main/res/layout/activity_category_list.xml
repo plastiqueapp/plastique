@@ -27,8 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:clipToPadding="false"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" />
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
