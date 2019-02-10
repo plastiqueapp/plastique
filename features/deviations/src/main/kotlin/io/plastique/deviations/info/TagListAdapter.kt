@@ -17,7 +17,7 @@ class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapt
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(item: String, holder: ViewHolder) {
+    override fun onBindViewHolder(item: String, holder: ViewHolder, position: Int) {
         holder.textView.text = "#$item"
     }
 

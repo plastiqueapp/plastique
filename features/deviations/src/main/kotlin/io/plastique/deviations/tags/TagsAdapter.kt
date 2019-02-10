@@ -28,7 +28,7 @@ internal class TagsAdapter(
         return ViewHolder(view, this)
     }
 
-    override fun onBindViewHolder(item: Tag, holder: ViewHolder) {
+    override fun onBindViewHolder(item: Tag, holder: ViewHolder, position: Int) {
         holder.textView.text = item.text
     }
 

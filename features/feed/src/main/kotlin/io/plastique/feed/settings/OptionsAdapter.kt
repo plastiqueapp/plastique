@@ -17,7 +17,7 @@ class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(),
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(item: OptionItem, holder: ViewHolder) {
+    override fun onBindViewHolder(item: OptionItem, holder: ViewHolder, position: Int) {
         holder.optionView.text = item.title
         holder.optionView.tag = item.key
         holder.optionView.setOnCheckedChangeListener(null)

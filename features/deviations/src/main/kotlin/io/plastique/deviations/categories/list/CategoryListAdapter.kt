@@ -22,7 +22,7 @@ class CategoriesAdapter(
         return ViewHolder(view, this)
     }
 
-    override fun onBindViewHolder(item: CategoryItem, holder: ViewHolder) {
+    override fun onBindViewHolder(item: CategoryItem, holder: ViewHolder, position: Int) {
         holder.textView.text = getItemText(holder.itemView.resources, item)
         holder.progressSwitcher.removeCallbacks(holder.showProgressCallback)
         if (!item.parent && item.category.hasChildren) {

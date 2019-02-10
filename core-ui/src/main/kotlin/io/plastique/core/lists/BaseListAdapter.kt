@@ -8,8 +8,8 @@ abstract class BaseListAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.A
     final override fun getItemCount(): Int = items.size
 
     final override fun onBindViewHolder(holder: VH, position: Int) {
-        onBindViewHolder(items[position], holder)
+        onBindViewHolder(items[position], holder, position)
     }
 
-    protected abstract fun onBindViewHolder(item: T, holder: VH)
+    protected abstract fun onBindViewHolder(item: T, holder: VH, position: Int)
 }
