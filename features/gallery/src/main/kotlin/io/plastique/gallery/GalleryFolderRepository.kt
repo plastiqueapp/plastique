@@ -27,7 +27,7 @@ import io.reactivex.Single
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
-class FolderRepository @Inject constructor(
+class GalleryFolderRepository @Inject constructor(
     private val database: RoomDatabase,
     private val galleryDao: GalleryDao,
     private val galleryService: GalleryService,
