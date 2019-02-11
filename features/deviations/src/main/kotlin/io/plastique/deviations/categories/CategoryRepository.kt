@@ -1,7 +1,6 @@
 package io.plastique.deviations.categories
 
 import io.plastique.api.deviations.CategoryDto
-import io.plastique.api.deviations.CategoryList
 import io.plastique.api.deviations.DeviationService
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -30,13 +29,13 @@ class CategoryRepository @Inject constructor(
 
     private fun getCategoriesFromServer(path: String): Single<List<CategoryEntity>> {
         return deviationService.getCategories(path)
-                .map { categoryList -> persistCategories(categoryList) }
+                .map { categoryList -> persist(categoryList.categories) }
     }
 
-    private fun persistCategories(categoryList: CategoryList): List<CategoryEntity> {
-        val categories = categoryList.categories.map { category -> category.toCategoryEntity() }
-        categoryDao.insertOrUpdate(categories)
-        return categories
+    private fun persist(categories: List<CategoryDto>): List<CategoryEntity> {
+        val entities = categories.map { it.toCategoryEntity() }
+        categoryDao.insertOrUpdate(entities)
+        return entities
     }
 }
 

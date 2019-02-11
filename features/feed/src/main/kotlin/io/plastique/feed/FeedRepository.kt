@@ -89,12 +89,14 @@ class FeedRepository @Inject constructor(
         return feedService.getHomeFeed(cursor?.value, matureContent)
                 .map { feedResult ->
                     val nextCursor = if (feedResult.hasMore) StringCursor(feedResult.cursor!!) else null
-                    persist(feedElements = feedResult.items, matureContent = matureContent, replaceExisting = cursor == null, nextCursor = nextCursor)
+                    val cacheMetadata = FeedCacheMetadata(matureContent = matureContent, nextCursor = nextCursor)
+                    val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                    persist(cacheEntry = cacheEntry, feedElements = feedResult.items, replaceExisting = cursor == null)
                     nextCursor.toOptional()
                 }
     }
 
-    private fun persist(feedElements: List<FeedElementDto>, matureContent: Boolean, replaceExisting: Boolean, nextCursor: StringCursor?) {
+    private fun persist(cacheEntry: CacheEntry, feedElements: List<FeedElementDto>, replaceExisting: Boolean) {
         val users = feedElements.asSequence()
                 .filter { it !== FeedElementDto.Unknown }
                 .map { feedElement -> feedElement.user }
@@ -105,9 +107,6 @@ class FeedRepository @Inject constructor(
                 .filter { it !== FeedElementDto.Unknown }
                 .map { it.toFeedElementEntity() }
                 .toList()
-
-        val cacheMetadata = FeedCacheMetadata(matureContent, nextCursor)
-        val cacheEntry = CacheEntry(CACHE_KEY, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
 
         val deviations = mutableListOf<DeviationDto>()
         val statuses = mutableListOf<StatusDto>()

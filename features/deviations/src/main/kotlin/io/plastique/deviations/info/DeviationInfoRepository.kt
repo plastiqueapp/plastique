@@ -60,9 +60,9 @@ class DeviationInfoRepository @Inject constructor(
     }
 
     private fun persist(cacheKey: String, metadataList: List<DeviationMetadataDto>) {
-        val entities = metadataList.map { metadata -> metadata.toDeviationMetadataEntity() }
+        val entities = metadataList.map { it.toDeviationMetadataEntity() }
         database.runInTransaction {
-            val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
+            val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
             cacheEntryRepository.setEntry(cacheEntry)
             deviationMetadataDao.insertOrUpdate(entities)
         }

@@ -125,7 +125,7 @@ class CommentRepositoryImpl @Inject constructor(
                 commentDao.maxOrder(cacheEntry.key) + 1
             }
 
-            val links = comments.map { comment -> CommentLinkage(cacheEntry.key, comment.id, order++) }
+            val links = comments.map { CommentLinkage(cacheEntry.key, it.id, order++) }
             commentDao.insertLinks(links)
         }
     }

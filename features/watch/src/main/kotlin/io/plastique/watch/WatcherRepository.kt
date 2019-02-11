@@ -68,8 +68,8 @@ class WatcherRepository @Inject constructor(
         }
                 .map { watcherList ->
                     val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
-                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    persist(watchers = watcherList.results, cacheEntry = cacheEntry, replaceExisting = offset == 0)
+                    val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                    persist(cacheEntry = cacheEntry, watchers = watcherList.results, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
                 }
                 .mapError { error ->
@@ -92,7 +92,7 @@ class WatcherRepository @Inject constructor(
     }
 
     private fun persist(cacheEntry: CacheEntry, watchers: List<WatcherDto>, replaceExisting: Boolean) {
-        val users = watchers.map { watcher -> watcher.user }
+        val users = watchers.map { it.user }
 
         database.runInTransaction {
             userRepository.put(users)
@@ -105,7 +105,7 @@ class WatcherRepository @Inject constructor(
                 watchDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val watcherEntities = watchers.map { watcher -> WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = order++) }
+            val watcherEntities = watchers.map { WatcherEntity(key = cacheEntry.key, userId = it.user.id, order = order++) }
             watchDao.insertWatchers(watcherEntities)
         }
     }

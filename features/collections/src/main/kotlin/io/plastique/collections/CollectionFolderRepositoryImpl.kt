@@ -87,7 +87,7 @@ class CollectionFolderRepositoryImpl @Inject constructor(
                 limit = FOLDERS_PER_PAGE)
                 .map { folderList ->
                     val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
-                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
+                    val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
                     persist(cacheEntry = cacheEntry, folders = folderList.results, replaceExisting = offset == 0)
                     cacheMetadata.nextCursor.toOptional()
                 }

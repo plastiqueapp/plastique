@@ -91,8 +91,8 @@ class DeviationRepositoryImpl @Inject constructor(
                 .map { fetchResult ->
                     val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
                     val metadataSerializer = fetcher.createMetadataSerializer()
-                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataSerializer.serialize(cacheMetadata))
-                    persist(cacheEntry, fetchResult.deviations, fetchResult.replaceExisting)
+                    val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataSerializer.serialize(cacheMetadata))
+                    persist(cacheEntry = cacheEntry, deviations = fetchResult.deviations, replaceExisting = fetchResult.replaceExisting)
                     cacheMetadata.nextCursor.toOptional()
                 }
     }
@@ -139,7 +139,7 @@ class DeviationRepositoryImpl @Inject constructor(
                 deviationDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val links = deviations.map { deviation -> DeviationLinkage(cacheEntry.key, deviation.id, order++) }
+            val links = deviations.map { DeviationLinkage(cacheEntry.key, it.id, order++) }
             deviationDao.insertLinks(links)
         }
     }
