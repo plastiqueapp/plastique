@@ -63,14 +63,8 @@ class DeviationRepositoryImpl @Inject constructor(
         }
 
         val users = deviations.asSequence()
-                .flatMap { deviation ->
-                    val dailyDeviation = deviation.dailyDeviation
-                    if (dailyDeviation != null) {
-                        sequenceOf(deviation.author, dailyDeviation.giver)
-                    } else {
-                        sequenceOf(deviation.author)
-                    }
-                }
+                .flatMap { sequenceOf(it.author, it.dailyDeviation?.giver) }
+                .filterNotNull()
                 .distinctBy { user -> user.id }
                 .toList()
         val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
