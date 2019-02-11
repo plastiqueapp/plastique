@@ -98,7 +98,10 @@ class CollectionFolderRepositoryImpl @Inject constructor(
     }
 
     override fun put(folders: Collection<FolderDto>) {
-        val entities = folders.map { folder -> folder.toFolderEntity() }
+        if (folders.isEmpty()) {
+            return
+        }
+        val entities = folders.map { it.toFolderEntity() }
         collectionDao.insertOrUpdateFolders(entities)
     }
 

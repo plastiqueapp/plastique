@@ -98,6 +98,9 @@ class CommentRepositoryImpl @Inject constructor(
     }
 
     override fun put(comments: Collection<CommentDto>) {
+        if (comments.isEmpty()) {
+            return
+        }
         val entities = comments.map { it.toCommentEntity() }
         val users = comments.asSequence()
                 .map { it.author }
