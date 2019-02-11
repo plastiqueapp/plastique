@@ -26,7 +26,6 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
@@ -65,12 +64,10 @@ class CommentRepositoryImpl @Inject constructor(
 
     private fun getCommentsFromDb(key: String): Observable<PagedData<List<Comment>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "comments", "comment_linkage")) {
-            database.runInTransaction(Callable {
-                val commentsWithRelations = commentDao.getCommentsByKey(key)
-                val comments = combineAndFilter(commentsWithRelations)
-                val nextCursor = getNextCursor(key)
-                PagedData(comments, nextCursor)
-            })
+            val commentsWithRelations = commentDao.getCommentsByKey(key)
+            val comments = combineAndFilter(commentsWithRelations)
+            val nextCursor = getNextCursor(key)
+            PagedData(comments, nextCursor)
         }.distinctUntilChanged()
     }
 

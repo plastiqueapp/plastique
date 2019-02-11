@@ -26,7 +26,6 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class CollectionFolderRepositoryImpl @Inject constructor(
@@ -56,11 +55,9 @@ class CollectionFolderRepositoryImpl @Inject constructor(
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("collection_folders", "user_collection_folders")) {
-            database.runInTransaction(Callable {
-                val folders = collectionDao.getFoldersByKey(cacheKey).map { it.toFolder() }
-                val nextCursor = getNextCursor(cacheKey)
-                PagedData(folders, nextCursor)
-            })
+            val folders = collectionDao.getFoldersByKey(cacheKey).map { it.toFolder() }
+            val nextCursor = getNextCursor(cacheKey)
+            PagedData(folders, nextCursor)
         }
     }
 

@@ -41,7 +41,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
-import java.util.concurrent.Callable
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -71,11 +70,9 @@ class FeedRepository @Inject constructor(
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "collection_folders", "deviation_images", "feed_deviations_ordered", "deviations", "statuses", "feed")) {
-            database.runInTransaction(Callable {
-                val feedElements = feedDao.getFeed().map { it.toFeedElement() }
-                val nextCursor = getNextCursor(cacheKey)
-                PagedData(feedElements, nextCursor)
-            })
+            val feedElements = feedDao.getFeed().map { it.toFeedElement() }
+            val nextCursor = getNextCursor(cacheKey)
+            PagedData(feedElements, nextCursor)
         }
     }
 

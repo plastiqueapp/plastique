@@ -27,7 +27,6 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class WatcherRepository @Inject constructor(
@@ -83,11 +82,9 @@ class WatcherRepository @Inject constructor(
 
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "watchers")) {
-            database.runInTransaction(Callable {
-                val watchers = watchDao.getWatchersByKey(cacheKey).map { it.toWatcher() }
-                val nextCursor = getNextCursor(cacheKey)
-                PagedData(watchers, nextCursor)
-            })
+            val watchers = watchDao.getWatchersByKey(cacheKey).map { it.toWatcher() }
+            val nextCursor = getNextCursor(cacheKey)
+            PagedData(watchers, nextCursor)
         }.distinctUntilChanged()
     }
 

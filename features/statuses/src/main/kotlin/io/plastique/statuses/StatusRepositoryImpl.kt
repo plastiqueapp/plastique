@@ -28,7 +28,6 @@ import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class StatusRepositoryImpl @Inject constructor(
@@ -92,12 +91,10 @@ class StatusRepositoryImpl @Inject constructor(
 
     private fun getStatusesFromDb(cacheKey: String): Observable<PagedData<List<Status>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "statuses", "user_statuses")) {
-            database.runInTransaction(Callable {
-                val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus() }
-                val nextCursor = getNextCursor(cacheKey)
-                cacheEntryRepository.getEntryByKey(cacheKey)
-                PagedData(statuses, nextCursor)
-            })
+            val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus() }
+            val nextCursor = getNextCursor(cacheKey)
+            cacheEntryRepository.getEntryByKey(cacheKey)
+            PagedData(statuses, nextCursor)
         }.distinctUntilChanged()
     }
 

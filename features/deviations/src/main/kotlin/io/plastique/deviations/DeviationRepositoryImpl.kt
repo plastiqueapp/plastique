@@ -25,7 +25,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class DeviationRepositoryImpl @Inject constructor(
@@ -99,12 +98,10 @@ class DeviationRepositoryImpl @Inject constructor(
 
     private fun getDeviationsFromDb(key: String, params: FetchParams, metadataSerializer: DeviationCacheMetadataSerializer): Observable<PagedData<List<Deviation>, Cursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "deviation_linkage")) {
-            database.runInTransaction(Callable {
-                val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
-                val deviations = combineAndFilter(deviationsWithRelations, params)
-                val nextCursor = getNextCursor(key, metadataSerializer)
-                PagedData(deviations, nextCursor)
-            })
+            val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
+            val deviations = combineAndFilter(deviationsWithRelations, params)
+            val nextCursor = getNextCursor(key, metadataSerializer)
+            PagedData(deviations, nextCursor)
         }.distinctUntilChanged()
     }
 
