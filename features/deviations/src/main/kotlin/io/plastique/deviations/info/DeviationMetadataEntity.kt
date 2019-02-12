@@ -25,8 +25,3 @@ data class DeviationMetadataEntity(
     @ColumnInfo(name = "tags")
     val tags: List<String>
 )
-
-fun DeviationMetadataDto.toDeviationMetadataEntity(): DeviationMetadataEntity = DeviationMetadataEntity(
-        deviationId = deviationId,
-        description = description,
-        tags = tags.map { it.name })

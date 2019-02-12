@@ -2,6 +2,7 @@ package io.plastique.deviations.download
 
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.deviations.DownloadInfoDto
+import io.plastique.util.Size
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -31,3 +32,12 @@ class DownloadInfoRepository @Inject constructor(
         return entity
     }
 }
+
+private fun DownloadInfoDto.toDownloadInfoEntity(deviationId: String): DownloadInfoEntity = DownloadInfoEntity(
+        deviationId = deviationId,
+        downloadUrl = url,
+        size = Size(width, height),
+        fileSize = fileSize)
+
+private fun DownloadInfoEntity.toDownloadInfo(): DownloadInfo =
+        DownloadInfo(downloadUrl = downloadUrl, size = size, fileSize = fileSize)

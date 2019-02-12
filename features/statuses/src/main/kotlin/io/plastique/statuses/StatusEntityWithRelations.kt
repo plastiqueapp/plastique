@@ -45,7 +45,7 @@ fun StatusEntityWithRelations.toStatus(): Status {
             share = share)
 }
 
-fun StatusEntityWithUsers.toStatus(): Status = Status(
+private fun StatusEntityWithUsers.toStatus(): Status = Status(
         id = status.id,
         date = status.timestamp,
         body = status.body,

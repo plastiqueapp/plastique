@@ -71,3 +71,6 @@ class UserRepositoryImpl @Inject constructor(
         private val CACHE_DURATION = Duration.ofHours(4)
     }
 }
+
+private fun UserDto.toUserEntity(): UserEntity =
+        UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)

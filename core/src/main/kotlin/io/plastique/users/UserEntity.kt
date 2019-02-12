@@ -24,5 +24,3 @@ data class UserEntity(
     @ColumnInfo(name = "avatar_url")
     val avatarUrl: String
 )
-
-fun UserDto.toUserEntity(): UserEntity = UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)

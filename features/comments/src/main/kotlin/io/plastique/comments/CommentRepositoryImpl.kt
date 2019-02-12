@@ -19,6 +19,7 @@ import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserRepository
+import io.plastique.users.toUser
 import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -155,3 +156,19 @@ private val CommentThreadId.cacheKey: String
         is CommentThreadId.Profile -> "comments-profile-$username"
         is CommentThreadId.Status -> "comments-status-$statusId"
     }
+
+private fun CommentDto.toCommentEntity(): CommentEntity = CommentEntity(
+        id = id,
+        parentId = parentId,
+        authorId = author.id,
+        datePosted = datePosted,
+        numReplies = numReplies,
+        hidden = hidden,
+        text = text)
+
+private fun CommentEntityWithRelations.toComment(): Comment = Comment(
+        id = comment.id,
+        parentId = comment.parentId,
+        author = users.first().toUser(),
+        datePosted = comment.datePosted,
+        text = comment.text)

@@ -12,17 +12,3 @@ data class Comment(
     val datePosted: ZonedDateTime,
     val text: String
 )
-
-fun CommentEntity.toComment(author: UserEntity): Comment {
-    if (authorId != author.id) {
-        throw IllegalArgumentException("Expected user with id $authorId but got ${author.id}")
-    }
-    return Comment(
-            id = id,
-            parentId = parentId,
-            author = author.toUser(),
-            datePosted = datePosted,
-            text = text)
-}
-
-fun CommentEntityWithRelations.toComment(): Comment = comment.toComment(users.first())

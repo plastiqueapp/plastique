@@ -79,3 +79,8 @@ private fun DeviationInfoEntity.toDeviationInfo(zoneId: ZoneId): DeviationInfo =
         publishTime = publishTime.atZone(zoneId),
         description = description,
         tags = tags)
+
+private fun DeviationMetadataDto.toDeviationMetadataEntity(): DeviationMetadataEntity = DeviationMetadataEntity(
+        deviationId = deviationId,
+        description = description,
+        tags = tags.map { it.name })

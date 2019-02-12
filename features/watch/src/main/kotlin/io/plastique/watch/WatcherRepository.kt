@@ -20,6 +20,7 @@ import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
 import io.plastique.users.UserRepository
+import io.plastique.users.toUser
 import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -126,3 +127,6 @@ data class WatchersCacheMetadata(
     @Json(name = "next_cursor")
     val nextCursor: OffsetCursor? = null
 )
+
+private fun WatcherEntityWithRelations.toWatcher(): Watcher =
+        Watcher(user = users.first().toUser())

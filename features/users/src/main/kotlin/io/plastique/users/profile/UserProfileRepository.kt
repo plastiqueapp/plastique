@@ -13,8 +13,8 @@ import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.extensions.nullIfEmpty
 import io.plastique.users.UserDao
+import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.users.toUserEntity
 import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -26,6 +26,7 @@ class UserProfileRepository @Inject constructor(
     private val userDao: UserDao,
     private val userService: UserService,
     private val cacheEntryRepository: CacheEntryRepository,
+    private val userRepository: UserRepository,
     private val timeProvider: TimeProvider
 ) {
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
@@ -63,7 +64,7 @@ class UserProfileRepository @Inject constructor(
 
     private fun persistUserProfile(cacheEntry: CacheEntry, userProfile: UserProfileDto) {
         database.runInTransaction {
-            userDao.insertOrUpdate(userProfile.user.toUserEntity())
+            userRepository.put(listOf(userProfile.user))
             userDao.insertOrUpdate(userProfile.toUserProfileEntity())
             cacheEntryRepository.setEntry(cacheEntry)
         }

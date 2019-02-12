@@ -5,6 +5,7 @@ import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.common.ErrorType
+import io.plastique.api.gallery.FolderDto
 import io.plastique.api.gallery.GalleryService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
@@ -131,3 +132,13 @@ data class FolderCacheMetadata(
     @Json(name = "next_cursor")
     val nextCursor: OffsetCursor?
 )
+
+private fun FolderDto.toFolderEntity(): FolderEntity {
+    val thumbnailUrl = deviations.asSequence()
+            .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
+            .firstOrNull { it != null }
+    return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
+}
+
+private fun FolderEntity.toFolder(): Folder =
+        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

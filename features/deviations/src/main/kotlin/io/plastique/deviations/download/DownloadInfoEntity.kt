@@ -26,9 +26,3 @@ data class DownloadInfoEntity(
     @ColumnInfo(name = "file_size")
     val fileSize: Int
 )
-
-fun DownloadInfoDto.toDownloadInfoEntity(deviationId: String): DownloadInfoEntity = DownloadInfoEntity(
-        deviationId = deviationId,
-        downloadUrl = url,
-        size = Size(width, height),
-        fileSize = fileSize)

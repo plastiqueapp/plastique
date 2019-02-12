@@ -7,6 +7,3 @@ data class DownloadInfo(
     val size: Size,
     val fileSize: Int
 )
-
-fun DownloadInfoEntity.toDownloadInfo(): DownloadInfo =
-        DownloadInfo(downloadUrl = downloadUrl, size = size, fileSize = fileSize)

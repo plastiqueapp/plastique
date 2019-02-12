@@ -41,12 +41,3 @@ data class CommentEntity(
     @ColumnInfo(name = "text")
     val text: String
 )
-
-fun CommentDto.toCommentEntity(): CommentEntity = CommentEntity(
-        id = id,
-        parentId = parentId,
-        authorId = author.id,
-        datePosted = datePosted,
-        numReplies = numReplies,
-        hidden = hidden,
-        text = text)
