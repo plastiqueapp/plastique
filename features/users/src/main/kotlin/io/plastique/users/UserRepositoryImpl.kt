@@ -33,6 +33,7 @@ class UserRepositoryImpl @Inject constructor(
         return userDao.getUserById(userId)
                 .filter { it.isNotEmpty() }
                 .map { it.first().toUser() }
+                .distinctUntilChanged()
     }
 
     private fun fetchCurrentUser(userId: String): Completable {

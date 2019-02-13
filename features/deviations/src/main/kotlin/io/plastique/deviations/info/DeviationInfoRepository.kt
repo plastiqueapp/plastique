@@ -57,6 +57,7 @@ class DeviationInfoRepository @Inject constructor(
         return deviationMetadataDao.getDeviationInfoById(deviationId)
                 .filter { it.isNotEmpty() }
                 .map { it.first().toDeviationInfo(ZoneId.systemDefault()) }
+                .distinctUntilChanged()
     }
 
     private fun persist(cacheKey: String, metadataList: List<DeviationMetadataDto>) {
