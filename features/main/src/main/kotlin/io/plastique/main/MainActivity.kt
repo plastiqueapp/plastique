@@ -16,6 +16,7 @@ import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.getLayoutBehavior
 import io.plastique.core.extensions.setActionBar
+import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp
@@ -41,7 +42,8 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setActionBar(R.id.toolbar)
+        val toolbar = setActionBar(R.id.toolbar)
+        toolbar.setTitleOnClickListener(View.OnClickListener { scrollToTop() })
 
         val appBar = findViewById<AppBarLayout>(R.id.appbar)
         val appBarBehavior = appBar.getLayoutBehavior<AppBarLayout.Behavior>()
@@ -91,10 +93,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
     }
 
     override fun onNavigationItemReselected(item: MenuItem) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.tab_content)
-        if (fragment is ScrollableToTop) {
-            fragment.scrollToTop()
-        }
+        scrollToTop()
     }
 
     private fun renderState(state: MainViewState) {
@@ -114,6 +113,13 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
                     })
         } else {
             setCurrentUserIcon(null)
+        }
+    }
+
+    private fun scrollToTop() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.tab_content)
+        if (fragment is ScrollableToTop) {
+            fragment.scrollToTop()
         }
     }
 
