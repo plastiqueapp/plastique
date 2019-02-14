@@ -13,6 +13,7 @@ import io.plastique.api.feed.FeedElementDto
 import io.plastique.api.feed.FeedElementTypes
 import io.plastique.api.feed.FeedService
 import io.plastique.api.gallery.GalleryService
+import io.plastique.api.messages.MessageService
 import io.plastique.api.statuses.StatusService
 import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
@@ -23,6 +24,7 @@ import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.StringCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
 import io.plastique.core.client.ApiClient
+import io.plastique.notifications.MessageDtoSubjectJsonAdapterFactory
 import org.threeten.bp.format.DateTimeFormatter
 
 @Module
@@ -72,6 +74,13 @@ object ApiModule {
     @Provides
     @Reusable
     @JvmStatic
+    fun provideMessageService(apiClient: ApiClient): MessageService {
+        return apiClient.getService(MessageService::class.java)
+    }
+
+    @Provides
+    @Reusable
+    @JvmStatic
     fun provideStatusService(apiClient: ApiClient): StatusService {
         return apiClient.getService(StatusService::class.java)
     }
@@ -112,6 +121,7 @@ object ApiModule {
                         .withSubtype(StatusDto.EmbeddedItem.SharedStatus::class.java, StatusDto.EmbeddedItem.TYPE_STATUS)
                         .withDefaultValue(StatusDto.EmbeddedItem.Unknown))
                 .add(NullIfDeletedJsonAdapterFactory())
+                .add(MessageDtoSubjectJsonAdapterFactory())
                 .build()
     }
 }

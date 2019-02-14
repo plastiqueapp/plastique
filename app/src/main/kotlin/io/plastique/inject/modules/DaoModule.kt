@@ -12,6 +12,7 @@ import io.plastique.deviations.download.DownloadInfoDao
 import io.plastique.deviations.info.DeviationMetadataDao
 import io.plastique.feed.FeedDao
 import io.plastique.gallery.GalleryDao
+import io.plastique.notifications.MessageDao
 import io.plastique.statuses.StatusDao
 import io.plastique.users.UserDao
 import io.plastique.watch.WatchDao
@@ -53,6 +54,10 @@ object DaoModule {
     @Provides
     @JvmStatic
     fun provideGalleryDao(database: AppDatabase): GalleryDao = database.galleryDao()
+
+    @Provides
+    @JvmStatic
+    fun provideMessageDao(database: AppDatabase): MessageDao = database.messageDao()
 
     @Provides
     @JvmStatic

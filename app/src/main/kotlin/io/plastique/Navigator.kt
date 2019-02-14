@@ -15,6 +15,7 @@ import io.plastique.feed.FeedNavigator
 import io.plastique.gallery.GalleryFolderId
 import io.plastique.gallery.GalleryNavigator
 import io.plastique.main.MainNavigator
+import io.plastique.notifications.NotificationsNavigator
 import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsActivity
 import io.plastique.settings.SettingsNavigator
@@ -40,6 +41,7 @@ class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher
         FeedNavigator,
         GalleryNavigator,
         MainNavigator,
+        NotificationsNavigator,
         ProfileNavigator,
         SettingsNavigator,
         StatusesNavigator,

@@ -2,5 +2,10 @@
 <resources>
 
     <string name="notifications_title">Notifications</string>
+    <string name="notifications_message_empty">You have no notifications</string>
+    <string name="notifications_message_sign_in_required">Sign in to view your notifications</string>
+    <string name="notifications_item_add_to_collection"><![CDATA[Added your deviation <b>%1$s</b> to their collection <b>%2$s</b>]]></string>
+    <string name="notifications_item_favorite"><![CDATA[Liked <b>%s</b>]]></string>
+    <string name="notifications_item_watch">Added you to watchlist</string>
 
 </resources>

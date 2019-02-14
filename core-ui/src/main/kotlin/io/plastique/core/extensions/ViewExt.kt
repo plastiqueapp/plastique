@@ -1,7 +1,9 @@
 package io.plastique.core.extensions
 
+import android.graphics.Paint
 import android.view.View
 import android.view.ViewParent
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,6 +71,16 @@ fun RecyclerView.LayoutManager.findLastVisibleItemPosition(): Int = when (this) 
     is LinearLayoutManager -> findLastVisibleItemPosition()
     else -> throw UnsupportedOperationException("Unsupported layout manager $javaClass")
 }
+
+var TextView.isStrikethrough: Boolean
+    get() = (paintFlags and Paint.STRIKE_THRU_TEXT_FLAG) == Paint.STRIKE_THRU_TEXT_FLAG
+    set(value) {
+        paintFlags = if (value) {
+            paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+    }
 
 fun Toolbar.setTitleOnClickListener(onClickListener: View.OnClickListener) {
     try {

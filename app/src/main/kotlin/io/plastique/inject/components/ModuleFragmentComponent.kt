@@ -8,6 +8,7 @@ import io.plastique.feed.FeedFragmentComponent
 import io.plastique.gallery.GalleryFragmentComponent
 import io.plastique.inject.FragmentComponent
 import io.plastique.inject.scopes.FragmentScope
+import io.plastique.notifications.NotificationsFragmentComponent
 import io.plastique.profile.ProfileFragmentComponent
 import io.plastique.settings.SettingsFragmentComponent
 import io.plastique.statuses.StatusesFragmentComponent
@@ -22,6 +23,7 @@ interface ModuleFragmentComponent :
         DeviationsFragmentComponent,
         FeedFragmentComponent,
         GalleryFragmentComponent,
+        NotificationsFragmentComponent,
         ProfileFragmentComponent,
         SettingsFragmentComponent,
         StatusesFragmentComponent,

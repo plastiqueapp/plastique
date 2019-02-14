@@ -9,6 +9,7 @@ import io.plastique.deviations.DeviationsNavigator
 import io.plastique.feed.FeedNavigator
 import io.plastique.gallery.GalleryNavigator
 import io.plastique.main.MainNavigator
+import io.plastique.notifications.NotificationsNavigator
 import io.plastique.profile.ProfileNavigator
 import io.plastique.settings.SettingsNavigator
 import io.plastique.statuses.StatusesNavigator
@@ -34,6 +35,9 @@ interface NavigationModule {
 
     @Binds
     fun bindMainNavigator(impl: Navigator): MainNavigator
+
+    @Binds
+    fun bindNotificationsNavigator(impl: Navigator): NotificationsNavigator
 
     @Binds
     fun bindProfileNavigator(impl: Navigator): ProfileNavigator
