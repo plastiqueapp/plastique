@@ -92,6 +92,7 @@ class FeedViewModel @Inject constructor(
         val loadEvents = effects.ofType<LoadFeedEffect>()
                 .switchMap { effect ->
                     feedModel.items(effect.matureContent)
+                            .takeWhile { sessionManager.session is Session.User }
                             .map<FeedEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }

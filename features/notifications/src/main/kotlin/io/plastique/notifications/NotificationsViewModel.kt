@@ -82,6 +82,7 @@ class NotificationsViewModel @Inject constructor(
         val itemEvents = effects.ofType<LoadNotificationsEffect>()
                 .switchMap {
                     notificationsModel.items()
+                            .takeWhile { sessionManager.session is Session.User }
                             .map<NotificationsEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }

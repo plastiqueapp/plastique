@@ -37,6 +37,7 @@ import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.plastique.util.toOptional
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -153,6 +154,13 @@ class FeedRepository @Inject constructor(
             }
 
             feedDao.insertDeviationLinks(deviationLinks)
+        }
+    }
+
+    fun clearCache(): Completable = Completable.fromAction {
+        database.runInTransaction {
+            cacheEntryRepository.deleteEntryByKey(CACHE_KEY)
+            feedDao.deleteAll()
         }
     }
 

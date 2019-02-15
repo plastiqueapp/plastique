@@ -1,6 +1,5 @@
 package io.plastique.auth
 
-import android.webkit.CookieManager
 import com.sch.rxjava2.extensions.mapError
 import com.sch.rxjava2.extensions.sneakyGet
 import io.plastique.api.auth.AuthService
@@ -8,6 +7,7 @@ import io.plastique.api.common.ErrorType
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.exceptions.ApiException
 import io.plastique.core.session.AuthenticationExpiredException
+import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.SessionStorage
@@ -22,7 +22,7 @@ class SessionManagerImpl @Inject constructor(
     private val apiConfig: ApiConfiguration,
     private val authService: AuthService,
     private val sessionStorage: SessionStorage,
-    private val cookieManager: CookieManager
+    private val onLogoutListeners: @JvmSuppressWildcards Set<OnLogoutListener>
 ) : SessionManager {
 
     private val sessionSubject = BehaviorSubject.create<Session>().toSerialized()
@@ -66,7 +66,7 @@ class SessionManagerImpl @Inject constructor(
 
     override fun logout() {
         session = Session.None
-        cookieManager.removeAllCookies(null)
+        onLogoutListeners.forEach { it.onLogout() }
     }
 
     private fun refreshAccessToken(session: Session): Single<Session> = when (session) {

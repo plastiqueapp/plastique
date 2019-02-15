@@ -27,7 +27,7 @@ interface MessageDao {
     }
 
     @Query("DELETE FROM messages")
-    fun deleteAll()
+    fun deleteAllMessages()
 
     @Query("DELETE FROM messages WHERE id = :messageId")
     fun deleteMessageById(messageId: String)
@@ -39,5 +39,8 @@ interface MessageDao {
     fun insertDeletedMessage(deletedMessage: DeletedMessageEntity)
 
     @Query("DELETE FROM deleted_messages WHERE message_id = :messageId")
-    fun deleteDeletedMessage(messageId: String)
+    fun clearDeletedMessage(messageId: String)
+
+    @Query("DELETE FROM deleted_messages")
+    fun clearDeletedMessages()
 }

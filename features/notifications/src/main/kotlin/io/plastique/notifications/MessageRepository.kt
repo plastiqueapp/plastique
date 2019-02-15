@@ -122,7 +122,7 @@ class MessageRepository @Inject constructor(
 
         database.runInTransaction {
             if (replaceExisting) {
-                messageDao.deleteAll()
+                messageDao.deleteAllMessages()
             }
 
             cacheEntryRepository.setEntry(cacheEntry)
@@ -140,7 +140,7 @@ class MessageRepository @Inject constructor(
             if (deleted) {
                 messageDao.insertDeletedMessage(DeletedMessageEntity(messageId))
             } else {
-                messageDao.deleteDeletedMessage(messageId)
+                messageDao.clearDeletedMessage(messageId)
             }
         }
     }
@@ -161,10 +161,18 @@ class MessageRepository @Inject constructor(
                             .doOnComplete {
                                 database.runInTransaction {
                                     messageDao.deleteMessageById(messageId)
-                                    messageDao.deleteDeletedMessage(messageId)
+                                    messageDao.clearDeletedMessage(messageId)
                                 }
                             }
                 }
+    }
+
+    fun clearCache(): Completable = Completable.fromAction {
+        database.runInTransaction {
+            cacheEntryRepository.deleteEntryByKey(CACHE_KEY)
+            messageDao.deleteAllMessages()
+            messageDao.clearDeletedMessages()
+        }
     }
 
     companion object {

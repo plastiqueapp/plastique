@@ -11,8 +11,12 @@ import dagger.Binds
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoSet
 import io.plastique.BuildConfig
+import io.plastique.CookieCleaner
+import io.plastique.DatabaseCleaner
 import io.plastique.R
+import io.plastique.WorkerCleaner
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
@@ -24,6 +28,7 @@ import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
+import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.main.MainFragmentFactory
@@ -64,6 +69,18 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindWatchManager(impl: WatchManagerImpl): WatchManager
+
+    @Binds
+    @IntoSet
+    abstract fun bindCookieCleaner(impl: CookieCleaner): OnLogoutListener
+
+    @Binds
+    @IntoSet
+    abstract fun bindDatabaseCleaner(impl: DatabaseCleaner): OnLogoutListener
+
+    @Binds
+    @IntoSet
+    abstract fun bindWorkerCleaner(impl: WorkerCleaner): OnLogoutListener
 
     @Module
     companion object {
