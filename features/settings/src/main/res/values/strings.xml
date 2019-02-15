@@ -2,6 +2,7 @@
 <resources>
 
     <string name="settings_title">Settings</string>
+    <string name="settings_category_general">General</string>
     <string name="settings_category_appearance">Appearance</string>
     <string name="settings_appearance_theme">Theme</string>
     <string name="settings_category_content">Content</string>
@@ -21,6 +22,33 @@
         <item>light</item>
         <item>dark</item>
     </string-array>
+
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_notifications_enabled">Enable notifications</string>
+
+    <string name="settings_notifications_category_general">General</string>
+    <string name="settings_notifications_favorites">Favorites</string>
+    <string name="settings_notifications_favorites_summary">When your deviation is added to favorites</string>
+    <string name="settings_notifications_collections">Collections</string>
+    <string name="settings_notifications_collections_summary">When your deviation is added to a collection</string>
+    <string name="settings_notifications_watch">Watch</string>
+    <string name="settings_notifications_watch_summary">When someone starts watching you</string>
+
+    <string name="settings_notifications_category_comments">Comments</string>
+    <string name="settings_notifications_comments_deviations">Deviations</string>
+    <string name="settings_notifications_comments_deviations_summary">When someone leaves a comment under your deviation</string>
+    <string name="settings_notifications_comments_profile">Profile</string>
+    <string name="settings_notifications_comments_profile_summary">When someone leaves a comment under your profile</string>
+    <string name="settings_notifications_comments_statuses">Statuses</string>
+    <string name="settings_notifications_comments_statuses_summary">When someone leaves a comment under your status</string>
+    <string name="settings_notifications_comments_replies">Replies</string>
+    <string name="settings_notifications_comments_replies_summary">When someone replies to your comment</string>
+
+    <string name="settings_notifications_category_mentions">Mentions</string>
+    <string name="settings_notifications_mentions_username">Username</string>
+    <string name="settings_notifications_mentions_username_summary">When someone mentions you</string>
+    <string name="settings_notifications_mentions_deviations">Deviations</string>
+    <string name="settings_notifications_mentions_deviations_summary">When someone mentions one of your deviations</string>
 
     <string name="about_title">About</string>
     <string name="about_category_feedback">Feedback</string>

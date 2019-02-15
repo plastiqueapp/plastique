@@ -4,6 +4,16 @@
     android:title="@string/settings_title">
 
     <PreferenceCategory
+        android:title="@string/settings_category_general"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:title="Notifications"
+            app:fragment="io.plastique.settings.NotificationSettingsFragment"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/settings_category_appearance"
         app:iconSpaceReserved="false">
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_notifications_title">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="notifications.enabled"
+        android:title="@string/settings_notifications_enabled"
+        app:iconSpaceReserved="false" />
+
+    <PreferenceCategory
+        android:dependency="notifications.enabled"
+        android:title="@string/settings_notifications_category_general"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.favorites"
+            android:summary="@string/settings_notifications_favorites_summary"
+            android:title="@string/settings_notifications_favorites"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.collections"
+            android:summary="@string/settings_notifications_collections_summary"
+            android:title="@string/settings_notifications_collections"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.watch"
+            android:summary="@string/settings_notifications_watch_summary"
+            android:title="@string/settings_notifications_watch"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:dependency="notifications.enabled"
+        android:title="@string/settings_notifications_category_comments"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.comments.deviations"
+            android:summary="@string/settings_notifications_comments_deviations_summary"
+            android:title="@string/settings_notifications_comments_deviations"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.comments.profile"
+            android:summary="@string/settings_notifications_comments_profile_summary"
+            android:title="@string/settings_notifications_comments_profile"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.comments.statuses"
+            android:summary="@string/settings_notifications_comments_statuses_summary"
+            android:title="@string/settings_notifications_comments_statuses"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.comments.replies"
+            android:summary="@string/settings_notifications_comments_replies_summary"
+            android:title="@string/settings_notifications_comments_replies"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:dependency="notifications.enabled"
+        android:title="@string/settings_notifications_category_mentions"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.mentions.username"
+            android:summary="@string/settings_notifications_mentions_username_summary"
+            android:title="@string/settings_notifications_mentions_username"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications.mentions.deviations"
+            android:summary="@string/settings_notifications_mentions_deviations_summary"
+            android:title="@string/settings_notifications_mentions_deviations"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
