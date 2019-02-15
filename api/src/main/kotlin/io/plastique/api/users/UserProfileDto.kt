@@ -18,5 +18,17 @@ data class UserProfileDto(
     val bio: String?,
 
     @Json(name = "is_watching")
-    val isWatching: Boolean
-)
+    val isWatching: Boolean,
+
+    @Json(name = "stats")
+    val stats: Stats
+) {
+    @JsonClass(generateAdapter = true)
+    data class Stats(
+        @Json(name = "user_deviations")
+        val userDeviations: Int,
+
+        @Json(name = "user_favourites")
+        val userFavorites: Int
+    )
+}

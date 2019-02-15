@@ -7,5 +7,12 @@ data class UserProfile(
     val url: String,
     val realName: String?,
     val bio: String?,
-    val isWatching: Boolean
-)
+    val isWatching: Boolean,
+    val stats: Stats
+) {
+    data class Stats(
+        val deviations: Int,
+        val favorites: Int,
+        val watchers: Int
+    )
+}

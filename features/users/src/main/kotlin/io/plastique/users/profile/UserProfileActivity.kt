@@ -40,6 +40,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
     private lateinit var rootView: View
     private lateinit var avatarView: ImageView
     private lateinit var realNameView: TextView
+    private lateinit var statisticsView: UserStatisticsView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
@@ -70,6 +71,9 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         avatarView = findViewById(R.id.user_avatar)
         realNameView = findViewById(R.id.user_real_name)
 
+        statisticsView = findViewById(R.id.statistics)
+        statisticsView.setOnWatchersClickListener(View.OnClickListener { navigator.openWatchers(navigationContext, username) })
+
         contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(this, supportFragmentManager)
         snackbarController = SnackbarController(rootView)
@@ -99,10 +103,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             navigator.openUrl(navigationContext, state.userProfile!!.url)
             true
         }
-        R.id.users_profile_action_view_watchers -> {
-            navigator.openWatchers(navigationContext, username)
-            true
-        }
         R.id.users_profile_action_watch -> {
             viewModel.dispatch(SetWatchingEvent(!item.isChecked))
             true
@@ -122,6 +122,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
 
         if (state.userProfile != prevState?.userProfile) {
             realNameView.text = state.userProfile!!.realName
+            statisticsView.render(state.userProfile.stats)
 
             GlideApp.with(this)
                     .load(state.userProfile.user.avatarUrl)

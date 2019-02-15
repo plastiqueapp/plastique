@@ -1,6 +1,7 @@
 package io.plastique.users.profile
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -25,5 +26,19 @@ data class UserProfileEntity(
     val bio: String?,
 
     @ColumnInfo(name = "is_watching")
-    val isWatching: Boolean
+    val isWatching: Boolean,
+
+    @Embedded(prefix = "stats_")
+    val stats: UserProfileStatsEntity
+)
+
+data class UserProfileStatsEntity(
+    @ColumnInfo(name = "user_deviations")
+    val userDeviations: Int,
+
+    @ColumnInfo(name = "user_favorites")
+    val userFavorites: Int,
+
+    @ColumnInfo(name = "watchers")
+    val watchers: Int
 )

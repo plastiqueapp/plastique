@@ -15,5 +15,14 @@ data class UserDto(
     val type: String,
 
     @Json(name = "usericon")
-    val avatarUrl: String
-)
+    val avatarUrl: String,
+
+    @Json(name = "stats")
+    val stats: Stats?
+) {
+    @JsonClass(generateAdapter = true)
+    data class Stats(
+        @Json(name = "watchers")
+        val watchers: Int
+    )
+}

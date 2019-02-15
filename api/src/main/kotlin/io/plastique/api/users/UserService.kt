@@ -11,7 +11,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserService {
-    @GET("user/profile/{username}")
+    @GET("user/profile/{username}?expand=user.stats")
     fun getUserProfile(@Path("username") username: String): Single<UserProfileDto>
 
     @GET("user/whoami")

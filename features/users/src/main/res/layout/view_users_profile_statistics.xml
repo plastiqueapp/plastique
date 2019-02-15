@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <LinearLayout
+        android:id="@+id/statistics_watchers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:minWidth="72dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/statistics_watchers_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceSubtitle2"
+            tools:text="123K" />
+
+        <TextView
+            android:id="@+id/statistics_watchers_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceCaption"
+            tools:text="watchers" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/statistics_deviations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:minWidth="72dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/statistics_deviations_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceSubtitle2"
+            tools:text="8.6K" />
+
+        <TextView
+            android:id="@+id/statistics_deviations_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceCaption"
+            tools:text="deviations" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/statistics_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:minWidth="72dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/statistics_favorites_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceSubtitle2"
+            tools:text="2.5K" />
+
+        <TextView
+            android:id="@+id/statistics_favorites_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceCaption"
+            tools:text="favorites" />
+    </LinearLayout>
+</merge>
