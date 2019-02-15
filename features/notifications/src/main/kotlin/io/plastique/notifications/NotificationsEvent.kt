@@ -23,4 +23,7 @@ sealed class NotificationsEvent : Event() {
 
     object SnackbarShownEvent : NotificationsEvent()
     data class SessionChangedEvent(val session: Session) : NotificationsEvent()
+
+    data class DeleteMessageEvent(val messageId: String) : NotificationsEvent()
+    data class UndoDeleteMessageEvent(val messageId: String) : NotificationsEvent()
 }

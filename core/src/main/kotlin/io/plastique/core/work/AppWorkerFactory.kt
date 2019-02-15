@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.core.work
 
 import android.content.Context
 import androidx.work.ListenableWorker

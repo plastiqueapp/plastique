@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,6 +21,7 @@ import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
@@ -27,10 +29,12 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
+import io.plastique.notifications.NotificationsEvent.DeleteMessageEvent
 import io.plastique.notifications.NotificationsEvent.LoadMoreEvent
 import io.plastique.notifications.NotificationsEvent.RefreshEvent
 import io.plastique.notifications.NotificationsEvent.RetryClickEvent
 import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
+import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -71,9 +75,12 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
+        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
 
         onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
         notificationsView.addOnScrollListener(onScrollListener)
+
+        initSwipe()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,6 +121,29 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
                 onOpenDeviation = { navigator.openDeviation(navigationContext, it) },
                 onOpenStatus = { navigator.openStatus(navigationContext, it) },
                 onOpenUserProfile = { navigator.openUserProfile(navigationContext, it) })
+    }
+
+    private fun initSwipe() {
+        val swipeCallback = object : ItemTouchHelper.Callback() {
+            override fun onMove(recyclerView: RecyclerView, holder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = false
+
+            override fun onSwiped(holder: RecyclerView.ViewHolder, direction: Int) {
+                val item = adapter.items[holder.adapterPosition] as NotificationItem
+                viewModel.dispatch(DeleteMessageEvent(item.messageId))
+            }
+
+            override fun getMovementFlags(recyclerView: RecyclerView, holder: RecyclerView.ViewHolder): Int {
+                return if (holder.itemViewType != LoadingIndicatorItemDelegate.VIEW_TYPE) {
+                    makeMovementFlags(0, ItemTouchHelper.RIGHT)
+                } else {
+                    0
+                }
+            }
+
+            override fun isLongPressDragEnabled(): Boolean = false
+        }
+
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(notificationsView)
     }
 
     override fun getTitle(): Int = R.string.notifications_title

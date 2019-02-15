@@ -60,6 +60,47 @@ private class AddToCollectionItemDelegate(
     }
 }
 
+private class BadgeGivenItemDelegate(
+    private val glide: GlideRequests,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<BadgeGivenItem, ListItem, BadgeGivenItemDelegate.ViewHolder>() {
+
+    override fun isForViewType(item: ListItem): Boolean = item is BadgeGivenItem
+
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notifications_simple, parent, false)
+        return ViewHolder(view, onViewHolderClickListener)
+    }
+
+    override fun onBindViewHolder(item: BadgeGivenItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.usernameView.text = item.user.name
+        holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
+        holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
+        holder.descriptionView.text = item.text
+
+        glide.load(item.user.avatarUrl)
+                .fallback(R.drawable.default_avatar_64dp)
+                .circleCrop()
+                .dontAnimate()
+                .into(holder.avatarView)
+    }
+
+    class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        val avatarView: ImageView = itemView.findViewById(R.id.avatar)
+        val usernameView: TextView = itemView.findViewById(R.id.username)
+        val timeView: TextView = itemView.findViewById(R.id.time)
+        val descriptionView: TextView = itemView.findViewById(R.id.description)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            onClickListener.onViewHolderClick(this, view)
+        }
+    }
+}
+
 private class FavoriteItemDelegate(
     private val glide: GlideRequests,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -152,10 +193,11 @@ class NotificationsAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
+        delegatesManager.addDelegate(LoadingIndicatorItemDelegate.VIEW_TYPE, LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(AddToCollectionItemDelegate(glide, this))
+        delegatesManager.addDelegate(BadgeGivenItemDelegate(glide, this))
         delegatesManager.addDelegate(FavoriteItemDelegate(glide, this))
         delegatesManager.addDelegate(WatchItemDelegate(glide, this))
-        delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
@@ -165,6 +207,7 @@ class NotificationsAdapter(
 
         when (item) {
             is AddToCollectionItem -> onOpenCollection(item.user.name, item.folderId, item.folderName)
+            is BadgeGivenItem -> onOpenUserProfile(item.user)
             is FavoriteItem -> onOpenUserProfile(item.user)
             is WatchItem -> onOpenUserProfile(item.user)
         }

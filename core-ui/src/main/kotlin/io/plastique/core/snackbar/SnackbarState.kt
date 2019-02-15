@@ -9,7 +9,7 @@ sealed class SnackbarState {
 
     data class MessageWithAction(
         val message: CharSequence,
-        val actionId: Int,
-        val actionText: CharSequence
+        val actionText: CharSequence,
+        val actionData: Any
     ) : SnackbarState()
 }

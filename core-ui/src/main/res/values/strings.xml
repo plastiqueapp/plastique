@@ -8,6 +8,7 @@
     <string name="common_button_share">Share</string>
     <string name="common_button_sign_in">Sign in</string>
     <string name="common_button_try_again">Try again</string>
+    <string name="common_button_undo">Undo</string>
     <string name="common_error">Error</string>
     <string name="common_hashtag">#%s</string>
 

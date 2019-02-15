@@ -22,6 +22,13 @@ data class AddToCollectionItem(
     val folderName: String
 ) : NotificationItem()
 
+data class BadgeGivenItem(
+    override val messageId: String,
+    override val time: ZonedDateTime,
+    override val user: User,
+    val text: String
+) : NotificationItem()
+
 data class FavoriteItem(
     override val messageId: String,
     override val time: ZonedDateTime,

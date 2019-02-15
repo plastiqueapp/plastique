@@ -18,6 +18,13 @@ sealed class Message {
         val folder: Folder
     ) : Message()
 
+    data class BadgeGiven(
+        override val id: String,
+        override val time: ZonedDateTime,
+        override val user: User,
+        val text: String
+    ) : Message()
+
     data class Favorite(
         override val id: String,
         override val time: ZonedDateTime,

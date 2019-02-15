@@ -3,6 +3,7 @@ package io.plastique.notifications
 import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.common.ErrorType
 import io.plastique.api.messages.MessageDto
 import io.plastique.api.messages.MessageService
 import io.plastique.api.messages.MessageTypes
@@ -14,6 +15,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.deviations.DeviationRepository
@@ -25,6 +27,7 @@ import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.plastique.util.toOptional
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -64,7 +67,7 @@ class MessageRepository @Inject constructor(
     }
 
     private fun getMessagesFromDb(cacheKey: String): Observable<PagedData<List<Message>, StringCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "collection_folders", "messages")) {
+        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages")) {
             val messages = messageDao.getMessages()
                     .asSequence()
                     .map { it.toMessage() }
@@ -132,6 +135,38 @@ class MessageRepository @Inject constructor(
         }
     }
 
+    fun markAsDeleted(messageId: String, deleted: Boolean): Completable {
+        return Completable.fromAction {
+            if (deleted) {
+                messageDao.insertDeletedMessage(DeletedMessageEntity(messageId))
+            } else {
+                messageDao.deleteDeletedMessage(messageId)
+            }
+        }
+    }
+
+    fun deleteMarkedMessages(): Completable {
+        return messageDao.getDeletedMessageIds()
+                .flattenAsObservable { it }
+                .flatMapCompletable { messageId ->
+                    messageService.deleteMessage(messageId)
+                            .onErrorResumeNext { error ->
+                                if (error is ApiException && error.errorData.type === ErrorType.InvalidRequest) {
+                                    // Already deleted or messageId is invalid
+                                    Completable.complete()
+                                } else {
+                                    Completable.error(error)
+                                }
+                            }
+                            .doOnComplete {
+                                database.runInTransaction {
+                                    messageDao.deleteMessageById(messageId)
+                                    messageDao.deleteDeletedMessage(messageId)
+                                }
+                            }
+                }
+    }
+
     companion object {
         private const val CACHE_KEY = "messages"
         private val CACHE_DURATION = Duration.ofHours(1)
@@ -148,6 +183,7 @@ private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
         id = id,
         type = type,
         time = timestamp!!,
+        html = html,
         originatorId = originator!!.id,
         deviationId = deviation?.id,
         commentId = comment?.id,
@@ -158,6 +194,12 @@ private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
                 collectionFolderId = subject?.collection?.id))
 
 private fun MessageEntityWithRelations.toMessage(): Message? = when (message.type) {
+    MessageTypes.BADGE_GIVEN -> Message.BadgeGiven(
+            id = message.id,
+            time = message.time,
+            user = originator.first().toUser(),
+            text = message.html!!)
+
     MessageTypes.COLLECT -> Message.AddToCollection(
             id = message.id,
             time = message.time,

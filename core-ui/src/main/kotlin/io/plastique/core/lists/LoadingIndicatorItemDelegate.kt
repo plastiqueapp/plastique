@@ -18,4 +18,8 @@ class LoadingIndicatorItemDelegate : BaseAdapterDelegate<LoadingIndicatorItem, L
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    companion object {
+        const val VIEW_TYPE = 0
+    }
 }

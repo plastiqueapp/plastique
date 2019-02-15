@@ -42,6 +42,9 @@ data class MessageEntity(
     @ColumnInfo(name = "time")
     val time: ZonedDateTime,
 
+    @ColumnInfo(name = "html")
+    val html: String?,
+
     @ColumnInfo(name = "originator_id")
     val originatorId: String,
 

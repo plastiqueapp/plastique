@@ -12,10 +12,12 @@ class SnackbarController(private val rootView: View) {
                 Snackbar.make(rootView, state.message, Snackbar.LENGTH_LONG).show()
             }
             is SnackbarState.MessageWithAction -> {
-                val snackbar = Snackbar.make(rootView, state.message, Snackbar.LENGTH_LONG)
-                snackbar.setAction(state.actionText) { onActionClickListener?.onSnackbarActionClick(state.actionId) }
+                val snackbar = Snackbar.make(rootView, state.message, 5000)
+                snackbar.setAction(state.actionText) { onActionClickListener?.invoke(state.actionData) }
                 snackbar.show()
             }
         }
     }
 }
+
+typealias OnSnackbarActionClickListener = (actionData: Any) -> Unit

@@ -16,9 +16,12 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.FragmentScope
+import io.plastique.notifications.NotificationsEffect.DeleteMessageEffect
 import io.plastique.notifications.NotificationsEffect.LoadMoreEffect
 import io.plastique.notifications.NotificationsEffect.LoadNotificationsEffect
 import io.plastique.notifications.NotificationsEffect.RefreshEffect
+import io.plastique.notifications.NotificationsEffect.UndoDeleteMessageEffect
+import io.plastique.notifications.NotificationsEvent.DeleteMessageEvent
 import io.plastique.notifications.NotificationsEvent.ItemsChangedEvent
 import io.plastique.notifications.NotificationsEvent.LoadErrorEvent
 import io.plastique.notifications.NotificationsEvent.LoadMoreErrorEvent
@@ -30,6 +33,7 @@ import io.plastique.notifications.NotificationsEvent.RefreshFinishedEvent
 import io.plastique.notifications.NotificationsEvent.RetryClickEvent
 import io.plastique.notifications.NotificationsEvent.SessionChangedEvent
 import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
+import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import timber.log.Timber
@@ -99,7 +103,13 @@ class NotificationsViewModel @Inject constructor(
                             .onErrorReturn { error -> RefreshErrorEvent(error) }
                 }
 
-        return Observable.merge(itemEvents, loadMoreEvents, refreshEvents)
+        val deleteEvents = effects.ofType<DeleteMessageEffect>()
+                .flatMapCompletable { effect -> notificationsModel.deleteMessageById(effect.messageId) }
+
+        val undoDeleteEvents = effects.ofType<UndoDeleteMessageEffect>()
+                .flatMapCompletable { effect -> notificationsModel.undoDeleteMessageById(effect.messageId) }
+
+        return Observable.mergeArray(itemEvents, loadMoreEvents, refreshEvents, deleteEvents.toObservable(), undoDeleteEvents.toObservable())
     }
 
     private fun externalEvents(): Observable<NotificationsEvent> {
@@ -194,6 +204,18 @@ class NotificationsStateReducer @Inject constructor(
             } else {
                 next(state)
             }
+        }
+
+        is DeleteMessageEvent -> {
+            next(state.copy(snackbarState = SnackbarState.MessageWithAction(
+                    message = resourceProvider.getString(R.string.notifications_message_notification_deleted),
+                    actionText = resourceProvider.getString(R.string.common_button_undo),
+                    actionData = event.messageId)),
+                    DeleteMessageEffect(event.messageId))
+        }
+
+        is UndoDeleteMessageEvent -> {
+            next(state, UndoDeleteMessageEffect(event.messageId))
         }
     }
 }

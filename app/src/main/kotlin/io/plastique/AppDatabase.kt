@@ -27,6 +27,7 @@ import io.plastique.feed.FeedDeviationEntityWithRelations
 import io.plastique.feed.FeedElementDeviation
 import io.plastique.feed.FeedElementEntity
 import io.plastique.gallery.GalleryDao
+import io.plastique.notifications.DeletedMessageEntity
 import io.plastique.notifications.MessageDao
 import io.plastique.notifications.MessageEntity
 import io.plastique.statuses.StatusDao
@@ -70,7 +71,8 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     UserEntity::class,
     UserProfileEntity::class,
     WatcherEntity::class,
-    MessageEntity::class
+    MessageEntity::class,
+    DeletedMessageEntity::class
 ], views = [
     FeedDeviationEntityWithRelations::class
 ], version = BuildConfig.DB_VERSION, exportSchema = false)

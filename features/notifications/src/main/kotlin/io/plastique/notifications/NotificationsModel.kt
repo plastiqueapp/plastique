@@ -1,15 +1,22 @@
 package io.plastique.notifications
 
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
 import io.plastique.core.paging.StringCursor
 import io.reactivex.Completable
 import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class NotificationsModel @Inject constructor(
-    private val messageRepository: MessageRepository
+    private val messageRepository: MessageRepository,
+    private val workManager: WorkManager
 ) {
     private val nextCursor = AtomicReference<StringCursor>()
 
@@ -34,6 +41,23 @@ class NotificationsModel @Inject constructor(
                 .ignoreElement()
     }
 
+    fun deleteMessageById(messageId: String): Completable {
+        return messageRepository.markAsDeleted(messageId, true)
+                .doOnComplete {
+                    val workRequest = OneTimeWorkRequest.Builder(DeleteMessagesWorker::class.java)
+                            .setConstraints(Constraints.Builder()
+                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                                    .build())
+                            .setInitialDelay(10, TimeUnit.SECONDS)
+                            .build()
+                    workManager.enqueueUniqueWork(DeleteMessagesWorker.WORK_NAME, ExistingWorkPolicy.REPLACE, workRequest)
+                }
+    }
+
+    fun undoDeleteMessageById(messageId: String): Completable {
+        return messageRepository.markAsDeleted(messageId, false)
+    }
+
     private fun createItem(message: Message): ListItem = when (message) {
         is Message.AddToCollection -> AddToCollectionItem(
                 messageId = message.id,
@@ -43,6 +67,12 @@ class NotificationsModel @Inject constructor(
                 deviationTitle = message.deviation.title,
                 folderId = message.folder.id,
                 folderName = message.folder.name)
+
+        is Message.BadgeGiven -> BadgeGivenItem(
+                messageId = message.id,
+                time = message.time,
+                user = message.user,
+                text = message.text)
 
         is Message.Favorite -> FavoriteItem(
                 messageId = message.id,
