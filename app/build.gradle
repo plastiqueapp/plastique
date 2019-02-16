@@ -115,6 +115,8 @@ dependencies {
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     implementation "io.requery:sqlite-android:$versions.sqlite"
 
+    debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
+    debugImplementation "com.facebook.soloader:soloader:$versions.soloader"
     debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
     debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
     debugImplementation "com.sch.stetho:stetho-timber:$versions.stethoTimber"

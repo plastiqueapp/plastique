@@ -1,16 +1,18 @@
 package io.plastique
 
 import android.os.Build
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.soloader.SoLoader
 import com.facebook.stetho.Stetho
 import com.sch.stetho.timber.StethoTree
 import com.squareup.leakcanary.LeakCanary
 import io.plastique.inject.AppComponent
 import io.plastique.inject.components.DaggerDebugModuleAppComponent
-import io.plastique.inject.components.ModuleAppComponent
+import io.plastique.inject.components.DebugModuleAppComponent
 import timber.log.Timber
 
 class DebugPlastiqueApplication : BasePlastiqueApplication(), AppComponent.Holder {
-    override val appComponent: ModuleAppComponent by lazy(LazyThreadSafetyMode.NONE) {
+    override val appComponent: DebugModuleAppComponent by lazy(LazyThreadSafetyMode.NONE) {
         DaggerDebugModuleAppComponent.builder()
                 .application(this)
                 .build()
@@ -18,6 +20,11 @@ class DebugPlastiqueApplication : BasePlastiqueApplication(), AppComponent.Holde
 
     override fun init() {
         super.init()
+
+        SoLoader.init(this, false)
+        if (FlipperUtils.shouldEnableFlipper(this)) {
+            appComponent.flipperClient().start()
+        }
 
         Stetho.initializeWithDefaults(this)
         Timber.plant(Timber.DebugTree())

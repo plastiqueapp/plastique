@@ -1,11 +1,15 @@
 package io.plastique.inject.components
 
+import android.app.Application
+import com.facebook.flipper.core.FlipperClient
+import dagger.BindsInstance
 import dagger.Component
 import io.plastique.inject.modules.ApiModule
 import io.plastique.inject.modules.AppModule
 import io.plastique.inject.modules.DaoModule
 import io.plastique.inject.modules.DatabaseModule
 import io.plastique.inject.modules.DebugOkHttpModule
+import io.plastique.inject.modules.DebuggingModule
 import io.plastique.inject.modules.DeviationsModule
 import javax.inject.Singleton
 
@@ -15,10 +19,18 @@ import javax.inject.Singleton
     AppModule::class,
     DatabaseModule::class,
     DaoModule::class,
+    DebuggingModule::class,
     DebugOkHttpModule::class,
     DeviationsModule::class
 ])
 interface DebugModuleAppComponent : ModuleAppComponent {
+    fun flipperClient(): FlipperClient
+
     @Component.Builder
-    interface Builder : ModuleAppComponent.Builder
+    interface Builder {
+        @BindsInstance
+        fun application(application: Application): Builder
+
+        fun build(): DebugModuleAppComponent
+    }
 }
