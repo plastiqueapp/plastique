@@ -17,4 +17,9 @@
         android:id="@+id/users_profile_action_open_in_browser"
         android:title="@string/users_profile_action_open_in_browser"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/users_profile_action_sign_out"
+        android:title="@string/users_profile_action_sign_out"
+        app:showAsAction="never" />
 </menu>

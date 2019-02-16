@@ -31,6 +31,7 @@ import io.plastique.users.UsersNavigator
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
+import io.plastique.users.profile.UserProfileEvent.SignOutEvent
 import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.plastique.util.SimpleOnTabSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -94,6 +95,11 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         menu.update(state.userProfile!!)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(R.id.users_profile_action_sign_out).isVisible = state.isCurrentUser
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.users_profile_action_copy_profile_link -> {
             viewModel.dispatch(CopyProfileLinkClickEvent)
@@ -101,6 +107,10 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         }
         R.id.users_profile_action_open_in_browser -> {
             navigator.openUrl(navigationContext, state.userProfile!!.url)
+            true
+        }
+        R.id.users_profile_action_sign_out -> {
+            viewModel.dispatch(SignOutEvent)
             true
         }
         R.id.users_profile_action_watch -> {

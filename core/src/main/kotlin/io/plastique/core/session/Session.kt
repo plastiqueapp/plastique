@@ -14,3 +14,9 @@ sealed class Session {
         override fun toString(): String = "None"
     }
 }
+
+val Session.userId: String?
+    get() = when (this) {
+        is Session.User -> userId
+        else -> null
+    }

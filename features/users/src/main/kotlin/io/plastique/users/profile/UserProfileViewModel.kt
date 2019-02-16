@@ -10,18 +10,23 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userId
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.users.R
 import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
 import io.plastique.users.profile.UserProfileEffect.SetWatchingEffect
+import io.plastique.users.profile.UserProfileEffect.SignOutEffect
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.LoadErrorEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
+import io.plastique.users.profile.UserProfileEvent.SessionChangedEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingErrorEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingFinishedEvent
+import io.plastique.users.profile.UserProfileEvent.SignOutEvent
 import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.plastique.users.profile.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
@@ -34,6 +39,7 @@ import javax.inject.Inject
 class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
     private val clipboard: Clipboard,
+    private val sessionManager: SessionManager,
     private val userProfileRepository: UserProfileRepository,
     private val watchManager: WatchManager
 ) : ViewModel() {
@@ -41,8 +47,8 @@ class UserProfileViewModel @Inject constructor(
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,
-            listener = TimberLogger(LOG_TAG)
-    )
+            externalEvents = externalEvents(),
+            listener = TimberLogger(LOG_TAG))
 
     fun init(username: String) {
         if (::state.isInitialized) return
@@ -50,6 +56,7 @@ class UserProfileViewModel @Inject constructor(
         val initialState = UserProfileViewState(
                 username = username,
                 contentState = ContentState.Loading,
+                currentUserId = sessionManager.session.userId,
                 title = username)
 
         state = loop.loop(initialState, LoadUserProfileEffect(username)).disposeOnDestroy()
@@ -73,7 +80,7 @@ class UserProfileViewModel @Inject constructor(
                 .ignoreElements()
                 .toObservable<UserProfileEvent>()
 
-        val watchEvents = effects.ofType<UserProfileEffect.SetWatchingEffect>()
+        val watchEvents = effects.ofType<SetWatchingEffect>()
                 .switchMapSingle { effect ->
                     watchManager.setWatching(effect.username, effect.watching)
                             .toSingleDefault<UserProfileEvent>(SetWatchingFinishedEvent)
@@ -81,7 +88,17 @@ class UserProfileViewModel @Inject constructor(
                             .onErrorReturn { error -> SetWatchingErrorEvent(error) }
                 }
 
-        return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents)
+        val signOutEvents = effects.ofType<SignOutEffect>()
+                .doOnNext { sessionManager.logout() }
+                .ignoreElements()
+
+        return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents.toObservable())
+    }
+
+    private fun externalEvents(): Observable<UserProfileEvent> {
+        return sessionManager.sessionChanges
+                .bindToLifecycle()
+                .map { session -> SessionChangedEvent(session) }
     }
 
     companion object {
@@ -129,6 +146,14 @@ class UserProfileStateReducer @Inject constructor(
         is SetWatchingErrorEvent -> {
             val errorMessage = errorMessageProvider.getErrorMessage(event.error)
             next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+        }
+
+        is SessionChangedEvent -> {
+            next(state.copy(currentUserId = event.session.userId))
+        }
+
+        SignOutEvent -> {
+            next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.users_profile_message_signed_out))), SignOutEffect)
         }
     }
 }
