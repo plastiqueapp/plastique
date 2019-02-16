@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/users_profile_action_watch"
-        android:icon="@drawable/ic_users_watch_unchecked_24dp"
-        android:title="@string/users_profile_action_watch"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/users_profile_action_copy_profile_link"
         android:title="@string/users_profile_action_copy_profile_link"
         app:showAsAction="never" />

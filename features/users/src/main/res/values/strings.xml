@@ -4,8 +4,8 @@
     <string name="users_profile_action_copy_profile_link">Copy link to profile</string>
     <string name="users_profile_action_open_in_browser">Open in Browser</string>
     <string name="users_profile_action_sign_out">Sign out</string>
-    <string name="users_profile_action_watch">Watch</string>
-    <string name="users_profile_action_unwatch">Unwatch</string>
+    <string name="users_profile_button_watch">Watch</string>
+    <string name="users_profile_button_unwatch">Unwatch</string>
     <string name="users_profile_message_signed_out">You\'ve signed out</string>
 
     <plurals name="users_profile_statistics_deviations">

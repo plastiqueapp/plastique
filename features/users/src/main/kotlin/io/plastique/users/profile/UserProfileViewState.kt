@@ -12,6 +12,9 @@ data class UserProfileViewState(
     val snackbarState: SnackbarState = SnackbarState.None,
     val showProgressDialog: Boolean = false
 ) {
+    val isSignedIn: Boolean
+        get() = currentUserId != null
+
     val isCurrentUser: Boolean
         get() = currentUserId == userProfile?.user?.id
 }

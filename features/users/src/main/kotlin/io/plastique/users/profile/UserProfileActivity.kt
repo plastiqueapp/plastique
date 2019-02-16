@@ -7,8 +7,11 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
+import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
@@ -37,11 +40,12 @@ import io.plastique.util.SimpleOnTabSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
+class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton.OnCheckedChangeListener {
     private lateinit var rootView: View
     private lateinit var avatarView: ImageView
     private lateinit var realNameView: TextView
     private lateinit var statisticsView: UserStatisticsView
+    private lateinit var watchButton: ToggleButton
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
@@ -75,6 +79,9 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
         statisticsView = findViewById(R.id.statistics)
         statisticsView.setOnWatchersClickListener(View.OnClickListener { navigator.openWatchers(navigationContext, username) })
 
+        watchButton = findViewById(R.id.button_watch)
+        watchButton.setOnCheckedChangeListener(this)
+
         contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(this, supportFragmentManager)
         snackbarController = SnackbarController(rootView)
@@ -92,7 +99,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_user_profile, menu)
-        menu.update(state.userProfile!!)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -113,11 +119,22 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             viewModel.dispatch(SignOutEvent)
             true
         }
-        R.id.users_profile_action_watch -> {
-            viewModel.dispatch(SetWatchingEvent(!item.isChecked))
-            true
-        }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
+        if (buttonView === watchButton) {
+            // Restore isChecked value because it should be driven by state
+            buttonView.setOnCheckedChangeListener(null)
+            buttonView.isChecked = state.userProfile?.isWatching == true
+            buttonView.setOnCheckedChangeListener(this)
+
+            if (state.isSignedIn) {
+                viewModel.dispatch(SetWatchingEvent(isChecked))
+            } else {
+                navigator.openLogin(navigationContext)
+            }
+        }
     }
 
     private fun renderState(state: UserProfileViewState, prevState: UserProfileViewState?) {
@@ -134,16 +151,19 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
             realNameView.text = state.userProfile!!.realName
             statisticsView.render(state.userProfile.stats)
 
+            watchButton.setOnCheckedChangeListener(null)
+            watchButton.isChecked = state.userProfile.isWatching
+            watchButton.setOnCheckedChangeListener(this)
+
             GlideApp.with(this)
                     .load(state.userProfile.user.avatarUrl)
                     .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()
                     .into(avatarView)
-
-            optionsMenu?.update(state.userProfile)
         }
 
+        watchButton.isVisible = state.contentState === ContentState.Content && !state.isCurrentUser
         progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
@@ -166,14 +186,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>() {
                 }
             }
         })
-    }
-
-    private fun Menu.update(userProfile: UserProfile) {
-        findItem(R.id.users_profile_action_watch).apply {
-            isChecked = userProfile.isWatching
-            setIcon(if (isChecked) R.drawable.ic_users_watch_checked_24dp else R.drawable.ic_users_watch_unchecked_24dp)
-            setTitle(if (isChecked) R.string.users_profile_action_unwatch else R.string.users_profile_action_watch)
-        }
     }
 
     override fun injectDependencies() {

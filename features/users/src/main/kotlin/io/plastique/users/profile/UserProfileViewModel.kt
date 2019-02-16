@@ -149,7 +149,11 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         is SessionChangedEvent -> {
-            next(state.copy(currentUserId = event.session.userId))
+            if (state.currentUserId != event.session.userId) {
+                next(state.copy(currentUserId = event.session.userId), LoadUserProfileEffect(state.username))
+            } else {
+                next(state)
+            }
         }
 
         SignOutEvent -> {
