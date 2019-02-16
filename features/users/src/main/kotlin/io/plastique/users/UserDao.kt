@@ -60,7 +60,9 @@ interface UserDao {
     @Query("DELETE FROM user_profiles WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
     fun deleteProfileByName(username: String)
 
-    @Transaction
-    @Query("UPDATE user_profiles SET is_watching = :watching WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
-    fun setWatching(username: String, watching: Boolean)
+    @Query("SELECT is_watching, stats_watchers FROM user_profiles WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
+    fun getWatchInfo(username: String): WatchInfoEntity?
+
+    @Query("UPDATE user_profiles SET is_watching = :watching, stats_watchers = :watcherCount WHERE user_id IN (SELECT id FROM users WHERE name = :username)")
+    fun setWatching(username: String, watching: Boolean, watcherCount: Int)
 }

@@ -12,6 +12,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import org.threeten.bp.Duration
 import javax.inject.Inject
+import kotlin.math.max
 
 class UserRepositoryImpl @Inject constructor(
     private val database: RoomDatabase,
@@ -63,7 +64,13 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override fun setWatching(username: String, watching: Boolean) {
-        userDao.setWatching(username, watching)
+        database.runInTransaction {
+            val watchInfo = userDao.getWatchInfo(username)
+            if (watchInfo != null && watchInfo.isWatching != watching) {
+                val newWatcherCount = if (watching) watchInfo.watcherCount + 1 else max(watchInfo.watcherCount - 1, 0)
+                userDao.setWatching(username, watching, newWatcherCount)
+            }
+        }
     }
 
     private fun getCacheKey(userId: String) = "user-$userId"
