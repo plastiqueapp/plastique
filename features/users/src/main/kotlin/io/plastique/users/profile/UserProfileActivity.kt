@@ -102,7 +102,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.users_profile_action_sign_out).isVisible = state.isCurrentUser
+        menu.findItem(R.id.users_profile_action_sign_out)?.isVisible = state.isCurrentUser
         return super.onPrepareOptionsMenu(menu)
     }
 
