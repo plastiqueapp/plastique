@@ -1,12 +1,12 @@
 package io.plastique.notifications
 
 import android.content.Context
+import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
 import io.plastique.core.exceptions.isRetryable
 import io.plastique.core.work.ListenableWorkerFactory
-import io.plastique.core.work.RxWorker
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -19,7 +19,7 @@ class DeleteMessagesWorker @Inject constructor(
     @Provided private val messageRepository: MessageRepository
 ) : RxWorker(context, workerParams) {
 
-    override fun doWork(): Single<Result> {
+    override fun createWork(): Single<Result> {
         Timber.tag(LOG_TAG).d("startWork")
         return messageRepository.deleteMarkedMessages()
                 .subscribeOn(Schedulers.io())
