@@ -107,8 +107,8 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
                     .error(R.drawable.default_avatar_32dp)
                     .circleCrop()
                     .into(object : CustomDrawableTarget(avatarSize, avatarSize) {
-                        override fun setDrawable(resource: Drawable?) {
-                            setCurrentUserIcon(resource)
+                        override fun setDrawable(drawable: Drawable?) {
+                            setCurrentUserIcon(drawable)
                         }
                     })
         } else {
