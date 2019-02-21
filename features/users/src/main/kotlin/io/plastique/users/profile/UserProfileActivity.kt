@@ -173,14 +173,15 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
     }
 
     private fun initTabs() {
-        val tabAdapter = FragmentListPagerAdapter(this, supportFragmentManager, pageProvider.getPages(username))
+        val adapter = FragmentListPagerAdapter(this, supportFragmentManager, pageProvider.getPages(username))
         val pager: ViewPager = findViewById(R.id.pager)
-        pager.adapter = tabAdapter
+        pager.adapter = adapter
 
-        val tabsView: TabLayout = findViewById(R.id.tabs)
-        tabsView.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
+        val tabLayout: TabLayout = findViewById(R.id.tabs)
+        tabLayout.setupWithViewPager(pager)
+        tabLayout.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
             override fun onTabReselected(tab: TabLayout.Tab) {
-                val fragment = tabAdapter.getFragmentAtPosition(tab.position)
+                val fragment = adapter.getFragmentAtPosition(tab.position)
                 if (fragment is ScrollableToTop) {
                     fragment.scrollToTop()
                 }

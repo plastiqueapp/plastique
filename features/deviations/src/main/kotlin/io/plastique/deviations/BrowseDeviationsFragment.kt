@@ -102,9 +102,9 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
 
         View.inflate(parent.context, R.layout.inc_browse_appbar, parent)
 
-        val tabsView = parent.findViewById<TabLayout>(R.id.browse_tabs)
-        tabsView.setupWithViewPager(pager)
-        tabsView.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
+        val tabLayout: TabLayout = parent.findViewById(R.id.browse_tabs)
+        tabLayout.setupWithViewPager(pager)
+        tabLayout.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
             override fun onTabReselected(tab: TabLayout.Tab) {
                 val fragment = pagerAdapter.getFragmentAtPosition(tab.position)
                 if (fragment is ScrollableToTop) {
