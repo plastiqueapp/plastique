@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 fun <T : CoordinatorLayout.Behavior<*>> View.getLayoutBehavior(): T {
@@ -19,24 +19,8 @@ fun <T : CoordinatorLayout.Behavior<*>> View.getLayoutBehavior(): T {
     return layoutParams.behavior as T
 }
 
-private var METHOD_INVALIDATE_SCROLL_RANGES: Method? = null
-
 fun AppBarLayout.invalidateScrollRanges() {
-    if (METHOD_INVALIDATE_SCROLL_RANGES == null) {
-        try {
-            METHOD_INVALIDATE_SCROLL_RANGES = AppBarLayout::class.java.getDeclaredMethod("invalidateScrollRanges")
-            METHOD_INVALIDATE_SCROLL_RANGES!!.isAccessible = true
-        } catch (e: NoSuchMethodException) {
-            throw RuntimeException(e)
-        }
-    }
-    try {
-        METHOD_INVALIDATE_SCROLL_RANGES!!(this)
-    } catch (e: IllegalAccessException) {
-        throw RuntimeException(e)
-    } catch (e: InvocationTargetException) {
-        throw RuntimeException(e)
-    }
+    METHOD_APPBAR_INVALIDATE_SCROLL_RANGES(this)
 }
 
 fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: Int) {
@@ -83,43 +67,25 @@ var TextView.isStrikethrough: Boolean
     }
 
 fun Toolbar.setTitleOnClickListener(onClickListener: View.OnClickListener) {
-    try {
-        val titleField = Toolbar::class.java.getDeclaredField("mTitleTextView")
-        titleField.isAccessible = true
-
-        var titleView = titleField.get(this) as View?
-        if (titleView == null) {
-            val title = title
-            this.title = " " // Force Toolbar to create mTitleTextView
-            this.title = title
-            titleView = titleField.get(this) as View
-        }
-        titleView.setOnClickListener(onClickListener)
-    } catch (e: NoSuchFieldException) {
-        throw RuntimeException(e)
-    } catch (e: IllegalAccessException) {
-        throw RuntimeException(e)
+    var titleView = FIELD_TOOLBAR_TITLE.get(this) as View?
+    if (titleView == null) {
+        val title = title
+        this.title = " " // Force Toolbar to create mTitleTextView
+        this.title = title
+        titleView = FIELD_TOOLBAR_TITLE.get(this) as View
     }
+    titleView.setOnClickListener(onClickListener)
 }
 
 fun Toolbar.setSubtitleOnClickListener(onClickListener: View.OnClickListener) {
-    try {
-        val subtitleField = Toolbar::class.java.getDeclaredField("mSubtitleTextView")
-        subtitleField.isAccessible = true
-
-        var subtitleView = subtitleField.get(this) as View?
-        if (subtitleView == null) {
-            val subtitle = subtitle
-            this.subtitle = " " // Force Toolbar to create mSubtitleTextView
-            this.subtitle = subtitle
-            subtitleView = subtitleField.get(this) as View
-        }
-        subtitleView.setOnClickListener(onClickListener)
-    } catch (e: NoSuchFieldException) {
-        throw RuntimeException(e)
-    } catch (e: IllegalAccessException) {
-        throw RuntimeException(e)
+    var subtitleView = FIELD_TOOLBAR_SUBTITLE.get(this) as View?
+    if (subtitleView == null) {
+        val subtitle = subtitle
+        this.subtitle = " " // Force Toolbar to create mSubtitleTextView
+        this.subtitle = subtitle
+        subtitleView = FIELD_TOOLBAR_SUBTITLE.get(this) as View
     }
+    subtitleView.setOnClickListener(onClickListener)
 }
 
 fun <T : ViewParent> View.findParentOfType(type: Class<T>): T? {
@@ -131,4 +97,16 @@ fun <T : ViewParent> View.findParentOfType(type: Class<T>): T? {
         p = p.parent
     }
     return null
+}
+
+private val FIELD_TOOLBAR_TITLE: Field by lazy(LazyThreadSafetyMode.NONE) {
+    Toolbar::class.java.getDeclaredField("mTitleTextView").apply { isAccessible = true }
+}
+
+private val FIELD_TOOLBAR_SUBTITLE: Field by lazy(LazyThreadSafetyMode.NONE) {
+    Toolbar::class.java.getDeclaredField("mSubtitleTextView").apply { isAccessible = true }
+}
+
+private val METHOD_APPBAR_INVALIDATE_SCROLL_RANGES: Method by lazy(LazyThreadSafetyMode.NONE) {
+    AppBarLayout::class.java.getDeclaredMethod("invalidateScrollRanges").apply { isAccessible = true }
 }
