@@ -74,11 +74,20 @@
                     android:layout_marginStart="16dp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/publish_date"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@tools:sample/full_names" />
+
+                <TextView
+                    android:id="@+id/publish_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceCaption"
+                    app:layout_constraintBaseline_toBaselineOf="@id/deviation_author_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="29 Dec 2018" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -101,17 +110,6 @@
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_deviation_tag"
                 tools:orientation="horizontal" />
-
-            <TextView
-                android:id="@+id/publish_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="8dp"
-                android:textAppearance="?textAppearanceCaption"
-                tools:text="29 December 2018" />
         </LinearLayout>
     </ScrollView>
 
