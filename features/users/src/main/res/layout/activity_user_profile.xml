@@ -26,8 +26,8 @@
 
     <ImageView
         android:id="@+id/user_avatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/common_avatar_size_large"
+        android:layout_height="@dimen/common_avatar_size_large"
         android:layout_margin="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"

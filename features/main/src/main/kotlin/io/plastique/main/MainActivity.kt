@@ -100,7 +100,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         this.state = state
 
         if (state.user != null) {
-            val avatarSize = resources.getDimensionPixelSize(R.dimen.main_avatar_size)
+            val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
             GlideApp.with(this)
                     .load(state.user.avatarUrl)
                     .placeholder(R.drawable.default_avatar_32dp)
