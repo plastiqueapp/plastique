@@ -1,6 +1,5 @@
 package io.plastique.deviations.list
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.collections.FavoritesModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
@@ -49,6 +48,7 @@ import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

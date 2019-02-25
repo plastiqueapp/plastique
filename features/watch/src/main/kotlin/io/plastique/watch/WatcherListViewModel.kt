@@ -2,7 +2,6 @@ package io.plastique.watch
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -37,6 +36,7 @@ import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SessionChangedEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

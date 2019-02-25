@@ -1,6 +1,5 @@
 package io.plastique.notifications
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -36,6 +35,7 @@ import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
 import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

@@ -1,7 +1,6 @@
 package io.plastique.auth
 
 import android.net.Uri
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.auth.LoginEffect.AuthenticateEffect
 import io.plastique.auth.LoginEffect.GenerateAuthUrlEffect
 import io.plastique.auth.LoginEvent.AuthErrorEvent
@@ -17,6 +16,7 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.inject.scopes.ActivityScope
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

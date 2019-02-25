@@ -2,7 +2,6 @@ package io.plastique.collections
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
@@ -38,6 +37,7 @@ import io.plastique.deviations.ContentSettings
 import io.plastique.inject.scopes.FragmentScope
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

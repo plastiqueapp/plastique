@@ -1,6 +1,5 @@
 package io.plastique.deviations.info
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ViewModel
 import io.plastique.core.flow.MainLoop
@@ -15,6 +14,7 @@ import io.plastique.deviations.info.DeviationInfoEvent.DeviationInfoChangedEvent
 import io.plastique.deviations.info.DeviationInfoEvent.LoadErrorEvent
 import io.plastique.deviations.info.DeviationInfoEvent.RetryClickEvent
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

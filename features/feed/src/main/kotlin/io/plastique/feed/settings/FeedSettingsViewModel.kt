@@ -1,6 +1,5 @@
 package io.plastique.feed.settings
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -19,6 +18,7 @@ import io.plastique.feed.settings.FeedSettingsEvent.RetryClickEvent
 import io.plastique.feed.settings.FeedSettingsEvent.SetEnabledEvent
 import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

@@ -2,7 +2,6 @@ package io.plastique.statuses.list
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -36,6 +35,7 @@ import io.plastique.statuses.list.StatusListEvent.ShowMatureChangedEvent
 import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

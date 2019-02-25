@@ -1,7 +1,6 @@
 package io.plastique.deviations.viewer
 
 import android.net.Uri
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.collections.FavoritesModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ViewModel
@@ -33,6 +32,7 @@ import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.FileDownloader
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

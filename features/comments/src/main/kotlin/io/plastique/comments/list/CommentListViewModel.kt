@@ -1,6 +1,5 @@
 package io.plastique.comments.list
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.comments.Comment
 import io.plastique.comments.CommentDataSource
 import io.plastique.comments.CommentSender
@@ -53,6 +52,7 @@ import io.plastique.util.NetworkConnectionState
 import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

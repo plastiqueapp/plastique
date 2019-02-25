@@ -1,7 +1,6 @@
 package io.plastique.deviations.categories.list
 
 import android.os.SystemClock
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -26,6 +25,7 @@ import io.plastique.deviations.categories.list.CategoryListEvent.RetryClickEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEvent
 import io.plastique.inject.scopes.ActivityScope
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 

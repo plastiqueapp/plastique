@@ -1,6 +1,5 @@
 package io.plastique.users.profile
 
-import com.sch.rxjava2.extensions.ofType
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.ViewModel
@@ -32,6 +31,7 @@ import io.plastique.users.profile.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
 import io.plastique.watch.WatchManager
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
