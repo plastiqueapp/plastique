@@ -17,7 +17,7 @@ fun <State : Any, Effect : Any> next(state: State, vararg effects: Effect): Next
 typealias Reducer<Event, State, Effect> = (state: State, event: Event) -> Next<State, Effect>
 typealias EffectHandler<Effect, Event> = (effects: Observable<Effect>) -> Observable<Event>
 
-class MainLoop<in Event : Any, State : Any, in Effect : Any>(
+class MainLoop<Event : Any, State : Any, Effect : Any>(
     private val reducer: Reducer<Event, State, Effect>,
     private val effectHandler: EffectHandler<Effect, Event> = { Observable.empty<Event>() },
     private val externalEvents: Observable<out Event> = Observable.empty(),
