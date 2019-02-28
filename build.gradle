@@ -59,7 +59,7 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            if (name.endsWith("TestKotlin")) {
+            if (name.contains("UnitTest")) {
                 jvmTarget = "1.8"
             }
 
