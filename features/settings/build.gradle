@@ -14,6 +14,4 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 
     testImplementation project(":test-utils")
-    testImplementation "org.mockito:mockito-core:$versions.mockito"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin"
 }

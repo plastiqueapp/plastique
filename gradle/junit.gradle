@@ -5,6 +5,9 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit.jupiter"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$versions.junit.vintage"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:$versions.junit.platform"
+
+    testImplementation "org.mockito:mockito-inline:$versions.mockito"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin"
 }
 
 android {
