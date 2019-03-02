@@ -4,7 +4,7 @@ plugins {
     id "kotlin-android-extensions"
     id "kotlin-kapt"
 }
-apply from: "$rootDir/gradle/junit.gradle"
+apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
     api project(":core")

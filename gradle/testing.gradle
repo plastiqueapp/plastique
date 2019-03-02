@@ -6,11 +6,22 @@ dependencies {
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$versions.junit.vintage"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:$versions.junit.platform"
 
+    testImplementation "androidx.test:core:$versions.androidx.test.core"
     testImplementation "org.mockito:mockito-inline:$versions.mockito"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin"
+    testImplementation "org.robolectric:robolectric:$versions.robolectric"
+    testImplementation "org.threeten:threetenbp:$versions.threetenbp"
+
+    androidTestImplementation "androidx.test:rules:$versions.androidx.test.rules"
+    androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
+    androidTestImplementation "junit:junit:$versions.junit.fourth"
 }
 
 android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true

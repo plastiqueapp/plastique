@@ -15,7 +15,11 @@ ext.versions = [
                 work            : "1.0.0-rc02",
                 preference      : "1.1.0-alpha03",
                 preferenceV14   : "1.0.0",
-                testCore        : "1.1.0",
+                test            : [
+                        core  : "1.1.0",
+                        rules : "1.1.1",
+                        runner: "1.1.1"
+                ]
         ],
 
         firebase             : [
