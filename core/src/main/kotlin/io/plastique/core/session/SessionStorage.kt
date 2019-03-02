@@ -5,9 +5,7 @@ import io.plastique.util.Preferences
 import timber.log.Timber
 import javax.inject.Inject
 
-class SessionStorage @Inject constructor(private val preferences: Preferences) {
-    private val cryptor = Cryptor.create()
-
+class SessionStorage @Inject constructor(private val preferences: Preferences, private val cryptor: Cryptor) {
     fun getSession(): Session {
         val accessToken: String?
         val refreshToken: String?
@@ -23,7 +21,7 @@ class SessionStorage @Inject constructor(private val preferences: Preferences) {
         return when {
             accessToken != null && refreshToken != null && userId != null && username != null ->
                 Session.User(accessToken = accessToken, refreshToken = refreshToken, userId = userId, username = username)
-            accessToken != null && refreshToken == null ->
+            accessToken != null && refreshToken == null && userId == null && username == null ->
                 Session.Anonymous(accessToken = accessToken)
             else -> Session.None
         }

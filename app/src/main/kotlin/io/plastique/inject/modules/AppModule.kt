@@ -35,6 +35,7 @@ import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
 import io.plastique.users.UserProfilePageProviderImpl
 import io.plastique.users.profile.UserProfilePageProvider
+import io.plastique.util.Cryptor
 import io.plastique.util.NetworkConnectivityMonitor
 import io.plastique.util.NetworkConnectivityMonitorImpl
 import io.plastique.util.Preferences
@@ -146,5 +147,9 @@ abstract class AppModule {
                 clientId = context.getString(R.string.api_client_id),
                 clientSecret = context.getString(R.string.api_client_secret),
                 userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
+
+        @Provides
+        @JvmStatic
+        fun provideCryptor(): Cryptor = Cryptor.create()
     }
 }
