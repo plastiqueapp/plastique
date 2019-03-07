@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package io.plastique.core.flow
 
 import com.sch.rxjava2.extensions.DisposableObservable
@@ -12,7 +14,7 @@ data class Next<out State : Any, out Effect : Any>(
     val effects: List<Effect>
 )
 
-fun <State : Any, Effect : Any> next(state: State, vararg effects: Effect): Next<State, Effect> = Next(state, effects.toList())
+inline fun <State : Any, Effect : Any> next(state: State, vararg effects: Effect): Next<State, Effect> = Next(state, effects.toList())
 
 typealias Reducer<Event, State, Effect> = (state: State, event: Event) -> Next<State, Effect>
 typealias EffectHandler<Effect, Event> = (effects: Observable<Effect>) -> Observable<Event>
