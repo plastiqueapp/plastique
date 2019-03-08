@@ -6,7 +6,7 @@ buildscript {
         maven { url "https://maven.fabric.io/public" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:3.4.0-beta05"
+        classpath "com.android.tools.build:gradle:3.4.0-rc01"
         classpath "com.google.gms:google-services:4.2.0"
         classpath "io.fabric.tools:gradle:1.27.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
@@ -14,8 +14,8 @@ buildscript {
 }
 
 plugins {
-    id "com.gradle.build-scan" version "2.1"
-    id "com.github.ben-manes.versions" version "0.20.0"
+    id "com.gradle.build-scan" version "2.2.1"
+    id "com.github.ben-manes.versions" version "0.21.0"
 }
 
 ext.ci = System.getenv("CI") == "true"
