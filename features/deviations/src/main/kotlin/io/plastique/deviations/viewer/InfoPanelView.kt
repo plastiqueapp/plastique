@@ -45,6 +45,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         favoriteButton.isChecked = deviation.properties.isFavorite
         favoriteButton.updateDrawablePadding()
         commentsButton.text = deviation.stats.comments.formatCount()
+        commentsButton.isEnabled = deviation.properties.allowsComments
         commentsButton.updateDrawablePadding()
 
         if (avatarUrl != deviation.author.avatarUrl) {
