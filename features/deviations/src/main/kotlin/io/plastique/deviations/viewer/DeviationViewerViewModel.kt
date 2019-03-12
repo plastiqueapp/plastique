@@ -10,8 +10,10 @@ import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
+import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
@@ -112,16 +114,27 @@ class DeviationViewerViewModel @Inject constructor(
 class DeviationViewerStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider
 ) : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
+
     override fun invoke(state: DeviationViewerViewState, event: DeviationViewerEvent): Next<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
         is DeviationLoadedEvent -> {
             val menuState = MenuState(
                     showDownload = event.deviation.properties.isDownloadable,
                     downloadFileSize = event.deviation.properties.downloadFileSize)
 
+            val infoViewState = InfoViewState(
+                    title = event.deviation.title,
+                    author = event.deviation.author,
+                    favoriteCount = event.deviation.stats.favorites,
+                    isFavoriteChecked = event.deviation.properties.isFavorite,
+                    isFavoriteEnabled = !isOwnDeviation(event.deviation, state.session),
+                    commentCount = event.deviation.stats.comments,
+                    isCommentsEnabled = event.deviation.properties.allowsComments)
+
             next(state.copy(
                     contentState = ContentState.Content,
                     deviation = event.deviation,
-                    menuState = menuState))
+                    menuState = menuState,
+                    infoViewState = infoViewState))
         }
 
         is LoadErrorEvent -> {
@@ -159,7 +172,13 @@ class DeviationViewerStateReducer @Inject constructor(
         }
 
         is SessionChangedEvent -> {
-            next(state.copy(session = event.session))
+            val infoViewState = state.infoViewState?.copy(
+                    isFavoriteEnabled = state.deviation != null && !isOwnDeviation(state.deviation, event.session))
+            next(state.copy(session = event.session, infoViewState = infoViewState))
         }
+    }
+
+    private fun isOwnDeviation(deviation: Deviation, session: Session): Boolean {
+        return session is Session.User && session.userId == deviation.author.id
     }
 }

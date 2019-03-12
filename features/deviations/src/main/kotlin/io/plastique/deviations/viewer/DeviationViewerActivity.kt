@@ -92,7 +92,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         ViewCompat.setOnApplyWindowInsetsListener(imageView) { _, insets -> insets }
 
         infoPanelView = findViewById(R.id.info_panel)
-        infoPanelView.setOnAuthorClickListener { navigator.openUserProfile(navigationContext, state.deviation!!.author) }
+        infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
         infoPanelView.setOnFavoriteClickListener { _, isChecked ->
             if (state.isSignedIn) {
                 viewModel.dispatch(SetFavoriteEvent(state.deviationId, !isChecked))
@@ -157,9 +157,8 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             emptyView.setState(state.contentState.emptyState)
         }
 
-        if (state.deviation != null) {
-            infoPanelView.render(state.deviation, GlideApp.with(this))
-            infoPanelView.isFavoriteEnabled = !state.isOwnDeviation
+        if (state.infoViewState != null) {
+            infoPanelView.render(state.infoViewState, GlideApp.with(this))
             infoPanelView.isVisible = true
         }
 

@@ -8,9 +8,9 @@ import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideRequests
+import io.plastique.users.User
 
 class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val titleView: TextView
@@ -20,13 +20,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
     private val commentsButton: TextView
     private val infoButton: View
 
-    private var avatarUrl: String? = null
-
-    var isFavoriteEnabled: Boolean
-        get() = favoriteButton.isEnabled
-        set(value) {
-            favoriteButton.isEnabled = value
-        }
+    private var author: User? = null
 
     init {
         inflate(context, R.layout.view_deviation_viewer_info, this)
@@ -38,30 +32,33 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         infoButton = findViewById(R.id.button_info)
     }
 
-    fun render(deviation: Deviation, glide: GlideRequests) {
-        titleView.text = deviation.title
-        authorView.text = deviation.author.name
-        favoriteButton.text = deviation.stats.favorites.formatCount()
-        favoriteButton.isChecked = deviation.properties.isFavorite
+    fun render(state: InfoViewState, glide: GlideRequests) {
+        titleView.text = state.title
+        authorView.text = state.author.name
+        favoriteButton.text = state.favoriteCount.formatCount()
+        favoriteButton.isChecked = state.isFavoriteChecked
+        favoriteButton.isEnabled = state.isFavoriteEnabled
         favoriteButton.updateDrawablePadding()
-        commentsButton.text = deviation.stats.comments.formatCount()
-        commentsButton.isEnabled = deviation.properties.allowsComments
+        commentsButton.text = state.commentCount.formatCount()
+        commentsButton.isEnabled = state.isCommentsEnabled
         commentsButton.updateDrawablePadding()
 
-        if (avatarUrl != deviation.author.avatarUrl) {
-            avatarUrl = deviation.author.avatarUrl
-            glide.load(avatarUrl)
+        if (author?.avatarUrl != state.author.avatarUrl) {
+            glide.load(state.author.avatarUrl)
                     .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()
                     .into(avatarView)
         }
+
+        author = state.author
     }
 
-    fun setOnAuthorClickListener(listener: (View) -> Unit) {
-        authorView.setOnClickListener(listener)
-        avatarView.setOnClickListener(listener)
-        titleView.setOnClickListener(listener)
+    fun setOnAuthorClickListener(listener: (User) -> Unit) {
+        val onClickListener = View.OnClickListener { listener(author!!) }
+        authorView.setOnClickListener(onClickListener)
+        avatarView.setOnClickListener(onClickListener)
+        titleView.setOnClickListener(onClickListener)
     }
 
     fun setOnFavoriteClickListener(listener: (View, isChecked: Boolean) -> Unit) {

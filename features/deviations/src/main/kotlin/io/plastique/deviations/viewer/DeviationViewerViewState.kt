@@ -12,6 +12,7 @@ data class DeviationViewerViewState(
     val session: Session,
     val menuState: MenuState = MenuState(),
     val deviation: Deviation? = null,
+    val infoViewState: InfoViewState? = null,
     val snackbarState: SnackbarState = SnackbarState.None,
     val showProgressDialog: Boolean = false
 ) {
@@ -22,7 +23,4 @@ data class DeviationViewerViewState(
 
     val isSignedIn: Boolean
         get() = session is Session.User
-
-    val isOwnDeviation: Boolean
-        get() = deviation != null && session is Session.User && deviation.author.id == session.userId
 }
