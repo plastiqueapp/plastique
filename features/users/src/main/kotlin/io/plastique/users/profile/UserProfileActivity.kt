@@ -22,6 +22,7 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.extensions.doOnTabReselected
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
@@ -36,7 +37,6 @@ import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.profile.UserProfileEvent.SignOutEvent
 import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
-import io.plastique.util.SimpleOnTabSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -179,14 +179,12 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
 
         val tabLayout: TabLayout = findViewById(R.id.tabs)
         tabLayout.setupWithViewPager(pager)
-        tabLayout.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                val fragment = adapter.getFragmentAtPosition(tab.position)
-                if (fragment is ScrollableToTop) {
-                    fragment.scrollToTop()
-                }
+        tabLayout.doOnTabReselected { tab ->
+            val fragment = adapter.getFragmentAtPosition(tab.position)
+            if (fragment is ScrollableToTop) {
+                fragment.scrollToTop()
             }
-        })
+        }
     }
 
     override fun injectDependencies() {

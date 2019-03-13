@@ -18,6 +18,7 @@ import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
+import io.plastique.core.extensions.doOnTabReselected
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.LayoutMode
@@ -28,7 +29,6 @@ import io.plastique.deviations.tags.TagManagerProvider
 import io.plastique.deviations.tags.TagsView
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
-import io.plastique.util.SimpleOnTabSelectedListener
 
 class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), MainPage, ScrollableToTop, TagManagerProvider {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
@@ -104,14 +104,12 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
 
         val tabLayout: TabLayout = parent.findViewById(R.id.browse_tabs)
         tabLayout.setupWithViewPager(pager)
-        tabLayout.addOnTabSelectedListener(object : SimpleOnTabSelectedListener() {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                val fragment = pagerAdapter.getFragmentAtPosition(tab.position)
-                if (fragment is ScrollableToTop) {
-                    fragment.scrollToTop()
-                }
+        tabLayout.doOnTabReselected { tab ->
+            val fragment = pagerAdapter.getFragmentAtPosition(tab.position)
+            if (fragment is ScrollableToTop) {
+                fragment.scrollToTop()
             }
-        })
+        }
 
         tagsView = parent.findViewById(R.id.browse_tags)
     }
