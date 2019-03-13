@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentFactory
 import io.plastique.core.config.AppConfig
 import io.plastique.core.themes.ThemeManager
@@ -43,7 +44,7 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
                 .filter { theme -> theme != currentTheme }
                 .subscribe { theme ->
                     currentTheme = theme
-                    recreate()
+                    ActivityCompat.recreate(this)
                 }
 
         appConfig.fetch()
