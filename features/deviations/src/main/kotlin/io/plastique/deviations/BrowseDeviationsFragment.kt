@@ -12,13 +12,14 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.doOnTabReselected
+import io.plastique.core.extensions.setupWithViewPager
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.LayoutMode
@@ -33,7 +34,7 @@ import io.plastique.main.MainPage
 class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), MainPage, ScrollableToTop, TagManagerProvider {
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     private lateinit var tagsView: TagsView
-    private lateinit var pager: ViewPager
+    private lateinit var pager: ViewPager2
     private lateinit var pagerAdapter: FragmentListPagerAdapter
     private var switchLayoutMenuItem: MenuItem? = null
     private var layoutMode: LayoutMode = LayoutMode.DEFAULT
@@ -103,9 +104,9 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
         View.inflate(parent.context, R.layout.inc_browse_appbar, parent)
 
         val tabLayout: TabLayout = parent.findViewById(R.id.browse_tabs)
-        tabLayout.setupWithViewPager(pager)
+        tabLayout.setupWithViewPager(pager) { tab, position -> tab.setText(pagerAdapter.getPageAt(position).titleId) }
         tabLayout.doOnTabReselected { tab ->
-            val fragment = pagerAdapter.getFragmentAtPosition(tab.position)
+            val fragment = pagerAdapter.getFragmentAt(tab.position)
             if (fragment is ScrollableToTop) {
                 fragment.scrollToTop()
             }
@@ -115,7 +116,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
     }
 
     override fun scrollToTop() {
-        val currentFragment = pagerAdapter.getFragmentAtPosition(pager.currentItem)
+        val currentFragment = pagerAdapter.getFragmentAt(pager.currentItem)
         if (currentFragment is ScrollableToTop) {
             currentFragment.scrollToTop()
         }
