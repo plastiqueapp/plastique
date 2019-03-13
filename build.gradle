@@ -59,6 +59,8 @@ subprojects {
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
+            freeCompilerArgs = ["-Xnew-inference"]
+
             if (name.contains("UnitTest")) {
                 jvmTarget = "1.8"
             }

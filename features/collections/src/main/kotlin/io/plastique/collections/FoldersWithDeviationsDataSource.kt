@@ -12,7 +12,6 @@ import io.plastique.util.Optional
 import io.plastique.util.toOptional
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.Observables
 import javax.inject.Inject
 
 class FoldersWithDeviationsDataSource @Inject constructor(
@@ -48,7 +47,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
                             }
                             .doOnNext { hasMoreDeviations = it.hasMore }
 
-                    Observables.combineLatest(folderItems, deviationItems) { folderData, deviationsData ->
+                    Observable.combineLatest(folderItems, deviationItems) { folderData, deviationsData ->
                         ItemsData(
                                 items = folderData.items + deviationsData.items,
                                 hasMore = folderData.hasMore || deviationsData.hasMore)

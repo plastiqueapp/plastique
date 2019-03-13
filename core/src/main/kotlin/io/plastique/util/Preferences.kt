@@ -200,7 +200,7 @@ private open class PreferencesImpl(
         }
 
         override fun getString(key: String, defaultValue: String): Observable<String> {
-            return getValueObservable(key) { sharedPreferences.getString(key, defaultValue) }
+            return getValueObservable(key) { sharedPreferences.getString(key, defaultValue)!! }
         }
 
         override fun <T : Any> get(key: String, defaultValue: T): Observable<T> {
