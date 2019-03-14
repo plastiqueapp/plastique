@@ -1,20 +1,20 @@
 ext.versions = [
         androidx             : [
-                activity        : "1.0.0-alpha04",
-                annotation      : "1.1.0-alpha01",
-                appcompat       : "1.1.0-alpha02",
+                activity        : "1.0.0-alpha05",
+                annotation      : "1.1.0-alpha02",
+                appcompat       : "1.1.0-alpha03",
                 browser         : "1.0.0",
                 constraintLayout: "2.0.0-alpha3",
                 core            : "1.1.0-alpha05",
-                fragment        : "1.1.0-alpha04",
+                fragment        : "1.1.0-alpha05",
                 futures         : "1.0.0-alpha03",
-                lifecycle       : "2.1.0-alpha02",
-                recyclerView    : "1.1.0-alpha02",
-                room            : "2.1.0-alpha04",
+                lifecycle       : "2.1.0-alpha03",
+                preference      : "1.1.0-alpha04",
+                preferenceV14   : "1.0.0",
+                recyclerView    : "1.1.0-alpha03",
+                room            : "2.1.0-alpha05",
                 viewpager2      : "1.0.0-alpha02",
                 work            : "2.0.0-rc01",
-                preference      : "1.1.0-alpha03",
-                preferenceV14   : "1.0.0",
                 test            : [
                         core  : "1.1.0",
                         rules : "1.1.1",
@@ -24,7 +24,7 @@ ext.versions = [
 
         firebase             : [
                 analytics: "16.3.0",
-                config   : "16.3.0",
+                config   : "16.4.0",
                 core     : "16.0.7",
         ],
 
@@ -35,7 +35,7 @@ ext.versions = [
         flexboxLayout        : "1.1.0",
         materialComponents   : "1.1.0-alpha04",
         glide                : "4.9.0",
-        okhttp               : "3.13.1",
+        okhttp               : "3.14.0",
         retrofit             : "2.5.0",
         moshi                : "1.9.0-SNAPSHOT",
         leakCanary           : "1.6.3",

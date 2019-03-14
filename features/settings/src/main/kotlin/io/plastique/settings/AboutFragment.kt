@@ -41,7 +41,7 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
         val currentAppVersion = packageInfo.versionName + " (" + PackageInfoCompat.getLongVersionCode(packageInfo) + ")"
         newVersionAvailable = isNewVersionAvailable(packageInfo.versionName)
 
-        val versionPreference = findPreference<Preference>("app_version")
+        val versionPreference = findPreference<Preference>("app_version")!!
         versionPreference.summary = if (newVersionAvailable) {
             val a = context.obtainStyledAttributes(intArrayOf(R.attr.colorAccent))
             val color = a.getColor(0, Color.BLACK)

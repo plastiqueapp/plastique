@@ -43,6 +43,7 @@ subprojects {
             }
         }
         jcenter()
+        maven { url "https://kotlin.bintray.com/kotlinx/" }
         maven { url "https://dl.bintray.com/sch/maven" }
         maven { url "https://jitpack.io" }
     }

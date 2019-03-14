@@ -26,7 +26,7 @@ class SettingsFragment : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_main, rootKey)
 
-        val matureContentPreference = findPreference<Preference>("content.show_mature")
+        val matureContentPreference = findPreference<Preference>("content.show_mature")!!
         matureContentPreference.summaryProvider = Preference.SummaryProvider<Preference> { preference ->
             if (preference.isEnabled) "" else getMatureContentSummary()
         }
