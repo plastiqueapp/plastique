@@ -47,4 +47,7 @@ interface DeviationService {
 
     @GET("browse/categorytree")
     fun getCategories(@Query("catpath") path: String): Single<CategoryList>
+
+    @GET("deviation/content")
+    fun getContent(@Query("deviationid") deviationId: String): Single<DeviationContentDto>
 }
