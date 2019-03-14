@@ -2,10 +2,9 @@ package io.plastique.deviations.viewer
 
 import io.plastique.core.flow.Event
 import io.plastique.core.session.Session
-import io.plastique.deviations.Deviation
 
 sealed class DeviationViewerEvent : Event() {
-    data class DeviationLoadedEvent(val deviation: Deviation) : DeviationViewerEvent()
+    data class DeviationLoadedEvent(val result: DeviationLoadResult) : DeviationViewerEvent()
 
     data class LoadErrorEvent(val error: Throwable) : DeviationViewerEvent()
     object RetryClickEvent : DeviationViewerEvent()

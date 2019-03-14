@@ -13,8 +13,6 @@ import io.plastique.core.flow.next
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.deviations.Deviation
-import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
 import io.plastique.deviations.viewer.DeviationViewerEffect.DownloadOriginalEffect
@@ -30,7 +28,6 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
-import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.FileDownloader
 import io.reactivex.Observable
@@ -41,7 +38,7 @@ import javax.inject.Inject
 @ActivityScope
 class DeviationViewerViewModel @Inject constructor(
     stateReducer: DeviationViewerStateReducer,
-    private val deviationRepository: DeviationRepository,
+    private val deviationViewerModel: DeviationViewerModel,
     private val downloadInfoRepository: DownloadInfoRepository,
     private val downloader: FileDownloader,
     private val favoritesModel: FavoritesModel,
@@ -61,7 +58,7 @@ class DeviationViewerViewModel @Inject constructor(
         val initialState = DeviationViewerViewState(
                 deviationId = deviationId,
                 contentState = ContentState.Loading,
-                session = sessionManager.session)
+                isSignedIn = sessionManager.session is Session.User)
 
         state = loop.loop(initialState, LoadDeviationEffect(deviationId)).disposeOnDestroy()
     }
@@ -73,8 +70,8 @@ class DeviationViewerViewModel @Inject constructor(
     private fun effectHandler(effects: Observable<DeviationViewerEffect>): Observable<DeviationViewerEvent> {
         val loadEvents = effects.ofType<LoadDeviationEffect>()
                 .switchMap { effect ->
-                    deviationRepository.getDeviationById(effect.deviationId)
-                            .map<DeviationViewerEvent> { deviation -> DeviationLoadedEvent(deviation) }
+                    deviationViewerModel.getDeviationById(effect.deviationId)
+                            .map<DeviationViewerEvent> { result -> DeviationLoadedEvent(result) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
@@ -117,24 +114,11 @@ class DeviationViewerStateReducer @Inject constructor(
 
     override fun invoke(state: DeviationViewerViewState, event: DeviationViewerEvent): Next<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
         is DeviationLoadedEvent -> {
-            val menuState = MenuState(
-                    showDownload = event.deviation.properties.isDownloadable,
-                    downloadFileSize = event.deviation.properties.downloadFileSize)
-
-            val infoViewState = InfoViewState(
-                    title = event.deviation.title,
-                    author = event.deviation.author,
-                    favoriteCount = event.deviation.stats.favorites,
-                    isFavoriteChecked = event.deviation.properties.isFavorite,
-                    isFavoriteEnabled = !isOwnDeviation(event.deviation, state.session),
-                    commentCount = event.deviation.stats.comments,
-                    isCommentsEnabled = event.deviation.properties.allowsComments)
-
             next(state.copy(
                     contentState = ContentState.Content,
-                    deviation = event.deviation,
-                    menuState = menuState,
-                    infoViewState = infoViewState))
+                    content = event.result.deviationContent,
+                    infoViewState = event.result.infoViewState,
+                    menuState = event.result.menuState))
         }
 
         is LoadErrorEvent -> {
@@ -172,13 +156,7 @@ class DeviationViewerStateReducer @Inject constructor(
         }
 
         is SessionChangedEvent -> {
-            val infoViewState = state.infoViewState?.copy(
-                    isFavoriteEnabled = state.deviation != null && !isOwnDeviation(state.deviation, event.session))
-            next(state.copy(session = event.session, infoViewState = infoViewState))
+            next(state.copy(isSignedIn = event.session is Session.User))
         }
-    }
-
-    private fun isOwnDeviation(deviation: Deviation, session: Session): Boolean {
-        return session is Session.User && session.userId == deviation.author.id
     }
 }

@@ -35,7 +35,6 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClick
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
-import io.plastique.deviations.viewer.DeviationViewerViewState.MenuState
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequest
 import io.plastique.inject.getComponent
@@ -60,7 +59,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
 
-    private lateinit var state: DeviationViewerViewState
+    private lateinit var lastState: DeviationViewerViewState
 
     private val deviationId: String
         get() = intent.getStringExtra(EXTRA_DEVIATION_ID)
@@ -94,8 +93,8 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         infoPanelView = findViewById(R.id.info_panel)
         infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
         infoPanelView.setOnFavoriteClickListener { _, isChecked ->
-            if (state.isSignedIn) {
-                viewModel.dispatch(SetFavoriteEvent(state.deviationId, !isChecked))
+            if (lastState.isSignedIn) {
+                viewModel.dispatch(SetFavoriteEvent(deviationId, !isChecked))
             } else {
                 navigator.openLogin(navigationContext)
             }
@@ -120,7 +119,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_deviation_viewer, menu)
-        menu.update(state.menuState)
+        lastState.menuState?.let { menu.update(it) }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -128,73 +127,56 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         onRequestPermissionsResult(requestCode, grantResults)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.deviations_viewer_action_download -> {
-            downloadOriginalWithPermissionCheck()
-            true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val deviationUrl = lastState.menuState!!.deviationUrl
+        return when (item.itemId) {
+            R.id.deviations_viewer_action_download -> {
+                downloadOriginalWithPermissionCheck()
+                true
+            }
+            R.id.deviations_viewer_action_copy_link -> {
+                copyLinkToClipboard(deviationUrl)
+                true
+            }
+            R.id.deviations_viewer_action_send_link -> {
+                sendLink(deviationUrl)
+                true
+            }
+            R.id.deviations_viewer_action_open_in_browser -> {
+                navigator.openUrl(navigationContext, deviationUrl)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        R.id.deviations_viewer_action_copy_link -> {
-            copyLinkToClipboard()
-            true
-        }
-        R.id.deviations_viewer_action_send_link -> {
-            sendLink()
-            true
-        }
-        R.id.deviations_viewer_action_open_in_browser -> {
-            navigator.openUrl(navigationContext, state.deviation!!.url)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     private fun renderState(state: DeviationViewerViewState, prevState: DeviationViewerViewState?) {
-        this.state = state
-        setHasOptionsMenu(state.deviation != null)
+        lastState = state
 
         contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.setState(state.contentState.emptyState)
         }
 
-        if (state.infoViewState != null) {
+        if (state.content != prevState?.content) {
+            when (state.content) {
+                is DeviationContent.Image -> {
+                    loadImage(state.content.url, state.content.thumbnailUrls)
+                }
+
+                is DeviationContent.Literature -> {
+                    // TODO
+                }
+            }
+        }
+
+        if (state.infoViewState != null && state.infoViewState != prevState?.infoViewState) {
             infoPanelView.render(state.infoViewState, GlideApp.with(this))
             infoPanelView.isVisible = true
         }
 
-        if (state.deviation?.content?.url != prevState?.deviation?.content?.url) {
-            val contentUrl = state.deviation!!.content!!.url
-            val previewUrl = state.deviation.preview!!.url
-
-            val glide = GlideApp.with(this)
-            val thumbnailRequest = (state.deviation.thumbnails.asSequence().map { it.url } + sequenceOf(previewUrl))
-                    .fold<String, GlideRequest<Drawable>?>(null) { previous, url ->
-                        val current = glide.load(url).onlyRetrieveFromCache(true)
-                        if (previous != null) {
-                            current.thumbnail(previous)
-                        } else {
-                            current
-                        }
-                    }
-
-            glide.load(contentUrl)
-                    .thumbnail(thumbnailRequest!!)
-                    .into(object : ImageViewTarget<Drawable>(imageView) {
-                        override fun setResource(resource: Drawable?) {
-                            if (resource != null) {
-                                require(view is PhotoView)
-                                val matrix = Matrix()
-                                view.getSuppMatrix(matrix)
-                                view.setImageDrawable(resource)
-                                view.setSuppMatrix(matrix)
-                            } else {
-                                view.setImageDrawable(resource)
-                            }
-                        }
-                    })
-        }
-
-        if (state.menuState != prevState?.menuState) {
+        if (state.menuState != null && state.menuState != prevState?.menuState) {
+            setHasOptionsMenu(true)
             optionsMenu?.update(state.menuState)
         }
 
@@ -206,20 +188,53 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
     }
 
+    private fun loadImage(url: String, thumbnailUrls: List<String>) {
+        val glide = GlideApp.with(this)
+
+        // Build a chain of thumbnail requests with higher resolution thumbnails having a higher priority
+        val thumbnailRequest = thumbnailUrls.asSequence()
+                .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
+                    val current = glide.load(thumbnailUrl).onlyRetrieveFromCache(true)
+                    if (previous != null) {
+                        current.thumbnail(previous)
+                    } else {
+                        current
+                    }
+                }
+
+        glide.load(url)
+                .thumbnail(thumbnailRequest!!)
+                .into(object : ImageViewTarget<Drawable>(imageView) {
+                    override fun setResource(resource: Drawable?) {
+                        if (resource != null) {
+                            require(view is PhotoView)
+
+                            // Preserve current transformation matrix in case full resolution image was loaded after a thumbnail
+                            val matrix = Matrix()
+                            view.getSuppMatrix(matrix)
+                            view.setImageDrawable(resource)
+                            view.setSuppMatrix(matrix)
+                        } else {
+                            view.setImageDrawable(resource)
+                        }
+                    }
+                })
+    }
+
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadOriginal() {
         viewModel.dispatch(DownloadOriginalClickEvent)
     }
 
-    private fun copyLinkToClipboard() {
-        clipboard.setText(state.deviation!!.url)
+    private fun copyLinkToClipboard(deviationUrl: String) {
+        clipboard.setText(deviationUrl)
         Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun sendLink() {
+    private fun sendLink(deviationUrl: String) {
         ShareCompat.IntentBuilder.from(this)
                 .setType("text/plain")
-                .setText(state.deviation!!.url)
+                .setText(deviationUrl)
                 .startChooser()
     }
 
