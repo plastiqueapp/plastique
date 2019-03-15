@@ -2,9 +2,9 @@ package io.plastique.watch
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.exceptions.NoNetworkConnectionException
@@ -47,15 +47,14 @@ class WatcherListViewModel @Inject constructor(
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<WatcherListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,
             externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG)
-    )
+            listener = TimberLogger(LOG_TAG))
 
     fun init(username: String?) {
         if (::state.isInitialized) return

@@ -2,9 +2,9 @@ package io.plastique.statuses.list
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.MainLoop
@@ -44,7 +44,7 @@ class StatusListViewModel @Inject constructor(
     private val statusListModel: StatusListModel,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<StatusListViewState>
     private val loop = MainLoop(

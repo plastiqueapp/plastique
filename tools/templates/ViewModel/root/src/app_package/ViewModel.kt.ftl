@@ -1,6 +1,6 @@
 package ${escapeKotlinIdentifiers(packageName)}
 
-import io.plastique.core.ViewModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ${viewModelName} @Inject constructor(
     stateReducer: ${reducerName}
-): ViewModel() {
+): BaseViewModel() {
 
     lateinit var state: Observable<${viewStateName}>
     private val loop = MainLoop(

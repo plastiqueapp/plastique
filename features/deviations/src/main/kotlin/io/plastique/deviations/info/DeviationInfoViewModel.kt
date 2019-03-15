@@ -1,7 +1,7 @@
 package io.plastique.deviations.info
 
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class DeviationInfoViewModel @Inject constructor(
     stateReducer: DeviationInfoStateReducer,
     private val deviationInfoRepository: DeviationInfoRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationInfoViewState>
     private val loop = MainLoop(

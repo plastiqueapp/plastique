@@ -1,9 +1,9 @@
 package io.plastique.deviations.categories.list
 
 import android.os.SystemClock
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
 import io.plastique.core.extensions.replaceIf
@@ -33,7 +33,7 @@ import javax.inject.Inject
 class CategoryListViewModel @Inject constructor(
     stateReducer: CategoryListStateReducer,
     private val categoryRepository: CategoryRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<CategoryListViewState>
     private val loop = MainLoop(

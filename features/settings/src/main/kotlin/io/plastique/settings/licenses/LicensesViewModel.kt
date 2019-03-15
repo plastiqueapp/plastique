@@ -1,7 +1,7 @@
 package io.plastique.settings.licenses
 
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
@@ -24,7 +24,8 @@ import javax.inject.Inject
 class LicensesViewModel @Inject constructor(
     stateReducer: LicensesStateReducer,
     private val licenseRepository: LicenseRepository
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,

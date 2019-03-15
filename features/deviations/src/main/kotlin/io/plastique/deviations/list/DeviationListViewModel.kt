@@ -1,9 +1,9 @@
 package io.plastique.deviations.list
 
 import io.plastique.collections.FavoritesModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.exceptions.NoNetworkConnectionException
@@ -60,7 +60,7 @@ class DeviationListViewModel @Inject constructor(
     private val deviationListModel: DeviationListModel,
     private val favoritesModel: FavoritesModel,
     private val tagFactory: TagFactory
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationListViewState>
     private val loop = MainLoop(

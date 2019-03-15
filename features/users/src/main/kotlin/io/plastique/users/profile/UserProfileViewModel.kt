@@ -1,8 +1,8 @@
 package io.plastique.users.profile
 
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
@@ -42,7 +42,8 @@ class UserProfileViewModel @Inject constructor(
     private val sessionManager: SessionManager,
     private val userProfileRepository: UserProfileRepository,
     private val watchManager: WatchManager
-) : ViewModel() {
+) : BaseViewModel() {
+
     lateinit var state: Observable<UserProfileViewState>
     private val loop = MainLoop(
             reducer = stateReducer,

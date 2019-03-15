@@ -1,6 +1,6 @@
 package io.plastique.main
 
-import io.plastique.core.ViewModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     stateReducer: MainStateReducer,
     private val sessionManager: SessionManager,
     private val userRepository: UserRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<MainViewState>
     private val loop = MainLoop(

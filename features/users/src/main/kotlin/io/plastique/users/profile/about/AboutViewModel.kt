@@ -1,7 +1,7 @@
 package io.plastique.users.profile.about
 
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class AboutViewModel @Inject constructor(
     stateReducer: AboutStateReducer,
     private val userProfileRepository: UserProfileRepository
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<AboutViewState>
     private val loop = MainLoop(

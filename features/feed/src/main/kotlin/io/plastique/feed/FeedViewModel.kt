@@ -1,9 +1,9 @@
 package io.plastique.feed
 
 import io.plastique.collections.FavoritesModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.MainLoop
@@ -56,13 +56,13 @@ class FeedViewModel @Inject constructor(
     private val contentSettings: ContentSettings,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,
             externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG)
-    )
+            listener = TimberLogger(LOG_TAG))
 
     val state: Observable<FeedViewState> by lazy(LazyThreadSafetyMode.NONE) {
         val showMatureContent = contentSettings.showMature

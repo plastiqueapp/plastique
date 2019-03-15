@@ -28,9 +28,9 @@ import io.plastique.comments.list.CommentListEvent.RetryClickEvent
 import io.plastique.comments.list.CommentListEvent.SessionChangedEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.comments.list.CommentListEvent.TitleLoadedEvent
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.exceptions.NoNetworkConnectionException
@@ -65,7 +65,7 @@ class CommentListViewModel @Inject constructor(
     private val deviationRepository: DeviationRepository,
     private val richTextFormatter: RichTextFormatter,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<CommentListViewState>
     private val loop = MainLoop(

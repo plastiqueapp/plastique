@@ -2,8 +2,8 @@ package io.plastique.deviations.viewer
 
 import android.net.Uri
 import io.plastique.collections.FavoritesModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
@@ -43,7 +43,7 @@ class DeviationViewerViewModel @Inject constructor(
     private val downloader: FileDownloader,
     private val favoritesModel: FavoritesModel,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationViewerViewState>
     private val loop = MainLoop(

@@ -8,7 +8,7 @@ import io.plastique.auth.LoginEvent.AuthRedirectEvent
 import io.plastique.auth.LoginEvent.AuthSuccessEvent
 import io.plastique.auth.LoginEvent.AuthUrlGeneratedEvent
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
-import io.plastique.core.ViewModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -24,7 +24,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     stateReducer: LoginStateReducer,
     private val authenticator: Authenticator
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,

@@ -2,9 +2,9 @@ package io.plastique.gallery
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.flow.MainLoop
@@ -48,15 +48,14 @@ class GalleryViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
-) : ViewModel() {
+) : BaseViewModel() {
 
     lateinit var state: Observable<GalleryViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,
             externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG)
-    )
+            listener = TimberLogger(LOG_TAG))
 
     fun init(username: String?) {
         if (::state.isInitialized) return

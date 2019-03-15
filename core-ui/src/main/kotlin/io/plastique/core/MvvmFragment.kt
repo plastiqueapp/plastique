@@ -4,7 +4,7 @@ import android.os.Bundle
 import io.plastique.core.extensions.isRemovingSelfOrParent
 import javax.inject.Inject
 
-abstract class MvvmFragment<VM : ViewModel> : BaseFragment() {
+abstract class MvvmFragment<VM : BaseViewModel> : BaseFragment() {
     @Inject protected lateinit var viewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {

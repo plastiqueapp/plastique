@@ -1,6 +1,6 @@
 package io.plastique.profile
 
-import io.plastique.core.ViewModel
+import io.plastique.core.BaseViewModel
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -17,7 +17,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     stateReducer: ProfileStateReducer,
     private val sessionManager: SessionManager
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val loop = MainLoop(
             reducer = stateReducer,
             externalEvents = externalEvents(),

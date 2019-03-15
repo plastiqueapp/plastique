@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
-abstract class ViewModel {
+abstract class BaseViewModel {
     private val disposables = CompositeDisposable()
     private val started = BehaviorSubject.create<Boolean>()
 

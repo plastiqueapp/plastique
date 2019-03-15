@@ -1,8 +1,8 @@
 package io.plastique.feed.settings
 
+import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.ViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.extensions.replaceIf
 import io.plastique.core.flow.MainLoop
@@ -27,12 +27,12 @@ class FeedSettingsViewModel @Inject constructor(
     stateReducer: FeedSettingsStateReducer,
     private val feedSettingsManager: FeedSettingsManager,
     private val resourceProvider: ResourceProvider
-) : ViewModel() {
+) : BaseViewModel() {
+
     private val loop = MainLoop(
             reducer = stateReducer,
             effectHandler = ::effectHandler,
-            listener = TimberLogger(LOG_TAG)
-    )
+            listener = TimberLogger(LOG_TAG))
 
     val state: Observable<FeedSettingsViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(FeedSettingsViewState(contentState = ContentState.Loading), LoadFeedSettingsEffect).disposeOnDestroy()
