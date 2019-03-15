@@ -90,10 +90,6 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
     implementation project(":api")
     implementation project(":features:auth")

@@ -118,6 +118,13 @@ subprojects {
             }
         }
 
+        if (plugins.hasPlugin("kotlin-kapt")) {
+            kapt {
+                correctErrorTypes = true
+                useBuildCache = true
+            }
+        }
+
         if (plugins.hasPlugin("kotlin-android-extensions")) {
             androidExtensions {
                 experimental = true
