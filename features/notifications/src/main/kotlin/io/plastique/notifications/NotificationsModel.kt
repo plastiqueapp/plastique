@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
 import io.plastique.core.paging.StringCursor
+import io.plastique.core.work.CommonWorkTags
 import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -49,8 +50,9 @@ class NotificationsModel @Inject constructor(
                                     .setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build())
                             .setInitialDelay(10, TimeUnit.SECONDS)
+                            .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
                             .build()
-                    workManager.enqueueUniqueWork(DeleteMessagesWorker.WORK_NAME, ExistingWorkPolicy.REPLACE, workRequest)
+                    workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
                 }
     }
 
@@ -85,5 +87,9 @@ class NotificationsModel @Inject constructor(
                 messageId = message.id,
                 time = message.time,
                 user = message.user)
+    }
+
+    companion object {
+        private const val WORK_DELETE_MESSAGES = "delete-messages"
     }
 }

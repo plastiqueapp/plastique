@@ -1,8 +1,7 @@
-package io.plastique
+package io.plastique.core.work
 
 import androidx.work.WorkManager
 import io.plastique.core.session.OnLogoutListener
-import io.plastique.notifications.DeleteMessagesWorker
 import javax.inject.Inject
 
 class WorkerCleaner @Inject constructor(
@@ -10,6 +9,6 @@ class WorkerCleaner @Inject constructor(
 ) : OnLogoutListener {
 
     override fun onLogout() {
-        workManager.cancelUniqueWork(DeleteMessagesWorker.WORK_NAME)
+        workManager.cancelAllWorkByTag(CommonWorkTags.CANCEL_ON_LOGOUT)
     }
 }

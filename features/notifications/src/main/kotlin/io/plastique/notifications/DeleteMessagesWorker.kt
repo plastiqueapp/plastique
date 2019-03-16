@@ -20,7 +20,7 @@ class DeleteMessagesWorker @Inject constructor(
 ) : RxWorker(context, workerParams) {
 
     override fun createWork(): Single<Result> {
-        Timber.tag(LOG_TAG).d("startWork")
+        Timber.tag(LOG_TAG).d("createWork")
         return messageRepository.deleteMarkedMessages()
                 .subscribeOn(Schedulers.io())
                 .toSingleDefault(Result.success())
@@ -36,7 +36,6 @@ class DeleteMessagesWorker @Inject constructor(
     }
 
     companion object {
-        const val WORK_NAME = "delete-messages"
         private const val LOG_TAG = "DeleteMessagesWorker"
     }
 }

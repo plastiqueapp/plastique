@@ -16,7 +16,6 @@ import io.plastique.BuildConfig
 import io.plastique.CookieCleaner
 import io.plastique.DatabaseCleaner
 import io.plastique.R
-import io.plastique.WorkerCleaner
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
@@ -30,6 +29,7 @@ import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
+import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
