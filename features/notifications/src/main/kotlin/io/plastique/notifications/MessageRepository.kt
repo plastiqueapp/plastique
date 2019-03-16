@@ -3,7 +3,6 @@ package io.plastique.notifications
 import androidx.room.RoomDatabase
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.common.ErrorType
 import io.plastique.api.messages.MessageDto
 import io.plastique.api.messages.MessageService
 import io.plastique.api.messages.MessageTypes
@@ -30,6 +29,7 @@ import io.plastique.util.toOptional
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.internal.functions.Functions
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
@@ -147,17 +147,10 @@ class MessageRepository @Inject constructor(
 
     fun deleteMarkedMessages(): Completable {
         return messageDao.getDeletedMessageIds()
-                .flattenAsObservable { it }
+                .flattenAsObservable(Functions.identity())
                 .flatMapCompletable { messageId ->
                     messageService.deleteMessage(messageId)
-                            .onErrorResumeNext { error ->
-                                if (error is ApiException && error.errorData.type === ErrorType.InvalidRequest) {
-                                    // Already deleted or messageId is invalid
-                                    Completable.complete()
-                                } else {
-                                    Completable.error(error)
-                                }
-                            }
+                            .onErrorComplete { error -> error is ApiException }
                             .doOnComplete {
                                 database.runInTransaction {
                                     messageDao.deleteMessageById(messageId)
