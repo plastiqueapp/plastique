@@ -1,4 +1,4 @@
-package io.plastique
+package io.plastique.core.db
 
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
