@@ -20,6 +20,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.deviations.DailyDeviationEntity
@@ -56,7 +57,8 @@ class FeedRepository @Inject constructor(
     private val userRepository: UserRepository,
     private val metadataConverter: NullFallbackConverter,
     private val timeProvider: TimeProvider
-) {
+) : CleanableRepository {
+
     fun getFeed(matureContent: Boolean): Observable<PagedData<List<FeedElement>, StringCursor>> {
         val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
             val cacheMetadata = metadataConverter.fromJson<FeedCacheMetadata>(serializedMetadata)
@@ -157,7 +159,7 @@ class FeedRepository @Inject constructor(
         }
     }
 
-    fun clearCache(): Completable = Completable.fromAction {
+    override fun cleanCache(): Completable = Completable.fromAction {
         database.runInTransaction {
             cacheEntryRepository.deleteEntryByKey(CACHE_KEY)
             feedDao.deleteAll()

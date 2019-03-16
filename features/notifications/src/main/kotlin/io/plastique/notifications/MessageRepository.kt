@@ -14,6 +14,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
@@ -45,7 +46,7 @@ class MessageRepository @Inject constructor(
     private val userRepository: UserRepository,
     private val metadataConverter: NullFallbackConverter,
     private val timeProvider: TimeProvider
-) {
+) : CleanableRepository {
 
     fun getMessages(): Observable<PagedData<List<Message>, StringCursor>> {
         val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
@@ -160,7 +161,7 @@ class MessageRepository @Inject constructor(
                 }
     }
 
-    fun clearCache(): Completable = Completable.fromAction {
+    override fun cleanCache(): Completable = Completable.fromAction {
         database.runInTransaction {
             cacheEntryRepository.deleteEntryByKey(CACHE_KEY)
             messageDao.deleteAllMessages()

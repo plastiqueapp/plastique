@@ -1,23 +1,21 @@
-package io.plastique
+package io.plastique.core.cache
 
 import android.annotation.SuppressLint
-import dagger.Lazy
 import io.plastique.core.session.OnLogoutListener
-import io.plastique.feed.FeedRepository
-import io.plastique.notifications.MessageRepository
-import io.reactivex.Completable
+import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Provider
 
-class DatabaseCleaner @Inject constructor(
-    private val feedRepository: Lazy<FeedRepository>,
-    private val messageRepository: Lazy<MessageRepository>
+class CacheCleaner @Inject constructor(
+    private val cleanableRepository: Provider<Set<CleanableRepository>>
 ) : OnLogoutListener {
 
     @SuppressLint("CheckResult")
     override fun onLogout() {
-        Completable.concatArray(feedRepository.get().clearCache(), messageRepository.get().clearCache())
+        cleanableRepository.get().toObservable()
+                .concatMapCompletable { it.cleanCache() }
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     Timber.tag(LOG_TAG).d("Cleanup complete")
@@ -27,6 +25,6 @@ class DatabaseCleaner @Inject constructor(
     }
 
     companion object {
-        private const val LOG_TAG = "DatabaseCleaner"
+        private const val LOG_TAG = "CacheCleaner"
     }
 }
