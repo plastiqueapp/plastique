@@ -94,8 +94,8 @@ private class ContentStateApplier(
 
     init {
         contentView = requireViewById(rootView, contentViewId)
-        progressView = if (progressViewId != View.NO_ID) requireViewById(rootView, progressViewId) else null
-        emptyView = if (emptyViewId != View.NO_ID) requireViewById(rootView, emptyViewId) else null
+        progressView = if (progressViewId != View.NO_ID) requireViewById<View>(rootView, progressViewId) else null
+        emptyView = if (emptyViewId != View.NO_ID) requireViewById<View>(rootView, emptyViewId) else null
     }
 
     override fun onSwitchState(state: ContentState, animated: Boolean) {
