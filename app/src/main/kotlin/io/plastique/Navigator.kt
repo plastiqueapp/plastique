@@ -6,7 +6,7 @@ import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.list.CommentListActivity
-import io.plastique.core.BrowserLauncher
+import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.navigation.NavigationContext
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.info.DeviationInfoActivity

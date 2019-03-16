@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.plastique.BuildConfig
-import io.plastique.CookieCleaner
 import io.plastique.DatabaseCleaner
 import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
@@ -22,6 +21,7 @@ import io.plastique.collections.FavoritesModelImpl
 import io.plastique.core.AppFragmentFactory
 import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
+import io.plastique.core.browser.CookieCleaner
 import io.plastique.core.client.AccessTokenProvider
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.config.AppConfig

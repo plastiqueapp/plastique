@@ -10,7 +10,7 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
-import io.plastique.core.BrowserLauncher
+import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.config.AppConfig
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent

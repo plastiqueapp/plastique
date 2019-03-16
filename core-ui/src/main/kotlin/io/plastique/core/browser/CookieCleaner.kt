@@ -1,4 +1,4 @@
-package io.plastique
+package io.plastique.core.browser
 
 import android.webkit.CookieManager
 import io.plastique.core.session.OnLogoutListener

@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
-import io.plastique.core.BrowserLauncher
 import io.plastique.core.MvvmActivity
+import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar

@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.core.browser
 
 import android.content.Context
 import android.net.Uri
