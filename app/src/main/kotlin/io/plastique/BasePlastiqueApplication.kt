@@ -8,6 +8,7 @@ import androidx.work.WorkerFactory
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.sch.rxjava2.extensions.FailFastErrorHandler
 import com.squareup.leakcanary.LeakCanary
 import io.fabric.sdk.android.Fabric
 import io.plastique.core.analytics.Analytics
@@ -18,7 +19,6 @@ import io.plastique.inject.getComponent
 import io.plastique.util.CrashlyticsTree
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import timber.log.Timber
 import javax.inject.Inject
@@ -68,11 +68,7 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
             AndroidSchedulers.from(Looper.getMainLooper(), true)
         }
 
-        RxJavaPlugins.setErrorHandler { error ->
-            if (error !is UndeliverableException) {
-                Timber.e(error)
-            }
-        }
+        RxJavaPlugins.setErrorHandler(FailFastErrorHandler())
     }
 
     private fun initWorkManager() {
