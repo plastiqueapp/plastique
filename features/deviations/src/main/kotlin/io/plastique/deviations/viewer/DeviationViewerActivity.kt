@@ -40,6 +40,7 @@ import io.plastique.glide.GlideRequest
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.Clipboard
+import io.plastique.util.SystemUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -48,6 +49,9 @@ import kotlin.math.ln
 
 @RuntimePermissions
 class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
+    @Inject lateinit var clipboard: Clipboard
+    @Inject lateinit var navigator: DeviationsNavigator
+
     private lateinit var rootView: View
     private lateinit var appBar: AppBarLayout
     private lateinit var imageView: PhotoView
@@ -56,9 +60,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    @Inject lateinit var clipboard: Clipboard
-    @Inject lateinit var navigator: DeviationsNavigator
-
+    private val systemUiController = SystemUiController(this)
     private lateinit var lastState: DeviationViewerViewState
 
     private val deviationId: String
@@ -75,9 +77,9 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         rootView = findViewById(R.id.root)
         appBar = findViewById(R.id.appbar)
 
-        setUiVisibility(true)
-        window.decorView.setOnSystemUiVisibilityChangeListener { visibility ->
-            if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+        systemUiController.isVisible = true
+        systemUiController.setVisibilityChangeListener { visible ->
+            if (visible) {
                 Animations.fadeIn(appBar, Animations.DURATION_SHORT)
                 Animations.fadeIn(infoPanelView, Animations.DURATION_SHORT)
             } else {
@@ -87,7 +89,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
 
         imageView = findViewById(R.id.deviation_image)
-        imageView.setOnPhotoTapListener { _, _, _ -> setUiVisibility(!isSystemUiVisible) }
+        imageView.setOnPhotoTapListener { _, _, _ -> systemUiController.toggleVisibility() }
         ViewCompat.setOnApplyWindowInsetsListener(imageView) { _, insets -> insets }
 
         infoPanelView = findViewById(R.id.info_panel)
@@ -243,17 +245,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             title = getString(R.string.deviations_viewer_action_download, humanReadableByteCount(menuState.downloadFileSize))
             isVisible = menuState.showDownload
         }
-    }
-
-    private val isSystemUiVisible: Boolean
-        get() = (window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_FULLSCREEN) == 0
-
-    private fun setUiVisibility(visible: Boolean) {
-        var flags = View.SYSTEM_UI_FLAG_IMMERSIVE or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        if (!visible) {
-            flags = flags or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        }
-        window.decorView.systemUiVisibility = flags
     }
 
     override fun injectDependencies() {
