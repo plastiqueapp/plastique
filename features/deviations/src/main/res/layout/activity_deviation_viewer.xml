@@ -11,13 +11,13 @@
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/deviation_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true" />
+            android:layout_height="match_parent" />
 
         <!-- TODO: Remove minHeight once https://issuetracker.google.com/issues/122133549 is fixed -->
         <io.plastique.deviations.viewer.InfoPanelView

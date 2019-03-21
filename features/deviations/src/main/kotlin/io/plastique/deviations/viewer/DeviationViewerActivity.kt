@@ -10,9 +10,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ShareCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.bumptech.glide.request.target.ImageViewTarget
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.appbar.AppBarLayout
@@ -90,7 +91,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         imageView = findViewById(R.id.deviation_image)
         imageView.setOnPhotoTapListener { _, _, _ -> systemUiController.toggleVisibility() }
-        ViewCompat.setOnApplyWindowInsetsListener(imageView) { _, insets -> insets }
 
         infoPanelView = findViewById(R.id.info_panel)
         infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
@@ -103,6 +103,14 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
         }
         infoPanelView.setOnCommentsClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
         infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(navigationContext, deviationId) }
+
+        val contentView = findViewById<ViewGroup>(R.id.content)
+        contentView.setOnApplyWindowInsetsListener { _, insets ->
+            infoPanelView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = insets.systemWindowInsetBottom
+            }
+            insets.consumeSystemWindowInsets()
+        }
 
         contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(this, supportFragmentManager)
