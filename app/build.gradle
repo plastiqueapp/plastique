@@ -2,7 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "kotlin-kapt"
-    id "com.github.triplet.play" version "2.1.1"
+    id "com.github.triplet.play" version "2.2.0"
 }
 
 def googleServicesEnabled = file("google-services.json").exists()
