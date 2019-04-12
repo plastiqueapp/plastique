@@ -65,6 +65,12 @@ android {
         }
     }
 
+    playConfigs {
+        prodRelease {
+            enabled = true
+        }
+    }
+
     dexOptions {
         preDexLibraries !rootProject.ext.ci
     }
@@ -136,13 +142,10 @@ if (signingPropertiesFile.exists()) {
 }
 
 play {
+    enabled = false
     defaultToAppBundles = true
     serviceAccountCredentials file("publish-keys.json")
     track = "internal"
-}
-
-tasks.matching { it.name.startsWith("publishDevRelease") }.configureEach {
-    it.enabled = false
 }
 
 if (googleServicesEnabled) {
