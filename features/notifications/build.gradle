@@ -11,8 +11,6 @@ dependencies {
     implementation project(":core-ui")
     implementation project(":features:deviations")
 
-    implementation "androidx.concurrent:concurrent-futures:$versions.androidx.futures"
-
     compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"
     kapt "com.google.auto.factory:auto-factory:$versions.autoFactory"
 
