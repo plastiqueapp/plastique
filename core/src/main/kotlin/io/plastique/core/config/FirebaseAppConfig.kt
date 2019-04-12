@@ -29,7 +29,7 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
     }
 
     override fun fetch() {
-        remoteConfig.activateFetched()
+        remoteConfig.activate()
         remoteConfig.fetch(if (BuildConfig.DEBUG) {
             TimeUnit.MINUTES.toSeconds(1)
         } else {
