@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.webkit.CookieManager
-import androidx.fragment.app.FragmentFactory
 import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Lazy
@@ -17,7 +16,6 @@ import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
-import io.plastique.core.AppFragmentFactory
 import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
 import io.plastique.core.browser.CookieCleaner
@@ -52,9 +50,6 @@ import javax.inject.Singleton
 abstract class AppModule {
     @Binds
     abstract fun bindContext(application: Application): Context
-
-    @Binds
-    abstract fun bindFragmentFactory(impl: AppFragmentFactory): FragmentFactory
 
     @Binds
     abstract fun bindSessionManager(impl: SessionManagerImpl): SessionManager

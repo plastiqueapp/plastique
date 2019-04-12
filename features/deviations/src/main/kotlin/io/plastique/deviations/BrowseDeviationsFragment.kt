@@ -49,7 +49,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        pagerAdapter = FragmentListPagerAdapter(requireContext(), childFragmentManager, PAGES)
+        pagerAdapter = FragmentListPagerAdapter(this, PAGES)
         pager = view.findViewById(R.id.pager)
         pager.adapter = pagerAdapter
     }

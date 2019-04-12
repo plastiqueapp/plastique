@@ -33,5 +33,5 @@ fun DialogFragment.showAllowingStateLoss(fragmentManager: FragmentManager, tag: 
 }
 
 inline fun <reified T : Fragment> FragmentFactory.instantiate(context: Context, args: Bundle? = null): T {
-    return instantiate(context.classLoader, T::class.java.name, args) as T
+    return instantiate(context.classLoader, T::class.java.name).apply { arguments = args } as T
 }

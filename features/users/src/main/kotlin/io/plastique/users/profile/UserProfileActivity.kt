@@ -174,7 +174,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
     }
 
     private fun initTabs() {
-        val adapter = FragmentListPagerAdapter(this, supportFragmentManager, pageProvider.getPages(username))
+        val adapter = FragmentListPagerAdapter(this, pageProvider.getPages(username))
         val pager: ViewPager2 = findViewById(R.id.pager)
         pager.adapter = adapter
 

@@ -41,8 +41,8 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
-        val args = pref.extras
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment, args)
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+        fragment.arguments = pref.extras
         fragment.setTargetFragment(caller, 0)
 
         supportFragmentManager.beginTransaction()
