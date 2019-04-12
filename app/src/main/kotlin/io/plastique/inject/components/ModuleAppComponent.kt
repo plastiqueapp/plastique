@@ -27,11 +27,8 @@ interface ModuleAppComponent : AppComponent {
 
     fun inject(application: BasePlastiqueApplication)
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
-
-        fun build(): ModuleAppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance application: Application): ModuleAppComponent
     }
 }
