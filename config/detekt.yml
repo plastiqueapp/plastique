@@ -1,0 +1,9 @@
+formatting:
+  MaximumLineLength:
+    maxLineLength: 160
+
+style:
+  ForbiddenComment:
+    active: false
+  MaxLineLength:
+    maxLineLength: 160

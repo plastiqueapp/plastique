@@ -74,6 +74,7 @@ class CryptorTest {
             cryptor.decrypt(encrypted, invalidKeyAlias)
             fail("Should have thrown InvalidKeyException")
         } catch (e: InvalidKeyException) {
+            // expected
         }
 
         assertFalse(keyStore.containsAlias(invalidKeyAlias))

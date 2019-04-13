@@ -16,6 +16,7 @@ buildscript {
 plugins {
     id "com.gradle.build-scan" version "2.2.1"
     id "com.github.ben-manes.versions" version "0.21.0"
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC14"
 }
 
 ext.ci = System.getenv("CI") == "true"
@@ -28,6 +29,11 @@ ext.buildConfig = [
         versionName: "0.1",
         dbVersion  : 1,
 ]
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
 
 subprojects {
     repositories {
@@ -147,4 +153,11 @@ buildScan {
         tag "CI"
         publishAlways()
     }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("config/detekt.yml")
+    input = files(rootDir)
+    filters ".*/build/.*"
 }
