@@ -18,7 +18,7 @@
             android:paddingTop="8dp"
             android:scrollbars="vertical"
             tools:itemCount="3"
-            tools:listitem="@layout/item_notifications_comment" />
+            tools:listitem="@layout/item_notifications_simple" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar

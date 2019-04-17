@@ -267,7 +267,7 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
         }
     }
 
-    class LayoutParams : ViewGroup.MarginLayoutParams {
+    class LayoutParams : MarginLayoutParams {
         var pin: Boolean = false
 
         constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -277,11 +277,6 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
         }
 
         constructor(width: Int, height: Int) : super(width, height)
-
-        constructor(width: Int, height: Int, pin: Boolean) : super(width, height) {
-            this.pin = pin
-        }
-
         constructor(source: ViewGroup.LayoutParams) : super(source)
     }
 

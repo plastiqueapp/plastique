@@ -203,9 +203,7 @@ class NotificationsAdapter(
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
         if (position == RecyclerView.NO_POSITION) return
-        val item = items[position]
-
-        when (item) {
+        when (val item = items[position]) {
             is AddToCollectionItem -> onOpenCollection(item.user.name, item.folderId, item.folderName)
             is BadgeGivenItem -> onOpenUserProfile(item.user)
             is FavoriteItem -> onOpenUserProfile(item.user)

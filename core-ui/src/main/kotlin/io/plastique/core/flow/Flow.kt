@@ -21,7 +21,7 @@ typealias EffectHandler<Effect, Event> = (effects: Observable<Effect>) -> Observ
 
 class MainLoop<Event : Any, State : Any, Effect : Any>(
     private val reducer: Reducer<Event, State, Effect>,
-    private val effectHandler: EffectHandler<Effect, Event> = { Observable.empty<Event>() },
+    private val effectHandler: EffectHandler<Effect, Event> = { Observable.empty() },
     private val externalEvents: Observable<out Event> = Observable.empty(),
     private val listener: Listener<Event, State, Effect>? = null
 ) {

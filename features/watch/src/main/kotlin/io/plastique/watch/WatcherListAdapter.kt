@@ -65,8 +65,10 @@ class WatcherListAdapter(
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] as WatcherItem else return
-        onUserClick(item.watcher.user)
+        if (position != RecyclerView.NO_POSITION) {
+            val item = items[position] as WatcherItem
+            onUserClick(item.watcher.user)
+        }
     }
 }
 

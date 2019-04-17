@@ -1,6 +1,5 @@
 package io.plastique.glide
 
-import android.widget.AbsListView
 import android.widget.AbsListView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
@@ -28,7 +27,7 @@ class RecyclerViewPreloader<T>(
     }
 }
 
-private class RecyclerToListViewScrollListener(private val scrollListener: AbsListView.OnScrollListener) : RecyclerView.OnScrollListener() {
+private class RecyclerToListViewScrollListener(private val scrollListener: OnScrollListener) : RecyclerView.OnScrollListener() {
     private var lastFirstVisiblePosition = RecyclerView.NO_POSITION
     private var lastVisibleCount = -1
     private var lastItemCount = -1

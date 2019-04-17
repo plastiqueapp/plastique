@@ -55,7 +55,7 @@ class FeedSettingsViewModel @Inject constructor(
     private fun createOptions(feedSettings: FeedSettings): List<OptionItem> {
         val keysAndTitles = resourceProvider.getStringArray(R.array.feed_settings_options)
         val result = ArrayList<OptionItem>(keysAndTitles.size)
-        keysAndTitles.forEach { it ->
+        keysAndTitles.forEach {
             val (key, title) = it.split('|')
             if (feedSettings.include.containsKey(key)) {
                 result += OptionItem(key, title, feedSettings.include.getValue(key))

@@ -20,7 +20,7 @@ class UserStatisticsView @JvmOverloads constructor(context: Context, attrs: Attr
     private val watchersValueView: TextView
 
     init {
-        orientation = LinearLayout.HORIZONTAL
+        orientation = HORIZONTAL
         inflate(context, R.layout.view_users_profile_statistics, this)
         deviationsLabel = findViewById(R.id.statistics_deviations_label)
         deviationsValueView = findViewById(R.id.statistics_deviations_value)

@@ -158,7 +158,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         viewModel.dispatch(SetFeedSettingsEvent(settings))
     }
 
-    override fun getTitle(): Int = io.plastique.feed.R.string.feed_title
+    override fun getTitle(): Int = R.string.feed_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }

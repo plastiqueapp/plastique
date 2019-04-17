@@ -104,7 +104,7 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
     private fun isNewVersionAvailable(currentVersionName: String): Boolean {
         val currentAppVersionWithoutSuffix = DEV_VERSION_NAME_SUFFIX.matcher(currentVersionName).replaceFirst("")
         val latestAppVersion = appConfig.getString("app_latest_version")
-        return !latestAppVersion.isEmpty() && VersionNumberComparator().compare(currentAppVersionWithoutSuffix, latestAppVersion) < 0
+        return latestAppVersion.isNotEmpty() && VersionNumberComparator().compare(currentAppVersionWithoutSuffix, latestAppVersion) < 0
     }
 
     private fun openPlayStore(context: Context) {

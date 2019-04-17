@@ -15,10 +15,6 @@ object Intents {
         return Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
     }
 
-    fun openUrl(url: String): Intent {
-        return Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    }
-
     fun sendEmail(to: Array<String>, subject: String = "", title: String? = null): Intent {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             type = "message/rfc822"

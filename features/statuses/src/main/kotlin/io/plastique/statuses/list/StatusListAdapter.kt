@@ -79,9 +79,7 @@ class StatusListAdapter(
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
         if (position == RecyclerView.NO_POSITION) return
-
         val item = items[position] as StatusItem
-
         when (view.id) {
             R.id.button_comments -> onCommentsClick(item.statusId)
             R.id.button_share -> onShareClick(getObjectToShare(item))

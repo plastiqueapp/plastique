@@ -115,8 +115,8 @@ class GalleryAdapter(
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] else return
-        when (item) {
+        if (position == RecyclerView.NO_POSITION) return
+        when (val item = items[position]) {
             is FolderItem -> onFolderClick(item)
             is DeviationItem -> onDeviationClick(item.deviation.id)
         }
@@ -124,8 +124,8 @@ class GalleryAdapter(
 
     override fun onViewHolderLongClick(holder: RecyclerView.ViewHolder, view: View): Boolean {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] else return false
-        return when (item) {
+        if (position == RecyclerView.NO_POSITION) return false
+        return when (val item = items[position]) {
             is FolderItem -> onFolderLongClick(item, view)
             else -> throw IllegalStateException("Unhandled item type ${item.javaClass}")
         }

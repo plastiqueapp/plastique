@@ -21,7 +21,7 @@ class EmptyView @JvmOverloads constructor(
     private val button: Button
 
     init {
-        orientation = LinearLayout.VERTICAL
+        orientation = VERTICAL
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.EmptyView, defStyleAttr, defStyleRes)
         val layoutId = a.getResourceId(R.styleable.EmptyView_android_layout, 0)

@@ -78,7 +78,7 @@ class StatusListViewModel @Inject constructor(
                             .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
 
-        val loadMoreEvents = effects.ofType<StatusListEffect.LoadMoreEffect>()
+        val loadMoreEvents = effects.ofType<LoadMoreEffect>()
                 .switchMapSingle {
                     statusListModel.loadMore()
                             .toSingleDefault<StatusListEvent>(LoadMoreFinishedEvent)
@@ -86,7 +86,7 @@ class StatusListViewModel @Inject constructor(
                             .onErrorReturn { error -> LoadMoreErrorEvent(error) }
                 }
 
-        val refreshEvents = effects.ofType<StatusListEffect.RefreshEffect>()
+        val refreshEvents = effects.ofType<RefreshEffect>()
                 .switchMapSingle {
                     statusListModel.refresh()
                             .toSingleDefault<StatusListEvent>(RefreshFinishedEvent)

@@ -2,7 +2,7 @@ package io.plastique.core
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -43,8 +43,8 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
                 .into(avatarView)
     }
 
-    fun setOnUserClickListener(listener: View.OnClickListener) {
-        val wrapper = View.OnClickListener { listener.onClick(this) }
+    fun setOnUserClickListener(listener: OnClickListener) {
+        val wrapper = OnClickListener { listener.onClick(this) }
         avatarView.setOnClickListener(wrapper)
         usernameView.setOnClickListener(wrapper)
     }

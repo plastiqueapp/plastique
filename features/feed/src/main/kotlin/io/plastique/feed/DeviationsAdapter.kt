@@ -35,9 +35,9 @@ class DeviationsAdapter(
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return
-
-        val item = items[position] as DeviationItem
-        onDeviationClick(item.deviation.id)
+        if (position != RecyclerView.NO_POSITION) {
+            val item = items[position] as DeviationItem
+            onDeviationClick(item.deviation.id)
+        }
     }
 }

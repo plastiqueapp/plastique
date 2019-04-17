@@ -24,7 +24,7 @@ class CategoryRepository @Inject constructor(
 
     private fun getCategoriesFromDb(path: String): Maybe<List<CategoryEntity>> {
         return categoryDao.getSubcategories(path)
-                .filter { categories -> !categories.isEmpty() }
+                .filter { categories -> categories.isNotEmpty() }
     }
 
     private fun getCategoriesFromServer(path: String): Single<List<CategoryEntity>> {

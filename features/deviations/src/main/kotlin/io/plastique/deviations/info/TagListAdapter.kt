@@ -24,8 +24,10 @@ class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapt
     }
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val tag = items[holder.adapterPosition]
-        onTagClick(tag)
+        val position = holder.adapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            onTagClick(items[position])
+        }
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {

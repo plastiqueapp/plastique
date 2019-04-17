@@ -349,7 +349,6 @@ class FeedAdapter(
         val position = holder.adapterPosition
         if (position == RecyclerView.NO_POSITION) return
         val item = items[position]
-
         when {
             view is FeedHeaderView -> onUserClick((item as FeedListItem).user)
             view.id == R.id.button_comments -> {
@@ -377,8 +376,7 @@ class FeedAdapter(
                 onStatusClick(statusId)
             }
             view.id == R.id.status_share -> {
-                val share = (item as StatusUpdateItem).share
-                when (share) {
+                when (val share = (item as StatusUpdateItem).share) {
                     is ShareUiModel.ImageDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.LiteratureDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.Status -> onStatusClick(share.statusId)

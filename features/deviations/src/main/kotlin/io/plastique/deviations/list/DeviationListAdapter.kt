@@ -287,8 +287,8 @@ class DeviationsAdapter(
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
-        val item = if (position != RecyclerView.NO_POSITION) items[position] as DeviationItem else return
-
+        if (position == RecyclerView.NO_POSITION) return
+        val item = items[position] as DeviationItem
         when (view.id) {
             R.id.button_comments -> {
                 onCommentsClick(CommentThreadId.Deviation(item.deviation.id))

@@ -10,8 +10,7 @@ class DerivedClassAdapterFactory<T : Any>(
     private val actualClass: Class<out T>
 ) : JsonAdapter.Factory {
     override fun create(type: Type, annotations: Set<Annotation>, moshi: Moshi): JsonAdapter<*>? {
-        val rawType = Types.getRawType(type)
-        return when (rawType) {
+        return when (Types.getRawType(type)) {
             baseClass -> moshi.adapter(actualClass)
             else -> null
         }

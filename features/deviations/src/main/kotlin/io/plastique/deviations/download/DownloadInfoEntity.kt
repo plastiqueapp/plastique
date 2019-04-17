@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import io.plastique.api.deviations.DownloadInfoDto
 import io.plastique.deviations.DeviationEntity
 import io.plastique.util.Size
 

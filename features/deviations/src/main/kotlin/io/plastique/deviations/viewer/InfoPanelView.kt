@@ -3,6 +3,7 @@ package io.plastique.deviations.viewer
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Checkable
 import android.widget.CheckedTextView
 import android.widget.ImageView
@@ -55,7 +56,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
     }
 
     fun setOnAuthorClickListener(listener: (User) -> Unit) {
-        val onClickListener = View.OnClickListener { listener(author!!) }
+        val onClickListener = OnClickListener { listener(author!!) }
         authorView.setOnClickListener(onClickListener)
         avatarView.setOnClickListener(onClickListener)
         titleView.setOnClickListener(onClickListener)

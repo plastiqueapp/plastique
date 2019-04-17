@@ -100,7 +100,7 @@ class ComposeCommentView @JvmOverloads constructor(context: Context, attrs: Attr
     companion object {
         private val REPLY_TRANSITION = object : TransitionSet() {
             init {
-                ordering = TransitionSet.ORDERING_TOGETHER
+                ordering = ORDERING_TOGETHER
                 addTransition(Fade(Fade.IN))
                 addTransition(ChangeBounds())
             }
