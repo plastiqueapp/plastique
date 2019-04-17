@@ -38,6 +38,5 @@ class TagFactory @Inject constructor(private val context: Context) {
         TimeRange.Week -> R.string.deviations_popular_time_range_1_week
         TimeRange.Month -> R.string.deviations_popular_time_range_1_month
         TimeRange.AllTime -> R.string.deviations_popular_time_range_all_time
-        else -> throw RuntimeException("Unhandled TimeRange value: $timeRange")
     }
 }

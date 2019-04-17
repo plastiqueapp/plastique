@@ -44,12 +44,7 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
 
     @StyleRes
     private fun getThemeResourceId(activity: Activity, theme: String): Int {
-        val activityInfo = try {
-            activity.packageManager.getActivityInfo(activity.componentName, PackageManager.GET_META_DATA)
-        } catch (e: PackageManager.NameNotFoundException) {
-            throw RuntimeException(e)
-        }
-
+        val activityInfo = activity.packageManager.getActivityInfo(activity.componentName, PackageManager.GET_META_DATA)
         if (theme == Themes.DARK) {
             if (activityInfo.metaData != null) {
                 val darkTheme = activityInfo.metaData.getInt(META_DARK_THEME)

@@ -40,9 +40,7 @@ class UserRepositoryImpl @Inject constructor(
     private fun fetchCurrentUser(userId: String): Completable {
         return userService.whoami()
                 .doOnSuccess { user ->
-                    if (user.id != userId) {
-                        throw RuntimeException("User changed unexpectedly")
-                    }
+                    if (user.id != userId) throw IllegalStateException("User changed unexpectedly")
                     persistWithTimestamp(user)
                 }
                 .ignoreElement()
