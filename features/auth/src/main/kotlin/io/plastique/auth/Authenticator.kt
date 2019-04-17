@@ -41,16 +41,10 @@ class Authenticator @Inject constructor(
     }
 
     fun onRedirect(redirectUrl: Uri): Completable {
-        if (csrfToken == null) {
-            throw IllegalStateException("No pending authorization")
-        }
-
         return Single.defer {
             val authCode = redirectUrl.getQueryParameter("code")?.takeIf { it.isNotEmpty() } ?: throw AuthException("Invalid auth code")
-            val csrfToken = redirectUrl.getQueryParameter("state")
-            if (this.csrfToken != csrfToken) {
-                throw AuthException("Invalid CSRF token")
-            }
+            val csrfToken = redirectUrl.getQueryParameter("state") ?: throw AuthException("Missing CSRF token")
+            validateCsrfToken(csrfToken)
 
             authService.requestAccessToken(
                     clientId = apiConfig.clientId,
@@ -73,6 +67,13 @@ class Authenticator @Inject constructor(
                 }
                 .doOnSuccess { session -> sessionManager.session = session }
                 .ignoreElement()
+    }
+
+    private fun validateCsrfToken(csrfToken: String) {
+        val localCsrfToken = this.csrfToken ?: throw AuthException("No pending authorization")
+        if (localCsrfToken != csrfToken) {
+            throw AuthException("Invalid CSRF token")
+        }
     }
 
     companion object {
