@@ -78,7 +78,7 @@ private class CommentItemDelegate(
     }
 }
 
-class CommentsAdapter(
+class CommentListAdapter(
     glide: GlideRequests,
     private val onReplyClick: OnReplyClickListener,
     private val onReplyingToClick: OnReplyingToClickListener,

@@ -34,7 +34,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var adapter: CategoriesAdapter
+    private lateinit var adapter: CategoryListAdapter
 
     private val parentCategory: Category
         get() = intent.getParcelableExtra(EXTRA_PARENT_CATEGORY)
@@ -49,7 +49,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         breadcrumbsView = findViewById(R.id.breadcrumbs)
         breadcrumbsView.setOnBreadcrumbClickListener { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }
 
-        adapter = CategoriesAdapter(
+        adapter = CategoryListAdapter(
                 onItemClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
         categoriesView = findViewById(R.id.categories)
         categoriesView.layoutManager = LinearLayoutManager(this)

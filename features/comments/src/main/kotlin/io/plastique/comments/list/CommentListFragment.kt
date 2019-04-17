@@ -40,7 +40,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
     private lateinit var composeView: ComposeCommentView
-    private lateinit var adapter: CommentsAdapter
+    private lateinit var adapter: CommentListAdapter
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
@@ -51,7 +51,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = CommentsAdapter(
+        adapter = CommentListAdapter(
                 glide = GlideApp.with(this),
                 onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
                 onReplyingToClick = { commentId -> scrollToComment(commentId) },

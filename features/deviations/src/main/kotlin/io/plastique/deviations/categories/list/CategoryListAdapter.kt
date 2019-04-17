@@ -13,9 +13,9 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 import kotlin.math.max
 
-class CategoriesAdapter(
+class CategoryListAdapter(
     private val onItemClick: OnItemClickListener
-) : BaseListAdapter<CategoryItem, CategoriesAdapter.ViewHolder>(), OnViewHolderClickListener {
+) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>(), OnViewHolderClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
