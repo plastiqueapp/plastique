@@ -1,16 +1,17 @@
 plugins {
-    id "kotlin"
+    id "com.android.library"
+    id "kotlin-android"
     id "kotlin-kapt"
 }
 
 dependencies {
-    compile "androidx.annotation:annotation:$versions.androidx.annotation"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    compile "io.reactivex.rxjava2:rxjava:$versions.rxjava"
-    compile "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
-    compile "com.squareup.okhttp3:okhttp:$versions.okhttp"
-    compile "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "androidx.annotation:annotation:$versions.androidx.annotation"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+    implementation "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
 
-    compile "com.squareup.moshi:moshi:$versions.moshi"
+    implementation "com.squareup.moshi:moshi:$versions.moshi"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 }
