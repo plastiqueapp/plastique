@@ -1,6 +1,7 @@
 .gradle/
 build/
 captures/
+projectFilesBackup/
 local.properties
 
 .idea/caches/
