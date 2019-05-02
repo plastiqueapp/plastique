@@ -168,6 +168,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         outState.putParcelable(STATE_PARAMS, params)
     }
 
+    @Suppress("DEPRECATION")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         visibleToUser = isVisibleToUser
