@@ -24,13 +24,13 @@ plugins {
 
 ext.ci = System.getenv("CI") == "true"
 ext.buildConfig = [
-        compileSdk : 28,
-        minSdk     : 21,
-        targetSdk  : 28,
+    compileSdk : 28,
+    minSdk     : 21,
+    targetSdk  : 28,
 
-        versionCode: 9,
-        versionName: "0.1",
-        dbVersion  : 1,
+    versionCode: 9,
+    versionName: "0.1",
+    dbVersion  : 1,
 ]
 
 repositories {
@@ -80,9 +80,8 @@ subprojects {
 
     afterEvaluate {
         if (plugins.hasPlugin("com.android.application") ||
-                plugins.hasPlugin("com.android.library") ||
-                plugins.hasPlugin("com.android.feature") ||
-                plugins.hasPlugin("com.android.dynamic-feature")) {
+            plugins.hasPlugin("com.android.library") ||
+            plugins.hasPlugin("com.android.dynamic-feature")) {
             android {
                 compileSdkVersion buildConfig.compileSdk
 
