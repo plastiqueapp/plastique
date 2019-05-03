@@ -120,8 +120,9 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
             ContentState.Content ->
                 listUpdateData.applyTo(optionsAdapter)
 
-            is ContentState.Empty ->
-                emptyView.setState(state.contentState.emptyState)
+            is ContentState.Empty -> {
+                emptyView.state = state.contentState.emptyState
+            }
         }
     }
 }

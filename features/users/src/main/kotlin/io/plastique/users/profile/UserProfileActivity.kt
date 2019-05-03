@@ -145,7 +145,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
 
         contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
-            emptyView.setState(state.contentState.emptyState)
+            emptyView.state = state.contentState.emptyState
         }
 
         if (state.userProfile != prevState?.userProfile) {

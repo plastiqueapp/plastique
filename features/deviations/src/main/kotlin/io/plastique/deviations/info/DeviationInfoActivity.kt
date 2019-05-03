@@ -95,7 +95,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
             }
             is DeviationInfoViewState.Error -> {
                 contentStateController.state = ContentState.Empty(state.emptyViewState)
-                emptyView.setState(state.emptyViewState)
+                emptyView.state = state.emptyViewState
             }
         }
     }

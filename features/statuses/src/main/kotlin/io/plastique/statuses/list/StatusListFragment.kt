@@ -95,7 +95,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
     private fun renderState(state: StatusListViewState, prevState: StatusListViewState?, listUpdateData: ListUpdateData<ListItem>) {
         contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
-            emptyView.setState(state.contentState.emptyState)
+            emptyView.state = state.contentState.emptyState
         }
 
         listUpdateData.applyTo(statusesAdapter)

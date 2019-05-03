@@ -165,7 +165,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
-            emptyView.setState(state.contentState.emptyState)
+            emptyView.state = state.contentState.emptyState
         }
 
         if (state.content != prevState?.content) {

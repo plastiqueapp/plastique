@@ -70,7 +70,7 @@ class AboutFragment : MvvmFragment<AboutViewModel>(), ScrollableToTop {
 
             is AboutViewState.Error -> {
                 contentStateController.state = ContentState.Empty(state.emptyState)
-                emptyView.setState(state.emptyState)
+                emptyView.state = state.emptyState
             }
         }
     }

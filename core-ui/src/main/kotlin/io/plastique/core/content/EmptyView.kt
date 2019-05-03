@@ -20,6 +20,14 @@ class EmptyView @JvmOverloads constructor(
     private val messageView: TextView
     private val button: Button
 
+    var state: EmptyState? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                renderState(value)
+            }
+        }
+
     init {
         orientation = VERTICAL
 
@@ -44,7 +52,7 @@ class EmptyView @JvmOverloads constructor(
         button.isVisible = showButton
     }
 
-    fun setState(state: EmptyState) {
+    private fun renderState(state: EmptyState) {
         when (state) {
             is EmptyState.Message -> {
                 messageView.text = state.message
