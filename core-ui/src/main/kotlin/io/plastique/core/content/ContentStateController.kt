@@ -20,7 +20,6 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
 
     var state: ContentState = ContentState.None
         set(value) {
-            require(value !== ContentState.None) { "Cannot switch state to $value" }
             if (field != value && !(field is ContentState.Empty && value is ContentState.Empty)) {
                 field = value
                 switchState(value)
@@ -40,7 +39,7 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
                 @IdRes contentViewId: Int,
                 @IdRes progressViewId: Int = View.NO_ID,
                 @IdRes emptyViewId: Int = View.NO_ID)
-            : this(ContentStateApplier(activity.window.decorView, contentViewId, progressViewId, emptyViewId))
+            : this(ContentStateApplier(activity, contentViewId, progressViewId, emptyViewId))
 
     init {
         dispatchSwitchState(displayedState, false)
@@ -88,9 +87,17 @@ private class ContentStateApplier(
     @IdRes progressViewId: Int,
     @IdRes emptyViewId: Int
 ) : ContentStateController.OnSwitchStateListener {
+
     private val contentView: View
     private val progressView: View?
     private val emptyView: View?
+
+    constructor(
+        activity: Activity,
+        @IdRes contentViewId: Int,
+        @IdRes progressViewId: Int,
+        @IdRes emptyViewId: Int
+    ) : this(activity.window.decorView, contentViewId, progressViewId, emptyViewId)
 
     init {
         contentView = requireViewById(rootView, contentViewId)
