@@ -21,7 +21,7 @@ object DebuggingModule {
         val flipperClient = AndroidFlipperClient.getInstance(context)
         flipperClient.addPlugin(InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()))
         flipperClient.addPlugin(NetworkFlipperPlugin())
-        flipperClient.addPlugin(SharedPreferencesFlipperPlugin(context, "${context.packageName}_preferences"))
+        flipperClient.addPlugin(SharedPreferencesFlipperPlugin(context))
         flipperClient.addPlugin(CrashReporterPlugin.getInstance())
         return flipperClient
     }
