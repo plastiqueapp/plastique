@@ -11,6 +11,7 @@ import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
@@ -33,7 +34,6 @@ import io.plastique.notifications.NotificationsEvent.RetryClickEvent
 import io.plastique.notifications.NotificationsEvent.SessionChangedEvent
 import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
 import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
-import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -125,7 +125,7 @@ class NotificationsViewModel @Inject constructor(
 }
 
 class NotificationsStateReducer @Inject constructor(
-    private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
@@ -156,7 +156,7 @@ class NotificationsStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
                 next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)

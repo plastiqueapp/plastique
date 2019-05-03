@@ -1,4 +1,4 @@
-package io.plastique.util
+package io.plastique.core.network
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import androidx.core.content.getSystemService
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.disposables.Disposable
@@ -20,18 +19,15 @@ enum class NetworkConnectionState {
 }
 
 interface NetworkConnectivityMonitor {
-    val isConnectedToNetwork: Boolean
-
     val connectionState: Observable<NetworkConnectionState>
 }
 
 @Singleton
 @SuppressLint("TimberTagLength")
-class NetworkConnectivityMonitorImpl @Inject constructor(private val context: Context) : NetworkConnectivityMonitor {
-    private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
-
-    override val isConnectedToNetwork: Boolean
-        get() = connectivityManager.activeNetworkInfo?.isConnected ?: false
+class NetworkConnectivityMonitorImpl @Inject constructor(
+    private val context: Context,
+    private val connectivityChecker: NetworkConnectivityChecker
+) : NetworkConnectivityMonitor {
 
     override val connectionState: Observable<NetworkConnectionState> by lazy {
         Observable.create<NetworkConnectionState> { emitter ->
@@ -47,7 +43,7 @@ class NetworkConnectivityMonitorImpl @Inject constructor(private val context: Co
     }
 
     private val currentConnectionState: NetworkConnectionState
-        get() = if (isConnectedToNetwork) NetworkConnectionState.Connected else NetworkConnectionState.Disconnected
+        get() = if (connectivityChecker.isConnectedToNetwork) NetworkConnectionState.Connected else NetworkConnectionState.Disconnected
 
     private inner class ConnectionStateReceiver(
         private val emitter: ObservableEmitter<NetworkConnectionState>

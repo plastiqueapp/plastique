@@ -1,8 +1,8 @@
 package io.plastique.comments.list
 
 import io.plastique.core.flow.Event
+import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.session.Session
-import io.plastique.util.NetworkConnectionState
 
 sealed class CommentListEvent : Event() {
     data class CommentsChangedEvent(val comments: List<CommentUiModel>, val hasMore: Boolean) : CommentListEvent() {

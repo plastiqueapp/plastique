@@ -13,6 +13,7 @@ import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
@@ -35,7 +36,6 @@ import io.plastique.gallery.GalleryEvent.SessionChangedEvent
 import io.plastique.gallery.GalleryEvent.ShowMatureChangedEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.inject.scopes.FragmentScope
-import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -129,7 +129,7 @@ class GalleryViewModel @Inject constructor(
 }
 
 class GalleryStateReducer @Inject constructor(
-    private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<GalleryEvent, GalleryViewState, GalleryEffect> {
@@ -162,7 +162,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
                 next(state.copy(isLoadingMore = true, items = state.galleryItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)

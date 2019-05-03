@@ -2,8 +2,8 @@ package io.plastique.deviations.list
 
 import io.plastique.core.flow.Event
 import io.plastique.core.lists.ListItem
+import io.plastique.core.network.NetworkConnectionState
 import io.plastique.deviations.FetchParams
-import io.plastique.util.NetworkConnectionState
 
 sealed class DeviationListEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : DeviationListEvent() {

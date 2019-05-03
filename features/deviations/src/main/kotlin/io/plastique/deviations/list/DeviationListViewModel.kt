@@ -13,6 +13,9 @@ import io.plastique.core.flow.Reducer
 import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.network.NetworkConnectionState
+import io.plastique.core.network.NetworkConnectivityChecker
+import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.deviations.FetchParams
@@ -45,8 +48,6 @@ import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
 import io.plastique.inject.scopes.FragmentScope
-import io.plastique.util.NetworkConnectionState
-import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -149,7 +150,7 @@ class DeviationListViewModel @Inject constructor(
 }
 
 class DeviationListStateReducer @Inject constructor(
-    private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,
     private val tagFactory: TagFactory
@@ -181,7 +182,7 @@ class DeviationListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
                 next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem), LoadMoreEffect)
             } else {
                 next(state)

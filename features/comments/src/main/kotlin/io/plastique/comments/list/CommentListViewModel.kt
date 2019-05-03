@@ -41,6 +41,9 @@ import io.plastique.core.flow.TimberLogger
 import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.network.NetworkConnectionState
+import io.plastique.core.network.NetworkConnectivityChecker
+import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
@@ -48,8 +51,6 @@ import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DeviationRepository
 import io.plastique.inject.scopes.FragmentScope
-import io.plastique.util.NetworkConnectionState
-import io.plastique.util.NetworkConnectivityMonitor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.ofType
@@ -180,7 +181,7 @@ class CommentListViewModel @Inject constructor(
 }
 
 class CommentListStateReducer @Inject constructor(
-    private val connectivityMonitor: NetworkConnectivityMonitor,
+    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
 ) : Reducer<CommentListEvent, CommentListViewState, CommentListEffect> {
@@ -213,7 +214,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityMonitor.isConnectedToNetwork) {
+            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
                 next(state.copy(isLoadingMore = true, items = mergeItems(state.commentItems, true)), LoadMoreEffect)
             } else {
                 next(state)
