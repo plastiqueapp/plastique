@@ -7,10 +7,8 @@ import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityCheckerImpl
 import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.network.NetworkConnectivityMonitorImpl
-import okhttp3.Interceptor
+import io.plastique.core.network.OkHttpClientFactory
 import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -26,19 +24,8 @@ abstract class NetworkModule {
         @Provides
         @Singleton
         @JvmStatic
-        fun provideOkHttpClient(
-            interceptors: List<@JvmSuppressWildcards Interceptor>,
-            @Named("network") networkInterceptors: List<@JvmSuppressWildcards Interceptor>
-        ): OkHttpClient {
-            return OkHttpClient.Builder()
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
-                    .apply {
-                        interceptors().addAll(interceptors)
-                        networkInterceptors().addAll(networkInterceptors)
-                    }
-                    .build()
+        fun provideOkHttpClient(factory: OkHttpClientFactory): OkHttpClient {
+            return factory.createClient()
         }
     }
 }
