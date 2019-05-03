@@ -45,9 +45,18 @@ class EmptyView @JvmOverloads constructor(
     }
 
     fun setState(state: EmptyState) {
-        messageView.text = state.message
-        button.text = state.button
-        button.isVisible = state.button != null
+        when (state) {
+            is EmptyState.Message -> {
+                messageView.text = state.message
+                button.isVisible = false
+            }
+
+            is EmptyState.MessageWithButton -> {
+                messageView.text = state.message
+                button.text = state.button
+                button.isVisible = true
+            }
+        }
     }
 
     fun setOnButtonClickListener(listener: (view: View) -> Unit) {

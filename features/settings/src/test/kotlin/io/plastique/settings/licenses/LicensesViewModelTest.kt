@@ -36,7 +36,7 @@ class LicensesViewModelTest {
 
     @Test
     fun `Load error`() {
-        val errorState = EmptyState(message = "Error", button = "Retry")
+        val errorState = EmptyState.MessageWithButton(message = "Error", button = "Retry")
         whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()))
         whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(errorState)
 

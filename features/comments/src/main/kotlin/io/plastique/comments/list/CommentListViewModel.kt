@@ -188,7 +188,7 @@ class CommentListStateReducer @Inject constructor(
         is CommentsChangedEvent -> {
             val commentItems = createItems(event.comments, state.isSignedIn)
             val contentState = if (commentItems.isEmpty()) {
-                ContentState.Empty(EmptyState(message = resourceProvider.getString(R.string.comments_message_empty)))
+                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.comments_message_empty)))
             } else {
                 ContentState.Content
             }

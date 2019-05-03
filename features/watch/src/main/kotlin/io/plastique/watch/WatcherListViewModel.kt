@@ -63,7 +63,7 @@ class WatcherListViewModel @Inject constructor(
         val stateAndEffects = if (signInNeeded) {
             next(WatcherListViewState(
                     username = username,
-                    contentState = ContentState.Empty(EmptyState(
+                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             message = resourceProvider.getString(R.string.watch_message_sign_in),
                             button = resourceProvider.getString(R.string.common_button_sign_in))),
                     signInNeeded = signInNeeded))
@@ -146,7 +146,7 @@ class WatcherListStateReducer @Inject constructor(
                 } else {
                     resourceProvider.getString(R.string.watch_message_empty_current_user)
                 }
-                ContentState.Empty(EmptyState(message = emptyMessage))
+                ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
                     contentState = contentState,
@@ -217,7 +217,7 @@ class WatcherListStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState(
+                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
                                     message = resourceProvider.getString(R.string.watch_message_sign_in),
                                     button = resourceProvider.getString(R.string.common_button_sign_in))),
                             signInNeeded = signInNeeded))

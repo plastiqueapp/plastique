@@ -123,7 +123,7 @@ class StatusListStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, TextUtils.htmlEncode(state.params.username)), 0)
-                ContentState.Empty(EmptyState(message = emptyMessage))
+                ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
                     contentState = contentState,

@@ -74,7 +74,7 @@ class FeedViewModel @Inject constructor(
                     showMatureContent = showMatureContent),
                     LoadFeedEffect(showMatureContent))
         } else {
-            next(FeedViewState(contentState = ContentState.Empty(EmptyState(
+            next(FeedViewState(contentState = ContentState.Empty(EmptyState.MessageWithButton(
                     message = resourceProvider.getString(R.string.feed_message_sign_in),
                     button = resourceProvider.getString(R.string.common_button_sign_in))),
                     isSignedIn = signedIn,
@@ -158,7 +158,7 @@ class FeedStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                ContentState.Empty(EmptyState(message = resourceProvider.getString(R.string.feed_message_empty)))
+                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.feed_message_empty)))
             }
             next(state.copy(
                     contentState = contentState,
@@ -224,7 +224,7 @@ class FeedStateReducer @Inject constructor(
                             LoadFeedEffect(state.showMatureContent))
                 } else {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState(
+                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
                                     message = resourceProvider.getString(R.string.feed_message_sign_in),
                                     button = resourceProvider.getString(R.string.common_button_sign_in))),
                             isSignedIn = signedIn))

@@ -22,20 +22,21 @@ class ErrorMessageProvider @Inject constructor(
     }
 
     fun getErrorState(error: Throwable, @StringRes defaultMessageId: Int = R.string.common_message_load_failed): EmptyState = when (error) {
-        is NoNetworkConnectionException -> EmptyState(
+        is NoNetworkConnectionException -> EmptyState.MessageWithButton(
                 message = context.getString(R.string.common_message_no_internet_connection),
                 button = context.getString(R.string.common_button_try_again))
 
-        is UserNotFoundException -> EmptyState(
+        is UserNotFoundException -> EmptyState.Message(
                 message = HtmlCompat.fromHtml(context.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username)), 0))
 
-        is DeviationNotFoundException -> EmptyState(context.getString(R.string.common_message_deviation_not_found))
+        is DeviationNotFoundException -> EmptyState.Message(
+                message = context.getString(R.string.common_message_deviation_not_found))
 
-        is AuthenticationExpiredException -> EmptyState(
+        is AuthenticationExpiredException -> EmptyState.MessageWithButton(
                 message = context.getString(R.string.common_message_authentication_expired),
                 button = context.getString(R.string.common_button_try_again))
 
-        else -> EmptyState(
+        else -> EmptyState.MessageWithButton(
                 message = context.getString(defaultMessageId),
                 button = context.getString(R.string.common_button_try_again))
     }

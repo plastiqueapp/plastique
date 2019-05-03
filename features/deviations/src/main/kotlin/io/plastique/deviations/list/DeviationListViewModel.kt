@@ -157,7 +157,7 @@ class DeviationListStateReducer @Inject constructor(
     override fun invoke(state: DeviationListViewState, event: DeviationListEvent): Next<DeviationListViewState, DeviationListEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isEmpty()) {
-                ContentState.Empty(EmptyState(message = resourceProvider.getString(R.string.deviations_message_empty)))
+                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.deviations_message_empty)))
             } else {
                 ContentState.Content
             }

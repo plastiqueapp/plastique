@@ -65,7 +65,7 @@ class NotificationsViewModel @Inject constructor(
                     LoadNotificationsEffect)
         } else {
             next(NotificationsViewState(
-                    contentState = ContentState.Empty(EmptyState(
+                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
                             button = resourceProvider.getString(R.string.common_button_sign_in))),
                     isSignedIn = signedIn))
@@ -134,7 +134,7 @@ class NotificationsStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                ContentState.Empty(EmptyState(message = resourceProvider.getString(R.string.notifications_message_empty)))
+                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.notifications_message_empty)))
             }
             next(state.copy(
                     contentState = contentState,
@@ -197,7 +197,7 @@ class NotificationsStateReducer @Inject constructor(
                     next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn), LoadNotificationsEffect)
                 } else {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState(
+                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
                                     message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
                                     button = resourceProvider.getString(R.string.common_button_sign_in))),
                             isSignedIn = signedIn))

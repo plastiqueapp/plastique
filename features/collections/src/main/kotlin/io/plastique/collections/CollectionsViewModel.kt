@@ -65,7 +65,7 @@ class CollectionsViewModel @Inject constructor(
         val stateAndEffects = if (signInNeeded) {
             next(CollectionsViewState(
                     params = params,
-                    contentState = ContentState.Empty(EmptyState(
+                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             message = resourceProvider.getString(R.string.collections_message_sign_in),
                             button = resourceProvider.getString(R.string.common_button_sign_in))),
                     signInNeeded = signInNeeded))
@@ -144,7 +144,7 @@ class CollectionsStateReducer @Inject constructor(
                     resourceProvider.getString(R.string.collections_message_empty_collection)
                 }
 
-                ContentState.Empty(EmptyState(message = emptyMessage))
+                ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
                     contentState = contentState,
@@ -202,7 +202,7 @@ class CollectionsStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState(
+                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
                                     message = resourceProvider.getString(R.string.collections_message_sign_in),
                                     button = resourceProvider.getString(R.string.common_button_sign_in))),
                             signInNeeded = signInNeeded))
