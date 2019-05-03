@@ -10,7 +10,8 @@ import io.plastique.inject.modules.AppModule
 import io.plastique.inject.modules.DaoModule
 import io.plastique.inject.modules.DatabaseModule
 import io.plastique.inject.modules.DeviationsModule
-import io.plastique.inject.modules.OkHttpModule
+import io.plastique.inject.modules.NetworkModule
+import io.plastique.inject.modules.OkHttpInterceptorModule
 import javax.inject.Singleton
 
 @Singleton
@@ -19,8 +20,9 @@ import javax.inject.Singleton
     AppModule::class,
     DatabaseModule::class,
     DaoModule::class,
-    OkHttpModule::class,
-    DeviationsModule::class
+    DeviationsModule::class,
+    NetworkModule::class,
+    OkHttpInterceptorModule::class
 ])
 interface ModuleAppComponent : AppComponent {
     override fun createActivityComponent(): ModuleActivityComponent

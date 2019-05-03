@@ -6,7 +6,6 @@ import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.exceptions.NoNetworkConnectionException
 import io.plastique.core.flow.MainLoop
 import io.plastique.core.flow.Next
 import io.plastique.core.flow.Reducer
@@ -16,6 +15,7 @@ import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityMonitor
+import io.plastique.core.network.NoNetworkConnectionException
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.deviations.FetchParams

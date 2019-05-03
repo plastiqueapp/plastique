@@ -26,10 +26,6 @@ import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
-import io.plastique.core.network.NetworkConnectivityChecker
-import io.plastique.core.network.NetworkConnectivityCheckerImpl
-import io.plastique.core.network.NetworkConnectivityMonitor
-import io.plastique.core.network.NetworkConnectivityMonitorImpl
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
 import io.plastique.core.work.WorkerCleaner
@@ -55,12 +51,6 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindSessionManager(impl: SessionManagerImpl): SessionManager
-
-    @Binds
-    abstract fun bindNetworkConnectivityChecker(impl: NetworkConnectivityCheckerImpl): NetworkConnectivityChecker
-
-    @Binds
-    abstract fun bindNetworkConnectivityMonitor(impl: NetworkConnectivityMonitorImpl): NetworkConnectivityMonitor
 
     @Binds
     abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
