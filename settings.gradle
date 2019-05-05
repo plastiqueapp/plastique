@@ -1,3 +1,31 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        maven {
+            url "https://maven.fabric.io/public"
+        }
+    }
+
+    resolutionStrategy.eachPlugin {
+        if (requested.version == null) {
+            return
+        }
+        switch (requested.id.id) {
+            case "com.android.application":
+            case "com.android.library":
+                useModule "com.android.tools.build:gradle:$requested.version"
+                break
+            case "com.google.gms.google-services":
+                useModule "com.google.gms:google-services:$requested.version"
+                break
+            case "io.fabric":
+                useModule "io.fabric.tools:gradle:$requested.version"
+                break
+        }
+    }
+}
+
 include ":core"
 include ":core-ui"
 include ":api"
