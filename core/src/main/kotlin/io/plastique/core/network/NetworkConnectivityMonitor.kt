@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,9 +35,8 @@ class NetworkConnectivityMonitorImpl @Inject constructor(
             val receiver = ConnectionStateReceiver(emitter)
             emitter.setDisposable(receiver)
             emitter.onNext(currentConnectionState)
-            context.registerReceiver(receiver, IntentFilter(
-                    @Suppress("DEPRECATION") ConnectivityManager.CONNECTIVITY_ACTION))
         }
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
                 .doOnNext { Timber.tag(LOG_TAG).d("Connection state changed to %s", it) }
                 .share()
@@ -49,6 +49,11 @@ class NetworkConnectivityMonitorImpl @Inject constructor(
         private val emitter: ObservableEmitter<NetworkConnectionState>
     ) : BroadcastReceiver(), Disposable {
         @Volatile private var disposed = false
+
+        init {
+            @Suppress("DEPRECATION")
+            context.registerReceiver(this, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        }
 
         override fun isDisposed(): Boolean = disposed
 
