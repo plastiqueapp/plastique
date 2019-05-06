@@ -30,7 +30,6 @@ include ":core"
 include ":core-ui"
 include ":api"
 include ":app"
-include ":test-utils"
 
 include ":features:auth"
 include ":features:collections"

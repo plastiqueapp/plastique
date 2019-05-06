@@ -13,5 +13,5 @@ dependencies {
     api "androidx.preference:preference:$versions.androidx.preference"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 
-    testImplementation project(":test-utils")
+    testImplementation "com.github.technoir42:rxjava2-junit5:$versions.rxjava2junit5"
 }

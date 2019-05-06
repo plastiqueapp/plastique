@@ -1,19 +1,19 @@
 package io.plastique.settings.licenses
 
+import com.github.technoir42.rxjava2.junit5.OverrideSchedulersExtension
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.test.RxSchedulersOverrideExtension
 import io.reactivex.Single
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.io.IOException
 
-@ExtendWith(RxSchedulersOverrideExtension::class)
+@ExtendWith(OverrideSchedulersExtension::class)
 class LicensesViewModelTest {
     private val licenseRepository = mock<LicenseRepository>()
     private val errorMessageProvider = mock<ErrorMessageProvider>()
