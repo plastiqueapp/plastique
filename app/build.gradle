@@ -80,11 +80,12 @@ android {
     }
 
     packagingOptions {
-        exclude "META-INF/*.kotlin_module"
         exclude "META-INF/*.version"
         exclude "META-INF/rxjava.properties"
         exclude "META-INF/rxkotlin.properties"
         exclude "**/*.kotlin_builtins"
+        exclude "**/*.kotlin_metadata"
+        exclude "**/*.kotlin_module"
         exclude "/*.properties"
         exclude "/fabric/*.properties"
     }
