@@ -1,12 +1,13 @@
 package io.plastique.deviations.info
 
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.info.DeviationInfoEffect.LoadInfoEffect
@@ -20,13 +21,13 @@ import javax.inject.Inject
 
 class DeviationInfoViewModel @Inject constructor(
     stateReducer: DeviationInfoStateReducer,
-    private val deviationInfoRepository: DeviationInfoRepository
+    effectHandler: DeviationInfoEffectHandler
 ) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationInfoViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandler,
             listener = TimberLogger(LOG_TAG))
 
     fun init(deviationId: String) {
@@ -40,7 +41,16 @@ class DeviationInfoViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<DeviationInfoEffect>): Observable<DeviationInfoEvent> {
+    companion object {
+        private const val LOG_TAG = "DeviationInfoViewModel"
+    }
+}
+
+class DeviationInfoEffectHandler @Inject constructor(
+    private val deviationInfoRepository: DeviationInfoRepository
+) : EffectHandler<DeviationInfoEffect, DeviationInfoEvent> {
+
+    override fun handle(effects: Observable<DeviationInfoEffect>): Observable<DeviationInfoEvent> {
         return effects.ofType<LoadInfoEffect>()
                 .switchMap { effect ->
                     deviationInfoRepository.getDeviationInfo(effect.deviationId)
@@ -49,17 +59,14 @@ class DeviationInfoViewModel @Inject constructor(
                             .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
     }
-
-    companion object {
-        private const val LOG_TAG = "DeviationInfoViewModel"
-    }
 }
 
 class DeviationInfoStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val richTextFormatter: RichTextFormatter
-) : Reducer<DeviationInfoEvent, DeviationInfoViewState, DeviationInfoEffect> {
-    override fun invoke(state: DeviationInfoViewState, event: DeviationInfoEvent): Next<DeviationInfoViewState, DeviationInfoEffect> = when (event) {
+) : StateReducer<DeviationInfoEvent, DeviationInfoViewState, DeviationInfoEffect> {
+
+    override fun reduce(state: DeviationInfoViewState, event: DeviationInfoEvent): StateWithEffects<DeviationInfoViewState, DeviationInfoEffect> = when (event) {
         is DeviationInfoChangedEvent -> {
             next(DeviationInfoViewState.Content(
                     deviationId = state.deviationId,

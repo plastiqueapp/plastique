@@ -1,7 +1,7 @@
 package io.plastique.deviations.categories.list
 
+import com.sch.neon.Event
 import io.plastique.core.breadcrumbs.Breadcrumb
-import io.plastique.core.flow.Event
 import io.plastique.deviations.categories.Category
 
 sealed class CategoryListEvent : Event() {

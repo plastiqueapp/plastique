@@ -1,6 +1,6 @@
 package io.plastique.gallery
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
 import io.plastique.core.session.Session
 

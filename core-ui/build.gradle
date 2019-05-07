@@ -25,6 +25,8 @@ dependencies {
     api "com.hannesdorfmann:adapterdelegates4:$versions.adapterDelegates"
     api "com.github.Commit451.ForegroundViews:foregroundviews:$versions.foregroundViews"
     api "com.github.Commit451.ForegroundViews:foregroundviews-constraintlayout:$versions.foregroundViews"
+    api "com.sch.neon:neon:$versions.neon"
+    api "com.sch.neon:neon-timber:$versions.neon"
 
     api "com.google.firebase:firebase-analytics:$versions.firebase.analytics"
 

@@ -1,6 +1,6 @@
 package io.plastique.deviations.categories.list
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 import io.plastique.deviations.categories.Category
 
 sealed class CategoryListEffect : Effect() {

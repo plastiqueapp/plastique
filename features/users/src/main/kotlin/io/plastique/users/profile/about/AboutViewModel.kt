@@ -1,12 +1,16 @@
 package io.plastique.users.profile.about
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.users.profile.UserProfileRepository
@@ -21,13 +25,13 @@ import javax.inject.Inject
 
 class AboutViewModel @Inject constructor(
     stateReducer: AboutStateReducer,
-    private val userProfileRepository: UserProfileRepository
+    effectHandlerFactory: AboutEffectHandlerFactory
 ) : BaseViewModel() {
 
     lateinit var state: Observable<AboutViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             listener = TimberLogger(LOG_TAG))
 
     fun init(username: String) {
@@ -41,26 +45,35 @@ class AboutViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<AboutEffect>): Observable<AboutEvent> {
+    companion object {
+        private const val LOG_TAG = "AboutViewModel"
+    }
+}
+
+@AutoFactory
+class AboutEffectHandler(
+    @Provided private val userProfileRepository: UserProfileRepository,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<AboutEffect, AboutEvent> {
+
+    override fun handle(effects: Observable<AboutEffect>): Observable<AboutEvent> {
         return effects.ofType<LoadEffect>()
                 .switchMap { effect ->
                     userProfileRepository.getUserProfileByName(effect.username)
+                            .valveLatest(screenVisible)
                             .map<AboutEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
                 }
-    }
-
-    companion object {
-        private const val LOG_TAG = "AboutViewModel"
     }
 }
 
 class AboutStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val richTextFormatter: RichTextFormatter
-) : Reducer<AboutEvent, AboutViewState, AboutEffect> {
-    override fun invoke(state: AboutViewState, event: AboutEvent): Next<AboutViewState, AboutEffect> = when (event) {
+) : StateReducer<AboutEvent, AboutViewState, AboutEffect> {
+
+    override fun reduce(state: AboutViewState, event: AboutEvent): StateWithEffects<AboutViewState, AboutEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(AboutViewState.Content(
                     username = state.username,

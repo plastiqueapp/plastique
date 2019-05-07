@@ -1,6 +1,6 @@
 package io.plastique.notifications
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class NotificationsEffect : Effect() {
     object LoadNotificationsEffect : NotificationsEffect()

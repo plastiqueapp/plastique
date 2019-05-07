@@ -1,7 +1,7 @@
 package io.plastique.comments.list
 
+import com.sch.neon.Effect
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.flow.Effect
 
 sealed class CommentListEffect : Effect() {
     data class LoadCommentsEffect(val threadId: CommentThreadId) : CommentListEffect()

@@ -1,6 +1,6 @@
 package io.plastique.feed.settings
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 
 sealed class FeedSettingsEvent : Event() {
     data class FeedSettingsLoadedEvent(val settings: FeedSettings, val items: List<OptionItem>) : FeedSettingsEvent()

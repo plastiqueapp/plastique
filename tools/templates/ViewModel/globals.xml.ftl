@@ -6,4 +6,5 @@
     <global id="eventName" value="${baseName}Event" />
     <global id="effectName" value="${baseName}Effect" />
     <global id="reducerName" value="${baseName}StateReducer" />
+    <global id="effectHandlerName" value="${baseName}EffectHandler" />
 </globals>

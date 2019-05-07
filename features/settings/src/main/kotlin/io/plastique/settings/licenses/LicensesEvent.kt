@@ -1,6 +1,6 @@
 package io.plastique.settings.licenses
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
 
 sealed class LicensesEvent : Event() {

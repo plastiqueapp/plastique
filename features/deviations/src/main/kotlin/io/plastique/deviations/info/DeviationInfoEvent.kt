@@ -1,6 +1,6 @@
 package io.plastique.deviations.info
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 
 sealed class DeviationInfoEvent : Event() {
     data class DeviationInfoChangedEvent(val deviationInfo: DeviationInfo) : DeviationInfoEvent()

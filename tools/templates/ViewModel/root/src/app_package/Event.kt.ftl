@@ -1,6 +1,6 @@
 package ${escapeKotlinIdentifiers(packageName)}
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 
 sealed class ${eventName} : Event() {
 }

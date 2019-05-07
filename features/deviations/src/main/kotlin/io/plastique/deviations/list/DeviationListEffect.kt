@@ -1,6 +1,6 @@
 package io.plastique.deviations.list
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 import io.plastique.deviations.FetchParams
 
 sealed class DeviationListEffect : Effect() {

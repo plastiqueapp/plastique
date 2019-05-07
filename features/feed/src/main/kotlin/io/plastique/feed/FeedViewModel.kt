@@ -1,16 +1,20 @@
 package io.plastique.feed
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
@@ -50,9 +54,7 @@ import javax.inject.Inject
 @FragmentScope
 class FeedViewModel @Inject constructor(
     stateReducer: FeedStateReducer,
-    private val feedModel: FeedModel,
-    private val feedSettingsManager: FeedSettingsManager,
-    private val favoritesModel: FavoritesModel,
+    effectHandlerFactory: FeedEffectHandlerFactory,
     private val contentSettings: ContentSettings,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
@@ -60,7 +62,7 @@ class FeedViewModel @Inject constructor(
 
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -88,10 +90,35 @@ class FeedViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<FeedEffect>): Observable<FeedEvent> {
+    private fun externalEvents(): Observable<FeedEvent> {
+        return Observable.merge(
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) },
+                contentSettings.showMatureChanges
+                        .valveLatest(screenVisible)
+                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+    }
+
+    private companion object {
+        private const val LOG_TAG = "FeedViewModel"
+    }
+}
+
+@AutoFactory
+class FeedEffectHandler(
+    @Provided private val feedModel: FeedModel,
+    @Provided private val feedSettingsManager: FeedSettingsManager,
+    @Provided private val favoritesModel: FavoritesModel,
+    @Provided private val sessionManager: SessionManager,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<FeedEffect, FeedEvent> {
+
+    override fun handle(effects: Observable<FeedEffect>): Observable<FeedEvent> {
         val loadEvents = effects.ofType<LoadFeedEffect>()
                 .switchMap { effect ->
                     feedModel.items(effect.matureContent)
+                            .valveLatest(screenVisible)
                             .takeWhile { sessionManager.session is Session.User }
                             .map<FeedEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
                             .doOnError(Timber::e)
@@ -132,28 +159,15 @@ class FeedViewModel @Inject constructor(
 
         return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, favoriteEvents)
     }
-
-    private fun externalEvents(): Observable<FeedEvent> {
-        return Observable.merge(
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .bindToLifecycle()
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
-    }
-
-    private companion object {
-        private const val LOG_TAG = "FeedViewModel"
-    }
 }
 
 class FeedStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<FeedEvent, FeedViewState, FeedEffect> {
-    override fun invoke(state: FeedViewState, event: FeedEvent): Next<FeedViewState, FeedEffect> = when (event) {
+) : StateReducer<FeedEvent, FeedViewState, FeedEffect> {
+
+    override fun reduce(state: FeedViewState, event: FeedEvent): StateWithEffects<FeedViewState, FeedEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

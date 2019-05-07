@@ -1,7 +1,7 @@
 package io.plastique.auth
 
 import android.net.Uri
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 
 sealed class LoginEvent : Event() {
     data class AuthRedirectEvent(val redirectUri: Uri) : LoginEvent()

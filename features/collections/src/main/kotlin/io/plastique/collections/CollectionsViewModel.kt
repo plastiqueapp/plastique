@@ -2,6 +2,15 @@ package io.plastique.collections
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
@@ -24,11 +33,6 @@ import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
@@ -44,16 +48,16 @@ import javax.inject.Inject
 @FragmentScope
 class CollectionsViewModel @Inject constructor(
     stateReducer: CollectionsStateReducer,
+    effectHandlerFactory: CollectionsEffectHandlerFactory,
     private val sessionManager: SessionManager,
     private val resourceProvider: ResourceProvider,
-    private val dataSource: FoldersWithDeviationsDataSource,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {
 
     lateinit var state: Observable<CollectionsViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -84,11 +88,32 @@ class CollectionsViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<CollectionsEffect>): Observable<CollectionsEvent> {
+    private fun externalEvents(): Observable<CollectionsEvent> {
+        return Observable.merge(
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) },
+                contentSettings.showMatureChanges
+                        .valveLatest(screenVisible)
+                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+    }
+
+    companion object {
+        private const val LOG_TAG = "CollectionsViewModel"
+    }
+}
+
+@AutoFactory
+class CollectionsEffectHandler(
+    @Provided private val dataSource: FoldersWithDeviationsDataSource,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<CollectionsEffect, CollectionsEvent> {
+
+    override fun handle(effects: Observable<CollectionsEffect>): Observable<CollectionsEvent> {
         val loadCollectionsEvent = effects.ofType<LoadCollectionsEffect>()
                 .switchMap { effect ->
                     dataSource.items(effect.params)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<CollectionsEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
@@ -112,28 +137,15 @@ class CollectionsViewModel @Inject constructor(
 
         return Observable.merge(loadCollectionsEvent, loadMoreEvents, refreshEvents)
     }
-
-    private fun externalEvents(): Observable<CollectionsEvent> {
-        return Observable.merge(
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .bindToLifecycle()
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
-    }
-
-    companion object {
-        private const val LOG_TAG = "CollectionsViewModel"
-    }
 }
 
 class CollectionsStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {
-    override fun invoke(state: CollectionsViewState, event: CollectionsEvent): Next<CollectionsViewState, CollectionsEffect> = when (event) {
+) : StateReducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {
+
+    override fun reduce(state: CollectionsViewState, event: CollectionsEvent): StateWithEffects<CollectionsViewState, CollectionsEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

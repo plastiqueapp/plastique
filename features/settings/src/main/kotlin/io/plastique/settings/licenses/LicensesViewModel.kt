@@ -1,13 +1,14 @@
 package io.plastique.settings.licenses
 
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.content.ContentState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
@@ -23,19 +24,28 @@ import javax.inject.Inject
 @ActivityScope
 class LicensesViewModel @Inject constructor(
     stateReducer: LicensesStateReducer,
-    private val licenseRepository: LicenseRepository
+    effectHandler: LicensesEffectHandler
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandler,
             listener = TimberLogger(LOG_TAG))
 
     val state: Observable<LicensesViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(LicensesViewState(contentState = ContentState.Loading), LoadLicensesEffect).disposeOnDestroy()
     }
 
-    private fun effectHandler(effects: Observable<LicensesEffect>): Observable<LicensesEvent> {
+    companion object {
+        private const val LOG_TAG = "LicensesViewModel"
+    }
+}
+
+class LicensesEffectHandler @Inject constructor(
+    private val licenseRepository: LicenseRepository
+) : EffectHandler<LicensesEffect, LicensesEvent> {
+
+    override fun handle(effects: Observable<LicensesEffect>): Observable<LicensesEvent> {
         return effects.ofType<LoadLicensesEffect>()
                 .switchMapSingle {
                     loadItems()
@@ -52,16 +62,13 @@ class LicensesViewModel @Inject constructor(
                 .startWith(HeaderItem)
                 .toList()
     }
-
-    companion object {
-        private const val LOG_TAG = "LicensesViewModel"
-    }
 }
 
 class LicensesStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider
-) : Reducer<LicensesEvent, LicensesViewState, LicensesEffect> {
-    override fun invoke(state: LicensesViewState, event: LicensesEvent): Next<LicensesViewState, LicensesEffect> = when (event) {
+) : StateReducer<LicensesEvent, LicensesViewState, LicensesEffect> {
+
+    override fun reduce(state: LicensesViewState, event: LicensesEvent): StateWithEffects<LicensesViewState, LicensesEffect> = when (event) {
         is LoadFinishedEvent -> {
             next(state.copy(contentState = ContentState.Content, items = event.items))
         }

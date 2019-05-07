@@ -2,10 +2,14 @@ plugins {
     id "com.android.library"
     id "org.jetbrains.kotlin.android"
     id "org.jetbrains.kotlin.android.extensions"
+    id "org.jetbrains.kotlin.kapt"
 }
 
 dependencies {
     implementation project(":api")
     implementation project(":core")
     implementation project(":core-ui")
+
+    compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"
+    kapt "com.google.auto.factory:auto-factory:$versions.autoFactory"
 }

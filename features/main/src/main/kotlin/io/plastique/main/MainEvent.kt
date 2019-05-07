@@ -1,6 +1,6 @@
 package io.plastique.main
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 import io.plastique.users.User
 
 sealed class MainEvent : Event() {

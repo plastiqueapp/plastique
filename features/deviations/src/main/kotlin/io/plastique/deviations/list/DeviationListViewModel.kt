@@ -1,16 +1,20 @@
 package io.plastique.deviations.list
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
@@ -56,17 +60,16 @@ import javax.inject.Inject
 @FragmentScope
 class DeviationListViewModel @Inject constructor(
     stateReducer: DeviationListStateReducer,
+    effectHandlerFactory: DeviationListEffectHandlerFactory,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
-    private val deviationListModel: DeviationListModel,
-    private val favoritesModel: FavoritesModel,
     private val tagFactory: TagFactory
 ) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -89,11 +92,40 @@ class DeviationListViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<DeviationListEffect>): Observable<DeviationListEvent> {
+    private fun externalEvents(): Observable<DeviationListEvent> {
+        return Observable.merge(
+                connectivityMonitor.connectionState
+                        .valveLatest(screenVisible)
+                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+                contentSettings.showLiteratureChanges
+                        .valveLatest(screenVisible)
+                        .map { showLiterature -> ShowLiteratureChangedEvent(showLiterature) },
+                contentSettings.showMatureChanges
+                        .valveLatest(screenVisible)
+                        .map { showMature -> ShowMatureChangedEvent(showMature) },
+                contentSettings.layoutModeChanges
+                        .valveLatest(screenVisible)
+                        .map { layoutMode -> LayoutModeChangedEvent(layoutMode) }
+        )
+    }
+
+    companion object {
+        private const val LOG_TAG = "DeviationListViewModel"
+    }
+}
+
+@AutoFactory
+class DeviationListEffectHandler(
+    @Provided private val deviationListModel: DeviationListModel,
+    @Provided private val favoritesModel: FavoritesModel,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<DeviationListEffect, DeviationListEvent> {
+
+    override fun handle(effects: Observable<DeviationListEffect>): Observable<DeviationListEvent> {
         val loadEvents = effects.ofType<LoadDeviationsEffect>()
                 .switchMap { effect ->
                     deviationListModel.getItems(effect.params)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<DeviationListEvent> { data -> ItemsChangedEvent(items = data.items, hasMore = data.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
@@ -126,27 +158,6 @@ class DeviationListViewModel @Inject constructor(
 
         return Observable.merge(loadEvents, loadMoreEvents, refreshEvents, favoriteEvents)
     }
-
-    private fun externalEvents(): Observable<DeviationListEvent> {
-        return Observable.merge(
-                connectivityMonitor.connectionState
-                        .bindToLifecycle()
-                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-                contentSettings.showLiteratureChanges
-                        .bindToLifecycle()
-                        .map { showLiterature -> ShowLiteratureChangedEvent(showLiterature) },
-                contentSettings.showMatureChanges
-                        .bindToLifecycle()
-                        .map { showMature -> ShowMatureChangedEvent(showMature) },
-                contentSettings.layoutModeChanges
-                        .bindToLifecycle()
-                        .map { layoutMode -> LayoutModeChangedEvent(layoutMode) }
-        )
-    }
-
-    companion object {
-        private const val LOG_TAG = "DeviationListViewModel"
-    }
 }
 
 class DeviationListStateReducer @Inject constructor(
@@ -154,8 +165,9 @@ class DeviationListStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider,
     private val tagFactory: TagFactory
-) : Reducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
-    override fun invoke(state: DeviationListViewState, event: DeviationListEvent): Next<DeviationListViewState, DeviationListEffect> = when (event) {
+) : StateReducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
+
+    override fun reduce(state: DeviationListViewState, event: DeviationListEvent): StateWithEffects<DeviationListViewState, DeviationListEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isEmpty()) {
                 ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.deviations_message_empty)))
@@ -258,7 +270,7 @@ class DeviationListStateReducer @Inject constructor(
         }
     }
 
-    private fun onFilterChanged(state: DeviationListViewState, params: FetchParams): Next<DeviationListViewState, DeviationListEffect> {
+    private fun onFilterChanged(state: DeviationListViewState, params: FetchParams): StateWithEffects<DeviationListViewState, DeviationListEffect> {
         return if (state.params != params) {
             next(state.copy(
                     params = params,

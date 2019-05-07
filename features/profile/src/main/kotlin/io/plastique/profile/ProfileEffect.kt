@@ -1,5 +1,5 @@
 package io.plastique.profile
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class ProfileEffect : Effect()

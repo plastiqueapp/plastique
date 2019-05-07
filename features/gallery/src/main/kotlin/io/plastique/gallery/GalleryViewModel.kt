@@ -2,16 +2,20 @@ package io.plastique.gallery
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
@@ -44,7 +48,7 @@ import javax.inject.Inject
 @FragmentScope
 class GalleryViewModel @Inject constructor(
     stateReducer: GalleryStateReducer,
-    private val dataSource: FoldersWithDeviationsDataSource,
+    effectHandlerFactory: GalleryEffectHandlerFactory,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
@@ -53,7 +57,7 @@ class GalleryViewModel @Inject constructor(
     lateinit var state: Observable<GalleryViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -84,11 +88,32 @@ class GalleryViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<GalleryEffect>): Observable<GalleryEvent> {
+    private fun externalEvents(): Observable<GalleryEvent> {
+        return Observable.merge(
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) },
+                contentSettings.showMatureChanges
+                        .valveLatest(screenVisible)
+                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+    }
+
+    companion object {
+        private const val LOG_TAG = "GalleryViewModel"
+    }
+}
+
+@AutoFactory
+class GalleryEffectHandler(
+    @Provided private val dataSource: FoldersWithDeviationsDataSource,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<GalleryEffect, GalleryEvent> {
+
+    override fun handle(effects: Observable<GalleryEffect>): Observable<GalleryEvent> {
         val loadEvents = effects.ofType<LoadGalleryEffect>()
                 .switchMap { effect ->
                     dataSource.items(effect.params)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<GalleryEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
@@ -112,28 +137,15 @@ class GalleryViewModel @Inject constructor(
 
         return Observable.merge(loadEvents, loadMoreEvents, refreshEvents)
     }
-
-    private fun externalEvents(): Observable<GalleryEvent> {
-        return Observable.merge(
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .bindToLifecycle()
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
-    }
-
-    companion object {
-        private const val LOG_TAG = "GalleryViewModel"
-    }
 }
 
 class GalleryStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<GalleryEvent, GalleryViewState, GalleryEffect> {
-    override fun invoke(state: GalleryViewState, event: GalleryEvent): Next<GalleryViewState, GalleryEffect> = when (event) {
+) : StateReducer<GalleryEvent, GalleryViewState, GalleryEffect> {
+
+    override fun reduce(state: GalleryViewState, event: GalleryEvent): StateWithEffects<GalleryViewState, GalleryEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

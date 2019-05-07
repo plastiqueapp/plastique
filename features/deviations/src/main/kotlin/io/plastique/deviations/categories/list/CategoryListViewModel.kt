@@ -1,17 +1,18 @@
 package io.plastique.deviations.categories.list
 
 import android.os.SystemClock
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
 import io.plastique.core.extensions.replaceIf
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.R
 import io.plastique.deviations.categories.Category
@@ -32,13 +33,13 @@ import javax.inject.Inject
 @ActivityScope
 class CategoryListViewModel @Inject constructor(
     stateReducer: CategoryListStateReducer,
-    private val categoryRepository: CategoryRepository
+    effectHandler: CategoryListEffectHandler
 ) : BaseViewModel() {
 
     lateinit var state: Observable<CategoryListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandler,
             listener = TimberLogger(LOG_TAG))
 
     fun init(initialCategory: Category) {
@@ -56,7 +57,16 @@ class CategoryListViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<CategoryListEffect>): Observable<CategoryListEvent> {
+    companion object {
+        private const val LOG_TAG = "CategoryListViewModel"
+    }
+}
+
+class CategoryListEffectHandler @Inject constructor(
+    private val categoryRepository: CategoryRepository
+) : EffectHandler<CategoryListEffect, CategoryListEvent> {
+
+    override fun handle(effects: Observable<CategoryListEffect>): Observable<CategoryListEvent> {
         return effects.ofType<LoadCategoryEffect>()
                 .switchMapSingle { effect ->
                     categoryRepository.getCategories(effect.category)
@@ -65,17 +75,14 @@ class CategoryListViewModel @Inject constructor(
                             .onErrorReturn { error -> LoadCategoryErrorEvent(effect.category, error) }
                 }
     }
-
-    companion object {
-        private const val LOG_TAG = "CategoryListViewModel"
-    }
 }
 
 class CategoryListStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
-    override fun invoke(state: CategoryListViewState, event: CategoryListEvent): Next<CategoryListViewState, CategoryListEffect> = when (event) {
+) : StateReducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
+
+    override fun reduce(state: CategoryListViewState, event: CategoryListEvent): StateWithEffects<CategoryListViewState, CategoryListEffect> = when (event) {
         is ItemClickEvent -> {
             if (event.item.parent || !event.item.category.hasChildren) {
                 next(state.copy(selectedCategory = event.item.category))

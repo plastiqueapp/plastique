@@ -1,22 +1,23 @@
 package ${escapeKotlinIdentifiers(packageName)}
 
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.timber.TimberLogger
 import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class ${viewModelName} @Inject constructor(
-    stateReducer: ${reducerName}
+    stateReducer: ${reducerName},
+    effectHandler: ${effectHandlerName}
 ): BaseViewModel() {
 
     lateinit var state: Observable<${viewStateName}>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandler,
             <#if externalEvents>
             externalEvents = externalEvents(),
             </#if>
@@ -34,10 +35,6 @@ class ${viewModelName} @Inject constructor(
     fun dispatch(event: ${eventName}) {
         loop.dispatch(event)
     }
-
-    private fun effectHandler(effects: Observable<${effectName}>): Observable<${eventName}> {
-        return Observable.empty()
-    }
     <#if externalEvents>
 
     private fun externalEvents() : Observable<${eventName}> {
@@ -50,8 +47,14 @@ class ${viewModelName} @Inject constructor(
     }
 }
 
-class ${reducerName} @Inject constructor() : Reducer<${eventName}, ${viewStateName}, ${effectName}> {
-    override fun invoke(state: ${viewStateName}, event: ${eventName}): Next<${viewStateName}, ${effectName}> {
+class ${effectHandlerName} @Inject constructor() : EffectHandler<${effectName}, ${eventName}> {
+    override fun handle(effects: Observable<${effectName}>): Observable<${eventName}> {
+        TODO()
+    }
+}
+
+class ${reducerName} @Inject constructor() : StateReducer<${eventName}, ${viewStateName}, ${effectName}> {
+    override fun reduce(state: ${viewStateName}, event: ${eventName}): StateWithEffects<${viewStateName}, ${effectName}> {
         TODO()
     }
 }

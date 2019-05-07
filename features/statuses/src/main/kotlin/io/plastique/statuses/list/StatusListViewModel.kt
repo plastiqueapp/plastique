@@ -2,16 +2,20 @@ package io.plastique.statuses.list
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.SessionManager
@@ -41,7 +45,7 @@ import javax.inject.Inject
 
 class StatusListViewModel @Inject constructor(
     stateReducer: StatusListStateReducer,
-    private val statusListModel: StatusListModel,
+    effectHandlerFactory: StatusListEffectHandlerFactory,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {
@@ -49,7 +53,7 @@ class StatusListViewModel @Inject constructor(
     lateinit var state: Observable<StatusListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -68,11 +72,32 @@ class StatusListViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<StatusListEffect>): Observable<StatusListEvent> {
+    private fun externalEvents(): Observable<StatusListEvent> {
+        return Observable.merge(
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) },
+                contentSettings.showMatureChanges
+                        .valveLatest(screenVisible)
+                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+    }
+
+    companion object {
+        private const val LOG_TAG = "StatusListViewModel"
+    }
+}
+
+@AutoFactory
+class StatusListEffectHandler(
+    @Provided private val statusListModel: StatusListModel,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<StatusListEffect, StatusListEvent> {
+
+    override fun handle(effects: Observable<StatusListEffect>): Observable<StatusListEvent> {
         val itemEvents = effects.ofType<LoadStatusesEffect>()
                 .switchMap { effect ->
                     statusListModel.getItems(effect.params)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<StatusListEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
@@ -96,28 +121,15 @@ class StatusListViewModel @Inject constructor(
 
         return Observable.merge(itemEvents, loadMoreEvents, refreshEvents)
     }
-
-    private fun externalEvents(): Observable<StatusListEvent> {
-        return Observable.merge(
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .bindToLifecycle()
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
-    }
-
-    companion object {
-        private const val LOG_TAG = "StatusListViewModel"
-    }
 }
 
 class StatusListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<StatusListEvent, StatusListViewState, StatusListEffect> {
-    override fun invoke(state: StatusListViewState, event: StatusListEvent): Next<StatusListViewState, StatusListEffect> = when (event) {
+) : StateReducer<StatusListEvent, StatusListViewState, StatusListEffect> {
+
+    override fun reduce(state: StatusListViewState, event: StatusListEvent): StateWithEffects<StatusListViewState, StatusListEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

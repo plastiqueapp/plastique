@@ -1,6 +1,6 @@
 package io.plastique.deviations.viewer
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class DeviationViewerEffect : Effect() {
     data class LoadDeviationEffect(val deviationId: String) : DeviationViewerEffect()

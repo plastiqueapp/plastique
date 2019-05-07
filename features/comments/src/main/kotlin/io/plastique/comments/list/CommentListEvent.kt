@@ -1,6 +1,6 @@
 package io.plastique.comments.list
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.session.Session
 

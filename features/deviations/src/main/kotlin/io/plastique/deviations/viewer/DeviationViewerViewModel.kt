@@ -1,15 +1,17 @@
 package io.plastique.deviations.viewer
 
 import android.net.Uri
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.content.ContentState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
@@ -38,17 +40,14 @@ import javax.inject.Inject
 @ActivityScope
 class DeviationViewerViewModel @Inject constructor(
     stateReducer: DeviationViewerStateReducer,
-    private val deviationViewerModel: DeviationViewerModel,
-    private val downloadInfoRepository: DownloadInfoRepository,
-    private val downloader: FileDownloader,
-    private val favoritesModel: FavoritesModel,
+    effectHandler: DeviationViewerEffectHandler,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationViewerViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandler,
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -67,7 +66,25 @@ class DeviationViewerViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<DeviationViewerEffect>): Observable<DeviationViewerEvent> {
+    private fun externalEvents(): Observable<DeviationViewerEvent> {
+        return sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) }
+    }
+
+    companion object {
+        private const val LOG_TAG = "DeviationViewerViewModel"
+    }
+}
+
+class DeviationViewerEffectHandler @Inject constructor(
+    private val deviationViewerModel: DeviationViewerModel,
+    private val downloadInfoRepository: DownloadInfoRepository,
+    private val downloader: FileDownloader,
+    private val favoritesModel: FavoritesModel
+) : EffectHandler<DeviationViewerEffect, DeviationViewerEvent> {
+
+    override fun handle(effects: Observable<DeviationViewerEffect>): Observable<DeviationViewerEvent> {
         val loadEvents = effects.ofType<LoadDeviationEffect>()
                 .switchMap { effect ->
                     deviationViewerModel.getDeviationById(effect.deviationId)
@@ -96,23 +113,13 @@ class DeviationViewerViewModel @Inject constructor(
 
         return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents)
     }
-
-    private fun externalEvents(): Observable<DeviationViewerEvent> {
-        return sessionManager.sessionChanges
-                .bindToLifecycle()
-                .map { session -> SessionChangedEvent(session) }
-    }
-
-    companion object {
-        private const val LOG_TAG = "DeviationViewerViewModel"
-    }
 }
 
 class DeviationViewerStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider
-) : Reducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
+) : StateReducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
 
-    override fun invoke(state: DeviationViewerViewState, event: DeviationViewerEvent): Next<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
+    override fun reduce(state: DeviationViewerViewState, event: DeviationViewerEvent): StateWithEffects<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
         is DeviationLoadedEvent -> {
             next(state.copy(
                     contentState = ContentState.Content,

@@ -1,11 +1,12 @@
 package io.plastique.profile
 
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.inject.scopes.FragmentScope
@@ -30,7 +31,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<ProfileEvent> {
         return sessionManager.sessionChanges
-                .bindToLifecycle()
+                .valveLatest(screenVisible)
                 .map { session -> SessionChangedEvent(session) }
     }
 
@@ -39,8 +40,8 @@ class ProfileViewModel @Inject constructor(
     }
 }
 
-class ProfileStateReducer @Inject constructor() : Reducer<ProfileEvent, ProfileViewState, ProfileEffect> {
-    override fun invoke(state: ProfileViewState, event: ProfileEvent): Next<ProfileViewState, ProfileEffect> = when (event) {
+class ProfileStateReducer @Inject constructor() : StateReducer<ProfileEvent, ProfileViewState, ProfileEffect> {
+    override fun reduce(state: ProfileViewState, event: ProfileEvent): StateWithEffects<ProfileViewState, ProfileEffect> = when (event) {
         is SessionChangedEvent -> {
             next(state.copy(showSignInButton = event.session !is Session.User))
         }

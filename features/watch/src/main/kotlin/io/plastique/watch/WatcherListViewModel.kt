@@ -2,16 +2,20 @@ package io.plastique.watch
 
 import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
@@ -44,7 +48,7 @@ import javax.inject.Inject
 @ActivityScope
 class WatcherListViewModel @Inject constructor(
     stateReducer: WatcherListStateReducer,
-    private val dataSource: WatcherDataSource,
+    effectHandlerFactory: WatcherListEffectHandlerFactory,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
@@ -53,7 +57,7 @@ class WatcherListViewModel @Inject constructor(
     lateinit var state: Observable<WatcherListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -83,11 +87,32 @@ class WatcherListViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<WatcherListEffect>): Observable<WatcherListEvent> {
+    private fun externalEvents(): Observable<WatcherListEvent> {
+        return Observable.merge(
+                connectivityMonitor.connectionState
+                        .valveLatest(screenVisible)
+                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) })
+    }
+
+    private companion object {
+        private const val LOG_TAG = "WatcherListViewModel"
+    }
+}
+
+@AutoFactory
+class WatcherListEffectHandler(
+    @Provided private val dataSource: WatcherDataSource,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<WatcherListEffect, WatcherListEvent> {
+
+    override fun handle(effects: Observable<WatcherListEffect>): Observable<WatcherListEvent> {
         val loadWatchersEvents = effects.ofType<LoadWatchersEffect>()
                 .switchMap { effect ->
                     dataSource.getData(effect.username)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<WatcherListEvent> { pagedData ->
                                 val items = pagedData.value.map { WatcherItem(it) }
                                 ItemsChangedEvent(items, pagedData.hasMore)
@@ -116,28 +141,15 @@ class WatcherListViewModel @Inject constructor(
 
         return Observable.merge(loadWatchersEvents, loadMoreEvents, refreshEvents)
     }
-
-    private fun externalEvents(): Observable<WatcherListEvent> {
-        return Observable.merge(
-                connectivityMonitor.connectionState
-                        .bindToLifecycle()
-                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) })
-    }
-
-    private companion object {
-        private const val LOG_TAG = "WatcherListViewModel"
-    }
 }
 
 class WatcherListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<WatcherListEvent, WatcherListViewState, WatcherListEffect> {
-    override fun invoke(state: WatcherListViewState, event: WatcherListEvent): Next<WatcherListViewState, WatcherListEffect> = when (event) {
+) : StateReducer<WatcherListEvent, WatcherListViewState, WatcherListEffect> {
+
+    override fun reduce(state: WatcherListViewState, event: WatcherListEvent): StateWithEffects<WatcherListViewState, WatcherListEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

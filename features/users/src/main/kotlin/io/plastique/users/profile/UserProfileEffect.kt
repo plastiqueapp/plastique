@@ -1,6 +1,6 @@
 package io.plastique.users.profile
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class UserProfileEffect : Effect() {
     data class LoadUserProfileEffect(val username: String) : UserProfileEffect()

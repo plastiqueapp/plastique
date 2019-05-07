@@ -1,6 +1,6 @@
 package io.plastique.watch
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class WatcherListEffect : Effect() {
     data class LoadWatchersEffect(val username: String?) : WatcherListEffect()

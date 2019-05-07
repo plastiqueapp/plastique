@@ -1,5 +1,5 @@
 package io.plastique.main
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class MainEffect : Effect()

@@ -12,6 +12,9 @@ dependencies {
 
     implementation "com.github.chrisbanes:PhotoView:$versions.photoView"
 
+    compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"
+    kapt "com.google.auto.factory:auto-factory:$versions.autoFactory"
+
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 
     implementation "org.permissionsdispatcher:permissionsdispatcher:$versions.permissionsDispatcher"

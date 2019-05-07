@@ -1,15 +1,19 @@
 package io.plastique.notifications
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
@@ -42,7 +46,7 @@ import javax.inject.Inject
 @FragmentScope
 class NotificationsViewModel @Inject constructor(
     stateReducer: NotificationsStateReducer,
-    private val notificationsModel: NotificationsModel,
+    effectHandlerFactory: NotificationsEffectHandlerFactory,
     private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
@@ -50,7 +54,7 @@ class NotificationsViewModel @Inject constructor(
     lateinit var state: Observable<NotificationsViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -78,10 +82,29 @@ class NotificationsViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<NotificationsEffect>): Observable<NotificationsEvent> {
+    private fun externalEvents(): Observable<NotificationsEvent> {
+        return sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) }
+    }
+
+    companion object {
+        private const val LOG_TAG = "NotificationsViewModel"
+    }
+}
+
+@AutoFactory
+class NotificationsEffectHandler(
+    @Provided private val notificationsModel: NotificationsModel,
+    @Provided private val sessionManager: SessionManager,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<NotificationsEffect, NotificationsEvent> {
+
+    override fun handle(effects: Observable<NotificationsEffect>): Observable<NotificationsEvent> {
         val itemEvents = effects.ofType<LoadNotificationsEffect>()
                 .switchMap {
                     notificationsModel.items()
+                            .valveLatest(screenVisible)
                             .takeWhile { sessionManager.session is Session.User }
                             .map<NotificationsEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
                             .doOnError(Timber::e)
@@ -112,24 +135,15 @@ class NotificationsViewModel @Inject constructor(
 
         return Observable.mergeArray(itemEvents, loadMoreEvents, refreshEvents, deleteEvents.toObservable(), undoDeleteEvents.toObservable())
     }
-
-    private fun externalEvents(): Observable<NotificationsEvent> {
-        return sessionManager.sessionChanges
-                .bindToLifecycle()
-                .map { session -> SessionChangedEvent(session) }
-    }
-
-    companion object {
-        private const val LOG_TAG = "NotificationsViewModel"
-    }
 }
 
 class NotificationsStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
-    override fun invoke(state: NotificationsViewState, event: NotificationsEvent): Next<NotificationsViewState, NotificationsEffect> = when (event) {
+) : StateReducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
+
+    override fun reduce(state: NotificationsViewState, event: NotificationsEvent): StateWithEffects<NotificationsViewState, NotificationsEffect> = when (event) {
         is ItemsChangedEvent -> {
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content

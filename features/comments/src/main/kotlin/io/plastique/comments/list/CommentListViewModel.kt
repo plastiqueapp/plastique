@@ -1,5 +1,14 @@
 package io.plastique.comments.list
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.comments.Comment
 import io.plastique.comments.CommentDataSource
 import io.plastique.comments.CommentSender
@@ -33,11 +42,6 @@ import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
 import io.plastique.core.network.NetworkConnectionState
@@ -60,18 +64,15 @@ import javax.inject.Inject
 @FragmentScope
 class CommentListViewModel @Inject constructor(
     stateReducer: CommentListStateReducer,
-    private val commentDataSource: CommentDataSource,
-    private val commentSender: CommentSender,
+    effectHandlerFactory: CommentListEffectHandlerFactory,
     private val connectivityMonitor: NetworkConnectivityMonitor,
-    private val deviationRepository: DeviationRepository,
-    private val richTextFormatter: RichTextFormatter,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<CommentListViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -90,11 +91,35 @@ class CommentListViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<CommentListEffect>): Observable<CommentListEvent> {
+    private fun externalEvents(): Observable<CommentListEvent> {
+        return Observable.merge(
+                connectivityMonitor.connectionState
+                        .valveLatest(screenVisible)
+                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+                sessionManager.sessionChanges
+                        .valveLatest(screenVisible)
+                        .map { session -> SessionChangedEvent(session) })
+    }
+
+    companion object {
+        private const val LOG_TAG = "CommentListViewModel"
+    }
+}
+
+@AutoFactory
+class CommentListEffectHandler(
+    @Provided private val commentDataSource: CommentDataSource,
+    @Provided private val commentSender: CommentSender,
+    @Provided private val deviationRepository: DeviationRepository,
+    @Provided private val richTextFormatter: RichTextFormatter,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<CommentListEffect, CommentListEvent> {
+
+    override fun handle(effects: Observable<CommentListEffect>): Observable<CommentListEvent> {
         val loadCommentsEvents = effects.ofType<LoadCommentsEffect>()
                 .switchMap { effect ->
                     commentDataSource.getData(effect.threadId)
-                            .bindToLifecycle()
+                            .valveLatest(screenVisible)
                             .map<CommentListEvent> { data ->
                                 CommentsChangedEvent(comments = mapComments(data.value), hasMore = data.hasMore)
                             }
@@ -144,16 +169,6 @@ class CommentListViewModel @Inject constructor(
         is CommentThreadId.Status -> Single.just("")
     }
 
-    private fun externalEvents(): Observable<CommentListEvent> {
-        return Observable.merge(
-                connectivityMonitor.connectionState
-                        .bindToLifecycle()
-                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-                sessionManager.sessionChanges
-                        .bindToLifecycle()
-                        .map { session -> SessionChangedEvent(session) })
-    }
-
     private fun mapComments(comments: List<Comment>): List<CommentUiModel> {
         val commentsById = comments.associateBy { comment -> comment.id }
         return comments.map { comment ->
@@ -174,18 +189,15 @@ class CommentListViewModel @Inject constructor(
                 parentId = parentId,
                 parentAuthorName = parent?.author?.name)
     }
-
-    companion object {
-        private const val LOG_TAG = "CommentListViewModel"
-    }
 }
 
 class CommentListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<CommentListEvent, CommentListViewState, CommentListEffect> {
-    override fun invoke(state: CommentListViewState, event: CommentListEvent): Next<CommentListViewState, CommentListEffect> = when (event) {
+) : StateReducer<CommentListEvent, CommentListViewState, CommentListEffect> {
+
+    override fun reduce(state: CommentListViewState, event: CommentListEvent): StateWithEffects<CommentListViewState, CommentListEffect> = when (event) {
         is CommentsChangedEvent -> {
             val commentItems = createItems(event.comments, state.isSignedIn)
             val contentState = if (commentItems.isEmpty()) {

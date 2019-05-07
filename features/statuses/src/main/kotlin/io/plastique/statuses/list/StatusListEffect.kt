@@ -1,6 +1,6 @@
 package io.plastique.statuses.list
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 import io.plastique.statuses.StatusListLoadParams
 
 sealed class StatusListEffect : Effect() {

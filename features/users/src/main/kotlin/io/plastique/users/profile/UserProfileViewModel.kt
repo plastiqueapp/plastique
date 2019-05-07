@@ -1,14 +1,18 @@
 package io.plastique.users.profile
 
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
+import com.sch.neon.EffectHandler
+import com.sch.neon.MainLoop
+import com.sch.neon.StateReducer
+import com.sch.neon.StateWithEffects
+import com.sch.neon.next
+import com.sch.neon.timber.TimberLogger
+import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.BaseViewModel
 import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
-import io.plastique.core.flow.MainLoop
-import io.plastique.core.flow.Next
-import io.plastique.core.flow.Reducer
-import io.plastique.core.flow.TimberLogger
-import io.plastique.core.flow.next
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userId
 import io.plastique.core.snackbar.SnackbarState
@@ -38,16 +42,14 @@ import javax.inject.Inject
 @ActivityScope
 class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
-    private val clipboard: Clipboard,
-    private val sessionManager: SessionManager,
-    private val userProfileRepository: UserProfileRepository,
-    private val watchManager: WatchManager
+    effectHandlerFactory: UserProfileEffectHandlerFactory,
+    private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<UserProfileViewState>
     private val loop = MainLoop(
             reducer = stateReducer,
-            effectHandler = ::effectHandler,
+            effectHandler = effectHandlerFactory.create(screenVisible),
             externalEvents = externalEvents(),
             listener = TimberLogger(LOG_TAG))
 
@@ -67,10 +69,31 @@ class UserProfileViewModel @Inject constructor(
         loop.dispatch(event)
     }
 
-    private fun effectHandler(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
+    private fun externalEvents(): Observable<UserProfileEvent> {
+        return sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) }
+    }
+
+    companion object {
+        private const val LOG_TAG = "UserProfileViewModel"
+    }
+}
+
+@AutoFactory
+class UserProfileEffectHandler(
+    @Provided private val clipboard: Clipboard,
+    @Provided private val sessionManager: SessionManager,
+    @Provided private val userProfileRepository: UserProfileRepository,
+    @Provided private val watchManager: WatchManager,
+    private val screenVisible: Observable<Boolean>
+) : EffectHandler<UserProfileEffect, UserProfileEvent> {
+
+    override fun handle(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
         val loadEvents = effects.ofType<LoadUserProfileEffect>()
                 .switchMap { effect ->
                     userProfileRepository.getUserProfileByName(effect.username)
+                            .valveLatest(screenVisible)
                             .map<UserProfileEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
                             .doOnError(Timber::e)
                             .onErrorReturn { error -> LoadErrorEvent(error) }
@@ -95,23 +118,14 @@ class UserProfileViewModel @Inject constructor(
 
         return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents.toObservable())
     }
-
-    private fun externalEvents(): Observable<UserProfileEvent> {
-        return sessionManager.sessionChanges
-                .bindToLifecycle()
-                .map { session -> SessionChangedEvent(session) }
-    }
-
-    companion object {
-        private const val LOG_TAG = "UserProfileViewModel"
-    }
 }
 
 class UserProfileStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider,
     private val resourceProvider: ResourceProvider
-) : Reducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
-    override fun invoke(state: UserProfileViewState, event: UserProfileEvent): Next<UserProfileViewState, UserProfileEffect> = when (event) {
+) : StateReducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
+
+    override fun reduce(state: UserProfileViewState, event: UserProfileEvent): StateWithEffects<UserProfileViewState, UserProfileEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(state.copy(
                     contentState = ContentState.Content,

@@ -1,6 +1,6 @@
 package io.plastique.gallery
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class GalleryEffect : Effect() {
     data class LoadGalleryEffect(val params: FolderLoadParams) : GalleryEffect()

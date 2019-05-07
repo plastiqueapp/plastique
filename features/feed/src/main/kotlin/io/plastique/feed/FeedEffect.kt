@@ -1,6 +1,6 @@
 package io.plastique.feed
 
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 import io.plastique.feed.settings.FeedSettings
 
 sealed class FeedEffect : Effect() {

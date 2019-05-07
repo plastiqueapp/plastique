@@ -1,7 +1,7 @@
 package io.plastique.auth
 
 import android.net.Uri
-import io.plastique.core.flow.Effect
+import com.sch.neon.Effect
 
 sealed class LoginEffect : Effect() {
     object GenerateAuthUrlEffect : LoginEffect()

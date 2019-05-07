@@ -1,6 +1,6 @@
 package io.plastique.users.profile.about
 
-import io.plastique.core.flow.Event
+import com.sch.neon.Event
 import io.plastique.users.profile.UserProfile
 
 sealed class AboutEvent : Event() {
