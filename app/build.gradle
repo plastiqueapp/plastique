@@ -99,6 +99,8 @@ android {
 
 dependencies {
     implementation project(":api")
+    implementation project(":core")
+    implementation project(":core-ui")
     implementation project(":features:auth")
     implementation project(":features:collections")
     implementation project(":features:comments")
