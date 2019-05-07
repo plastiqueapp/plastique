@@ -1,0 +1,69 @@
+configurations.all { config ->
+    exclude group: "com.google.code.findbugs", module: "jsr305"
+
+    resolutionStrategy.eachDependency { details ->
+        if (config.name.contains("UnitTest") && details.requested.group == "com.squareup.leakcanary" && details.requested.name == "leakcanary-android") {
+            details.useTarget(group: details.requested.group, name: "leakcanary-android-no-op", version: details.requested.version)
+        }
+    }
+}
+
+afterEvaluate {
+    if (plugins.hasPlugin("com.android.application") ||
+        plugins.hasPlugin("com.android.library") ||
+        plugins.hasPlugin("com.android.dynamic-feature")) {
+        android {
+            compileSdkVersion buildConfig.compileSdk
+
+            defaultConfig {
+                minSdkVersion buildConfig.minSdk
+                targetSdkVersion buildConfig.targetSdk
+
+                vectorDrawables.useSupportLibrary = true
+
+                javaCompileOptions {
+                    annotationProcessorOptions {
+                        includeCompileClasspath = false
+                    }
+                }
+            }
+
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
+
+            lintOptions {
+                warningsAsErrors true
+                lintConfig rootProject.file("config/lint.xml")
+
+                textReport true
+                textOutput "stdout"
+                explainIssues false
+            }
+
+            sourceSets {
+                main.java.srcDirs += "src/main/kotlin"
+                debug.java.srcDirs += "src/debug/kotlin"
+                release.java.srcDirs += "src/release/kotlin"
+                test.java.srcDirs += "src/test/kotlin"
+                androidTest.java.srcDirs += "src/androidTest/kotlin"
+            }
+        }
+    }
+
+    if (plugins.hasPlugin("kotlin-kapt")) {
+        kapt {
+            correctErrorTypes = true
+            useBuildCache = true
+        }
+    }
+
+    if (plugins.hasPlugin("kotlin-android-extensions")) {
+        androidExtensions {
+            experimental = true
+            features = ["parcelize"]
+            defaultCacheImplementation = "NONE"
+        }
+    }
+}
