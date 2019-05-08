@@ -133,6 +133,12 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
 }
 
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+}
+
 def signingPropertiesFile = rootProject.file("signing/signing.properties")
 if (signingPropertiesFile.exists()) {
     def signingProperties = new Properties()
