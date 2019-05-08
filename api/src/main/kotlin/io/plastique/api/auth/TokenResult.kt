@@ -2,7 +2,6 @@ package io.plastique.api.auth
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.common.StatusCode
 
 @JsonClass(generateAdapter = true)
 data class TokenResult(
@@ -13,8 +12,5 @@ data class TokenResult(
     val refreshToken: String? = null,
 
     @Json(name = "expires_in")
-    val expiresIn: Int,
-
-    @Json(name = "status")
-    val status: StatusCode
+    val expiresIn: Int
 )
