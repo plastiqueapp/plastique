@@ -1,5 +1,5 @@
 dependencies {
-    testCompileOnly "junit:junit:$versions.junit.fourth"
+    testCompileOnly "junit:junit:$versions.junit.four"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit.jupiter"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.junit.jupiter"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit.jupiter"
@@ -14,7 +14,7 @@ dependencies {
 
     androidTestImplementation "androidx.test:rules:$versions.androidx.test.rules"
     androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
-    androidTestImplementation "junit:junit:$versions.junit.fourth"
+    androidTestImplementation "junit:junit:$versions.junit.four"
 }
 
 android {

@@ -61,7 +61,7 @@ ext.versions = [
     soloader             : "0.6.0",
 
     junit                : [
-        fourth  : "4.12",
+        four    : "4.12",
         jupiter : "5.4.2",
         vintage : "5.4.2",
         platform: "1.4.2",
