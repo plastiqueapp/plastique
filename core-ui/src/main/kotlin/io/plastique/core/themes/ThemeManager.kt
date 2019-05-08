@@ -10,20 +10,19 @@ import io.reactivex.Observable
 import javax.inject.Inject
 
 class ThemeManager @Inject constructor(private val preferences: Preferences) {
-    @Theme
-    val currentTheme: String
+    val currentTheme: ThemeId
         get() {
-            val theme = preferences.getString(PREF_UI_THEME, Themes.DEFAULT)
-            return ensureValid(theme)
+            val themeId = preferences.get(PREF_UI_THEME, THEME_DEFAULT)
+            return themeId.ensureValid()
         }
 
-    val themeChanges: Observable<String>
-        get() = preferences.observable().getString(PREF_UI_THEME, Themes.DEFAULT)
-                .map { theme -> ensureValid(theme) }
+    val themeChanges: Observable<ThemeId>
+        get() = preferences.observable().get(PREF_UI_THEME, THEME_DEFAULT)
+                .map { it.ensureValid() }
                 .distinctUntilChanged()
 
-    fun applyTheme(activity: Activity, @Theme theme: String) {
-        val themeResId = getThemeResourceId(activity, theme)
+    fun applyTheme(activity: Activity, themeId: ThemeId) {
+        val themeResId = getThemeResourceId(activity, themeId)
         activity.setTheme(themeResId)
 
         // Workaround for a bug where android:windowLightStatusBar is not applied correctly after changing theme
@@ -43,9 +42,9 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
     }
 
     @StyleRes
-    private fun getThemeResourceId(activity: Activity, theme: String): Int {
+    private fun getThemeResourceId(activity: Activity, themeId: ThemeId): Int {
         val activityInfo = activity.packageManager.getActivityInfo(activity.componentName, PackageManager.GET_META_DATA)
-        if (theme == Themes.DARK) {
+        if (themeId == THEME_DARK) {
             if (activityInfo.metaData != null) {
                 val darkTheme = activityInfo.metaData.getInt(META_DARK_THEME)
                 if (darkTheme != 0) {
@@ -62,12 +61,17 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
         return activityInfo.themeResource
     }
 
-    private fun ensureValid(theme: String): String {
-        return if (Themes.isValid(theme)) theme else Themes.DEFAULT
+    private fun ThemeId.ensureValid(): ThemeId {
+        return if (this in VALID_THEMES) this else THEME_DEFAULT
     }
 
     companion object {
         private const val META_DARK_THEME = "darkTheme"
         private const val PREF_UI_THEME = "ui.theme"
+
+        private val THEME_DARK = ThemeId("dark")
+        private val THEME_LIGHT = ThemeId("light")
+        private val THEME_DEFAULT = THEME_LIGHT
+        private val VALID_THEMES = arrayOf(THEME_DARK, THEME_LIGHT)
     }
 }

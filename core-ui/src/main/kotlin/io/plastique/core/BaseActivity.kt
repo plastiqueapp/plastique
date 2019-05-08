@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import io.plastique.core.config.AppConfig
+import io.plastique.core.themes.ThemeId
 import io.plastique.core.themes.ThemeManager
 import io.plastique.inject.ActivityComponent
 import io.plastique.inject.AppComponent
@@ -20,9 +21,9 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
     @Inject lateinit var appConfig: AppConfig
     @Inject lateinit var themeManager: ThemeManager
 
-    private lateinit var currentTheme: String
     private val disposables = CompositeDisposable()
     private var themeDisposable: Disposable? = null
+    private var currentTheme: ThemeId? = null
     private var hasMenu: Boolean = true
     protected var optionsMenu: Menu? = null
 
@@ -30,8 +31,10 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies()
-        currentTheme = themeManager.currentTheme
-        themeManager.applyTheme(this, currentTheme)
+        themeManager.currentTheme.let { themeId ->
+            currentTheme = themeId
+            themeManager.applyTheme(this, themeId)
+        }
         super.onCreate(savedInstanceState)
     }
 

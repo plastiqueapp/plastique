@@ -28,6 +28,7 @@ import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
+import io.plastique.core.themes.ThemeIdConverter
 import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutModeConverter
 import io.plastique.feed.FeedRepository
@@ -102,6 +103,7 @@ abstract class AppModule {
             return Preferences.Builder()
                     .sharedPreferences(sharedPreferences)
                     .addConverter(LayoutModeConverter)
+                    .addConverter(ThemeIdConverter)
                     .build()
         }
 
