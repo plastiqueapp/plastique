@@ -34,7 +34,11 @@ class ApiClient @Inject constructor(
                 .build()
     }
 
-    fun <T> getService(service: Class<T>): T {
+    inline fun <reified T> createService(): T {
+        return createService(T::class.java)
+    }
+
+    fun <T> createService(service: Class<T>): T {
         return retrofit.create(service)
     }
 

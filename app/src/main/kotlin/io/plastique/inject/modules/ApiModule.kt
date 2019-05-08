@@ -32,72 +32,52 @@ object ApiModule {
     @Provides
     @Reusable
     @JvmStatic
-    fun provideAuthService(apiClient: ApiClient): AuthService {
-        return apiClient.getService(AuthService::class.java)
-    }
+    fun provideAuthService(apiClient: ApiClient): AuthService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideCommentService(apiClient: ApiClient): CommentService {
-        return apiClient.getService(CommentService::class.java)
-    }
+    fun provideCommentService(apiClient: ApiClient): CommentService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideCollectionService(apiClient: ApiClient): CollectionService {
-        return apiClient.getService(CollectionService::class.java)
-    }
+    fun provideCollectionService(apiClient: ApiClient): CollectionService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideDeviationService(apiClient: ApiClient): DeviationService {
-        return apiClient.getService(DeviationService::class.java)
-    }
+    fun provideDeviationService(apiClient: ApiClient): DeviationService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideFeedService(apiClient: ApiClient): FeedService {
-        return apiClient.getService(FeedService::class.java)
-    }
+    fun provideFeedService(apiClient: ApiClient): FeedService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideGalleryService(apiClient: ApiClient): GalleryService {
-        return apiClient.getService(GalleryService::class.java)
-    }
+    fun provideGalleryService(apiClient: ApiClient): GalleryService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideMessageService(apiClient: ApiClient): MessageService {
-        return apiClient.getService(MessageService::class.java)
-    }
+    fun provideMessageService(apiClient: ApiClient): MessageService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideStatusService(apiClient: ApiClient): StatusService {
-        return apiClient.getService(StatusService::class.java)
-    }
+    fun provideStatusService(apiClient: ApiClient): StatusService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideUserService(apiClient: ApiClient): UserService {
-        return apiClient.getService(UserService::class.java)
-    }
+    fun provideUserService(apiClient: ApiClient): UserService = apiClient.createService()
 
     @Provides
     @Reusable
     @JvmStatic
-    fun provideWatchService(apiClient: ApiClient): WatchService {
-        return apiClient.getService(WatchService::class.java)
-    }
+    fun provideWatchService(apiClient: ApiClient): WatchService = apiClient.createService()
 
     @Provides
     @Reusable
