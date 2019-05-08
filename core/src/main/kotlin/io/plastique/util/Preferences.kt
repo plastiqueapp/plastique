@@ -38,6 +38,10 @@ interface Preferences {
             return this
         }
 
+        inline fun <reified T : Any> addConverter(converter: Converter<T>): Builder {
+            return addConverter(T::class.java, converter)
+        }
+
         fun <T : Any> addConverter(valueClass: Class<T>, converter: Converter<T>): Builder {
             converters[valueClass] = converter
             return this

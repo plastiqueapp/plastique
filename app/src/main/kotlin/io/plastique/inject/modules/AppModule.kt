@@ -29,7 +29,7 @@ import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
 import io.plastique.core.work.WorkerCleaner
-import io.plastique.deviations.list.LayoutMode
+import io.plastique.deviations.list.LayoutModeConverter
 import io.plastique.feed.FeedRepository
 import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
@@ -101,7 +101,7 @@ abstract class AppModule {
         fun providePreferences(sharedPreferences: SharedPreferences): Preferences {
             return Preferences.Builder()
                     .sharedPreferences(sharedPreferences)
-                    .addConverter(LayoutMode::class.java, LayoutMode.CONVERTER)
+                    .addConverter(LayoutModeConverter)
                     .build()
         }
 

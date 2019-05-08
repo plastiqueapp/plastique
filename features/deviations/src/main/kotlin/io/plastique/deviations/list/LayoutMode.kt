@@ -7,17 +7,17 @@ enum class LayoutMode(val id: String) {
     Flex("flex"),
     List("list");
 
-    object CONVERTER : Preferences.Converter<LayoutMode> {
-        override fun fromString(string: String, defaultValue: LayoutMode): LayoutMode {
-            return values().firstOrNull { it.id == string } ?: defaultValue
-        }
-
-        override fun toString(value: LayoutMode): String {
-            return value.id
-        }
-    }
-
     companion object {
         val DEFAULT = Grid
+    }
+}
+
+object LayoutModeConverter : Preferences.Converter<LayoutMode> {
+    override fun fromString(string: String, defaultValue: LayoutMode): LayoutMode {
+        return LayoutMode.values().firstOrNull { it.id == string } ?: defaultValue
+    }
+
+    override fun toString(value: LayoutMode): String {
+        return value.id
     }
 }
