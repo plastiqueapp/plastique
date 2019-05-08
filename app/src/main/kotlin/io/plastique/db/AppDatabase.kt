@@ -1,8 +1,9 @@
-package io.plastique
+package io.plastique.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import io.plastique.BuildConfig
 import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.comments.CommentEntity

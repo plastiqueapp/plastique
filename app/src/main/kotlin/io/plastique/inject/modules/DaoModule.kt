@@ -2,10 +2,10 @@ package io.plastique.inject.modules
 
 import dagger.Module
 import dagger.Provides
-import io.plastique.AppDatabase
 import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.core.cache.CacheEntryDao
+import io.plastique.db.AppDatabase
 import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.download.DownloadInfoDao

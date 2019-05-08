@@ -8,10 +8,10 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import io.plastique.AppDatabase
 import io.plastique.BuildConfig
 import io.plastique.core.analytics.Analytics
 import io.plastique.core.db.DebugOpenHelperFactory
+import io.plastique.db.AppDatabase
 import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory
 import java.io.File
 import javax.inject.Singleton
