@@ -1,5 +1,6 @@
 package ${escapeKotlinIdentifiers(packageName)}
 
+import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
