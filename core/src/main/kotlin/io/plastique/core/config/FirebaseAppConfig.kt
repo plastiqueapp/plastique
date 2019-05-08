@@ -10,6 +10,7 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
     private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     init {
+        @Suppress("DEPRECATION")
         remoteConfig.setConfigSettings(FirebaseRemoteConfigSettings.Builder()
                 .setDeveloperModeEnabled(BuildConfig.DEBUG)
                 .build())
