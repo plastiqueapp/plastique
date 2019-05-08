@@ -38,6 +38,7 @@ ext.versions = [
     retrofit             : "2.5.0",
     moshi                : "1.9.0-SNAPSHOT",
     leakCanary           : "1.6.3",
+    koptional            : "1.6.0",
     adapterDelegates     : "4.0.0",
     foregroundViews      : "2.5.0",
     crashlytics          : "2.10.0",

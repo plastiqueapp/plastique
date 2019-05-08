@@ -1,5 +1,7 @@
 package io.plastique.main
 
+import com.gojuno.koptional.None
+import com.gojuno.koptional.toOptional
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
@@ -12,8 +14,6 @@ import io.plastique.core.session.SessionManager
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.main.MainEvent.UserChangedEvent
 import io.plastique.users.UserRepository
-import io.plastique.util.Optional
-import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -48,12 +48,12 @@ class MainViewModel @Inject constructor(
                                 .subscribeOn(Schedulers.io())
                                 .map { it.toOptional() }
                                 .doOnError(Timber::e)
-                                .onErrorReturnItem(Optional.None)
+                                .onErrorReturnItem(None)
                     } else {
-                        Observable.just(Optional.None)
+                        Observable.just(None)
                     }
                 }
-                .map { user -> UserChangedEvent(user.orNull()) }
+                .map { user -> UserChangedEvent(user.toNullable()) }
     }
 
     companion object {

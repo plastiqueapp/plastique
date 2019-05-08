@@ -1,6 +1,8 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
+import com.gojuno.koptional.Optional
+import com.gojuno.koptional.toOptional
 import com.sch.rxjava2.extensions.mapError
 import io.plastique.api.common.ErrorType
 import io.plastique.api.common.ImageDto
@@ -16,11 +18,9 @@ import io.plastique.core.paging.PagedData
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.Size
 import io.plastique.util.TimeProvider
-import io.plastique.util.toOptional
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration

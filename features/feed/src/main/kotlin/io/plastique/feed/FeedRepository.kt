@@ -4,6 +4,8 @@ import android.util.SparseArray
 import androidx.core.util.forEach
 import androidx.core.util.set
 import androidx.room.RoomDatabase
+import com.gojuno.koptional.Optional
+import com.gojuno.koptional.toOptional
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.FolderDto
@@ -18,9 +20,9 @@ import io.plastique.collections.FolderEntity
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.deviations.DailyDeviationEntity
@@ -34,10 +36,8 @@ import io.plastique.statuses.toStatus
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.Optional
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
-import io.plastique.util.toOptional
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

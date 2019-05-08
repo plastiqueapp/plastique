@@ -31,13 +31,13 @@ class StatusListModel @Inject constructor(
 
     fun loadMore(): Completable {
         return statusRepositoryImpl.fetch(params.get(), nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
                 .ignoreElement()
     }
 
     fun refresh(): Completable {
         return statusRepositoryImpl.fetch(params.get(), null)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
                 .ignoreElement()
     }
 

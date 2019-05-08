@@ -32,13 +32,13 @@ class NotificationsModel @Inject constructor(
 
     fun loadMore(): Completable {
         return messageRepository.fetch(nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
                 .ignoreElement()
     }
 
     fun refresh(): Completable {
         return messageRepository.fetch(null)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.orNull()) }
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
                 .ignoreElement()
     }
 

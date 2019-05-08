@@ -1,5 +1,8 @@
 package io.plastique.collections
 
+import com.gojuno.koptional.None
+import com.gojuno.koptional.Some
+import com.gojuno.koptional.toOptional
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
@@ -8,8 +11,6 @@ import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.ImageDeviationItem
 import io.plastique.deviations.list.LiteratureDeviationItem
-import io.plastique.util.Optional
-import io.plastique.util.toOptional
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -35,13 +36,13 @@ class FoldersWithDeviationsDataSource @Inject constructor(
                                 if (!pagedData.hasMore) {
                                     pagedData.value.find { folder -> folder.name == Folder.FEATURED }.toOptional()
                                 } else {
-                                    Optional.None
+                                    None
                                 }
                             }
                             .distinctUntilChanged()
                             .switchMap { featuredFolder ->
                                 when (featuredFolder) {
-                                    is Optional.Some -> getDeviationItems(params, featuredFolder.value)
+                                    is Some -> getDeviationItems(params, featuredFolder.value)
                                     else -> Observable.just(ItemsData(items = emptyList()))
                                 }
                             }
