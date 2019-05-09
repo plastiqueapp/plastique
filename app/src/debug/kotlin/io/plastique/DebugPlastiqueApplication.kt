@@ -13,9 +13,7 @@ import timber.log.Timber
 
 class DebugPlastiqueApplication : BasePlastiqueApplication(), AppComponent.Holder {
     override val appComponent: DebugModuleAppComponent by lazy(LazyThreadSafetyMode.NONE) {
-        DaggerDebugModuleAppComponent.builder()
-                .application(this)
-                .build()
+        DaggerDebugModuleAppComponent.factory().create(this)
     }
 
     override fun init() {

@@ -28,11 +28,8 @@ import javax.inject.Singleton
 interface DebugModuleAppComponent : ModuleAppComponent {
     fun flipperClient(): FlipperClient
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
-
-        fun build(): DebugModuleAppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance application: Application): DebugModuleAppComponent
     }
 }
