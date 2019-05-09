@@ -12,7 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.view.isVisible
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.FragmentListPagerAdapter
@@ -24,7 +24,6 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.doOnTabReselected
 import io.plastique.core.extensions.setActionBar
-import io.plastique.core.extensions.setupWithViewPager
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
@@ -175,13 +174,13 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
 
     private fun initTabs() {
         val adapter = FragmentListPagerAdapter(this, pageProvider.getPages(username))
-        val pager: ViewPager2 = findViewById(R.id.pager)
+        val pager: ViewPager = findViewById(R.id.pager)
         pager.adapter = adapter
 
         val tabLayout: TabLayout = findViewById(R.id.tabs)
-        tabLayout.setupWithViewPager(pager) { tab, position -> tab.setText(adapter.getPageAt(position).titleId) }
+        tabLayout.setupWithViewPager(pager)
         tabLayout.doOnTabReselected { tab ->
-            val fragment = adapter.getFragmentAt(tab.position)
+            val fragment = adapter.getFragment(tab.position)
             if (fragment is ScrollableToTop) {
                 fragment.scrollToTop()
             }
