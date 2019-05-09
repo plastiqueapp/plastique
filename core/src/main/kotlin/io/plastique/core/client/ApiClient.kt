@@ -43,11 +43,10 @@ class ApiClient @Inject constructor(
     }
 
     private fun createOkHttpClient(authInterceptor: AuthInterceptor, baseOkHttpClient: OkHttpClient): OkHttpClient {
-        val builder = baseOkHttpClient.newBuilder()
-        builder.interceptors().add(0, authInterceptor)
-        return builder
+        return baseOkHttpClient.newBuilder()
                 .authenticator(authInterceptor)
                 .cache(Cache(responseCacheDir, MAX_RESPONSE_CACHE_SIZE))
+                .apply { interceptors().add(0, authInterceptor) }
                 .build()
     }
 
