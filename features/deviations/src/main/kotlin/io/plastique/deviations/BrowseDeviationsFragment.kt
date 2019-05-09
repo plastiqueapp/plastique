@@ -51,6 +51,7 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
         pagerAdapter = FragmentListPagerAdapter(this, PAGES)
         pager = view.findViewById(R.id.pager)
         pager.adapter = pagerAdapter
+        pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.deviations_browse_page_spacing)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

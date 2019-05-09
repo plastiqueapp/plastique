@@ -6,4 +6,6 @@
     <dimen name="deviations_grid_spacing">4dp</dimen>
     <dimen name="deviations_info_tag_spacing">8dp</dimen>
 
+    <dimen name="deviations_browse_page_spacing">8dp</dimen>
+
 </resources>

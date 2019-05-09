@@ -176,6 +176,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
         val adapter = FragmentListPagerAdapter(this, pageProvider.getPages(username))
         val pager: ViewPager = findViewById(R.id.pager)
         pager.adapter = adapter
+        pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.users_profile_page_spacing)
 
         val tabLayout: TabLayout = findViewById(R.id.tabs)
         tabLayout.setupWithViewPager(pager)

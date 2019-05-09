@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="users_profile_page_spacing">8dp</dimen>
+</resources>
