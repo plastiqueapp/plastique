@@ -4,7 +4,6 @@ import okhttp3.Headers
 import okhttp3.Request
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -12,8 +11,7 @@ class HeaderAccessTokenAppenderTest {
     private val appender = HeaderAccessTokenAppender()
 
     @Test
-    @DisplayName("getAccessToken returns access token")
-    fun getAccessToken() {
+    fun `getAccessToken returns access token`() {
         val request = Request.Builder()
                 .url("https://acme.org")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer abc")
@@ -22,8 +20,7 @@ class HeaderAccessTokenAppenderTest {
     }
 
     @Test
-    @DisplayName("getAccessToken returns null if request has no Authorization header")
-    fun getAccessToken_noHeader() {
+    fun `getAccessToken returns null if request has no Authorization header`() {
         val request = Request.Builder()
                 .url("https://acme.org")
                 .build()
@@ -31,8 +28,7 @@ class HeaderAccessTokenAppenderTest {
     }
 
     @Test
-    @DisplayName("getAccessToken throws IllegalArgumentException if Authorization header cannot be parsed")
-    fun getAccessToken_unknownFormat() {
+    fun `getAccessToken throws IllegalArgumentException if Authorization header cannot be parsed`() {
         val request = Request.Builder()
                 .url("https://acme.org")
                 .header(HttpHeaders.AUTHORIZATION, "Basic abc")
@@ -43,8 +39,7 @@ class HeaderAccessTokenAppenderTest {
     }
 
     @Test
-    @DisplayName("append adds Authorization header with Bearer token")
-    fun append() {
+    fun `append adds Authorization header with Bearer token`() {
         val request = Request.Builder()
                 .url("https://acme.org")
                 .build()
@@ -55,8 +50,7 @@ class HeaderAccessTokenAppenderTest {
     }
 
     @Test
-    @DisplayName("append replaces existing Authorization header")
-    fun append_replaces() {
+    fun `append replaces existing Authorization header`() {
         val request = Request.Builder()
                 .url("https://acme.org")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer 123")
