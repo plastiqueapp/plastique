@@ -77,8 +77,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     protected lateinit var params: ParamsType
     protected abstract val defaultParams: ParamsType
-    private var activityCreated: Boolean = false
-    private var visibleToUser: Boolean = false
     private var tags: List<Tag> = emptyList()
     private val tagManager: TagManager? get() = (parentFragment as? TagManagerProvider)?.tagManager
     private lateinit var gridParams: GridParams
@@ -113,7 +111,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activityCreated = true
 
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -150,10 +147,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         @Suppress("UNCHECKED_CAST")
         params = savedInstanceState?.getParcelable(STATE_PARAMS) ?: defaultParams
 
-        if (visibleToUser) {
-            initTags()
-        }
-
         viewModel.init(params)
         viewModel.state
                 .pairwiseWithPrevious()
@@ -168,14 +161,9 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         outState.putParcelable(STATE_PARAMS, params)
     }
 
-    @Suppress("DEPRECATION")
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        visibleToUser = isVisibleToUser
-        if (activityCreated && isVisibleToUser) {
-            initTags()
-        }
-        preloader?.apply { isEnabled = visibleToUser }
+    override fun onResume() {
+        super.onResume()
+        initTags()
     }
 
     private fun renderState(state: DeviationListViewState, prevState: DeviationListViewState?, listUpdateData: ListUpdateData<ListItem>) {
@@ -192,9 +180,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         if (state.layoutMode != prevState?.layoutMode) {
             deviationsView.layoutManager = createLayoutManager(requireContext(), state.layoutMode)
             onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(state.layoutMode)
-            preloader = createPreloader(state.layoutMode, this, deviationsView, adapter).apply {
-                isEnabled = visibleToUser
-            }
+            preloader = createPreloader(state.layoutMode, this, deviationsView, adapter)
 
             if (adapter.itemCount > 0) {
                 deviationsView.scrollToPosition(0)
@@ -210,7 +196,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         refreshLayout.isRefreshing = state.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.tags != prevState?.tags && visibleToUser) {
+        if (state.tags != prevState?.tags && isResumed) {
             tagManager?.setTags(tags, true)
         }
 
@@ -294,7 +280,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             intArrayOf(size.width, size.height)
         }
 
-        return RecyclerViewPreloader(glide, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_LIST)
+        return RecyclerViewPreloader(glide, fragment.lifecycle, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_LIST)
     }
 
     private fun createGridPreloader(fragment: Fragment, adapter: ListDelegationAdapter<List<ListItem>>, gridParams: GridParams): RecyclerViewPreloader<*> {
@@ -321,7 +307,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             intArrayOf(itemSize.width, itemSize.height)
         }
 
-        return RecyclerViewPreloader(glide, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
+        return RecyclerViewPreloader(glide, fragment.lifecycle, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
     }
 
     companion object {

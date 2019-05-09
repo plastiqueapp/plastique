@@ -9,12 +9,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import java.lang.reflect.Field
 
-@Suppress("DEPRECATION")
 class FragmentListPagerAdapter private constructor(
     private val context: Context,
     private val fragmentManager: FragmentManager,
     private val pages: List<Page>
-) : FragmentStatePagerAdapter(fragmentManager) {
+) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     constructor(activity: FragmentActivity, pages: List<Page>) : this(activity, activity.supportFragmentManager, pages)
     constructor(fragment: Fragment, pages: List<Page>) : this(fragment.requireContext(), fragment.childFragmentManager, pages)

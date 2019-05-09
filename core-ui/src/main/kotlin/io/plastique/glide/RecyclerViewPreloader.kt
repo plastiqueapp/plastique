@@ -1,6 +1,9 @@
 package io.plastique.glide
 
 import android.widget.AbsListView.OnScrollListener
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestManager
@@ -10,12 +13,29 @@ import kotlin.math.abs
 
 class RecyclerViewPreloader<T>(
     requestManager: RequestManager,
+    lifecycle: Lifecycle,
     preloadModelProvider: ListPreloader.PreloadModelProvider<T>,
     preloadDimensionProvider: ListPreloader.PreloadSizeProvider<T>,
     maxPreload: Int
 ) : RecyclerView.OnScrollListener() {
 
-    var isEnabled: Boolean = true
+    private var isEnabled: Boolean = false
+
+    init {
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                isEnabled = true
+            }
+
+            override fun onPause(owner: LifecycleOwner) {
+                isEnabled = false
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                lifecycle.removeObserver(this)
+            }
+        })
+    }
 
     private val listPreloader = ListPreloader(requestManager, preloadModelProvider, preloadDimensionProvider, maxPreload)
     private val recyclerScrollListener = RecyclerToListViewScrollListener(listPreloader)
