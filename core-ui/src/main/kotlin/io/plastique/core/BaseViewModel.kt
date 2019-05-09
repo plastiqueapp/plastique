@@ -1,6 +1,7 @@
 package io.plastique.core
 
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -12,8 +13,8 @@ abstract class BaseViewModel {
     private val _screenVisible: BehaviorSubject<Boolean> = BehaviorSubject.create()
     protected val screenVisible: Observable<Boolean> get() = _screenVisible
 
-    fun subscribeToLifecycle(owner: LifecycleOwner) {
-        owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+    fun subscribeToLifecycle(lifecycle: Lifecycle) {
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
                 _screenVisible.onNext(true)
             }
@@ -23,7 +24,7 @@ abstract class BaseViewModel {
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
-                owner.lifecycle.removeObserver(this)
+                lifecycle.removeObserver(this)
             }
         })
     }

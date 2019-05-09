@@ -8,7 +8,7 @@ abstract class MvvmActivity<VM : BaseViewModel> : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscribeToLifecycle(this)
+        viewModel.subscribeToLifecycle(lifecycle)
     }
 
     override fun onDestroy() {

@@ -9,7 +9,7 @@ abstract class MvvmFragment<VM : BaseViewModel> : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscribeToLifecycle(this)
+        viewModel.subscribeToLifecycle(lifecycle)
     }
 
     override fun onDestroyView() {

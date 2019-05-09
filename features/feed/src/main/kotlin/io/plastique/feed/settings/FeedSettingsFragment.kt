@@ -49,7 +49,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscribeToLifecycle(this)
+        viewModel.subscribeToLifecycle(lifecycle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
