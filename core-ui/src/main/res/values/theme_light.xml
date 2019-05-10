@@ -35,12 +35,10 @@
         <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
         <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
 
-        <item name="appBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="dividerColor">#33000000</item>
         <item name="emptyViewStyle">@style/Widget.App.EmptyView</item>
         <item name="imageButtonTint">@color/light_image_button_tint</item>
         <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="deviations_literatureBackground">#ffffff</item>
     </style>
 

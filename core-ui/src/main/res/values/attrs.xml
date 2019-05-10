@@ -7,11 +7,9 @@
     <attr name="deviations_literatureBackground" format="color|reference" />
 
     <declare-styleable name="Theme.App">
-        <attr name="appBarTheme" format="reference" />
         <attr name="dividerColor" format="color" />
         <attr name="imageButtonTint" format="color" />
         <attr name="inlineButtonStyle" format="reference" />
-        <attr name="toolbarPopupTheme" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BottomSheetDialog">

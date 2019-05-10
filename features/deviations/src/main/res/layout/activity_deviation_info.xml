@@ -13,7 +13,6 @@
         android:background="@null"
         android:elevation="0dp"
         android:stateListAnimator="@null"
-        android:theme="?appBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,8 +20,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:popupTheme="?toolbarPopupTheme" />
+            android:layout_height="?actionBarSize" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView

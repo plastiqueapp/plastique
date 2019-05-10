@@ -10,7 +10,6 @@
         android:id="@+id/appbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:theme="?appBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,7 +18,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:popupTheme="?toolbarPopupTheme"
             tools:navigationIcon="?homeAsUpIndicator"
             tools:title="@string/licenses_title" />
     </com.google.android.material.appbar.AppBarLayout>

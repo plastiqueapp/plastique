@@ -14,6 +14,7 @@
         <item name="android:navigationBarColor">@color/deviations_viewer_navigation_bar</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowBackground">@color/deviations_viewer_window_background</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
     </style>
 
     <style name="Theme.App.Dark.DeviationViewer" parent="Theme.App.Dark">
@@ -21,6 +22,7 @@
         <item name="android:navigationBarColor">@color/deviations_viewer_navigation_bar</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowBackground">@color/deviations_viewer_window_background</item>
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
     </style>
 
     <style name="Base.Widget.App.Breadcrumbs" parent="">
