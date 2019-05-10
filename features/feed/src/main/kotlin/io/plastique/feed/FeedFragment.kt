@@ -51,6 +51,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, OnFeedSettingsChangedListener {
+    @Inject lateinit var navigator: FeedNavigator
+
     private lateinit var feedView: RecyclerView
     private lateinit var emptyView: EmptyView
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -60,8 +62,8 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
     private lateinit var horizontalProgressViewController: ProgressViewController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
+
     private lateinit var state: FeedViewState
-    @Inject lateinit var navigator: FeedNavigator
 
     init {
         setHasOptionsMenu(true)

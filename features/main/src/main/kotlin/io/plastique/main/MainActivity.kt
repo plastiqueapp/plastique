@@ -26,9 +26,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
-    private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     @Inject lateinit var mainFragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
+
+    private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
+
     private lateinit var state: MainViewState
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {

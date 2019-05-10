@@ -41,6 +41,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton.OnCheckedChangeListener {
+    @Inject lateinit var navigator: UsersNavigator
+    @Inject lateinit var pageProvider: UserProfilePageProvider
+
     private lateinit var rootView: View
     private lateinit var avatarView: ImageView
     private lateinit var realNameView: TextView
@@ -50,9 +53,8 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
+
     private lateinit var state: UserProfileViewState
-    @Inject lateinit var navigator: UsersNavigator
-    @Inject lateinit var pageProvider: UserProfilePageProvider
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
         if (intent.hasExtra(EXTRA_USERNAME)) {

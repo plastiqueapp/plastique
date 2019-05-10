@@ -22,9 +22,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class LicensesActivity : MvvmActivity<LicensesViewModel>() {
+    @Inject lateinit var browserLauncher: BrowserLauncher
+
     private lateinit var adapter: LicensesAdapter
     private lateinit var contentStateController: ContentStateController
-    @Inject lateinit var browserLauncher: BrowserLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

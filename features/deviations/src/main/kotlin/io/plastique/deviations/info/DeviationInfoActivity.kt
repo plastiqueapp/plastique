@@ -27,6 +27,8 @@ import java.util.Locale
 import javax.inject.Inject
 
 class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
+    @Inject lateinit var navigator: DeviationsNavigator
+
     private lateinit var authorNameView: TextView
     private lateinit var authorAvatarView: ImageView
     private lateinit var titleView: TextView
@@ -36,7 +38,6 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
     private lateinit var contentStateController: ContentStateController
     private lateinit var tagsView: RecyclerView
     private lateinit var tagListAdapter: TagListAdapter
-    @Inject lateinit var navigator: DeviationsNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

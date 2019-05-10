@@ -16,8 +16,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class ProfileFragment : MvvmFragment<ProfileViewModel>() {
-    private lateinit var signInButton: Button
     @Inject lateinit var navigator: ProfileNavigator
+
+    private lateinit var signInButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

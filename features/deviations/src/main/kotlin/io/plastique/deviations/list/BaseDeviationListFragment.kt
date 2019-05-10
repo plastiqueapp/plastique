@@ -65,6 +65,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         OnTagClickListener,
         ScrollableToTop {
 
+    @Inject lateinit var navigator: DeviationsNavigator
+
     private lateinit var deviationsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -81,7 +83,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private val tagManager: TagManager? get() = (parentFragment as? TagManagerProvider)?.tagManager
     private lateinit var gridParams: GridParams
     private lateinit var state: DeviationListViewState
-    @Inject lateinit var navigator: DeviationsNavigator
 
     private var preloader: RecyclerViewPreloader<*>? = null
         set(value) {

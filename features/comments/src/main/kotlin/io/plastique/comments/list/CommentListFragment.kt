@@ -36,6 +36,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTop {
+    @Inject lateinit var navigator: CommentsNavigator
+
     private lateinit var commentsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -44,7 +46,6 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
-    @Inject lateinit var navigator: CommentsNavigator
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_comment_list, container, false)

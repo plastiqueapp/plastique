@@ -49,6 +49,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
+    @Inject lateinit var navigator: GalleryNavigator
+
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: GalleryAdapter
@@ -56,8 +58,8 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
+
     private lateinit var state: GalleryViewState
-    @Inject lateinit var navigator: GalleryNavigator
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_gallery, container, false)

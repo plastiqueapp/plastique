@@ -39,6 +39,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop {
+    @Inject lateinit var navigator: StatusesNavigator
+
     private lateinit var statusesView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -46,7 +48,6 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
-    @Inject lateinit var navigator: StatusesNavigator
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_status_list, container, false)

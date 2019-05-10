@@ -22,12 +22,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class AboutFragment : MvvmFragment<AboutViewModel>(), ScrollableToTop {
+    @Inject lateinit var navigator: UsersNavigator
+
     private lateinit var contentView: NestedScrollView
     private lateinit var bioHeaderView: View
     private lateinit var bioView: TextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
-    @Inject lateinit var navigator: UsersNavigator
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_users_about, container, false)

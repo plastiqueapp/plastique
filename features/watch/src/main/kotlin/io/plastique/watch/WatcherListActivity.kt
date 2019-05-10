@@ -34,6 +34,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
+    @Inject lateinit var navigator: WatchNavigator
+
     private lateinit var watchersView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -41,7 +43,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: WatcherListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
-    @Inject lateinit var navigator: WatchNavigator
+
     private lateinit var state: WatcherListViewState
 
     override fun onCreate(savedInstanceState: Bundle?) {

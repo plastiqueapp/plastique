@@ -30,14 +30,15 @@ import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 
 class FeedSettingsFragment : BottomSheetDialogFragment() {
+    @Inject lateinit var viewModel: FeedSettingsViewModel
+
     private lateinit var optionsView: RecyclerView
     private lateinit var emptyView: EmptyView
     private lateinit var optionsAdapter: OptionsAdapter
     private lateinit var contentStateController: ContentStateController
-    private lateinit var state: FeedSettingsViewState
-    @Inject lateinit var viewModel: FeedSettingsViewModel
-    private val disposables = CompositeDisposable()
 
+    private lateinit var state: FeedSettingsViewState
+    private val disposables = CompositeDisposable()
     private var listener: OnFeedSettingsChangedListener? = null
 
     override fun onAttach(context: Context) {

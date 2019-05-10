@@ -39,6 +39,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, ScrollableToTop {
+    @Inject lateinit var navigator: NotificationsNavigator
+
     private lateinit var notificationsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -46,8 +48,8 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
+
     private lateinit var state: NotificationsViewState
-    @Inject lateinit var navigator: NotificationsNavigator
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notifications, container, false)

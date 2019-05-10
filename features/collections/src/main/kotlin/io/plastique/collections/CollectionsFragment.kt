@@ -49,6 +49,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
+    @Inject lateinit var navigator: CollectionsNavigator
+
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: CollectionsAdapter
@@ -56,9 +58,8 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
-    private lateinit var state: CollectionsViewState
 
-    @Inject lateinit var navigator: CollectionsNavigator
+    private lateinit var state: CollectionsViewState
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_collections, container, false)
