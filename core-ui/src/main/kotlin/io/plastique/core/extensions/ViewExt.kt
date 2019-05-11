@@ -6,6 +6,7 @@ import android.view.ViewParent
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -17,6 +18,18 @@ fun <T : CoordinatorLayout.Behavior<*>> View.getLayoutBehavior(): T {
     val layoutParams = layoutParams as CoordinatorLayout.LayoutParams
     @Suppress("UNCHECKED_CAST")
     return layoutParams.behavior as T
+}
+
+fun AppBarLayout.disableDragging() {
+    val layoutParams = layoutParams as CoordinatorLayout.LayoutParams
+    val behavior = layoutParams.behavior as AppBarLayout.Behavior?
+    if (behavior != null) {
+        behavior.setDragCallback(DisabledDragCallback)
+    } else {
+        doOnLayout {
+            (layoutParams.behavior as AppBarLayout.Behavior).setDragCallback(DisabledDragCallback)
+        }
+    }
 }
 
 fun AppBarLayout.invalidateScrollRanges() {
@@ -97,6 +110,10 @@ fun <T : ViewParent> View.findParentOfType(type: Class<T>): T? {
         p = p.parent
     }
     return null
+}
+
+private object DisabledDragCallback : AppBarLayout.Behavior.DragCallback() {
+    override fun canDrag(appBarLayout: AppBarLayout): Boolean = false
 }
 
 private val FIELD_TOOLBAR_TITLE: Field by lazy(LazyThreadSafetyMode.NONE) {

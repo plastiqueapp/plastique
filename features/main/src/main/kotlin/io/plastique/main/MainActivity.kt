@@ -14,14 +14,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.extensions.getLayoutBehavior
+import io.plastique.core.extensions.disableDragging
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
-import io.plastique.util.DragDisabledCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -48,8 +47,7 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         toolbar.setTitleOnClickListener(View.OnClickListener { scrollToTop() })
 
         val appBar = findViewById<AppBarLayout>(R.id.appbar)
-        val appBarBehavior = appBar.getLayoutBehavior<AppBarLayout.Behavior>()
-        appBarBehavior.setDragCallback(DragDisabledCallback)
+        appBar.disableDragging()
         expandableToolbarLayout = findViewById(R.id.expandable_toolbar)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
