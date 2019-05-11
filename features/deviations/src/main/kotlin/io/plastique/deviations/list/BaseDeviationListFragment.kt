@@ -8,19 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.ListPreloader
-import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
@@ -84,6 +78,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private lateinit var gridParams: GridParams
     private lateinit var state: DeviationListViewState
 
+    private lateinit var preloaderFactory: DeviationsPreloaderFactory
     private var preloader: RecyclerViewPreloader<*>? = null
         set(value) {
             field?.let { deviationsView.removeOnScrollListener(it) }
@@ -144,6 +139,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
         deviationsView.adapter = adapter
+        preloaderFactory = DeviationsPreloaderFactory(this, deviationsView, adapter)
 
         @Suppress("UNCHECKED_CAST")
         params = savedInstanceState?.getParcelable(STATE_PARAMS) ?: defaultParams
@@ -181,7 +177,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         if (state.layoutMode != prevState?.layoutMode) {
             deviationsView.layoutManager = createLayoutManager(requireContext(), state.layoutMode)
             onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(state.layoutMode)
-            preloader = createPreloader(state.layoutMode, this, deviationsView, adapter)
+            preloader = preloaderFactory.createPreloader(state.layoutMode, gridParams)
 
             if (adapter.itemCount > 0) {
                 deviationsView.scrollToPosition(0)
@@ -244,76 +240,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         LayoutMode.List -> 5
     }
 
-    private fun createPreloader(layoutMode: LayoutMode, fragment: Fragment, recyclerView: RecyclerView, adapter: ListDelegationAdapter<List<ListItem>>): RecyclerViewPreloader<*> {
-        return if (layoutMode === LayoutMode.Grid) {
-            createGridPreloader(fragment, adapter, gridParams)
-        } else {
-            createListPreloader(fragment, recyclerView, adapter)
-        }
-    }
-
-    private fun createListPreloader(fragment: Fragment, recyclerView: RecyclerView, adapter: ListDelegationAdapter<List<ListItem>>): RecyclerViewPreloader<*> {
-        val glide = GlideApp.with(fragment)
-        val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
-            override fun getPreloadItems(position: Int): List<DeviationItem> {
-                return when (val item = adapter.items[position]) {
-                    is ImageDeviationItem -> listOf(item)
-                    else -> emptyList()
-                }
-            }
-
-            override fun getPreloadRequestBuilder(item: DeviationItem): RequestBuilder<*>? {
-                val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
-                val preview = ImageHelper.choosePreview(item.deviation, maxImageWidth)
-                val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
-                return glide.load(preview.url)
-                        .override(previewSize.width, previewSize.height)
-                        .centerCrop()
-                        .priority(Priority.LOW)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-            }
-        }
-
-        val preloadSizeProvider = ListPreloader.PreloadSizeProvider<DeviationItem> { item, _, _ ->
-            val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
-            val image = ImageHelper.choosePreview(item.deviation, maxImageWidth)
-            val size = ImageHelper.calculateOptimalPreviewSize(image, maxImageWidth)
-            intArrayOf(size.width, size.height)
-        }
-
-        return RecyclerViewPreloader(glide, fragment.lifecycle, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_LIST)
-    }
-
-    private fun createGridPreloader(fragment: Fragment, adapter: ListDelegationAdapter<List<ListItem>>, gridParams: GridParams): RecyclerViewPreloader<*> {
-        val glide = GlideApp.with(fragment)
-        val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
-            override fun getPreloadItems(position: Int): List<DeviationItem> {
-                return when (val item = adapter.items[position]) {
-                    is ImageDeviationItem -> listOf(item)
-                    else -> emptyList()
-                }
-            }
-
-            override fun getPreloadRequestBuilder(item: DeviationItem): RequestBuilder<*>? {
-                val itemSize = gridParams.getItemSize(item.index)
-                val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
-                return glide.load(image.url)
-                        .priority(Priority.LOW)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-            }
-        }
-
-        val preloadSizeProvider = ListPreloader.PreloadSizeProvider<DeviationItem> { item, _, _ ->
-            val itemSize = gridParams.getItemSize(item.index)
-            intArrayOf(itemSize.width, itemSize.height)
-        }
-
-        return RecyclerViewPreloader(glide, fragment.lifecycle, preloadModelProvider, preloadSizeProvider, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
-    }
-
     companion object {
         private const val STATE_PARAMS = "params"
-        private const val MAX_PRELOAD_LIST = 4
-        private const val MAX_PRELOAD_ROWS_GRID = 4
     }
 }
