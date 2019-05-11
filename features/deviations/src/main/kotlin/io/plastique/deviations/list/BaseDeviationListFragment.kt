@@ -120,17 +120,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 context = requireContext(),
                 glide = GlideApp.with(this),
                 layoutModeProvider = { state.layoutMode },
-                itemSizeCallback = object : ItemSizeCallback {
-                    override fun getColumnCount(item: IndexedItem): Int = when (item) {
-                        is DeviationItem -> gridParams.columnCount
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-
-                    override fun getItemSize(item: IndexedItem): Size = when (item) {
-                        is DeviationItem -> gridParams.getItemSize(item.index)
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-                },
+                itemSizeCallback = DeviationsItemSizeCallback(gridParams),
                 onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
                 onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
                 onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
@@ -238,6 +228,18 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         LayoutMode.Grid,
         LayoutMode.Flex -> gridParams.columnCount * 3
         LayoutMode.List -> 5
+    }
+
+    private class DeviationsItemSizeCallback(private val gridParams: GridParams) : ItemSizeCallback {
+        override fun getColumnCount(item: IndexedItem): Int = when (item) {
+            is DeviationItem -> gridParams.columnCount
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
+
+        override fun getItemSize(item: IndexedItem): Size = when (item) {
+            is DeviationItem -> gridParams.getItemSize(item.index)
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
     }
 
     companion object {

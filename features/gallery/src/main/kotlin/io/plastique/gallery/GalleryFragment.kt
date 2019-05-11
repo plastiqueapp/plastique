@@ -25,6 +25,7 @@ import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
+import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ItemSizeCallback
@@ -85,19 +86,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         adapter = GalleryAdapter(
                 context = requireContext(),
                 glide = GlideApp.with(this),
-                itemSizeCallback = object : ItemSizeCallback {
-                    override fun getColumnCount(item: IndexedItem): Int = when (item) {
-                        is FolderItem -> folderParams.columnCount
-                        is DeviationItem -> deviationParams.columnCount
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-
-                    override fun getItemSize(item: IndexedItem): Size = when (item) {
-                        is FolderItem -> folderParams.getItemSize(item.index)
-                        is DeviationItem -> deviationParams.getItemSize(item.index)
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-                },
+                itemSizeCallback = GalleryItemSizeCallback(folderParams, deviationParams),
                 onFolderClick = { item -> navigator.openGalleryFolder(navigationContext, GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name) },
                 onFolderLongClick = { item, itemView ->
                     if (state.showMenu && item.folder.isDeletable) {
@@ -219,6 +208,20 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
     override fun injectDependencies() {
         getComponent<GalleryFragmentComponent>().inject(this)
+    }
+
+    private class GalleryItemSizeCallback(private val folderParams: GridParams, private val deviationParams: GridParams) : ItemSizeCallback {
+        override fun getColumnCount(item: IndexedItem): Int = when (item) {
+            is FolderItem -> folderParams.columnCount
+            is DeviationItem -> deviationParams.columnCount
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
+
+        override fun getItemSize(item: IndexedItem): Size = when (item) {
+            is FolderItem -> folderParams.getItemSize(item.index)
+            is DeviationItem -> deviationParams.getItemSize(item.index)
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
     }
 
     companion object {

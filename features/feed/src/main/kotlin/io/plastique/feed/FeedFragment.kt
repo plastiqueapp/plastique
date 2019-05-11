@@ -24,6 +24,7 @@ import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
+import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ItemSizeCallback
@@ -84,17 +85,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
 
         adapter = FeedAdapter(
                 glide = GlideApp.with(this),
-                gridItemSizeCallback = object : ItemSizeCallback {
-                    override fun getColumnCount(item: IndexedItem): Int = when (item) {
-                        is DeviationItem -> deviationParams.columnCount
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-
-                    override fun getItemSize(item: IndexedItem): Size = when (item) {
-                        is DeviationItem -> deviationParams.getItemSize(item.index)
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-                },
+                gridItemSizeCallback = DeviationsGridItemSizeCallback(deviationParams),
                 onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
                 onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
                 onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
@@ -194,6 +185,18 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
 
     override fun injectDependencies() {
         getComponent<FeedFragmentComponent>().inject(this)
+    }
+
+    private class DeviationsGridItemSizeCallback(private val deviationParams: GridParams) : ItemSizeCallback {
+        override fun getColumnCount(item: IndexedItem): Int = when (item) {
+            is DeviationItem -> deviationParams.columnCount
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
+
+        override fun getItemSize(item: IndexedItem): Size = when (item) {
+            is DeviationItem -> deviationParams.getItemSize(item.index)
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
     }
 
     companion object {

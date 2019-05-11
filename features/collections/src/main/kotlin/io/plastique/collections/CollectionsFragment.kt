@@ -31,6 +31,7 @@ import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
+import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ItemSizeCallback
@@ -85,19 +86,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         adapter = CollectionsAdapter(
                 context = requireContext(),
                 glide = GlideApp.with(this),
-                itemSizeCallback = object : ItemSizeCallback {
-                    override fun getColumnCount(item: IndexedItem): Int = when (item) {
-                        is FolderItem -> folderParams.columnCount
-                        is DeviationItem -> deviationParams.columnCount
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-
-                    override fun getItemSize(item: IndexedItem): Size = when (item) {
-                        is FolderItem -> folderParams.getItemSize(item.index)
-                        is DeviationItem -> deviationParams.getItemSize(item.index)
-                        else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-                    }
-                },
+                itemSizeCallback = CollectionsItemSizeCallback(folderParams, deviationParams),
                 onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },
                 onFolderLongClick = { item, itemView ->
                     if (state.showMenu && item.folder.isDeletable) {
@@ -220,6 +209,20 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
     override fun injectDependencies() {
         getComponent<CollectionsFragmentComponent>().inject(this)
+    }
+
+    private class CollectionsItemSizeCallback(private val folderParams: GridParams, private val deviationParams: GridParams) : ItemSizeCallback {
+        override fun getColumnCount(item: IndexedItem): Int = when (item) {
+            is FolderItem -> folderParams.columnCount
+            is DeviationItem -> deviationParams.columnCount
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
+
+        override fun getItemSize(item: IndexedItem): Size = when (item) {
+            is FolderItem -> folderParams.getItemSize(item.index)
+            is DeviationItem -> deviationParams.getItemSize(item.index)
+            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
+        }
     }
 
     companion object {
