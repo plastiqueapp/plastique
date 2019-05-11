@@ -67,7 +67,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
         statusesView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         statusesView.addItemDecoration(DividerItemDecoration.Builder(requireContext()).build())
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         statusesView.addOnScrollListener(onScrollListener)
 
         refreshLayout = view.findViewById(R.id.refresh)

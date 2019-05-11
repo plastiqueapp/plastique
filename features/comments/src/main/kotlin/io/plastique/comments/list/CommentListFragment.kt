@@ -62,7 +62,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
         commentsView.adapter = adapter
         commentsView.layoutManager = LinearLayoutManager(requireContext())
         commentsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(CommentListEvent.LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(CommentListEvent.LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
 
         composeView = view.findViewById(R.id.compose)

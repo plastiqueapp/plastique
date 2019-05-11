@@ -5,7 +5,7 @@ import io.plastique.core.extensions.findLastVisibleItemPosition
 
 class EndlessScrollListener(
     var loadMoreThreshold: Int,
-    var isEnabled: Boolean = true,
+    var isEnabled: Boolean = false,
     private val onLoadMore: () -> Unit
 ) : RecyclerView.OnScrollListener() {
     private var scrollStateReset = true

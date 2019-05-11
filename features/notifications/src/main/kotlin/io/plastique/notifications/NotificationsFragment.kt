@@ -79,7 +79,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
         snackbarController = SnackbarController(refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         notificationsView.addOnScrollListener(onScrollListener)
 
         initSwipe()

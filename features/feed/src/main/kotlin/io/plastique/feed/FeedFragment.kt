@@ -101,7 +101,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         feedView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         feedView.addItemDecoration(FeedItemDecoration(requireContext()))
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         feedView.addOnScrollListener(onScrollListener)
 
         refreshLayout = view.findViewById(R.id.refresh)
