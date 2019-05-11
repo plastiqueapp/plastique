@@ -40,13 +40,13 @@ import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequest
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
+import io.plastique.util.ByteCountFormatter
 import io.plastique.util.Clipboard
 import io.plastique.util.SystemUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
-import kotlin.math.ln
 
 @RuntimePermissions
 class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
@@ -250,21 +250,13 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     private fun Menu.update(menuState: MenuState) {
         findItem(R.id.deviations_viewer_action_download).apply {
-            title = getString(R.string.deviations_viewer_action_download, humanReadableByteCount(menuState.downloadFileSize))
+            title = getString(R.string.deviations_viewer_action_download, ByteCountFormatter.format(menuState.downloadFileSize))
             isVisible = menuState.showDownload
         }
     }
 
     override fun injectDependencies() {
         getComponent<DeviationsActivityComponent>().inject(this)
-    }
-
-    private fun humanReadableByteCount(bytes: Long, si: Boolean = false): String {
-        val unit = if (si) 1000 else 1024
-        if (bytes < unit) return "$bytes B"
-        val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
-        val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
-        return String.format("%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
     }
 
     companion object {
