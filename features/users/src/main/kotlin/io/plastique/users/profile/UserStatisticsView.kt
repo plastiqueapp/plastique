@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import io.plastique.core.CompactDecimalFormatter
 import io.plastique.users.R
+import io.plastique.util.CompactDecimalFormatter
 
 class UserStatisticsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : LinearLayout(context, attrs, defStyleAttr) {

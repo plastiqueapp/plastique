@@ -26,8 +26,8 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
             }
         }
 
-    var minProgressDisplayTime: Int = 500
-    var progressShowDelay: Int = 200
+    var progressShowDelay: Long = DEFAULT_PROGRESS_SHOW_DELAY
+    var minProgressShowDuration: Long = DEFAULT_MIN_PROGRESS_SHOW_DURATION
 
     constructor(rootView: View,
                 @IdRes contentViewId: Int,
@@ -51,9 +51,9 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
         var delay = 0L
         if (displayedState === ContentState.Loading) {
             val elapsedTime = SystemClock.elapsedRealtime() - lastSwitchTime
-            delay = max(0L, minProgressDisplayTime - elapsedTime)
+            delay = max(0L, minProgressShowDuration - elapsedTime)
         } else if (state === ContentState.Loading) {
-            delay = progressShowDelay.toLong()
+            delay = progressShowDelay
         }
 
         if (delay != 0L) {
@@ -78,6 +78,8 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
 
     private companion object {
         private const val LOG_TAG = "ContentStateController"
+        private const val DEFAULT_PROGRESS_SHOW_DELAY = 200L
+        private const val DEFAULT_MIN_PROGRESS_SHOW_DURATION = 500L
     }
 }
 

@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.util
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest

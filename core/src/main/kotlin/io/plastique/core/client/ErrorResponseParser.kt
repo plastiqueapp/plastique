@@ -2,7 +2,6 @@ package io.plastique.core.client
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import io.plastique.api.common.ApiResponseCodes
 import io.plastique.api.common.ErrorData
 import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.HttpException
@@ -17,7 +16,7 @@ class ErrorResponseParser @Inject constructor(moshi: Moshi) {
     private val errorDataAdapter = moshi.adapter<ErrorData>()
 
     fun parse(response: Response<*>): HttpException {
-        if (response.code() == ApiResponseCodes.RATE_LIMIT_EXCEEDED) {
+        if (response.code() == HttpResponseCodes.TOO_MANY_REQUESTS) {
             return RateLimitExceededException(response.code(), response.raw().request().url().encodedPath())
         }
         val errorBody = response.errorBody()
@@ -34,6 +33,7 @@ class ErrorResponseParser @Inject constructor(moshi: Moshi) {
         return HttpException(response.code())
     }
 
+    @Suppress("MagicNumber")
     private fun isClientHttpError(responseCode: Int): Boolean {
         return responseCode in 400..499
     }

@@ -31,10 +31,14 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
 
     override fun fetch() {
         remoteConfig.activate()
-        remoteConfig.fetch(if (BuildConfig.DEBUG) {
+        remoteConfig.fetch(REFRESH_INTERVAL)
+    }
+
+    companion object {
+        private val REFRESH_INTERVAL = if (BuildConfig.DEBUG) {
             TimeUnit.MINUTES.toSeconds(1)
         } else {
             TimeUnit.HOURS.toSeconds(12)
-        })
+        }
     }
 }

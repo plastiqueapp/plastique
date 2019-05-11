@@ -226,8 +226,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     private fun calculateLoadMoreThreshold(layoutMode: LayoutMode): Int = when (layoutMode) {
         LayoutMode.Grid,
-        LayoutMode.Flex -> gridParams.columnCount * 3
-        LayoutMode.List -> 5
+        LayoutMode.Flex -> gridParams.columnCount * LOAD_MORE_THRESHOLD_GRID_ROWS
+        LayoutMode.List -> LOAD_MORE_THRESHOLD_LIST_ITEMS
     }
 
     private class DeviationsItemSizeCallback(private val gridParams: GridParams) : ItemSizeCallback {
@@ -244,5 +244,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     companion object {
         private const val STATE_PARAMS = "params"
+        private const val LOAD_MORE_THRESHOLD_GRID_ROWS = 3
+        private const val LOAD_MORE_THRESHOLD_LIST_ITEMS = 5
     }
 }

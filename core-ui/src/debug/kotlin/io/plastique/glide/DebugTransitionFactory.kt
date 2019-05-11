@@ -36,6 +36,7 @@ private object DebugTransitionFactory : TransitionFactory<Drawable> {
         }
 
         @ColorInt
+        @Suppress("MagicNumber")
         private fun getIndicatorColor(dataSource: DataSource): Int = when (dataSource) {
             DataSource.LOCAL -> Color.YELLOW
             DataSource.REMOTE -> Color.RED

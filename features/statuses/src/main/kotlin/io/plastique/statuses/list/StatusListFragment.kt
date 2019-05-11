@@ -67,7 +67,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
         statusesView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         statusesView.addItemDecoration(DividerItemDecoration.Builder(requireContext()).build())
 
-        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
         statusesView.addOnScrollListener(onScrollListener)
 
         refreshLayout = view.findViewById(R.id.refresh)
@@ -111,7 +111,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
     }
 
     override fun scrollToTop() {
-        statusesView.smartScrollToPosition(0, 10)
+        statusesView.smartScrollToPosition(0)
     }
 
     override fun injectDependencies() {
@@ -120,6 +120,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
 
     companion object {
         private const val ARG_USERNAME = "username"
+        private const val LOAD_MORE_THRESHOLD = 4
 
         fun newArgs(username: String): Bundle {
             return Bundle().apply {

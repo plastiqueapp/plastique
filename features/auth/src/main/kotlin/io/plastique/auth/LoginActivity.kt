@@ -84,7 +84,7 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
 
     private fun setLoadProgress(progress: Int) {
         progressBar.progress = progress
-        if (progress != 100) {
+        if (progress != MAX_PROGRESS) {
             progressBar.alpha = 1.0f
             progressBar.visibility = View.VISIBLE
         } else {
@@ -107,6 +107,7 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
 
     companion object {
         private const val DIALOG_AUTH_ERROR = "dialog.auth_error"
+        private const val MAX_PROGRESS = 100
 
         fun createIntent(context: Context): Intent {
             return Intent(context, LoginActivity::class.java)

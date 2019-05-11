@@ -98,7 +98,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
                 },
                 onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
-        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         galleryView = view.findViewById(R.id.gallery)
         galleryView.adapter = adapter
@@ -228,6 +228,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         private const val ARG_USERNAME = "username"
         private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
+        private const val LOAD_MORE_THRESHOLD = 4
 
         fun newArgs(username: String? = null): Bundle {
             return Bundle().apply {

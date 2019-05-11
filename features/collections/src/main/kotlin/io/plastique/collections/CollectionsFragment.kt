@@ -98,7 +98,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
                 },
                 onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
-        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
 
         collectionsView = view.findViewById(R.id.collections)
         collectionsView.adapter = adapter
@@ -229,6 +229,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         private const val ARG_USERNAME = "username"
         private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
+        private const val LOAD_MORE_THRESHOLD = 4
 
         fun newArgs(username: String? = null): Bundle {
             return Bundle().apply {

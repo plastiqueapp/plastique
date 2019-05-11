@@ -57,7 +57,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
                 glide = GlideApp.with(this),
                 onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
-        onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
         watchersView = findViewById(R.id.watchers)
         watchersView.layoutManager = LinearLayoutManager(this)
@@ -126,6 +126,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
 
     companion object {
         private const val EXTRA_USERNAME = "username"
+        private const val LOAD_MORE_THRESHOLD = 5
 
         fun createIntent(context: Context, username: String?): Intent {
             return Intent(context, WatcherListActivity::class.java).apply {

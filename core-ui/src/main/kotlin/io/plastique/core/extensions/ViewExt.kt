@@ -36,7 +36,7 @@ fun AppBarLayout.invalidateScrollRanges() {
     METHOD_APPBAR_INVALIDATE_SCROLL_RANGES(this)
 }
 
-fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: Int) {
+fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: Int = 10) {
     val layoutManager = this.layoutManager ?: return
     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()

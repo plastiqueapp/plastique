@@ -57,7 +57,7 @@ private class Api23Cryptor : Cryptor() {
     }
 
     override fun encrypt(input: ByteArray, keyAlias: String): ByteArray {
-        val iv = generateIv(12)
+        val iv = generateIv(IV_LENGTH)
         var secretKey = keyStore.getKey(keyAlias, null) ?: generateSecretKey(keyAlias)
 
         val cipherText = try {
@@ -71,7 +71,7 @@ private class Api23Cryptor : Cryptor() {
             cipher.doFinal(input)
         }
 
-        val result = ByteBuffer.allocate(4 + iv.size + cipherText.size)
+        val result = ByteBuffer.allocate(Int.SIZE_BYTES + iv.size + cipherText.size)
         result.putInt(iv.size)
         result.put(iv)
         result.put(cipherText)
@@ -84,7 +84,7 @@ private class Api23Cryptor : Cryptor() {
 
         val buffer = ByteBuffer.wrap(input)
         val ivLength = buffer.int
-        if (ivLength != 12 && ivLength != 16) {
+        if (ivLength != IV_LENGTH && ivLength != IV_LENGTH_MAX) {
             throw IllegalArgumentException("Invalid IV length: $ivLength")
         }
         val iv = ByteArray(ivLength)
@@ -104,7 +104,7 @@ private class Api23Cryptor : Cryptor() {
 
     private fun getCipher(mode: Int, secretKey: Key, iv: ByteArray): Cipher {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(mode, secretKey, GCMParameterSpec(128, iv))
+        cipher.init(mode, secretKey, GCMParameterSpec(GCM_TAG_LENGTH, iv))
         return cipher
     }
 
@@ -126,5 +126,8 @@ private class Api23Cryptor : Cryptor() {
 
     companion object {
         private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
+        private const val IV_LENGTH = 12
+        private const val IV_LENGTH_MAX = 16
+        private const val GCM_TAG_LENGTH = 128
     }
 }

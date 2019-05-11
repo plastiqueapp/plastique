@@ -1,7 +1,8 @@
-package io.plastique.core
+package io.plastique.util
 
 import java.util.TreeMap
 
+@Suppress("MagicNumber")
 object CompactDecimalFormatter {
     private val suffixes = TreeMap<Int, String>()
 

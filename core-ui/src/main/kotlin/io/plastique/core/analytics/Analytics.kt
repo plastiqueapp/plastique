@@ -12,7 +12,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class Analytics @Inject constructor(private val context: Context, private val trackers: List<@JvmSuppressWildcards Tracker>) {
+class Analytics @Inject constructor(
+    private val context: Context,
+    private val trackers: List<@JvmSuppressWildcards Tracker>
+) {
+
     fun setUserProperty(name: String, value: String?) {
         trackers.forEach { tracker -> tracker.setUserProperty(name, value) }
     }
@@ -41,8 +45,11 @@ class Analytics @Inject constructor(private val context: Context, private val tr
     }
 
     private fun getDatabaseSize(file: File): String {
-        val size = BigDecimal(file.length())
-                .divide(BigDecimal(1024 * 1024), 1, RoundingMode.HALF_UP)
+        val size = BigDecimal(file.length()).divide(BYTES_IN_MIB, 1, RoundingMode.HALF_UP)
         return context.getString(R.string.analytics_property_database_size, size.toPlainString())
+    }
+
+    companion object {
+        private val BYTES_IN_MIB = BigDecimal(1024 * 1024)
     }
 }

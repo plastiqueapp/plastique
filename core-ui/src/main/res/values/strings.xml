@@ -27,6 +27,6 @@
     <string name="common_abbr_days">%dd</string>
 
     <!-- Analytics -->
-    <string name="analytics_property_database_size" translatable="false">%s MB</string>
+    <string name="analytics_property_database_size" translatable="false">%s MiB</string>
 
 </resources>

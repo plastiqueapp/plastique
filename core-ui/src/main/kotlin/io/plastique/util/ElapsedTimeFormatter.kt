@@ -7,6 +7,7 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
+@Suppress("MagicNumber")
 object ElapsedTimeFormatter {
     private val DAY_MONTH = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH)
     private val DAY_MONTH_YEAR = DateTimeFormatter.ofPattern("dd MMM yy", Locale.ENGLISH)

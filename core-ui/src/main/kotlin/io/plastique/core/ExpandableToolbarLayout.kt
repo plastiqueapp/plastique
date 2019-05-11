@@ -211,7 +211,7 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
         offsetAnimator?.cancel()
 
         val animator = offsetAnimator ?: ValueAnimator().apply {
-            duration = 300
+            duration = EXPAND_ANIMATION_DURATION
             addUpdateListener { animation ->
                 behavior.topAndBottomOffset = animation.getAnimatedValue("appBarOffset") as Int
                 childrenOffset = animation.getAnimatedValue("childrenOffset") as Int
@@ -301,5 +301,9 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
 
             override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
         }
+    }
+
+    companion object {
+        private const val EXPAND_ANIMATION_DURATION = 300L
     }
 }

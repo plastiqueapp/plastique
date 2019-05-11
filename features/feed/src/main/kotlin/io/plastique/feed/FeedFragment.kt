@@ -101,7 +101,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         feedView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
         feedView.addItemDecoration(FeedItemDecoration(requireContext()))
 
-        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
         feedView.addOnScrollListener(onScrollListener)
 
         refreshLayout = view.findViewById(R.id.refresh)
@@ -201,5 +201,6 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
 
     companion object {
         private const val DIALOG_FEED_SETTINGS = "dialog.feed_settings"
+        private const val LOAD_MORE_THRESHOLD = 4
     }
 }

@@ -1,6 +1,7 @@
 package io.plastique.core.exceptions
 
 import io.plastique.api.common.ErrorData
+import io.plastique.core.client.HttpResponseCodes
 import io.plastique.core.network.NoNetworkConnectionException
 import java.io.IOException
 
@@ -20,6 +21,6 @@ val Throwable.isRetryable: Boolean
         is NoNetworkConnectionException,
         is HttpTransportException,
         is RateLimitExceededException -> true
-        is HttpException -> responseCode >= 500
+        is HttpException -> responseCode >= HttpResponseCodes.INTERNAL_SERVER_ERROR
         else -> false
     }

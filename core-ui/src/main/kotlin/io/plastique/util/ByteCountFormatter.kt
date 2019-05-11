@@ -2,6 +2,7 @@ package io.plastique.util
 
 import kotlin.math.ln
 
+@Suppress("MagicNumber")
 object ByteCountFormatter {
     fun format(bytes: Long, si: Boolean = false): String {
         val unit = if (si) 1000 else 1024

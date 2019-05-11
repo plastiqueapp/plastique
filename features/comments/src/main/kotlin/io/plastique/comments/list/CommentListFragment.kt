@@ -62,7 +62,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
         commentsView.adapter = adapter
         commentsView.layoutManager = LinearLayoutManager(requireContext())
         commentsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-        onScrollListener = EndlessScrollListener(5) { viewModel.dispatch(CommentListEvent.LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(CommentListEvent.LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
 
         composeView = view.findViewById(R.id.compose)
@@ -125,13 +125,13 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
 
     override fun scrollToTop() {
         if (adapter.itemCount > 0) {
-            commentsView.smartScrollToPosition(0, 10)
+            commentsView.smartScrollToPosition(0)
         }
     }
 
     private fun scrollToComment(commentId: String) {
         val scrollPosition = adapter.findCommentPosition(commentId)
-        commentsView.smartScrollToPosition(scrollPosition, 10)
+        commentsView.smartScrollToPosition(scrollPosition)
     }
 
     override fun injectDependencies() {
@@ -140,6 +140,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
 
     companion object {
         private const val ARG_THREAD_ID = "thread_id"
+        private const val LOAD_MORE_THRESHOLD = 5
 
         fun newArgs(threadId: CommentThreadId): Bundle {
             return Bundle().apply {

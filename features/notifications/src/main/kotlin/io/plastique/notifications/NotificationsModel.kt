@@ -49,7 +49,7 @@ class NotificationsModel @Inject constructor(
                             .setConstraints(Constraints.Builder()
                                     .setRequiredNetworkType(NetworkType.CONNECTED)
                                     .build())
-                            .setInitialDelay(10, TimeUnit.SECONDS)
+                            .setInitialDelay(DELETE_MESSAGE_DELAY, TimeUnit.MILLISECONDS)
                             .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
                             .build()
                     workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
@@ -91,5 +91,6 @@ class NotificationsModel @Inject constructor(
 
     companion object {
         private const val WORK_DELETE_MESSAGES = "delete-messages"
+        private val DELETE_MESSAGE_DELAY = TimeUnit.SECONDS.toMillis(10)
     }
 }

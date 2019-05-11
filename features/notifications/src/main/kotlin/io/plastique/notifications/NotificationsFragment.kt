@@ -79,7 +79,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
         snackbarController = SnackbarController(refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
 
-        onScrollListener = EndlessScrollListener(4, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD, isEnabled = false) { viewModel.dispatch(LoadMoreEvent) }
         notificationsView.addOnScrollListener(onScrollListener)
 
         initSwipe()
@@ -154,10 +154,14 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
     }
 
     override fun scrollToTop() {
-        notificationsView.smartScrollToPosition(0, 10)
+        notificationsView.smartScrollToPosition(0)
     }
 
     override fun injectDependencies() {
         getComponent<NotificationsFragmentComponent>().inject(this)
+    }
+
+    companion object {
+        private const val LOAD_MORE_THRESHOLD = 4
     }
 }
