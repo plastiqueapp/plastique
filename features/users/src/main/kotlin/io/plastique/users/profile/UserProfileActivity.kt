@@ -93,10 +93,10 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
 
         viewModel.init(username)
         viewModel.state
-                .pairwiseWithPrevious()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -158,11 +158,11 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton
             watchButton.setOnCheckedChangeListener(this)
 
             GlideApp.with(this)
-                    .load(state.userProfile.user.avatarUrl)
-                    .fallback(R.drawable.default_avatar_64dp)
-                    .circleCrop()
-                    .dontAnimate()
-                    .into(avatarView)
+                .load(state.userProfile.user.avatarUrl)
+                .fallback(R.drawable.default_avatar_64dp)
+                .circleCrop()
+                .dontAnimate()
+                .into(avatarView)
         }
 
         watchButton.isVisible = state.contentState === ContentState.Content && !state.isCurrentUser

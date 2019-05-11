@@ -56,10 +56,10 @@ class WatcherListViewModel @Inject constructor(
 
     lateinit var state: Observable<WatcherListViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(username: String?) {
         if (::state.isInitialized) return
@@ -67,17 +67,17 @@ class WatcherListViewModel @Inject constructor(
         val signInNeeded = username == null && sessionManager.session !is Session.User
         val stateAndEffects = if (signInNeeded) {
             next(WatcherListViewState(
-                    username = username,
-                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.watch_message_sign_in),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
-                    signInNeeded = signInNeeded))
+                username = username,
+                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                    message = resourceProvider.getString(R.string.watch_message_sign_in),
+                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                signInNeeded = signInNeeded))
         } else {
             next(WatcherListViewState(
-                    username = username,
-                    contentState = ContentState.Loading,
-                    signInNeeded = signInNeeded),
-                    LoadWatchersEffect(username))
+                username = username,
+                contentState = ContentState.Loading,
+                signInNeeded = signInNeeded),
+                LoadWatchersEffect(username))
         }
 
         state = loop.loop(stateAndEffects).disposeOnDestroy()
@@ -89,12 +89,12 @@ class WatcherListViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<WatcherListEvent> {
         return Observable.merge(
-                connectivityMonitor.connectionState
-                        .valveLatest(screenVisible)
-                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-                sessionManager.sessionChanges
-                        .valveLatest(screenVisible)
-                        .map { session -> SessionChangedEvent(session) })
+            connectivityMonitor.connectionState
+                .valveLatest(screenVisible)
+                .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+            sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) })
     }
 
     private companion object {
@@ -110,34 +110,34 @@ class WatcherListEffectHandler(
 
     override fun handle(effects: Observable<WatcherListEffect>): Observable<WatcherListEvent> {
         val loadWatchersEvents = effects.ofType<LoadWatchersEffect>()
-                .switchMap { effect ->
-                    dataSource.getData(effect.username)
-                            .valveLatest(screenVisible)
-                            .map<WatcherListEvent> { pagedData ->
-                                val items = pagedData.value.map { WatcherItem(it) }
-                                ItemsChangedEvent(items, pagedData.hasMore)
-                            }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                dataSource.getData(effect.username)
+                    .valveLatest(screenVisible)
+                    .map<WatcherListEvent> { pagedData ->
+                        val items = pagedData.value.map { WatcherItem(it) }
+                        ItemsChangedEvent(items, pagedData.hasMore)
+                    }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMap {
-                    dataSource.loadMore()
-                            .toSingleDefault<WatcherListEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .toObservable()
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMap {
+                dataSource.loadMore()
+                    .toSingleDefault<WatcherListEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .toObservable()
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMap {
-                    dataSource.refresh()
-                            .toSingleDefault<WatcherListEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .toObservable()
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMap {
+                dataSource.refresh()
+                    .toSingleDefault<WatcherListEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .toObservable()
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         return Observable.merge(loadWatchersEvents, loadMoreEvents, refreshEvents)
     }
@@ -162,18 +162,18 @@ class WatcherListStateReducer @Inject constructor(
                 ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
-                    contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    watcherItems = event.items,
-                    hasMore = event.hasMore))
+                contentState = contentState,
+                items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                watcherItems = event.items,
+                hasMore = event.hasMore))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorMessageProvider.getErrorState(event.error)),
-                    items = emptyList(),
-                    watcherItems = emptyList(),
-                    hasMore = false))
+                contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorMessageProvider.getErrorState(event.error)),
+                items = emptyList(),
+                watcherItems = emptyList(),
+                hasMore = false))
         }
 
         RetryClickEvent -> {
@@ -194,9 +194,9 @@ class WatcherListStateReducer @Inject constructor(
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                    isLoadingMore = false,
-                    items = state.watcherItems,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                isLoadingMore = false,
+                items = state.watcherItems,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -217,8 +217,8 @@ class WatcherListStateReducer @Inject constructor(
 
         is ConnectionStateChangedEvent -> {
             if (event.connectionState === NetworkConnectionState.Connected &&
-                    state.contentState is ContentState.Empty &&
-                    state.contentState.error is NoNetworkConnectionException) {
+                state.contentState is ContentState.Empty &&
+                state.contentState.error is NoNetworkConnectionException) {
                 next(state.copy(contentState = ContentState.Loading), LoadWatchersEffect(state.username))
             } else {
                 next(state)
@@ -230,14 +230,14 @@ class WatcherListStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                    message = resourceProvider.getString(R.string.watch_message_sign_in),
-                                    button = resourceProvider.getString(R.string.common_button_sign_in))),
-                            signInNeeded = signInNeeded))
+                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                            message = resourceProvider.getString(R.string.watch_message_sign_in),
+                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                        signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(
-                            contentState = ContentState.Loading,
-                            signInNeeded = signInNeeded
+                        contentState = ContentState.Loading,
+                        signInNeeded = signInNeeded
                     ), LoadWatchersEffect(state.username))
                 }
             } else {

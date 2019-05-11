@@ -46,9 +46,9 @@ class DeviationRepositoryImpl @Inject constructor(
         }
         val cacheKey = fetcher.getCacheKey(params)
         return CacheHelper(cacheEntryRepository, cacheEntryChecker).createObservable(
-                cacheKey = cacheKey,
-                cachedData = getDeviationsFromDb(cacheKey, params, metadataSerializer),
-                updater = fetch(fetcher, cacheKey, params).ignoreElement())
+            cacheKey = cacheKey,
+            cachedData = getDeviationsFromDb(cacheKey, params, metadataSerializer),
+            updater = fetch(fetcher, cacheKey, params).ignoreElement())
     }
 
     fun fetch(params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
@@ -62,17 +62,17 @@ class DeviationRepositoryImpl @Inject constructor(
         }
 
         val users = deviations.asSequence()
-                .flatMap { sequenceOf(it.author, it.dailyDeviation?.giver) }
-                .filterNotNull()
-                .distinctBy { user -> user.id }
-                .toList()
+            .flatMap { sequenceOf(it.author, it.dailyDeviation?.giver) }
+            .filterNotNull()
+            .distinctBy { user -> user.id }
+            .toList()
         val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
 
         val imageEntities = mutableListOf<DeviationImageEntity>()
         deviations.forEach { deviation ->
             imageEntities += deviation.thumbnails.asSequence()
-                    .map { createImageEntity(deviation.id, DeviationImageType.Thumbnail, it) }
-                    .distinctBy { it.size } // Ignore duplicates with the same dimensions
+                .map { createImageEntity(deviation.id, DeviationImageType.Thumbnail, it) }
+                .distinctBy { it.size } // Ignore duplicates with the same dimensions
 
             deviation.preview?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Preview, it) }
             deviation.content?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Content, it) }
@@ -87,16 +87,20 @@ class DeviationRepositoryImpl @Inject constructor(
 
     private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: String, params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
         return fetcher.fetch(params, cursor)
-                .map { fetchResult ->
-                    val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
-                    val metadataSerializer = fetcher.createMetadataSerializer()
-                    val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataSerializer.serialize(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, deviations = fetchResult.deviations, replaceExisting = fetchResult.replaceExisting)
-                    cacheMetadata.nextCursor.toOptional()
-                }
+            .map { fetchResult ->
+                val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
+                val metadataSerializer = fetcher.createMetadataSerializer()
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataSerializer.serialize(cacheMetadata))
+                persist(cacheEntry = cacheEntry, deviations = fetchResult.deviations, replaceExisting = fetchResult.replaceExisting)
+                cacheMetadata.nextCursor.toOptional()
+            }
     }
 
-    private fun getDeviationsFromDb(key: String, params: FetchParams, metadataSerializer: DeviationCacheMetadataSerializer): Observable<PagedData<List<Deviation>, Cursor>> {
+    private fun getDeviationsFromDb(
+        key: String,
+        params: FetchParams,
+        metadataSerializer: DeviationCacheMetadataSerializer
+    ): Observable<PagedData<List<Deviation>, Cursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "deviation_linkage")) {
             val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
             val deviations = combineAndFilter(deviationsWithRelations, params)
@@ -113,10 +117,10 @@ class DeviationRepositoryImpl @Inject constructor(
 
     private fun combineAndFilter(deviationsWithRelations: List<DeviationEntityWithRelations>, params: FetchParams): List<Deviation> {
         return deviationsWithRelations
-                .asSequence()
-                .map { it.toDeviation() }
-                .filter { matchesParams(it, params) }
-                .toList()
+            .asSequence()
+            .map { it.toDeviation() }
+            .filter { matchesParams(it, params) }
+            .toList()
     }
 
     private fun matchesParams(deviation: Deviation, params: FetchParams): Boolean {
@@ -143,33 +147,33 @@ class DeviationRepositoryImpl @Inject constructor(
 
     override fun getDeviationById(deviationId: String): Observable<Deviation> {
         return getDeviationByIdFromDb(deviationId)
-                .switchIfEmpty(getDeviationByIdFromServer(deviationId)
-                        .flatMapObservable { getDeviationByIdFromDb(deviationId) })
+            .switchIfEmpty(getDeviationByIdFromServer(deviationId)
+                .flatMapObservable { getDeviationByIdFromDb(deviationId) })
     }
 
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {
         return deviationDao.getDeviationById(deviationId)
-                .takeWhile { it.isNotEmpty() }
-                .map { it.first().toDeviation() }
-                .distinctUntilChanged()
+            .takeWhile { it.isNotEmpty() }
+            .map { it.first().toDeviation() }
+            .distinctUntilChanged()
     }
 
     private fun getDeviationByIdFromServer(deviationId: String): Single<DeviationDto> {
         return deviationService.getDeviationById(deviationId)
-                .doOnSuccess { deviation -> put(listOf(deviation)) }
-                .mapError { error ->
-                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
-                        DeviationNotFoundException(deviationId, error)
-                    } else {
-                        error
-                    }
+            .doOnSuccess { deviation -> put(listOf(deviation)) }
+            .mapError { error ->
+                if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
+                    DeviationNotFoundException(deviationId, error)
+                } else {
+                    error
                 }
+            }
     }
 
     override fun getDeviationTitleById(deviationId: String): Single<String> {
         return deviationDao.getDeviationTitleById(deviationId)
-                .switchIfEmpty(getDeviationByIdFromServer(deviationId)
-                        .map { deviation -> deviation.title })
+            .switchIfEmpty(getDeviationByIdFromServer(deviationId)
+                .map { deviation -> deviation.title })
     }
 
     companion object {
@@ -178,51 +182,51 @@ class DeviationRepositoryImpl @Inject constructor(
 }
 
 private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
-        id = id,
-        title = title,
-        url = url,
-        categoryPath = categoryPath,
-        publishTime = publishTime,
-        authorId = author.id,
-        excerpt = excerpt,
-        properties = DeviationPropertiesEntity(
-                isDownloadable = isDownloadable,
-                isFavorite = isFavorite,
-                isMature = isMature,
-                allowsComments = allowsComments,
-                downloadFileSize = downloadFileSize),
-        stats = DeviationStatsEntity(comments = stats.comments, favorites = stats.favorites),
-        dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
+    id = id,
+    title = title,
+    url = url,
+    categoryPath = categoryPath,
+    publishTime = publishTime,
+    authorId = author.id,
+    excerpt = excerpt,
+    properties = DeviationPropertiesEntity(
+        isDownloadable = isDownloadable,
+        isFavorite = isFavorite,
+        isMature = isMature,
+        allowsComments = allowsComments,
+        downloadFileSize = downloadFileSize),
+    stats = DeviationStatsEntity(comments = stats.comments, favorites = stats.favorites),
+    dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
 
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
-        DailyDeviationEntity(body = body, date = date, giverId = giver.id)
+    DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
 fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
-        id = deviation.id,
-        title = deviation.title,
-        url = deviation.url,
-        categoryPath = deviation.categoryPath,
-        publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
-        author = author.first().toUser(),
-        properties = deviation.properties.toDeviationProperties(),
-        stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
-        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()),
+    id = deviation.id,
+    title = deviation.title,
+    url = deviation.url,
+    categoryPath = deviation.categoryPath,
+    publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
+    author = author.first().toUser(),
+    properties = deviation.properties.toDeviationProperties(),
+    stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
+    dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()),
 
-        content = images.asSequence()
-                .filter { it.type == DeviationImageType.Content }
-                .map { it.toImage() }
-                .firstOrNull(),
-        preview = images.asSequence()
-                .filter { it.type == DeviationImageType.Preview }
-                .map { it.toImage() }
-                .firstOrNull(),
-        thumbnails = images.asSequence()
-                .filter { it.type == DeviationImageType.Thumbnail }
-                .map { it.toImage() }
-                .sortedBy { it.size.width }
-                .toList(),
+    content = images.asSequence()
+        .filter { it.type == DeviationImageType.Content }
+        .map { it.toImage() }
+        .firstOrNull(),
+    preview = images.asSequence()
+        .filter { it.type == DeviationImageType.Preview }
+        .map { it.toImage() }
+        .firstOrNull(),
+    thumbnails = images.asSequence()
+        .filter { it.type == DeviationImageType.Thumbnail }
+        .map { it.toImage() }
+        .sortedBy { it.size.width }
+        .toList(),
 
-        excerpt = deviation.excerpt)
+    excerpt = deviation.excerpt)
 
 private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
     if (giverId != giver.id) {
@@ -232,11 +236,11 @@ private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.
 }
 
 fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
-        isDownloadable = isDownloadable,
-        isFavorite = isFavorite,
-        isMature = isMature,
-        allowsComments = allowsComments,
-        downloadFileSize = downloadFileSize)
+    isDownloadable = isDownloadable,
+    isFavorite = isFavorite,
+    isMature = isMature,
+    allowsComments = allowsComments,
+    downloadFileSize = downloadFileSize)
 
 private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
 

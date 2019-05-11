@@ -17,18 +17,18 @@ class CommentDataSource @Inject constructor(
     override fun getData(params: CommentThreadId): Observable<out PagedData<List<Comment>, *>> {
         this.params.set(params)
         return commentRepository.getComments(params)
-                .doOnNext { data -> nextCursor.set(data.nextCursor) }
+            .doOnNext { data -> nextCursor.set(data.nextCursor) }
     }
 
     override fun loadMore(): Completable {
         return commentRepository.fetchComments(params.get(), nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     override fun refresh(): Completable {
         return commentRepository.fetchComments(params.get())
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 }

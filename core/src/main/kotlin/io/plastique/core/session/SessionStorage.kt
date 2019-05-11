@@ -6,6 +6,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SessionStorage @Inject constructor(private val preferences: Preferences, private val cryptor: Cryptor) {
+    @Suppress("TooGenericExceptionCaught")
     fun getSession(): Session {
         val accessToken: String?
         val refreshToken: String?

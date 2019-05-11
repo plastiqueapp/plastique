@@ -38,9 +38,9 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it) }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

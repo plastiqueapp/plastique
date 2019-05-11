@@ -24,36 +24,36 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     fun items(params: FolderLoadParams): Observable<ItemsData> {
         return foldersDataSource.getData(params)
-                .publish { folders ->
-                    val folderItems = folders
-                            .map { pagedData ->
-                                ItemsData(items = createFolderItems(pagedData.value), hasMore = pagedData.hasMore)
-                            }
-                            .doOnNext { hasMoreFolders = it.hasMore }
-
-                    val deviationItems = folders
-                            .map { pagedData ->
-                                if (!pagedData.hasMore) {
-                                    pagedData.value.find { folder -> folder.name == Folder.FEATURED }.toOptional()
-                                } else {
-                                    None
-                                }
-                            }
-                            .distinctUntilChanged()
-                            .switchMap { featuredFolder ->
-                                when (featuredFolder) {
-                                    is Some -> getDeviationItems(params, featuredFolder.value)
-                                    else -> Observable.just(ItemsData(items = emptyList()))
-                                }
-                            }
-                            .doOnNext { hasMoreDeviations = it.hasMore }
-
-                    Observable.combineLatest(folderItems, deviationItems) { folderData, deviationsData ->
-                        ItemsData(
-                                items = folderData.items + deviationsData.items,
-                                hasMore = folderData.hasMore || deviationsData.hasMore)
+            .publish { folders ->
+                val folderItems = folders
+                    .map { pagedData ->
+                        ItemsData(items = createFolderItems(pagedData.value), hasMore = pagedData.hasMore)
                     }
+                    .doOnNext { hasMoreFolders = it.hasMore }
+
+                val deviationItems = folders
+                    .map { pagedData ->
+                        if (!pagedData.hasMore) {
+                            pagedData.value.find { folder -> folder.name == Folder.FEATURED }.toOptional()
+                        } else {
+                            None
+                        }
+                    }
+                    .distinctUntilChanged()
+                    .switchMap { featuredFolder ->
+                        when (featuredFolder) {
+                            is Some -> getDeviationItems(params, featuredFolder.value)
+                            else -> Observable.just(ItemsData(items = emptyList()))
+                        }
+                    }
+                    .doOnNext { hasMoreDeviations = it.hasMore }
+
+                Observable.combineLatest(folderItems, deviationItems) { folderData, deviationsData ->
+                    ItemsData(
+                        items = folderData.items + deviationsData.items,
+                        hasMore = folderData.hasMore || deviationsData.hasMore)
                 }
+            }
     }
 
     fun loadMore(): Completable = Completable.defer {
@@ -75,12 +75,12 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
         val folderParams = GalleryDeviationParams(
-                folderId = GalleryFolderId(id = featuredFolder.id, username = params.username),
-                showMatureContent = params.matureContent)
+            folderId = GalleryFolderId(id = featuredFolder.id, username = params.username),
+            showMatureContent = params.matureContent)
         return deviationDataSource.getData(folderParams)
-                .map { pagedData ->
-                    ItemsData(items = createDeviationItems(featuredFolder, pagedData.value), hasMore = pagedData.hasMore)
-                }
+            .map { pagedData ->
+                ItemsData(items = createDeviationItems(featuredFolder, pagedData.value), hasMore = pagedData.hasMore)
+            }
     }
 
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {

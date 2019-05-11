@@ -10,15 +10,16 @@ import io.plastique.users.UserEntity
 import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 
-@Entity(tableName = "deviations",
-        foreignKeys = [
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"]),
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["daily_deviation_giver_id"])
-        ],
-        indices = [
-            Index("author_id"),
-            Index("daily_deviation_giver_id")
-        ])
+@Entity(
+    tableName = "deviations",
+    foreignKeys = [
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"]),
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["daily_deviation_giver_id"])
+    ],
+    indices = [
+        Index("author_id"),
+        Index("daily_deviation_giver_id")
+    ])
 data class DeviationEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")

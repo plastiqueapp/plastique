@@ -56,8 +56,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragment<DeviationListViewModel>(),
-        OnTagClickListener,
-        ScrollableToTop {
+    OnTagClickListener,
+    ScrollableToTop {
 
     @Inject lateinit var navigator: DeviationsNavigator
 
@@ -112,19 +112,19 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         gridParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = DeviationsAdapter(
-                context = requireContext(),
-                glide = GlideApp.with(this),
-                layoutModeProvider = { state.layoutMode },
-                itemSizeCallback = DeviationsItemSizeCallback(gridParams),
-                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
-                onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
-                onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
-                onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
+            context = requireContext(),
+            glide = GlideApp.with(this),
+            layoutModeProvider = { state.layoutMode },
+            itemSizeCallback = DeviationsItemSizeCallback(gridParams),
+            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
+            onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
+            onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
+            onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
 
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
@@ -136,11 +136,11 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         viewModel.init(params)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

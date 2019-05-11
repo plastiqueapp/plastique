@@ -56,10 +56,10 @@ class GalleryViewModel @Inject constructor(
 
     lateinit var state: Observable<GalleryViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(username: String?) {
         if (::state.isInitialized) return
@@ -68,17 +68,17 @@ class GalleryViewModel @Inject constructor(
         val signInNeeded = username == null && sessionManager.session !is Session.User
         val stateAndEffects = if (signInNeeded) {
             next(GalleryViewState(
-                    params = params,
-                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.gallery_message_sign_in),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
-                    signInNeeded = signInNeeded))
+                params = params,
+                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                    message = resourceProvider.getString(R.string.gallery_message_sign_in),
+                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                signInNeeded = signInNeeded))
         } else {
             next(GalleryViewState(
-                    params = params,
-                    contentState = ContentState.Loading,
-                    signInNeeded = signInNeeded),
-                    LoadGalleryEffect(params))
+                params = params,
+                contentState = ContentState.Loading,
+                signInNeeded = signInNeeded),
+                LoadGalleryEffect(params))
         }
 
         state = loop.loop(stateAndEffects).disposeOnDestroy()
@@ -90,12 +90,12 @@ class GalleryViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<GalleryEvent> {
         return Observable.merge(
-                sessionManager.sessionChanges
-                        .valveLatest(screenVisible)
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .valveLatest(screenVisible)
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+            sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) },
+            contentSettings.showMatureChanges
+                .valveLatest(screenVisible)
+                .map { showMature -> ShowMatureChangedEvent(showMature) })
     }
 
     companion object {
@@ -111,29 +111,29 @@ class GalleryEffectHandler(
 
     override fun handle(effects: Observable<GalleryEffect>): Observable<GalleryEvent> {
         val loadEvents = effects.ofType<LoadGalleryEffect>()
-                .switchMap { effect ->
-                    dataSource.items(effect.params)
-                            .valveLatest(screenVisible)
-                            .map<GalleryEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                dataSource.items(effect.params)
+                    .valveLatest(screenVisible)
+                    .map<GalleryEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMapSingle {
-                    dataSource.loadMore()
-                            .toSingleDefault<GalleryEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMapSingle {
+                dataSource.loadMore()
+                    .toSingleDefault<GalleryEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMapSingle {
-                    dataSource.refresh()
-                            .toSingleDefault<GalleryEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMapSingle {
+                dataSource.refresh()
+                    .toSingleDefault<GalleryEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         return Observable.merge(loadEvents, loadMoreEvents, refreshEvents)
     }
@@ -151,7 +151,8 @@ class GalleryStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = if (state.params.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection, TextUtils.htmlEncode(state.params.username)), 0)
+                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection,
+                        TextUtils.htmlEncode(state.params.username)), 0)
                 } else {
                     resourceProvider.getString(R.string.gallery_message_empty_collection)
                 }
@@ -159,18 +160,18 @@ class GalleryStateReducer @Inject constructor(
                 ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
-                    contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    galleryItems = event.items,
-                    hasMore = event.hasMore))
+                contentState = contentState,
+                items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                galleryItems = event.items,
+                hasMore = event.hasMore))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
-                    items = emptyList(),
-                    galleryItems = emptyList(),
-                    hasMore = false))
+                contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
+                items = emptyList(),
+                galleryItems = emptyList(),
+                hasMore = false))
         }
 
         LoadMoreEvent -> {
@@ -186,7 +187,10 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(isLoadingMore = false, items = state.galleryItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(
+                isLoadingMore = false,
+                items = state.galleryItems,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -214,14 +218,14 @@ class GalleryStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                    message = resourceProvider.getString(R.string.gallery_message_sign_in),
-                                    button = resourceProvider.getString(R.string.common_button_sign_in))),
-                            signInNeeded = signInNeeded))
+                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                            message = resourceProvider.getString(R.string.gallery_message_sign_in),
+                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                        signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(
-                            contentState = ContentState.Loading,
-                            signInNeeded = signInNeeded
+                        contentState = ContentState.Loading,
+                        signInNeeded = signInNeeded
                     ), LoadGalleryEffect(state.params))
                 }
             } else {
@@ -233,11 +237,11 @@ class GalleryStateReducer @Inject constructor(
             if (state.params.matureContent != event.showMature) {
                 val params = state.params.copy(matureContent = event.showMature)
                 next(state.copy(
-                        params = params,
-                        contentState = ContentState.Loading,
-                        items = emptyList(),
-                        galleryItems = emptyList()),
-                        LoadGalleryEffect(params))
+                    params = params,
+                    contentState = ContentState.Loading,
+                    items = emptyList(),
+                    galleryItems = emptyList()),
+                    LoadGalleryEffect(params))
             } else {
                 next(state)
             }

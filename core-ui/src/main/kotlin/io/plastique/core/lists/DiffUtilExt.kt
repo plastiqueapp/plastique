@@ -84,22 +84,22 @@ class ListDiffCallback<T>(
     override fun getNewListSize(): Int = newItems.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            itemCallback.areItemsTheSame(oldItems[oldItemPosition], newItems[newItemPosition])
+        itemCallback.areItemsTheSame(oldItems[oldItemPosition], newItems[newItemPosition])
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            itemCallback.areContentsTheSame(oldItems[oldItemPosition], newItems[newItemPosition])
+        itemCallback.areContentsTheSame(oldItems[oldItemPosition], newItems[newItemPosition])
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
-            itemCallback.getChangePayload(oldItems[oldItemPosition], newItems[newItemPosition])
+        itemCallback.getChangePayload(oldItems[oldItemPosition], newItems[newItemPosition])
 }
 
 private object ListItemCallback : DiffUtil.ItemCallback<ListItem>() {
     override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
-            oldItem.javaClass === newItem.javaClass && oldItem.id == newItem.id
+        oldItem.javaClass === newItem.javaClass && oldItem.id == newItem.id
 
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
-            oldItem == newItem
+        oldItem == newItem
 }
 
 private class LoggingListUpdateCallback(private val tag: String) : ListUpdateCallback {

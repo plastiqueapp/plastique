@@ -7,10 +7,11 @@ import androidx.room.PrimaryKey
 import io.plastique.deviations.DeviationEntity
 import io.plastique.util.Size
 
-@Entity(tableName = "deviation_download",
-        foreignKeys = [
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
-        ])
+@Entity(
+    tableName = "deviation_download",
+    foreignKeys = [
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
+    ])
 data class DownloadInfoEntity(
     @PrimaryKey
     @ColumnInfo(name = "deviation_id")

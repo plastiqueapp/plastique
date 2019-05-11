@@ -29,17 +29,19 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
     var progressShowDelay: Long = DEFAULT_PROGRESS_SHOW_DELAY
     var minProgressShowDuration: Long = DEFAULT_MIN_PROGRESS_SHOW_DURATION
 
-    constructor(rootView: View,
-                @IdRes contentViewId: Int,
-                @IdRes progressViewId: Int = View.NO_ID,
-                @IdRes emptyViewId: Int = View.NO_ID)
-            : this(ContentStateApplier(rootView, contentViewId, progressViewId, emptyViewId))
+    constructor(
+        rootView: View,
+        @IdRes contentViewId: Int,
+        @IdRes progressViewId: Int = View.NO_ID,
+        @IdRes emptyViewId: Int = View.NO_ID
+    ) : this(ContentStateApplier(rootView, contentViewId, progressViewId, emptyViewId))
 
-    constructor(activity: Activity,
-                @IdRes contentViewId: Int,
-                @IdRes progressViewId: Int = View.NO_ID,
-                @IdRes emptyViewId: Int = View.NO_ID)
-            : this(ContentStateApplier(activity, contentViewId, progressViewId, emptyViewId))
+    constructor(
+        activity: Activity,
+        @IdRes contentViewId: Int,
+        @IdRes progressViewId: Int = View.NO_ID,
+        @IdRes emptyViewId: Int = View.NO_ID
+    ) : this(ContentStateApplier(activity, contentViewId, progressViewId, emptyViewId))
 
     init {
         dispatchSwitchState(displayedState, false)

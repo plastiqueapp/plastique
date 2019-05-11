@@ -22,14 +22,16 @@ interface MessageService {
     fun getFeedbackMessagesFromStack(
         @Path("stackid") stackId: String,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<MessageDto>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<PagedListResult<MessageDto>>
 
     @GET("messages/mentions/{stackid}")
     @AccessScope("message")
     fun getMentionsFromStack(
         @Path("stackid") stackId: String,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<MessageDto>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<PagedListResult<MessageDto>>
 
     @POST("messages/delete")
     @FormUrlEncoded

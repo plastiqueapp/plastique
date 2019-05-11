@@ -12,17 +12,18 @@ import io.plastique.deviations.DeviationEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
-@Entity(tableName = "statuses",
-        foreignKeys = [
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"]),
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["shared_deviation_id"], onDelete = ForeignKey.SET_NULL),
-            ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["shared_status_id"], onDelete = ForeignKey.SET_NULL)
-        ],
-        indices = [
-            Index("author_id"),
-            Index("shared_deviation_id"),
-            Index("shared_status_id")
-        ])
+@Entity(
+    tableName = "statuses",
+    foreignKeys = [
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"]),
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["shared_deviation_id"], onDelete = ForeignKey.SET_NULL),
+        ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["shared_status_id"], onDelete = ForeignKey.SET_NULL)
+    ],
+    indices = [
+        Index("author_id"),
+        Index("shared_deviation_id"),
+        Index("shared_status_id")
+    ])
 @TypeConverters(ShareTypeConverter::class)
 data class StatusEntity(
     @PrimaryKey

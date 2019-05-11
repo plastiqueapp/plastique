@@ -21,44 +21,44 @@ class FavoritesModelImpl @Inject constructor(
 
     private fun addToFavorites(deviationId: String): Completable {
         return collectionService.addToFolder(deviationId = deviationId, folderId = null)
-                .toResult()
-                .map { result ->
-                    when (result) {
-                        is Result.Success ->
-                            deviationDao.setFavorite(deviationId, true, result.value.numFavorites)
+            .toResult()
+            .map { result ->
+                when (result) {
+                    is Result.Success ->
+                        deviationDao.setFavorite(deviationId, true, result.value.numFavorites)
 
-                        is Result.Error -> {
-                            val error = result.error
-                            if (error is ApiException && error.errorData.code == ERROR_CODE_ALREADY_FAVORITE) {
-                                deviationDao.setFavorite(deviationId, true)
-                            } else {
-                                throw result.error
-                            }
+                    is Result.Error -> {
+                        val error = result.error
+                        if (error is ApiException && error.errorData.code == ERROR_CODE_ALREADY_FAVORITE) {
+                            deviationDao.setFavorite(deviationId, true)
+                        } else {
+                            throw result.error
                         }
                     }
                 }
-                .ignoreElement()
+            }
+            .ignoreElement()
     }
 
     private fun removeFromFavorites(deviationId: String): Completable {
         return collectionService.removeFromFolder(deviationId = deviationId, folderId = null)
-                .toResult()
-                .map { result ->
-                    when (result) {
-                        is Result.Success ->
-                            deviationDao.setFavorite(deviationId, false, result.value.numFavorites)
+            .toResult()
+            .map { result ->
+                when (result) {
+                    is Result.Success ->
+                        deviationDao.setFavorite(deviationId, false, result.value.numFavorites)
 
-                        is Result.Error -> {
-                            val error = result.error
-                            if (error is ApiException && error.errorData.code == ERROR_CODE_NOT_FAVORITE) {
-                                deviationDao.setFavorite(deviationId, false)
-                            } else {
-                                throw result.error
-                            }
+                    is Result.Error -> {
+                        val error = result.error
+                        if (error is ApiException && error.errorData.code == ERROR_CODE_NOT_FAVORITE) {
+                            deviationDao.setFavorite(deviationId, false)
+                        } else {
+                            throw result.error
                         }
                     }
                 }
-                .ignoreElement()
+            }
+            .ignoreElement()
     }
 
     companion object {

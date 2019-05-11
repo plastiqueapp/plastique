@@ -17,16 +17,16 @@ import io.plastique.watch.WatchActivityComponent
 @ActivityScope
 @Subcomponent(modules = [NavigationModule::class])
 interface ModuleActivityComponent :
-        ActivityComponent,
-        AuthActivityComponent,
-        CollectionsActivityComponent,
-        CommentsActivityComponent,
-        DeviationsActivityComponent,
-        GalleryActivityComponent,
-        MainActivityComponent,
-        SettingsActivityComponent,
-        UsersActivityComponent,
-        WatchActivityComponent {
+    ActivityComponent,
+    AuthActivityComponent,
+    CollectionsActivityComponent,
+    CommentsActivityComponent,
+    DeviationsActivityComponent,
+    GalleryActivityComponent,
+    MainActivityComponent,
+    SettingsActivityComponent,
+    UsersActivityComponent,
+    WatchActivityComponent {
 
     override fun createFragmentComponent(): ModuleFragmentComponent
 }

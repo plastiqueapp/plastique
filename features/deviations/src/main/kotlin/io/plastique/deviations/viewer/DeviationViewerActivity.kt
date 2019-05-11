@@ -121,10 +121,10 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         viewModel.init(deviationId)
         viewModel.state
-                .pairwiseWithPrevious()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -203,32 +203,32 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
         // Build a chain of thumbnail requests with higher resolution thumbnails having a higher priority
         val thumbnailRequest = thumbnailUrls.asSequence()
-                .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
-                    val current = glide.load(thumbnailUrl).onlyRetrieveFromCache(true)
-                    if (previous != null) {
-                        current.thumbnail(previous)
-                    } else {
-                        current
-                    }
+            .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
+                val current = glide.load(thumbnailUrl).onlyRetrieveFromCache(true)
+                if (previous != null) {
+                    current.thumbnail(previous)
+                } else {
+                    current
                 }
+            }
 
         glide.load(url)
-                .thumbnail(thumbnailRequest!!)
-                .into(object : ImageViewTarget<Drawable>(imageView) {
-                    override fun setResource(resource: Drawable?) {
-                        if (resource != null) {
-                            require(view is PhotoView)
+            .thumbnail(thumbnailRequest!!)
+            .into(object : ImageViewTarget<Drawable>(imageView) {
+                override fun setResource(resource: Drawable?) {
+                    if (resource != null) {
+                        require(view is PhotoView)
 
-                            // Preserve current transformation matrix in case full resolution image was loaded after a thumbnail
-                            val matrix = Matrix()
-                            view.getSuppMatrix(matrix)
-                            view.setImageDrawable(resource)
-                            view.setSuppMatrix(matrix)
-                        } else {
-                            view.setImageDrawable(resource)
-                        }
+                        // Preserve current transformation matrix in case full resolution image was loaded after a thumbnail
+                        val matrix = Matrix()
+                        view.getSuppMatrix(matrix)
+                        view.setImageDrawable(resource)
+                        view.setSuppMatrix(matrix)
+                    } else {
+                        view.setImageDrawable(resource)
                     }
-                })
+                }
+            })
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -243,9 +243,9 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
 
     private fun sendLink(deviationUrl: String) {
         ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain")
-                .setText(deviationUrl)
-                .startChooser()
+            .setType("text/plain")
+            .setText(deviationUrl)
+            .startChooser()
     }
 
     private fun Menu.update(menuState: MenuState) {

@@ -28,9 +28,9 @@ class MainViewModel @Inject constructor(
 
     lateinit var state: Observable<MainViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            externalEvents = events(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        externalEvents = events(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init() {
         if (::state.isInitialized) return
@@ -40,20 +40,20 @@ class MainViewModel @Inject constructor(
 
     private fun events(): Observable<MainEvent> {
         return sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .distinctUntilChanged { session -> if (session is Session.User) session.userId else null }
-                .switchMap { session ->
-                    if (session is Session.User) {
-                        userRepository.getCurrentUser(session.userId)
-                                .subscribeOn(Schedulers.io())
-                                .map { it.toOptional() }
-                                .doOnError(Timber::e)
-                                .onErrorReturnItem(None)
-                    } else {
-                        Observable.just(None)
-                    }
+            .valveLatest(screenVisible)
+            .distinctUntilChanged { session -> if (session is Session.User) session.userId else null }
+            .switchMap { session ->
+                if (session is Session.User) {
+                    userRepository.getCurrentUser(session.userId)
+                        .subscribeOn(Schedulers.io())
+                        .map { it.toOptional() }
+                        .doOnError(Timber::e)
+                        .onErrorReturnItem(None)
+                } else {
+                    Observable.just(None)
                 }
-                .map { user -> UserChangedEvent(user.toNullable()) }
+            }
+            .map { user -> UserChangedEvent(user.toNullable()) }
     }
 
     companion object {

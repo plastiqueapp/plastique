@@ -29,9 +29,9 @@ class LicensesViewModelTest {
         whenever(licenseRepository.getLicenses()).thenReturn(Single.just(listOf(LICENSE)))
 
         viewModel.state.test()
-                .assertValuesOnly(
-                        LicensesViewState(contentState = ContentState.Loading),
-                        LicensesViewState(contentState = ContentState.Content, items = listOf(HeaderItem, LicenseItem(LICENSE))))
+            .assertValuesOnly(
+                LicensesViewState(contentState = ContentState.Loading),
+                LicensesViewState(contentState = ContentState.Content, items = listOf(HeaderItem, LicenseItem(LICENSE))))
     }
 
     @Test
@@ -41,9 +41,9 @@ class LicensesViewModelTest {
         whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(errorState)
 
         viewModel.state.test()
-                .assertValuesOnly(
-                        LicensesViewState(contentState = ContentState.Loading),
-                        LicensesViewState(contentState = ContentState.Empty(isError = true, emptyState = errorState)))
+            .assertValuesOnly(
+                LicensesViewState(contentState = ContentState.Loading),
+                LicensesViewState(contentState = ContentState.Empty(isError = true, emptyState = errorState)))
     }
 
     @Test
@@ -54,11 +54,11 @@ class LicensesViewModelTest {
         ts.cancel()
 
         viewModel.state.test()
-                .assertValuesOnly(ts.values().last())
+            .assertValuesOnly(ts.values().last())
     }
 }
 
 private val LICENSE = License(
-        libraryName = "My Library",
-        license = "Apache License 2.0",
-        url = "https://acme.org")
+    libraryName = "My Library",
+    license = "Apache License 2.0",
+    url = "https://acme.org")

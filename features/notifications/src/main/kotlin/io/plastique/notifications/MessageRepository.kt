@@ -51,29 +51,29 @@ class MessageRepository @Inject constructor(
     fun getMessages(): Observable<PagedData<List<Message>, StringCursor>> {
         val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
         return cacheHelper.createObservable(
-                cacheKey = CACHE_KEY,
-                cachedData = getMessagesFromDb(CACHE_KEY),
-                updater = fetch(null).ignoreElement())
+            cacheKey = CACHE_KEY,
+            cachedData = getMessagesFromDb(CACHE_KEY),
+            updater = fetch(null).ignoreElement())
     }
 
     fun fetch(cursor: StringCursor?): Single<Optional<StringCursor>> {
         return messageService.getAllMessages(cursor?.value)
-                .map { result ->
-                    val nextCursor = if (result.hasMore) StringCursor(result.cursor) else null
-                    val cacheMetadata = MessageFeedCacheMetadata(nextCursor = nextCursor)
-                    val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, messages = result.results, replaceExisting = cursor == null)
-                    nextCursor.toOptional()
-                }
+            .map { result ->
+                val nextCursor = if (result.hasMore) StringCursor(result.cursor) else null
+                val cacheMetadata = MessageFeedCacheMetadata(nextCursor = nextCursor)
+                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                persist(cacheEntry = cacheEntry, messages = result.results, replaceExisting = cursor == null)
+                nextCursor.toOptional()
+            }
     }
 
     private fun getMessagesFromDb(cacheKey: String): Observable<PagedData<List<Message>, StringCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages")) {
             val messages = messageDao.getMessages()
-                    .asSequence()
-                    .map { it.toMessage() }
-                    .filterNotNull()
-                    .toList()
+                .asSequence()
+                .map { it.toMessage() }
+                .filterNotNull()
+                .toList()
             val nextCursor = getNextCursor(cacheKey)
             PagedData(messages, nextCursor)
         }.distinctUntilChanged()
@@ -87,39 +87,39 @@ class MessageRepository @Inject constructor(
 
     private fun persist(cacheEntry: CacheEntry, messages: List<MessageDto>, replaceExisting: Boolean) {
         val entities = messages.asSequence()
-                .filter { !it.isOrphaned }
-                .map { it.toMessageEntity() }
-                .toList()
+            .filter { !it.isOrphaned }
+            .map { it.toMessageEntity() }
+            .toList()
 
         val users = messages.asSequence()
-                .flatMap { sequenceOf(it.originator, it.profile, it.subject?.profile) }
-                .filterNotNull()
-                .distinctBy { it.id }
-                .toList()
+            .flatMap { sequenceOf(it.originator, it.profile, it.subject?.profile) }
+            .filterNotNull()
+            .distinctBy { it.id }
+            .toList()
 
         val deviations = messages.asSequence()
-                .flatMap { sequenceOf(it.deviation, it.subject?.deviation) }
-                .filterNotNull()
-                .distinctBy { it.id }
-                .toList()
+            .flatMap { sequenceOf(it.deviation, it.subject?.deviation) }
+            .filterNotNull()
+            .distinctBy { it.id }
+            .toList()
 
         val comments = messages.asSequence()
-                .flatMap { sequenceOf(it.comment, it.subject?.comment) }
-                .filterNotNull()
-                .map { it.copy(parentId = null) }
-                .toList()
+            .flatMap { sequenceOf(it.comment, it.subject?.comment) }
+            .filterNotNull()
+            .map { it.copy(parentId = null) }
+            .toList()
 
         val statuses = messages.asSequence()
-                .flatMap { sequenceOf(it.status, it.subject?.status) }
-                .filterNotNull()
-                .distinctBy { it.id }
-                .toList()
+            .flatMap { sequenceOf(it.status, it.subject?.status) }
+            .filterNotNull()
+            .distinctBy { it.id }
+            .toList()
 
         val collectionFolders = messages.asSequence()
-                .flatMap { sequenceOf(it.collection, it.subject?.collection) }
-                .filterNotNull()
-                .distinctBy { it.id }
-                .toList()
+            .flatMap { sequenceOf(it.collection, it.subject?.collection) }
+            .filterNotNull()
+            .distinctBy { it.id }
+            .toList()
 
         database.runInTransaction {
             if (replaceExisting) {
@@ -148,17 +148,17 @@ class MessageRepository @Inject constructor(
 
     fun deleteMarkedMessages(): Completable {
         return messageDao.getDeletedMessageIds()
-                .flattenAsObservable(Functions.identity())
-                .flatMapCompletable { messageId ->
-                    messageService.deleteMessage(messageId)
-                            .onErrorComplete { error -> error is ApiException }
-                            .doOnComplete {
-                                database.runInTransaction {
-                                    messageDao.deleteMessageById(messageId)
-                                    messageDao.clearDeletedMessage(messageId)
-                                }
-                            }
-                }
+            .flattenAsObservable(Functions.identity())
+            .flatMapCompletable { messageId ->
+                messageService.deleteMessage(messageId)
+                    .onErrorComplete { error -> error is ApiException }
+                    .doOnComplete {
+                        database.runInTransaction {
+                            messageDao.deleteMessageById(messageId)
+                            messageDao.clearDeletedMessage(messageId)
+                        }
+                    }
+            }
     }
 
     override fun cleanCache(): Completable = Completable.fromAction {
@@ -182,43 +182,43 @@ data class MessageFeedCacheMetadata(
 )
 
 private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
-        id = id,
-        type = type,
-        time = timestamp!!,
-        html = html,
-        originatorId = originator!!.id,
-        deviationId = deviation?.id,
-        commentId = comment?.id,
-        collectionFolderId = collection?.id,
-        subject = MessageSubjectEntity(
-                deviationId = subject?.deviation?.id,
-                commentId = subject?.comment?.id,
-                collectionFolderId = subject?.collection?.id))
+    id = id,
+    type = type,
+    time = timestamp!!,
+    html = html,
+    originatorId = originator!!.id,
+    deviationId = deviation?.id,
+    commentId = comment?.id,
+    collectionFolderId = collection?.id,
+    subject = MessageSubjectEntity(
+        deviationId = subject?.deviation?.id,
+        commentId = subject?.comment?.id,
+        collectionFolderId = subject?.collection?.id))
 
 private fun MessageEntityWithRelations.toMessage(): Message? = when (message.type) {
     MessageTypes.BADGE_GIVEN -> Message.BadgeGiven(
-            id = message.id,
-            time = message.time,
-            user = originator.first().toUser(),
-            text = message.html!!)
+        id = message.id,
+        time = message.time,
+        user = originator.first().toUser(),
+        text = message.html!!)
 
     MessageTypes.COLLECT -> Message.AddToCollection(
-            id = message.id,
-            time = message.time,
-            user = originator.first().toUser(),
-            deviation = subjectDeviation.first().toDeviation(),
-            folder = collectionFolder.first().let { Folder(id = it.id, name = it.name, size = it.size, thumbnailUrl = it.thumbnailUrl) })
+        id = message.id,
+        time = message.time,
+        user = originator.first().toUser(),
+        deviation = subjectDeviation.first().toDeviation(),
+        folder = collectionFolder.first().let { Folder(id = it.id, name = it.name, size = it.size, thumbnailUrl = it.thumbnailUrl) })
 
     MessageTypes.FAVORITE -> Message.Favorite(
-            id = message.id,
-            time = message.time,
-            user = originator.first().toUser(),
-            deviation = subjectDeviation.first().toDeviation())
+        id = message.id,
+        time = message.time,
+        user = originator.first().toUser(),
+        deviation = subjectDeviation.first().toDeviation())
 
     MessageTypes.WATCH -> Message.Watch(
-            id = message.id,
-            time = message.time,
-            user = originator.first().toUser())
+        id = message.id,
+        time = message.time,
+        user = originator.first().toUser())
 
     else -> null // Unknown type
 }

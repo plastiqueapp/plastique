@@ -8,7 +8,7 @@ import android.net.Uri
 object Intents {
     fun openPlayStore(context: Context, packageName: String): Intent {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
-                .setPackage("com.android.vending")
+            .setPackage("com.android.vending")
         if (context.packageManager.resolveActivity(intent, 0) != null) {
             return intent
         }

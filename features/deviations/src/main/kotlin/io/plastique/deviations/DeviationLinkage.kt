@@ -6,15 +6,16 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import io.plastique.core.cache.CacheEntry
 
-@Entity(tableName = "deviation_linkage",
-        primaryKeys = ["key", "deviation_id"],
-        foreignKeys = [
-            ForeignKey(entity = CacheEntry::class, parentColumns = ["key"], childColumns = ["key"]),
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"])
-        ],
-        indices = [
-            Index("deviation_id")
-        ])
+@Entity(
+    tableName = "deviation_linkage",
+    primaryKeys = ["key", "deviation_id"],
+    foreignKeys = [
+        ForeignKey(entity = CacheEntry::class, parentColumns = ["key"], childColumns = ["key"]),
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"])
+    ],
+    indices = [
+        Index("deviation_id")
+    ])
 data class DeviationLinkage(
     @ColumnInfo(name = "key")
     val key: String,

@@ -79,10 +79,10 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
         disposables += viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.third) }
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.third) }
     }
 
     override fun onDestroyView() {
@@ -104,8 +104,8 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
         val state = this.state
         if (state.settings != null) {
             val include = state.items.asSequence()
-                    .filter { item -> item.isChecked != state.settings.include[item.key] }
-                    .associateBy({ item -> item.key }, { item -> item.isChecked })
+                .filter { item -> item.isChecked != state.settings.include[item.key] }
+                .associateBy({ item -> item.key }, { item -> item.isChecked })
 
             if (include.isNotEmpty()) {
                 listener?.onFeedSettingsChanged(FeedSettings(include))

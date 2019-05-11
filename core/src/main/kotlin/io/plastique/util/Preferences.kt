@@ -48,8 +48,8 @@ interface Preferences {
         }
 
         fun build(): Preferences = PreferencesImpl(
-                sharedPreferences = sharedPreferences ?: throw IllegalStateException("SharedPreferences is required"),
-                converters = converters)
+            sharedPreferences = checkNotNull(sharedPreferences) { "SharedPreferences is required" },
+            converters = converters)
     }
 }
 
@@ -217,10 +217,10 @@ private open class PreferencesImpl(
 
         private fun <T : Any> getValueObservable(key: String, reader: () -> T): Observable<T> {
             return keyChanges
-                    .filter { it == key }
-                    .startWith(key)
-                    .map { reader() }
-                    .distinctUntilChanged()
+                .filter { it == key }
+                .startWith(key)
+                .map { reader() }
+                .distinctUntilChanged()
         }
     }
 }

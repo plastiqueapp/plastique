@@ -49,7 +49,11 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
+class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
+    MainPage,
+    ScrollableToTop,
+    OnInputDialogResultListener {
+
     @Inject lateinit var navigator: CollectionsNavigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -73,30 +77,30 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         val folderParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.collections_folder_min_width),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.collections_folder_spacing),
-                heightToWidthRatio = 0.75f)
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.collections_folder_min_width),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.collections_folder_spacing),
+            heightToWidthRatio = 0.75f)
 
         val deviationParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = CollectionsAdapter(
-                context = requireContext(),
-                glide = GlideApp.with(this),
-                itemSizeCallback = CollectionsItemSizeCallback(folderParams, deviationParams),
-                onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },
-                onFolderLongClick = { item, itemView ->
-                    if (state.showMenu && item.folder.isDeletable) {
-                        showFolderPopupMenu(item.folder, itemView)
-                        true
-                    } else {
-                        false
-                    }
-                },
-                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
+            context = requireContext(),
+            glide = GlideApp.with(this),
+            itemSizeCallback = CollectionsItemSizeCallback(folderParams, deviationParams),
+            onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },
+            onFolderLongClick = { item, itemView ->
+                if (state.showMenu && item.folder.isDeletable) {
+                    showFolderPopupMenu(item.folder, itemView)
+                    true
+                } else {
+                    false
+                }
+            },
+            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -128,11 +132,11 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
         val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -176,10 +180,10 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(), MainPage, Scro
 
     private fun showCreateFolderDialog() {
         val dialog = childFragmentManager.fragmentFactory.instantiate<InputDialogFragment>(requireContext(), args = InputDialogFragment.newArgs(
-                title = R.string.collections_action_create_folder,
-                hint = R.string.collections_folder_name_hint,
-                positiveButton = R.string.collections_button_create,
-                maxLength = FOLDER_NAME_MAX_LENGTH))
+            title = R.string.collections_action_create_folder,
+            hint = R.string.collections_folder_name_hint,
+            positiveButton = R.string.collections_button_create,
+            maxLength = FOLDER_NAME_MAX_LENGTH))
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 

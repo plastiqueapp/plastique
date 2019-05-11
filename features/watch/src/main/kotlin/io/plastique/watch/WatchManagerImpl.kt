@@ -22,13 +22,13 @@ class WatchManagerImpl @Inject constructor(
 
     companion object {
         private val DEFAULT_WATCH_TYPES = mapOf(
-                "friend" to false,
-                "deviations" to true,
-                "collections" to true,
-                "journals" to true,
-                "forum_threads" to true,
-                "critiques" to true,
-                "scraps" to true,
-                "activity" to true)
+            "friend" to false,
+            "deviations" to true,
+            "collections" to true,
+            "journals" to true,
+            "forum_threads" to true,
+            "critiques" to true,
+            "scraps" to true,
+            "activity" to true)
     }
 }

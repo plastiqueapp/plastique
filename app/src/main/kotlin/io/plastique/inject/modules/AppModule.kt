@@ -101,10 +101,10 @@ abstract class AppModule {
         @JvmStatic
         fun providePreferences(sharedPreferences: SharedPreferences): Preferences {
             return Preferences.Builder()
-                    .sharedPreferences(sharedPreferences)
-                    .addConverter(LayoutModeConverter)
-                    .addConverter(ThemeIdConverter)
-                    .build()
+                .sharedPreferences(sharedPreferences)
+                .addConverter(LayoutModeConverter)
+                .addConverter(ThemeIdConverter)
+                .build()
         }
 
         @Provides
@@ -146,10 +146,10 @@ abstract class AppModule {
         @Singleton
         @JvmStatic
         fun provideApiConfiguration(context: Context): ApiConfiguration = ApiConfiguration(
-                authUrl = "${context.packageName}://auth",
-                clientId = context.getString(R.string.api_client_id),
-                clientSecret = context.getString(R.string.api_client_secret),
-                userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
+            authUrl = "${context.packageName}://auth",
+            clientId = context.getString(R.string.api_client_id),
+            clientSecret = context.getString(R.string.api_client_secret),
+            userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
 
         @Provides
         @JvmStatic

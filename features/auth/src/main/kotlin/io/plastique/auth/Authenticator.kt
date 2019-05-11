@@ -27,10 +27,10 @@ class Authenticator @Inject constructor(
     fun generateAuthUrl(): String {
         val csrfToken = CsrfTokenGenerator.generate()
         val call = authService.authorize(
-                apiConfig.clientId,
-                csrfToken,
-                apiConfig.authUrl,
-                REQUESTED_SCOPES.joinToString(" "))
+            apiConfig.clientId,
+            csrfToken,
+            apiConfig.authUrl,
+            REQUESTED_SCOPES.joinToString(" "))
         this.csrfToken = csrfToken
         return call.request().url().toString()
     }
@@ -47,26 +47,26 @@ class Authenticator @Inject constructor(
             validateCsrfToken(csrfToken)
 
             authService.requestAccessToken(
-                    clientId = apiConfig.clientId,
-                    clientSecret = apiConfig.clientSecret,
-                    authCode = authCode,
-                    redirectUri = apiConfig.authUrl)
+                clientId = apiConfig.clientId,
+                clientSecret = apiConfig.clientSecret,
+                authCode = authCode,
+                redirectUri = apiConfig.authUrl)
         }
-                .doOnError { cookieManager.removeAllCookies(null) }
-                .flatMap { tokenResult ->
-                    csrfToken = null
-                    userService.whoami(tokenResult.accessToken)
-                            .map { user ->
-                                userRepository.persistWithTimestamp(user)
-                                Session.User(
-                                        accessToken = tokenResult.accessToken,
-                                        refreshToken = tokenResult.refreshToken!!,
-                                        userId = user.id,
-                                        username = user.name)
-                            }
-                }
-                .doOnSuccess { session -> sessionManager.session = session }
-                .ignoreElement()
+            .doOnError { cookieManager.removeAllCookies(null) }
+            .flatMap { tokenResult ->
+                csrfToken = null
+                userService.whoami(tokenResult.accessToken)
+                    .map { user ->
+                        userRepository.persistWithTimestamp(user)
+                        Session.User(
+                            accessToken = tokenResult.accessToken,
+                            refreshToken = tokenResult.refreshToken!!,
+                            userId = user.id,
+                            username = user.name)
+                    }
+            }
+            .doOnSuccess { session -> sessionManager.session = session }
+            .ignoreElement()
     }
 
     private fun validateCsrfToken(csrfToken: String) {
@@ -78,6 +78,6 @@ class Authenticator @Inject constructor(
 
     companion object {
         private val REQUESTED_SCOPES = listOf(
-                "browse", "collection", "comment.post", "feed", "gallery", "message", "note", "publish", "stash", "user", "user.manage")
+            "browse", "collection", "comment.post", "feed", "gallery", "message", "note", "publish", "stash", "user", "user.manage")
     }
 }

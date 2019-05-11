@@ -46,18 +46,18 @@ class DeviationViewerViewModel @Inject constructor(
 
     lateinit var state: Observable<DeviationViewerViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(deviationId: String) {
         if (::state.isInitialized) return
 
         val initialState = DeviationViewerViewState(
-                deviationId = deviationId,
-                contentState = ContentState.Loading,
-                isSignedIn = sessionManager.session is Session.User)
+            deviationId = deviationId,
+            contentState = ContentState.Loading,
+            isSignedIn = sessionManager.session is Session.User)
 
         state = loop.loop(initialState, LoadDeviationEffect(deviationId)).disposeOnDestroy()
     }
@@ -68,8 +68,8 @@ class DeviationViewerViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<DeviationViewerEvent> {
         return sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) }
+            .valveLatest(screenVisible)
+            .map { session -> SessionChangedEvent(session) }
     }
 
     companion object {
@@ -86,30 +86,30 @@ class DeviationViewerEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<DeviationViewerEffect>): Observable<DeviationViewerEvent> {
         val loadEvents = effects.ofType<LoadDeviationEffect>()
-                .switchMap { effect ->
-                    deviationViewerModel.getDeviationById(effect.deviationId)
-                            .map<DeviationViewerEvent> { result -> DeviationLoadedEvent(result) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                deviationViewerModel.getDeviationById(effect.deviationId)
+                    .map<DeviationViewerEvent> { result -> DeviationLoadedEvent(result) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val downloadOriginalEvents = effects.ofType<DownloadOriginalEffect>()
-                .switchMapMaybe { effect ->
-                    downloadInfoRepository.getDownloadInfo(effect.deviationId)
-                            .doOnSuccess { downloadInfo -> downloader.downloadPicture(Uri.parse(downloadInfo.downloadUrl)) }
-                            .ignoreElement()
-                            .toMaybe<DeviationViewerEvent>()
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> DownloadOriginalErrorEvent(error) }
-                }
+            .switchMapMaybe { effect ->
+                downloadInfoRepository.getDownloadInfo(effect.deviationId)
+                    .doOnSuccess { downloadInfo -> downloader.downloadPicture(Uri.parse(downloadInfo.downloadUrl)) }
+                    .ignoreElement()
+                    .toMaybe<DeviationViewerEvent>()
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> DownloadOriginalErrorEvent(error) }
+            }
 
         val setFavoriteEvents = effects.ofType<SetFavoriteEffect>()
-                .switchMapSingle { effect ->
-                    favoritesModel.setFavorite(effect.deviationId, effect.favorite)
-                            .toSingleDefault<DeviationViewerEvent>(SetFavoriteFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
-                }
+            .switchMapSingle { effect ->
+                favoritesModel.setFavorite(effect.deviationId, effect.favorite)
+                    .toSingleDefault<DeviationViewerEvent>(SetFavoriteFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
+            }
 
         return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents)
     }
@@ -119,51 +119,52 @@ class DeviationViewerStateReducer @Inject constructor(
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<DeviationViewerEvent, DeviationViewerViewState, DeviationViewerEffect> {
 
-    override fun reduce(state: DeviationViewerViewState, event: DeviationViewerEvent): StateWithEffects<DeviationViewerViewState, DeviationViewerEffect> = when (event) {
-        is DeviationLoadedEvent -> {
-            next(state.copy(
+    override fun reduce(state: DeviationViewerViewState, event: DeviationViewerEvent): StateWithEffects<DeviationViewerViewState, DeviationViewerEffect> =
+        when (event) {
+            is DeviationLoadedEvent -> {
+                next(state.copy(
                     contentState = ContentState.Content,
                     content = event.result.deviationContent,
                     infoViewState = event.result.infoViewState,
                     menuState = event.result.menuState))
-        }
+            }
 
-        is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
-        }
+            is LoadErrorEvent -> {
+                next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
+            }
 
-        RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadDeviationEffect(state.deviationId))
-        }
+            RetryClickEvent -> {
+                next(state.copy(contentState = ContentState.Loading), LoadDeviationEffect(state.deviationId))
+            }
 
-        DownloadOriginalClickEvent -> {
-            next(state, DownloadOriginalEffect(state.deviationId))
-        }
+            DownloadOriginalClickEvent -> {
+                next(state, DownloadOriginalEffect(state.deviationId))
+            }
 
-        is DownloadOriginalErrorEvent -> {
-            val errorMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_viewer_message_download_error)
-            next(state.copy(snackbarState = SnackbarState.Message(errorMessage)))
-        }
+            is DownloadOriginalErrorEvent -> {
+                val errorMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_viewer_message_download_error)
+                next(state.copy(snackbarState = SnackbarState.Message(errorMessage)))
+            }
 
-        is SetFavoriteEvent -> {
-            next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
-        }
+            is SetFavoriteEvent -> {
+                next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
+            }
 
-        SetFavoriteFinishedEvent -> {
-            next(state.copy(showProgressDialog = false))
-        }
+            SetFavoriteFinishedEvent -> {
+                next(state.copy(showProgressDialog = false))
+            }
 
-        is SetFavoriteErrorEvent -> {
-            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
-        }
+            is SetFavoriteErrorEvent -> {
+                val errorMessage = errorMessageProvider.getErrorMessage(event.error)
+                next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+            }
 
-        SnackbarShownEvent -> {
-            next(state.copy(snackbarState = SnackbarState.None))
-        }
+            SnackbarShownEvent -> {
+                next(state.copy(snackbarState = SnackbarState.None))
+            }
 
-        is SessionChangedEvent -> {
-            next(state.copy(isSignedIn = event.session is Session.User))
+            is SessionChangedEvent -> {
+                next(state.copy(isSignedIn = event.session is Session.User))
+            }
         }
-    }
 }

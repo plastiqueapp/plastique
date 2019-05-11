@@ -33,7 +33,7 @@ fun AppBarLayout.disableDragging() {
 }
 
 fun AppBarLayout.invalidateScrollRanges() {
-    METHOD_APPBAR_INVALIDATE_SCROLL_RANGES(this)
+    invalidateScrollRangesMethod(this)
 }
 
 fun RecyclerView.smartScrollToPosition(position: Int, maxSmoothScrollItemCount: Int = 10) {
@@ -80,23 +80,23 @@ var TextView.isStrikethrough: Boolean
     }
 
 fun Toolbar.setTitleOnClickListener(onClickListener: View.OnClickListener) {
-    var titleView = FIELD_TOOLBAR_TITLE.get(this) as View?
+    var titleView = toolbarTitleField.get(this) as View?
     if (titleView == null) {
         val title = title
         this.title = " " // Force Toolbar to create mTitleTextView
         this.title = title
-        titleView = FIELD_TOOLBAR_TITLE.get(this) as View
+        titleView = toolbarTitleField.get(this) as View
     }
     titleView.setOnClickListener(onClickListener)
 }
 
 fun Toolbar.setSubtitleOnClickListener(onClickListener: View.OnClickListener) {
-    var subtitleView = FIELD_TOOLBAR_SUBTITLE.get(this) as View?
+    var subtitleView = toolbarSubtitleField.get(this) as View?
     if (subtitleView == null) {
         val subtitle = subtitle
         this.subtitle = " " // Force Toolbar to create mSubtitleTextView
         this.subtitle = subtitle
-        subtitleView = FIELD_TOOLBAR_SUBTITLE.get(this) as View
+        subtitleView = toolbarSubtitleField.get(this) as View
     }
     subtitleView.setOnClickListener(onClickListener)
 }
@@ -116,14 +116,14 @@ private object DisabledDragCallback : AppBarLayout.Behavior.DragCallback() {
     override fun canDrag(appBarLayout: AppBarLayout): Boolean = false
 }
 
-private val FIELD_TOOLBAR_TITLE: Field by lazy(LazyThreadSafetyMode.NONE) {
+private val toolbarTitleField: Field by lazy(LazyThreadSafetyMode.NONE) {
     Toolbar::class.java.getDeclaredField("mTitleTextView").apply { isAccessible = true }
 }
 
-private val FIELD_TOOLBAR_SUBTITLE: Field by lazy(LazyThreadSafetyMode.NONE) {
+private val toolbarSubtitleField: Field by lazy(LazyThreadSafetyMode.NONE) {
     Toolbar::class.java.getDeclaredField("mSubtitleTextView").apply { isAccessible = true }
 }
 
-private val METHOD_APPBAR_INVALIDATE_SCROLL_RANGES: Method by lazy(LazyThreadSafetyMode.NONE) {
+private val invalidateScrollRangesMethod: Method by lazy(LazyThreadSafetyMode.NONE) {
     AppBarLayout::class.java.getDeclaredMethod("invalidateScrollRanges").apply { isAccessible = true }
 }

@@ -68,22 +68,22 @@ class DeviationListViewModel @Inject constructor(
 
     lateinit var state: Observable<DeviationListViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(params: FetchParams) {
         if (::state.isInitialized) return
 
         val actualParams = params.with(
-                showLiterature = contentSettings.showLiterature,
-                showMatureContent = contentSettings.showMature)
+            showLiterature = contentSettings.showLiterature,
+            showMatureContent = contentSettings.showMature)
         val initialState = DeviationListViewState(
-                layoutMode = contentSettings.layoutMode,
-                params = actualParams,
-                tags = createTags(tagFactory, actualParams),
-                contentState = ContentState.Loading)
+            layoutMode = contentSettings.layoutMode,
+            params = actualParams,
+            tags = createTags(tagFactory, actualParams),
+            contentState = ContentState.Loading)
 
         state = loop.loop(initialState, LoadDeviationsEffect(actualParams)).disposeOnDestroy()
     }
@@ -94,19 +94,18 @@ class DeviationListViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<DeviationListEvent> {
         return Observable.merge(
-                connectivityMonitor.connectionState
-                        .valveLatest(screenVisible)
-                        .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-                contentSettings.showLiteratureChanges
-                        .valveLatest(screenVisible)
-                        .map { showLiterature -> ShowLiteratureChangedEvent(showLiterature) },
-                contentSettings.showMatureChanges
-                        .valveLatest(screenVisible)
-                        .map { showMature -> ShowMatureChangedEvent(showMature) },
-                contentSettings.layoutModeChanges
-                        .valveLatest(screenVisible)
-                        .map { layoutMode -> LayoutModeChangedEvent(layoutMode) }
-        )
+            connectivityMonitor.connectionState
+                .valveLatest(screenVisible)
+                .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
+            contentSettings.showLiteratureChanges
+                .valveLatest(screenVisible)
+                .map { showLiterature -> ShowLiteratureChangedEvent(showLiterature) },
+            contentSettings.showMatureChanges
+                .valveLatest(screenVisible)
+                .map { showMature -> ShowMatureChangedEvent(showMature) },
+            contentSettings.layoutModeChanges
+                .valveLatest(screenVisible)
+                .map { layoutMode -> LayoutModeChangedEvent(layoutMode) })
     }
 
     companion object {
@@ -123,38 +122,38 @@ class DeviationListEffectHandler(
 
     override fun handle(effects: Observable<DeviationListEffect>): Observable<DeviationListEvent> {
         val loadEvents = effects.ofType<LoadDeviationsEffect>()
-                .switchMap { effect ->
-                    deviationListModel.getItems(effect.params)
-                            .valveLatest(screenVisible)
-                            .map<DeviationListEvent> { data -> ItemsChangedEvent(items = data.items, hasMore = data.hasMore) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                deviationListModel.getItems(effect.params)
+                    .valveLatest(screenVisible)
+                    .map<DeviationListEvent> { data -> ItemsChangedEvent(items = data.items, hasMore = data.hasMore) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         // TODO: Cancel on new LoadDeviationsEffect
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMapSingle {
-                    deviationListModel.loadMore()
-                            .toSingleDefault<DeviationListEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMapSingle {
+                deviationListModel.loadMore()
+                    .toSingleDefault<DeviationListEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMapSingle {
-                    deviationListModel.refresh()
-                            .toSingleDefault<DeviationListEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMapSingle {
+                deviationListModel.refresh()
+                    .toSingleDefault<DeviationListEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         val favoriteEvents = effects.ofType<SetFavoriteEffect>()
-                .flatMapSingle { effect ->
-                    favoritesModel.setFavorite(effect.deviationId, effect.favorite)
-                            .toSingleDefault<DeviationListEvent>(SetFavoriteFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
-                }
+            .flatMapSingle { effect ->
+                favoritesModel.setFavorite(effect.deviationId, effect.favorite)
+                    .toSingleDefault<DeviationListEvent>(SetFavoriteFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
+            }
 
         return Observable.merge(loadEvents, loadMoreEvents, refreshEvents, favoriteEvents)
     }
@@ -167,118 +166,120 @@ class DeviationListStateReducer @Inject constructor(
     private val tagFactory: TagFactory
 ) : StateReducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
 
-    override fun reduce(state: DeviationListViewState, event: DeviationListEvent): StateWithEffects<DeviationListViewState, DeviationListEffect> = when (event) {
-        is ItemsChangedEvent -> {
-            val contentState = if (event.items.isEmpty()) {
-                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.deviations_message_empty)))
-            } else {
-                ContentState.Content
-            }
-            next(state.copy(
+    override fun reduce(state: DeviationListViewState, event: DeviationListEvent): StateWithEffects<DeviationListViewState, DeviationListEffect> =
+        when (event) {
+            is ItemsChangedEvent -> {
+                val contentState = if (event.items.isEmpty()) {
+                    ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.deviations_message_empty)))
+                } else {
+                    ContentState.Content
+                }
+                next(state.copy(
                     contentState = contentState,
                     items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                     hasMore = event.hasMore,
                     deviationItems = event.items))
-        }
+            }
 
-        is LoadErrorEvent -> {
-            val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
-            next(state.copy(
+            is LoadErrorEvent -> {
+                val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
+                next(state.copy(
                     contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
                     items = emptyList(),
                     deviationItems = emptyList()))
-        }
-
-        RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadDeviationsEffect(state.params))
-        }
-
-        LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem), LoadMoreEffect)
-            } else {
-                next(state)
             }
-        }
 
-        LoadMoreFinishedEvent -> {
-            next(state.copy(isLoadingMore = false))
-        }
+            RetryClickEvent -> {
+                next(state.copy(contentState = ContentState.Loading), LoadDeviationsEffect(state.params))
+            }
 
-        is LoadMoreErrorEvent -> {
-            next(state.copy(
+            LoadMoreEvent -> {
+                if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
+                    next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem), LoadMoreEffect)
+                } else {
+                    next(state)
+                }
+            }
+
+            LoadMoreFinishedEvent -> {
+                next(state.copy(isLoadingMore = false))
+            }
+
+            is LoadMoreErrorEvent -> {
+                next(state.copy(
                     isLoadingMore = false,
                     items = state.deviationItems,
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
-        }
+            }
 
-        RefreshEvent -> {
-            next(state.copy(isRefreshing = true), RefreshEffect)
-        }
+            RefreshEvent -> {
+                next(state.copy(isRefreshing = true), RefreshEffect)
+            }
 
-        RefreshFinishedEvent -> {
-            next(state.copy(isRefreshing = false))
-        }
+            RefreshFinishedEvent -> {
+                next(state.copy(isRefreshing = false))
+            }
 
-        is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
-        }
+            is RefreshErrorEvent -> {
+                next(state.copy(isRefreshing = false,
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
+            }
 
-        is ParamsChangedEvent -> {
-            onFilterChanged(state, event.params)
-        }
+            is ParamsChangedEvent -> {
+                onFilterChanged(state, event.params)
+            }
 
-        is ShowLiteratureChangedEvent -> {
-            onFilterChanged(state, state.params.with(showLiterature = event.showLiterature))
-        }
+            is ShowLiteratureChangedEvent -> {
+                onFilterChanged(state, state.params.with(showLiterature = event.showLiterature))
+            }
 
-        is ShowMatureChangedEvent -> {
-            onFilterChanged(state, state.params.with(showMatureContent = event.showMature))
-        }
+            is ShowMatureChangedEvent -> {
+                onFilterChanged(state, state.params.with(showMatureContent = event.showMature))
+            }
 
-        is LayoutModeChangedEvent -> {
-            next(state.copy(layoutMode = event.layoutMode))
-        }
+            is LayoutModeChangedEvent -> {
+                next(state.copy(layoutMode = event.layoutMode))
+            }
 
-        SnackbarShownEvent -> {
-            next(state.copy(snackbarState = SnackbarState.None))
-        }
+            SnackbarShownEvent -> {
+                next(state.copy(snackbarState = SnackbarState.None))
+            }
 
-        is ConnectionStateChangedEvent -> {
-            if (event.connectionState === NetworkConnectionState.Connected &&
+            is ConnectionStateChangedEvent -> {
+                if (event.connectionState === NetworkConnectionState.Connected &&
                     state.contentState is ContentState.Empty &&
                     state.contentState.error is NoNetworkConnectionException) {
-                next(state.copy(
+                    next(state.copy(
                         contentState = ContentState.Loading),
                         LoadDeviationsEffect(state.params))
-            } else {
-                next(state)
+                } else {
+                    next(state)
+                }
+            }
+
+            is SetFavoriteEvent -> {
+                next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
+            }
+
+            SetFavoriteFinishedEvent -> {
+                next(state.copy(showProgressDialog = false))
+            }
+
+            is SetFavoriteErrorEvent -> {
+                val errorMessage = errorMessageProvider.getErrorMessage(event.error)
+                next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
             }
         }
-
-        is SetFavoriteEvent -> {
-            next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
-        }
-
-        SetFavoriteFinishedEvent -> {
-            next(state.copy(showProgressDialog = false))
-        }
-
-        is SetFavoriteErrorEvent -> {
-            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
-        }
-    }
 
     private fun onFilterChanged(state: DeviationListViewState, params: FetchParams): StateWithEffects<DeviationListViewState, DeviationListEffect> {
         return if (state.params != params) {
             next(state.copy(
-                    params = params,
-                    contentState = ContentState.Loading,
-                    items = emptyList(),
-                    deviationItems = emptyList(),
-                    tags = createTags(tagFactory, params)),
-                    LoadDeviationsEffect(params))
+                params = params,
+                contentState = ContentState.Loading,
+                items = emptyList(),
+                deviationItems = emptyList(),
+                tags = createTags(tagFactory, params)),
+                LoadDeviationsEffect(params))
         } else {
             next(state)
         }

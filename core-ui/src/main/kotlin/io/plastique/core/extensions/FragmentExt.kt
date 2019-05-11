@@ -28,8 +28,8 @@ inline fun <reified T> Fragment.findCallback(): T? {
 
 fun DialogFragment.showAllowingStateLoss(fragmentManager: FragmentManager, tag: String) {
     fragmentManager.beginTransaction()
-            .add(this, tag)
-            .commitAllowingStateLoss()
+        .add(this, tag)
+        .commitAllowingStateLoss()
 }
 
 inline fun <reified T : Fragment> FragmentFactory.instantiate(context: Context, args: Bundle? = null): T {

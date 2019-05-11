@@ -16,13 +16,13 @@ object DebugOkHttpInterceptorModule {
     @Provides
     @JvmStatic
     fun provideInterceptors(): List<Interceptor> =
-            listOf(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+        listOf(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
 
     @Provides
     @JvmStatic
     @Named("network")
     fun provideNetworkInterceptors(connectivityCheckingInterceptor: ConnectivityCheckingInterceptor, flipperClient: FlipperClient): List<Interceptor> =
-            listOf(connectivityCheckingInterceptor,
-                    StethoInterceptor(),
-                    FlipperOkhttpInterceptor(flipperClient.getPlugin(NetworkFlipperPlugin.ID)))
+        listOf(connectivityCheckingInterceptor,
+            StethoInterceptor(),
+            FlipperOkhttpInterceptor(flipperClient.getPlugin(NetworkFlipperPlugin.ID)))
 }

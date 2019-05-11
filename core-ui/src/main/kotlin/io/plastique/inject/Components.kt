@@ -31,10 +31,10 @@ interface FragmentComponent {
 }
 
 inline fun <reified T> Application.getComponent(): T =
-        (this as AppComponent.Holder).appComponent as T
+    (this as AppComponent.Holder).appComponent as T
 
 inline fun <reified T> Activity.getComponent(): T =
-        (this as ActivityComponent.Holder).activityComponent as T
+    (this as ActivityComponent.Holder).activityComponent as T
 
 inline fun <reified T> Fragment.getComponent(): T =
-        (this as FragmentComponent.Holder).fragmentComponent as T
+    (this as FragmentComponent.Holder).fragmentComponent as T

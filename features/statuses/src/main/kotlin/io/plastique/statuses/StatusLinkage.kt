@@ -6,15 +6,16 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import io.plastique.core.cache.CacheEntry
 
-@Entity(tableName = "user_statuses",
-        primaryKeys = ["key", "status_id"],
-        foreignKeys = [
-            ForeignKey(entity = CacheEntry::class, parentColumns = ["key"], childColumns = ["key"], onDelete = ForeignKey.CASCADE),
-            ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["status_id"], onDelete = ForeignKey.CASCADE)
-        ],
-        indices = [
-            Index("status_id")
-        ])
+@Entity(
+    tableName = "user_statuses",
+    primaryKeys = ["key", "status_id"],
+    foreignKeys = [
+        ForeignKey(entity = CacheEntry::class, parentColumns = ["key"], childColumns = ["key"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["status_id"], onDelete = ForeignKey.CASCADE)
+    ],
+    indices = [
+        Index("status_id")
+    ])
 data class StatusLinkage(
     @ColumnInfo(name = "key")
     val key: String,

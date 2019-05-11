@@ -53,10 +53,10 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = CommentListAdapter(
-                glide = GlideApp.with(this),
-                onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
-                onReplyingToClick = { commentId -> scrollToComment(commentId) },
-                onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
+            glide = GlideApp.with(this),
+            onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
+            onReplyingToClick = { commentId -> scrollToComment(commentId) },
+            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         commentsView = view.findViewById(R.id.comments)
         commentsView.adapter = adapter
@@ -86,11 +86,11 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
         val threadId = args.getParcelable<CommentThreadId>(ARG_THREAD_ID)!!
         viewModel.init(threadId)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: CommentListViewState, prevState: CommentListViewState?, listUpdateData: ListUpdateData<ListItem>) {

@@ -8,9 +8,7 @@ import android.widget.TextView
 import io.plastique.users.R
 import io.plastique.util.CompactDecimalFormatter
 
-class UserStatisticsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr) {
-
+class UserStatisticsView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
     private val deviationsLabel: TextView
     private val deviationsValueView: TextView
     private val favoritesLabel: TextView

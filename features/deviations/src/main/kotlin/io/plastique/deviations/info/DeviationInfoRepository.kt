@@ -34,30 +34,30 @@ class DeviationInfoRepository @Inject constructor(
     fun getDeviationInfo(deviationId: String): Observable<DeviationInfo> {
         val cacheKey = "deviation-info-$deviationId"
         return cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getDeviationInfoFromDb(deviationId),
-                updater = fetch(deviationId, cacheKey))
+            cacheKey = cacheKey,
+            cachedData = getDeviationInfoFromDb(deviationId),
+            updater = fetch(deviationId, cacheKey))
     }
 
     private fun fetch(deviationId: String, cacheKey: String): Completable {
         return Singles.zip(
-                deviationRepository.getDeviationTitleById(deviationId),
-                deviationService.getMetadataByIds(listOf(deviationId))
-                        .mapError { error ->
-                            if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.details.containsKey("deviationids")) {
-                                DeviationNotFoundException(deviationId, error)
-                            } else {
-                                error
-                            }
-                        }) { _, metadataResult -> persist(cacheKey, metadataResult.metadata) }
-                .ignoreElement()
+            deviationRepository.getDeviationTitleById(deviationId),
+            deviationService.getMetadataByIds(listOf(deviationId))
+                .mapError { error ->
+                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.details.containsKey("deviationids")) {
+                        DeviationNotFoundException(deviationId, error)
+                    } else {
+                        error
+                    }
+                }) { _, metadataResult -> persist(cacheKey, metadataResult.metadata) }
+            .ignoreElement()
     }
 
     private fun getDeviationInfoFromDb(deviationId: String): Observable<DeviationInfo> {
         return deviationMetadataDao.getDeviationInfoById(deviationId)
-                .filter { it.isNotEmpty() }
-                .map { it.first().toDeviationInfo(ZoneId.systemDefault()) }
-                .distinctUntilChanged()
+            .filter { it.isNotEmpty() }
+            .map { it.first().toDeviationInfo(ZoneId.systemDefault()) }
+            .distinctUntilChanged()
     }
 
     private fun persist(cacheKey: String, metadataList: List<DeviationMetadataDto>) {
@@ -75,13 +75,13 @@ class DeviationInfoRepository @Inject constructor(
 }
 
 private fun DeviationInfoEntity.toDeviationInfo(zoneId: ZoneId): DeviationInfo = DeviationInfo(
-        title = title,
-        author = users.first().toUser(),
-        publishTime = publishTime.atZone(zoneId),
-        description = description,
-        tags = tags)
+    title = title,
+    author = users.first().toUser(),
+    publishTime = publishTime.atZone(zoneId),
+    description = description,
+    tags = tags)
 
 private fun DeviationMetadataDto.toDeviationMetadataEntity(): DeviationMetadataEntity = DeviationMetadataEntity(
-        deviationId = deviationId,
-        description = description,
-        tags = tags.map { it.name })
+    deviationId = deviationId,
+    description = description,
+    tags = tags.map { it.name })

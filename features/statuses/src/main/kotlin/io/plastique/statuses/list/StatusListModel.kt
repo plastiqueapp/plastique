@@ -23,29 +23,29 @@ class StatusListModel @Inject constructor(
     fun getItems(params: StatusListLoadParams): Observable<ItemsData> {
         this.params.set(params)
         return statusRepositoryImpl.getStatuses(params)
-                .map { pagedData ->
-                    val items = pagedData.value.map { createStatusItem(it, params.matureContent) }
-                    ItemsData(items, pagedData.hasMore)
-                }
+            .map { pagedData ->
+                val items = pagedData.value.map { createStatusItem(it, params.matureContent) }
+                ItemsData(items, pagedData.hasMore)
+            }
     }
 
     fun loadMore(): Completable {
         return statusRepositoryImpl.fetch(params.get(), nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     fun refresh(): Completable {
         return statusRepositoryImpl.fetch(params.get(), null)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     private fun createStatusItem(status: Status, matureContent: Boolean): StatusItem = StatusItem(
-            statusId = status.id,
-            author = status.author,
-            date = status.date,
-            statusText = SpannedWrapper(richTextFormatter.format(status.body)),
-            commentCount = status.commentCount,
-            share = status.share.toShareUiModel(richTextFormatter, matureContent))
+        statusId = status.id,
+        author = status.author,
+        date = status.date,
+        statusText = SpannedWrapper(richTextFormatter.format(status.body)),
+        commentCount = status.commentCount,
+        share = status.share.toShareUiModel(richTextFormatter, matureContent))
 }

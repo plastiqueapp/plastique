@@ -15,8 +15,8 @@ class SnackbarController(private val rootView: View) {
             }
             is SnackbarState.MessageWithAction -> {
                 Snackbar.make(rootView, state.message, SNACKBAR_DURATION)
-                        .setAction(state.actionText) { onActionClickListener?.invoke(state.actionData) }
-                        .show()
+                    .setAction(state.actionText) { onActionClickListener?.invoke(state.actionData) }
+                    .show()
             }
         }
     }

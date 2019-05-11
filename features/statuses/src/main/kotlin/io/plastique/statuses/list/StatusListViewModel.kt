@@ -52,18 +52,18 @@ class StatusListViewModel @Inject constructor(
 
     lateinit var state: Observable<StatusListViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(username: String) {
         if (::state.isInitialized) return
 
         val params = StatusListLoadParams(username = username, matureContent = contentSettings.showMature)
         val initialState = StatusListViewState(
-                params = params,
-                contentState = ContentState.Loading)
+            params = params,
+            contentState = ContentState.Loading)
 
         state = loop.loop(initialState, LoadStatusesEffect(params)).disposeOnDestroy()
     }
@@ -74,12 +74,12 @@ class StatusListViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<StatusListEvent> {
         return Observable.merge(
-                sessionManager.sessionChanges
-                        .valveLatest(screenVisible)
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .valveLatest(screenVisible)
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+            sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) },
+            contentSettings.showMatureChanges
+                .valveLatest(screenVisible)
+                .map { showMature -> ShowMatureChangedEvent(showMature) })
     }
 
     companion object {
@@ -95,29 +95,29 @@ class StatusListEffectHandler(
 
     override fun handle(effects: Observable<StatusListEffect>): Observable<StatusListEvent> {
         val itemEvents = effects.ofType<LoadStatusesEffect>()
-                .switchMap { effect ->
-                    statusListModel.getItems(effect.params)
-                            .valveLatest(screenVisible)
-                            .map<StatusListEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                statusListModel.getItems(effect.params)
+                    .valveLatest(screenVisible)
+                    .map<StatusListEvent> { pagedData -> ItemsChangedEvent(items = pagedData.items, hasMore = pagedData.hasMore) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMapSingle {
-                    statusListModel.loadMore()
-                            .toSingleDefault<StatusListEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMapSingle {
+                statusListModel.loadMore()
+                    .toSingleDefault<StatusListEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMapSingle {
-                    statusListModel.refresh()
-                            .toSingleDefault<StatusListEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMapSingle {
+                statusListModel.refresh()
+                    .toSingleDefault<StatusListEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         return Observable.merge(itemEvents, loadMoreEvents, refreshEvents)
     }
@@ -134,22 +134,23 @@ class StatusListStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, TextUtils.htmlEncode(state.params.username)), 0)
+                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty,
+                    TextUtils.htmlEncode(state.params.username)), 0)
                 ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(
-                    contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    statusItems = event.items,
-                    hasMore = event.hasMore))
+                contentState = contentState,
+                items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                statusItems = event.items,
+                hasMore = event.hasMore))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
-                    items = emptyList(),
-                    statusItems = emptyList(),
-                    hasMore = false))
+                contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
+                items = emptyList(),
+                statusItems = emptyList(),
+                hasMore = false))
         }
 
         LoadMoreEvent -> {
@@ -165,7 +166,10 @@ class StatusListStateReducer @Inject constructor(
         }
 
         is LoadMoreErrorEvent -> {
-            next(state.copy(isLoadingMore = false, items = state.statusItems, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(
+                isLoadingMore = false,
+                items = state.statusItems,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -197,11 +201,11 @@ class StatusListStateReducer @Inject constructor(
             if (state.params.matureContent != event.showMature) {
                 val params = state.params.copy(matureContent = event.showMature)
                 next(state.copy(
-                        params = params,
-                        contentState = ContentState.Loading,
-                        items = emptyList(),
-                        statusItems = emptyList()),
-                        LoadStatusesEffect(params))
+                    params = params,
+                    contentState = ContentState.Loading,
+                    items = emptyList(),
+                    statusItems = emptyList()),
+                    LoadStatusesEffect(params))
             } else {
                 next(state)
             }

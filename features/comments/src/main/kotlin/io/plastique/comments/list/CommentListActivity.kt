@@ -26,8 +26,8 @@ class CommentListActivity : BaseActivity() {
             val username = intent.getParcelableExtra<CommentThreadId>(EXTRA_THREAD_ID)!!
             contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = CommentListFragment.newArgs(username))
             supportFragmentManager.beginTransaction()
-                    .add(R.id.comments_container, contentFragment)
-                    .commit()
+                .add(R.id.comments_container, contentFragment)
+                .commit()
         } else {
             contentFragment = supportFragmentManager.findFragmentById(R.id.comments_container) as CommentListFragment
         }

@@ -115,8 +115,8 @@ private class ImageDeviationItemDelegate(
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = image.size.dimensionRatio
 
         glide.load(image.url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.imageView)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.imageView)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -207,7 +207,7 @@ private class MultipleDeviationsItemDelegate(
         holder.headerView.setUser(item.user, glide)
         val resources = holder.itemView.resources
         holder.descriptionView.text = resources.getString(R.string.feed_multiple_deviations_submitted_description,
-                resources.getQuantityString(R.plurals.feed_deviations, item.submittedTotal, item.submittedTotal))
+            resources.getQuantityString(R.plurals.feed_deviations, item.submittedTotal, item.submittedTotal))
         holder.adapter.update(item.items)
     }
 
@@ -306,7 +306,8 @@ private class UsernameChangeItemDelegate(
     override fun onBindViewHolder(item: UsernameChangeItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.headerView.date = item.date
         holder.headerView.setUser(item.user, glide)
-        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.feed_username_change_description, TextUtils.htmlEncode(item.formerName)), 0)
+        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.feed_username_change_description,
+            TextUtils.htmlEncode(item.formerName)), 0)
     }
 
     private class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -345,6 +346,7 @@ class FeedAdapter(
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 
+    @Suppress("ComplexMethod")
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
         if (position == RecyclerView.NO_POSITION) return

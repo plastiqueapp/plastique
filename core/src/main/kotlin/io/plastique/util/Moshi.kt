@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package io.plastique.util
 
 import com.squareup.moshi.JsonAdapter
@@ -15,7 +17,7 @@ abstract class TypeToken<in T> {
 
     private fun getSuperclassTypeParameter(subclass: Class<*>): Type {
         val superclass = subclass.genericSuperclass as? ParameterizedType
-                ?: throw IllegalArgumentException("Super class of $subclass must be parametrized")
+            ?: throw IllegalArgumentException("Super class of $subclass must be parametrized")
         return superclass.actualTypeArguments[0]
     }
 }

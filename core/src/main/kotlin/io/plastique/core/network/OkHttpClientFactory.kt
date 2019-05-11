@@ -12,14 +12,14 @@ class OkHttpClientFactory @Inject constructor(
 ) {
     fun createClient(): OkHttpClient {
         return OkHttpClient.Builder()
-                .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-                .readTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-                .writeTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-                .apply {
-                    interceptors().addAll(interceptors)
-                    networkInterceptors().addAll(networkInterceptors)
-                }
-                .build()
+            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
+            .readTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
+            .writeTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
+            .apply {
+                interceptors().addAll(interceptors)
+                networkInterceptors().addAll(networkInterceptors)
+            }
+            .build()
     }
 
     companion object {

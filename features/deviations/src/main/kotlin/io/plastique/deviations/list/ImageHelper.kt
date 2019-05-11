@@ -23,7 +23,7 @@ internal object ImageHelper {
         val content = deviation.content
         val preview = deviation.preview
         return if (preview != null && (content == null || preview.size.width >= maxImageWidth)) preview else content
-                ?: throw IllegalStateException("No preview available")
+            ?: throw IllegalStateException("No preview available")
     }
 
     fun calculateOptimalPreviewSize(image: Deviation.Image, maxImageWidth: Int): Size {

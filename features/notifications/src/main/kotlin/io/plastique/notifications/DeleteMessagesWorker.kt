@@ -22,17 +22,17 @@ class DeleteMessagesWorker @Inject constructor(
     override fun createWork(): Single<Result> {
         Timber.tag(LOG_TAG).d("createWork")
         return messageRepository.deleteMarkedMessages()
-                .subscribeOn(Schedulers.io())
-                .toSingleDefault(Result.success())
-                .onErrorReturn { error ->
-                    Timber.tag(LOG_TAG).e(error)
-                    if (error.isRetryable) {
-                        Result.retry()
-                    } else {
-                        Result.failure()
-                    }
+            .subscribeOn(Schedulers.io())
+            .toSingleDefault(Result.success())
+            .onErrorReturn { error ->
+                Timber.tag(LOG_TAG).e(error)
+                if (error.isRetryable) {
+                    Result.retry()
+                } else {
+                    Result.failure()
                 }
-                .doOnSuccess { Timber.tag(LOG_TAG).d("Finished with result %s", it) }
+            }
+            .doOnSuccess { Timber.tag(LOG_TAG).d("Finished with result %s", it) }
     }
 
     companion object {

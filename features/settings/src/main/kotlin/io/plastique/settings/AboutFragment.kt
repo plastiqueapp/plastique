@@ -60,45 +60,42 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
         }
     }
 
-    override fun onPreferenceClick(preference: Preference): Boolean {
-        val context = requireContext()
-        return when (preference.key) {
-            "rate_app" -> {
-                openPlayStore(context)
-                true
-            }
-            "send_feedback" -> {
-                val intent = Intents.sendEmail(
-                        to = arrayOf(appConfig.getString("feedback_email")),
-                        subject = appConfig.getString("feedback_subject"),
-                        title = getString(R.string.about_send_email_title))
-                startActivity(intent)
-                true
-            }
-            "privacy_policy" -> {
-                browserLauncher.openUrl(context, appConfig.getString("privacy_policy_url"))
-                true
-            }
-            "deviantart_privacy_policy" -> {
-                browserLauncher.openUrl(context, appConfig.getString("deviantart_privacy_policy_url"))
-                true
-            }
-            "deviantart_tos" -> {
-                browserLauncher.openUrl(context, appConfig.getString("deviantart_terms_of_service_url"))
-                true
-            }
-            "licenses" -> {
-                startActivity(LicensesActivity.createIntent(context))
-                true
-            }
-            "app_version" -> {
-                if (newVersionAvailable) {
-                    openPlayStore(context)
-                }
-                true
-            }
-            else -> false
+    override fun onPreferenceClick(preference: Preference): Boolean = when (preference.key) {
+        "rate_app" -> {
+            openPlayStore(requireContext())
+            true
         }
+        "send_feedback" -> {
+            val intent = Intents.sendEmail(
+                to = arrayOf(appConfig.getString("feedback_email")),
+                subject = appConfig.getString("feedback_subject"),
+                title = getString(R.string.about_send_email_title))
+            startActivity(intent)
+            true
+        }
+        "privacy_policy" -> {
+            browserLauncher.openUrl(requireContext(), appConfig.getString("privacy_policy_url"))
+            true
+        }
+        "deviantart_privacy_policy" -> {
+            browserLauncher.openUrl(requireContext(), appConfig.getString("deviantart_privacy_policy_url"))
+            true
+        }
+        "deviantart_tos" -> {
+            browserLauncher.openUrl(requireContext(), appConfig.getString("deviantart_terms_of_service_url"))
+            true
+        }
+        "licenses" -> {
+            startActivity(LicensesActivity.createIntent(requireContext()))
+            true
+        }
+        "app_version" -> {
+            if (newVersionAvailable) {
+                openPlayStore(requireContext())
+            }
+            true
+        }
+        else -> false
     }
 
     private fun isNewVersionAvailable(currentVersionName: String): Boolean {

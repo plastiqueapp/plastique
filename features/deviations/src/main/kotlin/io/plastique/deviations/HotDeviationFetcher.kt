@@ -56,20 +56,20 @@ class HotDeviationFetcher @Inject constructor(
     override fun getCacheKey(params: HotParams): String = "hot-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = HotParams::class.java, cursorType = OffsetCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = HotParams::class.java, cursorType = OffsetCursor::class.java)
 
     override fun fetch(params: HotParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return deviationService.getHotDeviations(
-                categoryPath = normalizeCategoryPath(params.categoryPath),
-                matureContent = params.showMatureContent,
-                offset = offset,
-                limit = 50)
-                .map { deviationList ->
-                    FetchResult(
-                            deviations = deviationList.results,
-                            nextCursor = deviationList.nextCursor,
-                            replaceExisting = offset == 0)
-                }
+            categoryPath = normalizeCategoryPath(params.categoryPath),
+            matureContent = params.showMatureContent,
+            offset = offset,
+            limit = 50)
+            .map { deviationList ->
+                FetchResult(
+                    deviations = deviationList.results,
+                    nextCursor = deviationList.nextCursor,
+                    replaceExisting = offset == 0)
+            }
     }
 }

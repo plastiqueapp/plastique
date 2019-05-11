@@ -66,9 +66,9 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
         val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)
         viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it) }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: DeviationInfoViewState) {
@@ -84,11 +84,11 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
                 publishDateView.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)
 
                 GlideApp.with(this)
-                        .load(state.author.avatarUrl)
-                        .fallback(R.drawable.default_avatar_64dp)
-                        .circleCrop()
-                        .dontAnimate()
-                        .into(authorAvatarView)
+                    .load(state.author.avatarUrl)
+                    .fallback(R.drawable.default_avatar_64dp)
+                    .circleCrop()
+                    .dontAnimate()
+                    .into(authorAvatarView)
 
                 tagListAdapter.items = state.tags
                 tagListAdapter.notifyDataSetChanged()
@@ -111,7 +111,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
 
         fun createIntent(context: Context, deviationId: String): Intent {
             return Intent(context, DeviationInfoActivity::class.java)
-                    .putExtra(EXTRA_DEVIATION_ID, deviationId)
+                .putExtra(EXTRA_DEVIATION_ID, deviationId)
         }
     }
 }

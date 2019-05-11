@@ -62,21 +62,21 @@ class PopularDeviationFetcher @Inject constructor(
     override fun getCacheKey(params: PopularParams): String = "popular-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = PopularParams::class.java, cursorType = OffsetCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = PopularParams::class.java, cursorType = OffsetCursor::class.java)
 
     override fun fetch(params: PopularParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return deviationService.getPopularDeviations(
-                timeRange = params.timeRange,
-                categoryPath = normalizeCategoryPath(params.categoryPath),
-                matureContent = params.showMatureContent,
-                offset = offset,
-                limit = 50)
-                .map { deviationList ->
-                    FetchResult(
-                            deviations = deviationList.results,
-                            nextCursor = deviationList.nextCursor,
-                            replaceExisting = offset == 0)
-                }
+            timeRange = params.timeRange,
+            categoryPath = normalizeCategoryPath(params.categoryPath),
+            matureContent = params.showMatureContent,
+            offset = offset,
+            limit = 50)
+            .map { deviationList ->
+                FetchResult(
+                    deviations = deviationList.results,
+                    nextCursor = deviationList.nextCursor,
+                    replaceExisting = offset == 0)
+            }
     }
 }

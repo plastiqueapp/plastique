@@ -44,20 +44,23 @@ class CommentRepositoryImpl @Inject constructor(
     fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
         val cacheKey = threadId.cacheKey
         return cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getCommentsFromDb(cacheKey),
-                updater = fetchComments(threadId).ignoreElement())
+            cacheKey = cacheKey,
+            cachedData = getCommentsFromDb(cacheKey),
+            updater = fetchComments(threadId).ignoreElement())
     }
 
     fun fetchComments(threadId: CommentThreadId, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return getCommentList(threadId, null, COMMENTS_MAX_DEPTH, offset, COMMENTS_PER_PAGE)
-                .map { commentList ->
-                    val cacheMetadata = CommentCacheMetadata(nextCursor = commentList.nextCursor)
-                    val cacheEntry = CacheEntry(key = threadId.cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, comments = commentList.comments, replaceExisting = offset == 0)
-                    cacheMetadata.nextCursor.toOptional()
-                }
+            .map { commentList ->
+                val cacheMetadata = CommentCacheMetadata(nextCursor = commentList.nextCursor)
+                val cacheEntry = CacheEntry(
+                    key = threadId.cacheKey,
+                    timestamp = timeProvider.currentInstant,
+                    metadata = metadataConverter.toJson(cacheMetadata))
+                persist(cacheEntry = cacheEntry, comments = commentList.comments, replaceExisting = offset == 0)
+                cacheMetadata.nextCursor.toOptional()
+            }
 
         // TODO: Ignore duplicates if offset changes
         // TODO: Load nested comments automatically
@@ -74,9 +77,9 @@ class CommentRepositoryImpl @Inject constructor(
 
     private fun combineAndFilter(commentsWithRelations: List<CommentEntityWithRelations>): List<Comment> {
         return commentsWithRelations.asSequence()
-                .filter { !it.comment.isIgnored }
-                .map { it.toComment() }
-                .toList()
+            .filter { !it.comment.isIgnored }
+            .map { it.toComment() }
+            .toList()
     }
 
     private fun getNextCursor(cacheKey: String): OffsetCursor? {
@@ -85,9 +88,10 @@ class CommentRepositoryImpl @Inject constructor(
         return metadata?.nextCursor
     }
 
-    private fun getCommentList(threadId: CommentThreadId, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> = when (threadId) {
-        is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
-        is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
+    private fun getCommentList(threadId: CommentThreadId, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> =
+        when (threadId) {
+            is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
+            is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
                 .mapError { error ->
                     if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         UserNotFoundException(threadId.username, error)
@@ -95,8 +99,8 @@ class CommentRepositoryImpl @Inject constructor(
                         error
                     }
                 }
-        is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
-    }
+            is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
+        }
 
     override fun put(comments: Collection<CommentDto>) {
         if (comments.isEmpty()) {
@@ -104,9 +108,9 @@ class CommentRepositoryImpl @Inject constructor(
         }
         val entities = comments.map { it.toCommentEntity() }
         val users = comments.asSequence()
-                .map { it.author }
-                .distinctBy { it.id }
-                .toList()
+            .map { it.author }
+            .distinctBy { it.id }
+            .toList()
 
         database.runInTransaction {
             userRepository.put(users)
@@ -158,17 +162,17 @@ private val CommentThreadId.cacheKey: String
     }
 
 private fun CommentDto.toCommentEntity(): CommentEntity = CommentEntity(
-        id = id,
-        parentId = parentId,
-        authorId = author.id,
-        datePosted = datePosted,
-        numReplies = numReplies,
-        hidden = hidden,
-        text = text)
+    id = id,
+    parentId = parentId,
+    authorId = author.id,
+    datePosted = datePosted,
+    numReplies = numReplies,
+    hidden = hidden,
+    text = text)
 
 private fun CommentEntityWithRelations.toComment(): Comment = Comment(
-        id = comment.id,
-        parentId = comment.parentId,
-        author = users.first().toUser(),
-        datePosted = comment.datePosted,
-        text = comment.text)
+    id = comment.id,
+    parentId = comment.parentId,
+    author = users.first().toUser(),
+    datePosted = comment.datePosted,
+    text = comment.text)

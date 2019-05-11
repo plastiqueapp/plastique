@@ -51,7 +51,11 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, OnFeedSettingsChangedListener {
+class FeedFragment : MvvmFragment<FeedViewModel>(),
+    MainPage,
+    ScrollableToTop,
+    OnFeedSettingsChangedListener {
+
     @Inject lateinit var navigator: FeedNavigator
 
     private lateinit var feedView: RecyclerView
@@ -79,21 +83,20 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         val deviationParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = FeedAdapter(
-                glide = GlideApp.with(this),
-                gridItemSizeCallback = DeviationsGridItemSizeCallback(deviationParams),
-                onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
-                onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
-                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
-                onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
-                onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) },
-                onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
-                onUserClick = { user -> navigator.openUserProfile(navigationContext, user) }
-        )
+            glide = GlideApp.with(this),
+            gridItemSizeCallback = DeviationsGridItemSizeCallback(deviationParams),
+            onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
+            onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
+            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
+            onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
+            onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) },
+            onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
+            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         feedView = view.findViewById(R.id.feed)
         feedView.adapter = adapter
@@ -126,11 +129,11 @@ class FeedFragment : MvvmFragment<FeedViewModel>(), MainPage, ScrollableToTop, O
         super.onActivityCreated(savedInstanceState)
 
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

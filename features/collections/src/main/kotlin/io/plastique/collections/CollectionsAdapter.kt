@@ -50,8 +50,8 @@ private class FolderItemDelegate(
 
         // TODO: Placeholder for null thumbnailUrl
         glide.load(item.folder.thumbnailUrl)
-                .centerCrop()
-                .into(holder.thumbnail)
+            .centerCrop()
+            .into(holder.thumbnail)
     }
 
     class ViewHolder(

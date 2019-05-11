@@ -30,10 +30,10 @@ private class WatcherItemDelegate(
         holder.username.text = item.watcher.user.name
 
         glide.load(item.watcher.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatar)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatar)
     }
 
     class ViewHolder(

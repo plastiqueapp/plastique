@@ -49,7 +49,11 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableToTop, OnInputDialogResultListener {
+class GalleryFragment : MvvmFragment<GalleryViewModel>(),
+    MainPage,
+    ScrollableToTop,
+    OnInputDialogResultListener {
+
     @Inject lateinit var navigator: GalleryNavigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -73,30 +77,34 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         val folderParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.gallery_folder_min_width),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.gallery_folder_spacing),
-                heightToWidthRatio = 0.75f)
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.gallery_folder_min_width),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.gallery_folder_spacing),
+            heightToWidthRatio = 0.75f)
 
         val deviationParams = GridParamsCalculator.calculateGridParams(
-                width = displayMetrics.widthPixels,
-                minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
-                itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
+            width = displayMetrics.widthPixels,
+            minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
+            itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = GalleryAdapter(
-                context = requireContext(),
-                glide = GlideApp.with(this),
-                itemSizeCallback = GalleryItemSizeCallback(folderParams, deviationParams),
-                onFolderClick = { item -> navigator.openGalleryFolder(navigationContext, GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name) },
-                onFolderLongClick = { item, itemView ->
-                    if (state.showMenu && item.folder.isDeletable) {
-                        showFolderPopupMenu(item.folder, itemView)
-                        true
-                    } else {
-                        false
-                    }
-                },
-                onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
+            context = requireContext(),
+            glide = GlideApp.with(this),
+            itemSizeCallback = GalleryItemSizeCallback(folderParams, deviationParams),
+            onFolderClick = { item ->
+                navigator.openGalleryFolder(navigationContext,
+                    GalleryFolderId(id = item.folder.id, username = state.params.username),
+                    item.folder.name)
+            },
+            onFolderLongClick = { item, itemView ->
+                if (state.showMenu && item.folder.isDeletable) {
+                    showFolderPopupMenu(item.folder, itemView)
+                    true
+                } else {
+                    false
+                }
+            },
+            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -127,11 +135,11 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
         val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -175,10 +183,10 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(), MainPage, ScrollableTo
 
     private fun showCreateFolderDialog() {
         val dialog = childFragmentManager.fragmentFactory.instantiate<InputDialogFragment>(requireContext(), args = InputDialogFragment.newArgs(
-                title = R.string.gallery_action_create_folder,
-                hint = R.string.gallery_folder_name_hint,
-                positiveButton = R.string.gallery_button_create,
-                maxLength = FOLDER_NAME_MAX_LENGTH))
+            title = R.string.gallery_action_create_folder,
+            hint = R.string.gallery_folder_name_hint,
+            positiveButton = R.string.gallery_button_create,
+            maxLength = FOLDER_NAME_MAX_LENGTH))
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 

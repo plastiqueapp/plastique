@@ -46,10 +46,10 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
 
         if (author?.avatarUrl != state.author.avatarUrl) {
             glide.load(state.author.avatarUrl)
-                    .fallback(R.drawable.default_avatar_64dp)
-                    .circleCrop()
-                    .dontAnimate()
-                    .into(avatarView)
+                .fallback(R.drawable.default_avatar_64dp)
+                .circleCrop()
+                .dontAnimate()
+                .into(avatarView)
         }
 
         author = state.author

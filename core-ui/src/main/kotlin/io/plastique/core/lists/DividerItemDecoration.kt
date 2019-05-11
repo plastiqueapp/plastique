@@ -84,8 +84,8 @@ class DividerItemDecoration private constructor(
 
         fun build(): DividerItemDecoration {
             return DividerItemDecoration(
-                    divider = divider ?: getDefaultDivider(context),
-                    viewTypes = viewTypes)
+                divider = divider ?: getDefaultDivider(context),
+                viewTypes = viewTypes)
         }
 
         private fun getDefaultDivider(context: Context): Drawable {

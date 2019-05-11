@@ -27,7 +27,7 @@ class ProgressDialogController(
             val fragment = this.fragment
             if (value && fragment == null) {
                 val dialog = fragmentManager.fragmentFactory.instantiate<ProgressDialogFragment>(context,
-                        args = ProgressDialogFragment.newArgs(titleId, messageId))
+                    args = ProgressDialogFragment.newArgs(titleId, messageId))
                 dialog.showAllowingStateLoss(fragmentManager, tag)
                 this.fragment = dialog
             } else if (!value && fragment != null) {

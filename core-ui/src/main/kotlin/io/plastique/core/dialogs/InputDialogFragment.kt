@@ -51,11 +51,11 @@ class InputDialogFragment : BaseDialogFragment() {
         }
 
         val dialog = AlertDialog.Builder(requireContext())
-                .setTitle(args.getInt(ARG_TITLE))
-                .setView(contentView)
-                .setPositiveButton(args.getInt(ARG_POSITIVE_BUTTON), listener)
-                .setNegativeButton(args.getInt(ARG_NEGATIVE_BUTTON), listener)
-                .create()
+            .setTitle(args.getInt(ARG_TITLE))
+            .setView(contentView)
+            .setPositiveButton(args.getInt(ARG_POSITIVE_BUTTON), listener)
+            .setNegativeButton(args.getInt(ARG_NEGATIVE_BUTTON), listener)
+            .create()
 
         dialog.setOnShowListener {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = editText.text!!.isNotBlank()

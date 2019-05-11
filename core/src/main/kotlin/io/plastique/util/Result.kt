@@ -10,5 +10,5 @@ sealed class Result<T> {
 
 fun <T : Any> Single<T>.toResult(): Single<Result<T>> {
     return map<Result<T>> { Result.Success(it) }
-            .onErrorReturn { error -> Result.Error(error) }
+        .onErrorReturn { error -> Result.Error(error) }
 }

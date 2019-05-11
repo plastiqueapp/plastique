@@ -15,13 +15,13 @@ class CacheCleaner @Inject constructor(
     @SuppressLint("CheckResult")
     override fun onLogout() {
         cleanableRepository.get().toObservable()
-                .concatMapCompletable { it.cleanCache() }
-                .subscribeOn(Schedulers.io())
-                .subscribe({
-                    Timber.tag(LOG_TAG).d("Cleanup complete")
-                }, { error ->
-                    Timber.tag(LOG_TAG).e(error)
-                })
+            .concatMapCompletable { it.cleanCache() }
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                Timber.tag(LOG_TAG).d("Cleanup complete")
+            }, { error ->
+                Timber.tag(LOG_TAG).e(error)
+            })
     }
 
     companion object {

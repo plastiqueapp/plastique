@@ -11,9 +11,9 @@ object RxRoom {
         val scheduler = Schedulers.from(database.queryExecutor)
         val maybe = Maybe.fromCallable { database.runInTransaction(callable) }
         return RxRoom.createObservable(database, *tableNames)
-                .subscribeOn(scheduler)
-                .unsubscribeOn(scheduler)
-                .observeOn(scheduler)
-                .flatMapMaybe { maybe }
+            .subscribeOn(scheduler)
+            .unsubscribeOn(scheduler)
+            .observeOn(scheduler)
+            .flatMapMaybe { maybe }
     }
 }

@@ -53,6 +53,7 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
         parent = null
     }
 
+    @Suppress("ComplexMethod")
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         Timber.d("onMeasure(widthMeasureSpec: %s, heightMeasureSpec: %s)", MeasureSpec.toString(widthMeasureSpec), MeasureSpec.toString(heightMeasureSpec))
 
@@ -220,8 +221,8 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
         }
 
         animator.setValues(
-                PropertyValuesHolder.ofInt("childrenOffset", childrenOffset, -maxAppBarOffset),
-                PropertyValuesHolder.ofInt("appBarOffset", behavior.topAndBottomOffset, maxAppBarOffset))
+            PropertyValuesHolder.ofInt("childrenOffset", childrenOffset, -maxAppBarOffset),
+            PropertyValuesHolder.ofInt("appBarOffset", behavior.topAndBottomOffset, maxAppBarOffset))
         animator.start()
 
         offsetAnimator = animator

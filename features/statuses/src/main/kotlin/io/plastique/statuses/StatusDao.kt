@@ -10,7 +10,10 @@ import androidx.room.Update
 @Dao
 interface StatusDao {
     @Transaction
-    @Query("SELECT statuses.* FROM statuses INNER JOIN user_statuses ON statuses.id = user_statuses.status_id WHERE user_statuses.`key` = :key ORDER BY user_statuses.`order`")
+    @Query("""SELECT statuses.* FROM statuses
+INNER JOIN user_statuses ON statuses.id = user_statuses.status_id
+WHERE user_statuses.`key` = :key
+ORDER BY user_statuses.`order`""")
     fun getStatusesByKey(key: String): List<StatusEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

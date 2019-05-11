@@ -36,7 +36,7 @@ private class ListImageDeviationItemDelegate(
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is ImageDeviationItem && layoutModeProvider() == LayoutMode.List
+        item is ImageDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_list, parent, false)
@@ -60,10 +60,10 @@ private class ListImageDeviationItemDelegate(
         layoutParams.dimensionRatio = previewSize.dimensionRatio
 
         glide.load(preview.url)
-                .override(previewSize.width, previewSize.height)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.imageView)
+            .override(previewSize.width, previewSize.height)
+            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.imageView)
     }
 
     class ViewHolder(
@@ -103,7 +103,7 @@ class GridImageDeviationItemDelegate(
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
+        item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_grid, parent, false)
@@ -123,8 +123,8 @@ class GridImageDeviationItemDelegate(
 
         val thumbnail = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
         glide.load(thumbnail.url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.thumbnail)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.thumbnail)
     }
 
     class ViewHolder(
@@ -153,7 +153,7 @@ private class ListLiteratureDeviationItemDelegate(
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.List
+        item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_list, parent, false)
@@ -208,7 +208,7 @@ class GridLiteratureDeviationItemDelegate(
     private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
-            item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
+        item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_grid, parent, false)

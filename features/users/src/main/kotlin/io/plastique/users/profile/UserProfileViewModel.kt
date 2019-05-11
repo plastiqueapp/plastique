@@ -48,19 +48,19 @@ class UserProfileViewModel @Inject constructor(
 
     lateinit var state: Observable<UserProfileViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(username: String) {
         if (::state.isInitialized) return
 
         val initialState = UserProfileViewState(
-                username = username,
-                contentState = ContentState.Loading,
-                currentUserId = sessionManager.session.userId,
-                title = username)
+            username = username,
+            contentState = ContentState.Loading,
+            currentUserId = sessionManager.session.userId,
+            title = username)
 
         state = loop.loop(initialState, LoadUserProfileEffect(username)).disposeOnDestroy()
     }
@@ -71,8 +71,8 @@ class UserProfileViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<UserProfileEvent> {
         return sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) }
+            .valveLatest(screenVisible)
+            .map { session -> SessionChangedEvent(session) }
     }
 
     companion object {
@@ -91,30 +91,30 @@ class UserProfileEffectHandler(
 
     override fun handle(effects: Observable<UserProfileEffect>): Observable<UserProfileEvent> {
         val loadEvents = effects.ofType<LoadUserProfileEffect>()
-                .switchMap { effect ->
-                    userProfileRepository.getUserProfileByName(effect.username)
-                            .valveLatest(screenVisible)
-                            .map<UserProfileEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                userProfileRepository.getUserProfileByName(effect.username)
+                    .valveLatest(screenVisible)
+                    .map<UserProfileEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val copyProfileLinkEvents = effects.ofType<CopyProfileLinkEffect>()
-                .map { effect -> clipboard.setText(effect.profileUrl) }
-                .ignoreElements()
-                .toObservable<UserProfileEvent>()
+            .map { effect -> clipboard.setText(effect.profileUrl) }
+            .ignoreElements()
+            .toObservable<UserProfileEvent>()
 
         val watchEvents = effects.ofType<SetWatchingEffect>()
-                .switchMapSingle { effect ->
-                    watchManager.setWatching(effect.username, effect.watching)
-                            .toSingleDefault<UserProfileEvent>(SetWatchingFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> SetWatchingErrorEvent(error) }
-                }
+            .switchMapSingle { effect ->
+                watchManager.setWatching(effect.username, effect.watching)
+                    .toSingleDefault<UserProfileEvent>(SetWatchingFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> SetWatchingErrorEvent(error) }
+            }
 
         val signOutEvents = effects.ofType<SignOutEffect>()
-                .doOnNext { sessionManager.logout() }
-                .ignoreElements()
+            .doOnNext { sessionManager.logout() }
+            .ignoreElements()
 
         return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents.toObservable())
     }
@@ -128,9 +128,9 @@ class UserProfileStateReducer @Inject constructor(
     override fun reduce(state: UserProfileViewState, event: UserProfileEvent): StateWithEffects<UserProfileViewState, UserProfileEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(state.copy(
-                    contentState = ContentState.Content,
-                    userProfile = event.userProfile,
-                    title = event.userProfile.user.name))
+                contentState = ContentState.Content,
+                userProfile = event.userProfile,
+                title = event.userProfile.user.name))
         }
 
         is LoadErrorEvent -> {
@@ -143,7 +143,7 @@ class UserProfileStateReducer @Inject constructor(
 
         CopyProfileLinkClickEvent -> {
             next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.common_message_link_copied))),
-                    CopyProfileLinkEffect(state.userProfile!!.url))
+                CopyProfileLinkEffect(state.userProfile!!.url))
         }
 
         SnackbarShownEvent -> {

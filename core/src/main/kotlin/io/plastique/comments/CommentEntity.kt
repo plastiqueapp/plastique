@@ -8,15 +8,16 @@ import androidx.room.PrimaryKey
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
-@Entity(tableName = "comments",
-        foreignKeys = [
-            ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["parent_id"]),
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"])
-        ],
-        indices = [
-            Index("author_id"),
-            Index("parent_id")
-        ])
+@Entity(
+    tableName = "comments",
+    foreignKeys = [
+        ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["parent_id"]),
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"])
+    ],
+    indices = [
+        Index("author_id"),
+        Index("parent_id")
+    ])
 data class CommentEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")

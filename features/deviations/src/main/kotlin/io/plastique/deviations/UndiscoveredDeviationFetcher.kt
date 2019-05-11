@@ -56,20 +56,20 @@ class UndiscoveredDeviationFetcher @Inject constructor(
     override fun getCacheKey(params: UndiscoveredParams): String = "undiscovered-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = UndiscoveredParams::class.java, cursorType = OffsetCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = UndiscoveredParams::class.java, cursorType = OffsetCursor::class.java)
 
     override fun fetch(params: UndiscoveredParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return deviationService.getUndiscoveredDeviations(
-                categoryPath = normalizeCategoryPath(params.categoryPath),
-                matureContent = params.showMatureContent,
-                offset = offset,
-                limit = 50)
-                .map { deviationList ->
-                    FetchResult(
-                            deviations = deviationList.results,
-                            nextCursor = deviationList.nextCursor,
-                            replaceExisting = offset == 0)
-                }
+            categoryPath = normalizeCategoryPath(params.categoryPath),
+            matureContent = params.showMatureContent,
+            offset = offset,
+            limit = 50)
+            .map { deviationList ->
+                FetchResult(
+                    deviations = deviationList.results,
+                    nextCursor = deviationList.nextCursor,
+                    replaceExisting = offset == 0)
+            }
     }
 }

@@ -12,25 +12,26 @@ import io.plastique.deviations.DeviationEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
-@Entity(tableName = "messages",
-        foreignKeys = [
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["originator_id"]),
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"]),
-            ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["comment_id"]),
-            ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["collection_folder_id"]),
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["subject_deviation_id"]),
-            ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["subject_comment_id"]),
-            ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["subject_collection_folder_id"])
-        ],
-        indices = [
-            Index("collection_folder_id"),
-            Index("comment_id"),
-            Index("deviation_id"),
-            Index("originator_id"),
-            Index("subject_comment_id"),
-            Index("subject_deviation_id"),
-            Index("subject_collection_folder_id")
-        ])
+@Entity(
+    tableName = "messages",
+    foreignKeys = [
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["originator_id"]),
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"]),
+        ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["comment_id"]),
+        ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["collection_folder_id"]),
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["subject_deviation_id"]),
+        ForeignKey(entity = CommentEntity::class, parentColumns = ["id"], childColumns = ["subject_comment_id"]),
+        ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["subject_collection_folder_id"])
+    ],
+    indices = [
+        Index("collection_folder_id"),
+        Index("comment_id"),
+        Index("deviation_id"),
+        Index("originator_id"),
+        Index("subject_comment_id"),
+        Index("subject_deviation_id"),
+        Index("subject_collection_folder_id")
+    ])
 data class MessageEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")

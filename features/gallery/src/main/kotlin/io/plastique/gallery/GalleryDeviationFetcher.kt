@@ -33,24 +33,24 @@ class GalleryDeviationFetcher @Inject constructor(
     private val galleryService: GalleryService
 ) : DeviationFetcher<GalleryDeviationParams, OffsetCursor> {
     override fun getCacheKey(params: GalleryDeviationParams): String =
-            "gallery-deviations-${params.folderId.id}"
+        "gallery-deviations-${params.folderId.id}"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = GalleryDeviationParams::class.java, cursorType = OffsetCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = GalleryDeviationParams::class.java, cursorType = OffsetCursor::class.java)
 
     override fun fetch(params: GalleryDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolderContents(
-                username = params.folderId.username,
-                folderId = params.folderId.id,
-                matureContent = params.showMatureContent,
-                offset = offset,
-                limit = 24)
-                .map { deviationList ->
-                    FetchResult(
-                            deviations = deviationList.results,
-                            nextCursor = deviationList.nextCursor,
-                            replaceExisting = offset == 0)
-                }
+            username = params.folderId.username,
+            folderId = params.folderId.id,
+            matureContent = params.showMatureContent,
+            offset = offset,
+            limit = 24)
+            .map { deviationList ->
+                FetchResult(
+                    deviations = deviationList.results,
+                    nextCursor = deviationList.nextCursor,
+                    replaceExisting = offset == 0)
+            }
     }
 }

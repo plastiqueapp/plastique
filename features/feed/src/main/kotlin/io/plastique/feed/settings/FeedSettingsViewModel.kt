@@ -30,9 +30,9 @@ class FeedSettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        listener = TimberLogger(LOG_TAG))
 
     val state: Observable<FeedSettingsViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(FeedSettingsViewState(contentState = ContentState.Loading), LoadFeedSettingsEffect).disposeOnDestroy()
@@ -54,12 +54,12 @@ class FeedSettingsEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<FeedSettingsEffect>): Observable<FeedSettingsEvent> {
         return effects.ofType<LoadFeedSettingsEffect>()
-                .switchMapSingle {
-                    feedSettingsManager.getSettings()
-                            .map<FeedSettingsEvent> { feedSettings -> FeedSettingsLoadedEvent(feedSettings, createOptions(feedSettings)) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMapSingle {
+                feedSettingsManager.getSettings()
+                    .map<FeedSettingsEvent> { feedSettings -> FeedSettingsLoadedEvent(feedSettings, createOptions(feedSettings)) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
     }
 
     private fun createOptions(feedSettings: FeedSettings): List<OptionItem> {

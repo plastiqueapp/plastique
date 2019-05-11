@@ -38,17 +38,17 @@ class CategoryListViewModel @Inject constructor(
 
     lateinit var state: Observable<CategoryListViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        listener = TimberLogger(LOG_TAG))
 
     fun init(initialCategory: Category) {
         if (::state.isInitialized) return
 
         val initialState = CategoryListViewState(
-                parent = initialCategory,
-                contentState = ContentState.Loading,
-                breadcrumbs = createBreadcrumbs(initialCategory))
+            parent = initialCategory,
+            contentState = ContentState.Loading,
+            breadcrumbs = createBreadcrumbs(initialCategory))
 
         state = loop.loop(initialState, LoadCategoryEffect(initialCategory)).disposeOnDestroy()
     }
@@ -68,12 +68,12 @@ class CategoryListEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<CategoryListEffect>): Observable<CategoryListEvent> {
         return effects.ofType<LoadCategoryEffect>()
-                .switchMapSingle { effect ->
-                    categoryRepository.getCategories(effect.category)
-                            .map<CategoryListEvent> { subcategories -> LoadCategoryFinishEvent(effect.category, subcategories) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadCategoryErrorEvent(effect.category, error) }
-                }
+            .switchMapSingle { effect ->
+                categoryRepository.getCategories(effect.category)
+                    .map<CategoryListEvent> { subcategories -> LoadCategoryFinishEvent(effect.category, subcategories) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadCategoryErrorEvent(effect.category, error) }
+            }
     }
 }
 
@@ -88,8 +88,8 @@ class CategoryListStateReducer @Inject constructor(
                 next(state.copy(selectedCategory = event.item.category))
             } else if (!state.isExpanding) {
                 val items = state.items.replaceIf(
-                        { item -> item.category == event.item.category },
-                        { item -> item.copy(loading = true, startLoadingTimestamp = SystemClock.elapsedRealtime()) })
+                    { item -> item.category == event.item.category },
+                    { item -> item.copy(loading = true, startLoadingTimestamp = SystemClock.elapsedRealtime()) })
                 next(state.copy(isExpanding = true, items = items), LoadCategoryEffect(event.item.category))
             } else {
                 next(state)
@@ -100,11 +100,11 @@ class CategoryListStateReducer @Inject constructor(
             val category = event.breadcrumb.tag as Category
             if (state.parent != category) {
                 next(state.copy(
-                        contentState = ContentState.Loading,
-                        parent = category,
-                        breadcrumbs = createBreadcrumbs(category),
-                        items = emptyList()),
-                        LoadCategoryEffect(category))
+                    contentState = ContentState.Loading,
+                    parent = category,
+                    breadcrumbs = createBreadcrumbs(category),
+                    items = emptyList()),
+                    LoadCategoryEffect(category))
             } else {
                 next(state)
             }
@@ -112,11 +112,11 @@ class CategoryListStateReducer @Inject constructor(
 
         is LoadCategoryFinishEvent -> {
             next(state.copy(
-                    contentState = ContentState.Content,
-                    parent = event.category,
-                    isExpanding = false,
-                    breadcrumbs = createBreadcrumbs(event.category),
-                    items = createItems(event.category, event.subcategories)))
+                contentState = ContentState.Content,
+                parent = event.category,
+                isExpanding = false,
+                breadcrumbs = createBreadcrumbs(event.category),
+                items = createItems(event.category, event.subcategories)))
         }
 
         is LoadCategoryErrorEvent -> {
@@ -124,11 +124,11 @@ class CategoryListStateReducer @Inject constructor(
                 next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
             } else {
                 val items = state.items.replaceIf(
-                        { item -> item.category == event.category },
-                        { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
+                    { item -> item.category == event.category },
+                    { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
                 next(state.copy(items = items,
-                        isExpanding = false,
-                        snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.deviations_categories_load_error))))
+                    isExpanding = false,
+                    snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.deviations_categories_load_error))))
             }
         }
 

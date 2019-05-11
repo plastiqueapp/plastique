@@ -41,11 +41,11 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
     override fun onStart() {
         super.onStart()
         themeDisposable = themeManager.themeChanges
-                .filter { theme -> theme != currentTheme }
-                .subscribe { theme ->
-                    currentTheme = theme
-                    ActivityCompat.recreate(this)
-                }
+            .filter { theme -> theme != currentTheme }
+            .subscribe { theme ->
+                currentTheme = theme
+                ActivityCompat.recreate(this)
+            }
 
         appConfig.fetch()
     }
@@ -95,7 +95,8 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
 
     override val activityComponent: ActivityComponent by lazy(LazyThreadSafetyMode.NONE) {
         @Suppress("DEPRECATION")
-        (lastCustomNonConfigurationInstance as ActivityComponent?) ?: application.getComponent<AppComponent>().createActivityComponent()
+        lastCustomNonConfigurationInstance as ActivityComponent?
+            ?: application.getComponent<AppComponent>().createActivityComponent()
     }
 
     override fun createFragmentComponent(): FragmentComponent {

@@ -61,26 +61,26 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     val state: Observable<FeedViewState> by lazy(LazyThreadSafetyMode.NONE) {
         val showMatureContent = contentSettings.showMature
         val signedIn = sessionManager.session is Session.User
         val stateAndEffects = if (signedIn) {
             next(FeedViewState(
-                    contentState = ContentState.Loading,
-                    isSignedIn = signedIn,
-                    showMatureContent = showMatureContent),
-                    LoadFeedEffect(showMatureContent))
+                contentState = ContentState.Loading,
+                isSignedIn = signedIn,
+                showMatureContent = showMatureContent),
+                LoadFeedEffect(showMatureContent))
         } else {
             next(FeedViewState(contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                    message = resourceProvider.getString(R.string.feed_message_sign_in),
-                    button = resourceProvider.getString(R.string.common_button_sign_in))),
-                    isSignedIn = signedIn,
-                    showMatureContent = showMatureContent))
+                message = resourceProvider.getString(R.string.feed_message_sign_in),
+                button = resourceProvider.getString(R.string.common_button_sign_in))),
+                isSignedIn = signedIn,
+                showMatureContent = showMatureContent))
         }
 
         loop.loop(stateAndEffects).disposeOnDestroy()
@@ -92,12 +92,12 @@ class FeedViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<FeedEvent> {
         return Observable.merge(
-                sessionManager.sessionChanges
-                        .valveLatest(screenVisible)
-                        .map { session -> SessionChangedEvent(session) },
-                contentSettings.showMatureChanges
-                        .valveLatest(screenVisible)
-                        .map { showMature -> ShowMatureChangedEvent(showMature) })
+            sessionManager.sessionChanges
+                .valveLatest(screenVisible)
+                .map { session -> SessionChangedEvent(session) },
+            contentSettings.showMatureChanges
+                .valveLatest(screenVisible)
+                .map { showMature -> ShowMatureChangedEvent(showMature) })
     }
 
     private companion object {
@@ -116,46 +116,46 @@ class FeedEffectHandler(
 
     override fun handle(effects: Observable<FeedEffect>): Observable<FeedEvent> {
         val loadEvents = effects.ofType<LoadFeedEffect>()
-                .switchMap { effect ->
-                    feedModel.items(effect.matureContent)
-                            .valveLatest(screenVisible)
-                            .takeWhile { sessionManager.session is Session.User }
-                            .map<FeedEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                feedModel.items(effect.matureContent)
+                    .valveLatest(screenVisible)
+                    .takeWhile { sessionManager.session is Session.User }
+                    .map<FeedEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMapSingle {
-                    feedModel.loadMore()
-                            .toSingleDefault<FeedEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMapSingle {
+                feedModel.loadMore()
+                    .toSingleDefault<FeedEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMapSingle {
-                    feedModel.refresh()
-                            .toSingleDefault<FeedEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMapSingle {
+                feedModel.refresh()
+                    .toSingleDefault<FeedEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         val settingsEvents = effects.ofType<SetFeedSettingsEffect>()
-                .switchMapSingle { effect ->
-                    feedSettingsManager.updateSettings(effect.settings)
-                            .toSingleDefault<FeedEvent>(SettingsChangedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> SettingsChangeErrorEvent(error) }
-                }
+            .switchMapSingle { effect ->
+                feedSettingsManager.updateSettings(effect.settings)
+                    .toSingleDefault<FeedEvent>(SettingsChangedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> SettingsChangeErrorEvent(error) }
+            }
 
         val favoriteEvents = effects.ofType<SetFavoriteEffect>()
-                .flatMapSingle { effect ->
-                    favoritesModel.setFavorite(effect.deviationId, effect.favorite)
-                            .toSingleDefault<FeedEvent>(SetFavoriteFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
-                }
+            .flatMapSingle { effect ->
+                favoritesModel.setFavorite(effect.deviationId, effect.favorite)
+                    .toSingleDefault<FeedEvent>(SetFavoriteFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
+            }
 
         return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, favoriteEvents)
     }
@@ -175,18 +175,18 @@ class FeedStateReducer @Inject constructor(
                 ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.feed_message_empty)))
             }
             next(state.copy(
-                    contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    feedItems = event.items,
-                    hasMore = event.hasMore))
+                contentState = contentState,
+                items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                feedItems = event.items,
+                hasMore = event.hasMore))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                    contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
-                    items = emptyList(),
-                    feedItems = emptyList(),
-                    hasMore = false))
+                contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
+                items = emptyList(),
+                feedItems = emptyList(),
+                hasMore = false))
         }
 
         LoadMoreEvent -> {
@@ -203,9 +203,9 @@ class FeedStateReducer @Inject constructor(
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                    isLoadingMore = false,
-                    items = state.feedItems,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                isLoadingMore = false,
+                items = state.feedItems,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
         }
 
         RefreshEvent -> {
@@ -233,15 +233,15 @@ class FeedStateReducer @Inject constructor(
             if (signedIn != state.isSignedIn) {
                 if (signedIn) {
                     next(state.copy(
-                            contentState = ContentState.Loading,
-                            isSignedIn = signedIn),
-                            LoadFeedEffect(state.showMatureContent))
+                        contentState = ContentState.Loading,
+                        isSignedIn = signedIn),
+                        LoadFeedEffect(state.showMatureContent))
                 } else {
                     next(state.copy(
-                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                    message = resourceProvider.getString(R.string.feed_message_sign_in),
-                                    button = resourceProvider.getString(R.string.common_button_sign_in))),
-                            isSignedIn = signedIn))
+                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                            message = resourceProvider.getString(R.string.feed_message_sign_in),
+                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                        isSignedIn = signedIn))
                 }
             } else {
                 next(state)
@@ -251,11 +251,11 @@ class FeedStateReducer @Inject constructor(
         is ShowMatureChangedEvent -> {
             if (state.showMatureContent != event.showMatureContent) {
                 next(state.copy(
-                        contentState = ContentState.Loading,
-                        items = emptyList(),
-                        feedItems = emptyList(),
-                        showMatureContent = event.showMatureContent),
-                        LoadFeedEffect(event.showMatureContent))
+                    contentState = ContentState.Loading,
+                    items = emptyList(),
+                    feedItems = emptyList(),
+                    showMatureContent = event.showMatureContent),
+                    LoadFeedEffect(event.showMatureContent))
             } else {
                 next(state)
             }
@@ -267,18 +267,18 @@ class FeedStateReducer @Inject constructor(
 
         SettingsChangedEvent -> {
             next(state.copy(
-                    isApplyingSettings = false,
-                    contentState = ContentState.Loading,
-                    items = emptyList(),
-                    feedItems = emptyList(),
-                    hasMore = false),
-                    LoadFeedEffect(state.showMatureContent))
+                isApplyingSettings = false,
+                contentState = ContentState.Loading,
+                items = emptyList(),
+                feedItems = emptyList(),
+                hasMore = false),
+                LoadFeedEffect(state.showMatureContent))
         }
 
         is SettingsChangeErrorEvent -> {
             next(state.copy(
-                    isApplyingSettings = false,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.feed_message_settings_change_error))))
+                isApplyingSettings = false,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.feed_message_settings_change_error))))
         }
 
         is SetFavoriteEvent -> {

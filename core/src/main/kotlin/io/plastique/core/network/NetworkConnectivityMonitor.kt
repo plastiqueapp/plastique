@@ -36,10 +36,10 @@ class NetworkConnectivityMonitorImpl @Inject constructor(
             emitter.setDisposable(receiver)
             emitter.onNext(currentConnectionState)
         }
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .doOnNext { Timber.tag(LOG_TAG).d("Connection state changed to %s", it) }
-                .share()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .distinctUntilChanged()
+            .doOnNext { Timber.tag(LOG_TAG).d("Connection state changed to %s", it) }
+            .share()
     }
 
     private val currentConnectionState: NetworkConnectionState

@@ -10,13 +10,14 @@ import androidx.room.TypeConverters
 import io.plastique.api.common.StringEnum
 import io.plastique.util.Size
 
-@Entity(tableName = "deviation_images",
-        foreignKeys = [
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
-        ],
-        indices = [
-            Index("deviation_id")
-        ])
+@Entity(
+    tableName = "deviation_images",
+    foreignKeys = [
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
+    ],
+    indices = [
+        Index("deviation_id")
+    ])
 @TypeConverters(DeviationImageTypeConverter::class)
 data class DeviationImageEntity(
     @PrimaryKey

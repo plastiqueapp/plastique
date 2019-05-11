@@ -10,7 +10,7 @@ sealed class CategoryListEvent : Event() {
 
     data class LoadCategoryFinishEvent(val category: Category, val subcategories: List<Category>) : CategoryListEvent() {
         override fun toString(): String =
-                "LoadCategoryFinishEvent(category=$category, subcategories=${subcategories.size})"
+            "LoadCategoryFinishEvent(category=$category, subcategories=${subcategories.size})"
     }
 
     data class LoadCategoryErrorEvent(val category: Category, val error: Throwable) : CategoryListEvent()

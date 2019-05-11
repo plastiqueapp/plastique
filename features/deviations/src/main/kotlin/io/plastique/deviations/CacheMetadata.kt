@@ -25,12 +25,12 @@ class DeviationCacheMetadataSerializer(
     cursorType: Class<out Cursor>
 ) {
     private val moshi = Moshi.Builder()
-            .add(OffsetCursorAdapter())
-            .add(DateCursorAdapter())
-            .add(StringEnumJsonAdapter.Factory())
-            .add(DerivedClassAdapterFactory(FetchParams::class.java, paramsType))
-            .add(DerivedClassAdapterFactory(Cursor::class.java, cursorType))
-            .build()
+        .add(OffsetCursorAdapter())
+        .add(DateCursorAdapter())
+        .add(StringEnumJsonAdapter.Factory())
+        .add(DerivedClassAdapterFactory(FetchParams::class.java, paramsType))
+        .add(DerivedClassAdapterFactory(Cursor::class.java, cursorType))
+        .build()
     private val adapter
         get() = moshi.adapter<DeviationCacheMetadata>()
 

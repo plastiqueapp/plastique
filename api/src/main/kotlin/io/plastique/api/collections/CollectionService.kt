@@ -20,7 +20,8 @@ interface CollectionService {
         @Query("ext_preload") preload: Boolean,
         @Query("mature_content") matureContent: Boolean,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<FolderDto>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<PagedListResult<FolderDto>>
 
     @GET("collections/{folderid}")
     fun getFolderContents(
@@ -28,21 +29,24 @@ interface CollectionService {
         @Query("username") username: String?,
         @Query("mature_content") matureContent: Boolean,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 24) limit: Int): Single<PagedListResult<DeviationDto>>
+        @Query("limit") @IntRange(from = 1, to = 24) limit: Int
+    ): Single<PagedListResult<DeviationDto>>
 
     @POST("collections/fave")
     @FormUrlEncoded
     @AccessScope("collection")
     fun addToFolder(
         @Field("deviationid") deviationId: String,
-        @Field("folderid[0]") folderId: String?): Single<AddRemoveFavoriteResult>
+        @Field("folderid[0]") folderId: String?
+    ): Single<AddRemoveFavoriteResult>
 
     @POST("collections/unfave")
     @FormUrlEncoded
     @AccessScope("collection")
     fun removeFromFolder(
         @Field("deviationid") deviationId: String,
-        @Field("folderid[0]") folderId: String?): Single<AddRemoveFavoriteResult>
+        @Field("folderid[0]") folderId: String?
+    ): Single<AddRemoveFavoriteResult>
 
     @POST("collections/folders/create")
     @FormUrlEncoded

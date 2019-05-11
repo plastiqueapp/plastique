@@ -17,7 +17,8 @@ interface CommentService {
         @Query("commentid") parentCommentId: String?,
         @Query("maxdepth") @IntRange(from = 0, to = 5) maxDepth: Int,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<CommentList>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<CommentList>
 
     @GET("comments/profile/{username}")
     fun getCommentsOnProfile(
@@ -25,7 +26,8 @@ interface CommentService {
         @Query("commentid") parentCommentId: String?,
         @Query("maxdepth") @IntRange(from = 0, to = 5) maxDepth: Int,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<CommentList>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<CommentList>
 
     @GET("comments/status/{statusid}")
     fun getCommentsOnStatus(
@@ -33,7 +35,8 @@ interface CommentService {
         @Query("commentid") parentCommentId: String?,
         @Query("maxdepth") @IntRange(from = 0, to = 5) maxDepth: Int,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<CommentList>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<CommentList>
 
     @POST("comments/post/deviation/{deviationid}")
     @FormUrlEncoded
@@ -41,7 +44,8 @@ interface CommentService {
     fun postCommentOnDeviation(
         @Path("deviationid") deviationId: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<CommentDto>
+        @Field("body") text: String
+    ): Single<CommentDto>
 
     @POST("comments/post/profile/{username}")
     @FormUrlEncoded
@@ -49,7 +53,8 @@ interface CommentService {
     fun postCommentOnProfile(
         @Path("username") username: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<CommentDto>
+        @Field("body") text: String
+    ): Single<CommentDto>
 
     @POST("comments/post/status/{statusid}")
     @FormUrlEncoded
@@ -57,5 +62,6 @@ interface CommentService {
     fun postCommentOnStatus(
         @Path("statusid") statusId: String,
         @Query("commentid") parentCommentId: String?,
-        @Field("body") text: String): Single<CommentDto>
+        @Field("body") text: String
+    ): Single<CommentDto>
 }

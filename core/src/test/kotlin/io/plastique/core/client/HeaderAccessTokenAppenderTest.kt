@@ -13,26 +13,26 @@ class HeaderAccessTokenAppenderTest {
     @Test
     fun `getAccessToken returns access token`() {
         val request = Request.Builder()
-                .url("https://acme.org")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer abc")
-                .build()
+            .url("https://acme.org")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer abc")
+            .build()
         assertEquals("abc", appender.getAccessToken(request))
     }
 
     @Test
     fun `getAccessToken returns null if request has no Authorization header`() {
         val request = Request.Builder()
-                .url("https://acme.org")
-                .build()
+            .url("https://acme.org")
+            .build()
         assertNull(appender.getAccessToken(request))
     }
 
     @Test
     fun `getAccessToken throws IllegalArgumentException if Authorization header cannot be parsed`() {
         val request = Request.Builder()
-                .url("https://acme.org")
-                .header(HttpHeaders.AUTHORIZATION, "Basic abc")
-                .build()
+            .url("https://acme.org")
+            .header(HttpHeaders.AUTHORIZATION, "Basic abc")
+            .build()
         assertThrows<IllegalArgumentException>("Unsupported Authorization header: 'Basic abc'") {
             appender.getAccessToken(request)
         }
@@ -41,8 +41,8 @@ class HeaderAccessTokenAppenderTest {
     @Test
     fun `append adds Authorization header with Bearer token`() {
         val request = Request.Builder()
-                .url("https://acme.org")
-                .build()
+            .url("https://acme.org")
+            .build()
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 
@@ -52,9 +52,9 @@ class HeaderAccessTokenAppenderTest {
     @Test
     fun `append replaces existing Authorization header`() {
         val request = Request.Builder()
-                .url("https://acme.org")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer 123")
-                .build()
+            .url("https://acme.org")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer 123")
+            .build()
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 

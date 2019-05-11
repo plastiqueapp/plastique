@@ -13,26 +13,26 @@ class DeviationViewerModel @Inject constructor(
 ) {
     fun getDeviationById(deviationId: String): Observable<DeviationLoadResult> {
         return Observable.combineLatest(
-                deviationRepository.getDeviationById(deviationId),
-                sessionManager.sessionChanges
-                        .map { it.userId ?: "" }
-                        .distinctUntilChanged()
+            deviationRepository.getDeviationById(deviationId),
+            sessionManager.sessionChanges
+                .map { it.userId ?: "" }
+                .distinctUntilChanged()
         ) { deviation, userId ->
             val content = deviation.toDeviationContent()
 
             val infoViewState = InfoViewState(
-                    title = deviation.title,
-                    author = deviation.author,
-                    favoriteCount = deviation.stats.favorites,
-                    isFavoriteChecked = deviation.properties.isFavorite,
-                    isFavoriteEnabled = deviation.author.id != userId,
-                    commentCount = deviation.stats.comments,
-                    isCommentsEnabled = deviation.properties.allowsComments)
+                title = deviation.title,
+                author = deviation.author,
+                favoriteCount = deviation.stats.favorites,
+                isFavoriteChecked = deviation.properties.isFavorite,
+                isFavoriteEnabled = deviation.author.id != userId,
+                commentCount = deviation.stats.comments,
+                isCommentsEnabled = deviation.properties.allowsComments)
 
             val menuState = MenuState(
-                    deviationUrl = deviation.url,
-                    showDownload = deviation.properties.isDownloadable,
-                    downloadFileSize = deviation.properties.downloadFileSize)
+                deviationUrl = deviation.url,
+                showDownload = deviation.properties.isDownloadable,
+                downloadFileSize = deviation.properties.downloadFileSize)
 
             DeviationLoadResult(deviationContent = content, infoViewState = infoViewState, menuState = menuState)
         }
@@ -43,8 +43,8 @@ class DeviationViewerModel @Inject constructor(
         else -> {
             val previewUrl = preview!!.url
             DeviationContent.Image(
-                    url = content?.url ?: previewUrl,
-                    thumbnailUrls = thumbnails.map { it.url } + previewUrl) // Ordered from lowest to highest resolution
+                url = content?.url ?: previewUrl,
+                thumbnailUrls = thumbnails.map { it.url } + previewUrl) // Ordered from lowest to highest resolution
         }
     }
 }

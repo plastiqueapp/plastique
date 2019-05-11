@@ -35,11 +35,11 @@ class LicenseRepositoryTest {
         whenever(context.assets.open(any())).thenReturn(json.byteInputStream())
 
         repository.getLicenses()
-                .test()
-                .assertResult(listOf(License(
-                        libraryName = "Library Name",
-                        libraryDescription = "Library Description",
-                        license = "Apache License 2.0",
-                        url = "https://acme.org")))
+            .test()
+            .assertResult(listOf(License(
+                libraryName = "Library Name",
+                libraryDescription = "Library Description",
+                license = "Apache License 2.0",
+                url = "https://acme.org")))
     }
 }

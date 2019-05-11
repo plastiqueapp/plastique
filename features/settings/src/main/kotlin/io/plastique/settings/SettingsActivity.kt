@@ -35,8 +35,8 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         if (savedInstanceState == null) {
             val fragment = supportFragmentManager.fragmentFactory.instantiate<SettingsFragment>(this)
             supportFragmentManager.beginTransaction()
-                    .add(R.id.settings_container, fragment)
-                    .commit()
+                .add(R.id.settings_container, fragment)
+                .commit()
         }
     }
 
@@ -46,10 +46,10 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         fragment.setTargetFragment(caller, 0)
 
         supportFragmentManager.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.settings_container, fragment)
-                .addToBackStack(null)
-                .commit()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            .replace(R.id.settings_container, fragment)
+            .addToBackStack(null)
+            .commit()
         return true
     }
 

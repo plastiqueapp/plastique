@@ -25,13 +25,13 @@ class ApiClient @Inject constructor(
 
     init {
         retrofit = Retrofit.Builder()
-                .baseUrl(config.apiUrl)
-                .client(createOkHttpClient(authInterceptor, okHttpClient))
-                .addCallAdapterFactory(callAdapterFactory)
-                .addConverterFactory(StringConverterFactory())
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .validateEagerly(BuildConfig.DEBUG)
-                .build()
+            .baseUrl(config.apiUrl)
+            .client(createOkHttpClient(authInterceptor, okHttpClient))
+            .addCallAdapterFactory(callAdapterFactory)
+            .addConverterFactory(StringConverterFactory())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .validateEagerly(BuildConfig.DEBUG)
+            .build()
     }
 
     inline fun <reified T> createService(): T {
@@ -44,10 +44,10 @@ class ApiClient @Inject constructor(
 
     private fun createOkHttpClient(authInterceptor: AuthInterceptor, baseOkHttpClient: OkHttpClient): OkHttpClient {
         return baseOkHttpClient.newBuilder()
-                .authenticator(authInterceptor)
-                .cache(Cache(responseCacheDir, MAX_RESPONSE_CACHE_SIZE))
-                .apply { interceptors().add(0, authInterceptor) }
-                .build()
+            .authenticator(authInterceptor)
+            .cache(Cache(responseCacheDir, MAX_RESPONSE_CACHE_SIZE))
+            .apply { interceptors().add(0, authInterceptor) }
+            .build()
     }
 
     companion object {

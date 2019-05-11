@@ -25,77 +25,77 @@ class FeedModel @Inject constructor(
     fun items(matureContent: Boolean): Observable<ItemsData> {
         this.matureContent = matureContent
         return feedRepository.getFeed(matureContent)
-                .map { pagedData ->
-                    nextCursor.set(pagedData.nextCursor)
-                    val items = pagedData.value.map { createItem(it, matureContent) }
-                    ItemsData(items, hasMore = pagedData.nextCursor != null)
-                }
+            .map { pagedData ->
+                nextCursor.set(pagedData.nextCursor)
+                val items = pagedData.value.map { createItem(it, matureContent) }
+                ItemsData(items, hasMore = pagedData.nextCursor != null)
+            }
     }
 
     fun loadMore(): Completable {
         return feedRepository.fetch(matureContent, nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     fun refresh(): Completable {
         return feedRepository.fetch(matureContent, null)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     private fun createItem(feedElement: FeedElement, matureContent: Boolean): FeedListItem = when (feedElement) {
         is CollectionUpdate -> CollectionUpdateItem(
-                id = feedElement.timestamp.toString(),
-                date = feedElement.timestamp,
-                user = feedElement.user,
-                folderId = feedElement.folder.id,
-                folderName = feedElement.folder.name,
-                addedCount = feedElement.addedCount,
-                folderItems = emptyList())
+            id = feedElement.timestamp.toString(),
+            date = feedElement.timestamp,
+            user = feedElement.user,
+            folderId = feedElement.folder.id,
+            folderName = feedElement.folder.name,
+            addedCount = feedElement.addedCount,
+            folderItems = emptyList())
 
         is FeedElement.MultipleDeviationsSubmitted -> {
             var index = 0
             MultipleDeviationsItem(
-                    id = "${feedElement.user.id}-${feedElement.timestamp}",
-                    date = feedElement.timestamp,
-                    user = feedElement.user,
-                    submittedTotal = feedElement.submittedTotal,
-                    items = feedElement.deviations.map { deviation -> createInnerDeviationItem(deviation, index++) })
+                id = "${feedElement.user.id}-${feedElement.timestamp}",
+                date = feedElement.timestamp,
+                user = feedElement.user,
+                submittedTotal = feedElement.submittedTotal,
+                items = feedElement.deviations.map { deviation -> createInnerDeviationItem(deviation, index++) })
         }
 
         is FeedElement.DeviationSubmitted -> if (feedElement.deviation.isLiterature) {
             LiteratureDeviationItem(
-                    date = feedElement.timestamp,
-                    user = feedElement.user,
-                    deviation = feedElement.deviation,
-                    excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
-        } else {
-            ImageDeviationItem(
-                    date = feedElement.timestamp,
-                    user = feedElement.user,
-                    deviation = feedElement.deviation)
-        }
-
-        is JournalSubmitted -> LiteratureDeviationItem(
                 date = feedElement.timestamp,
                 user = feedElement.user,
                 deviation = feedElement.deviation,
                 excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
+        } else {
+            ImageDeviationItem(
+                date = feedElement.timestamp,
+                user = feedElement.user,
+                deviation = feedElement.deviation)
+        }
+
+        is JournalSubmitted -> LiteratureDeviationItem(
+            date = feedElement.timestamp,
+            user = feedElement.user,
+            deviation = feedElement.deviation,
+            excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
 
         is StatusUpdate -> StatusUpdateItem(
-                date = feedElement.timestamp,
-                user = feedElement.user,
-                statusId = feedElement.status.id,
-                text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
-                commentCount = feedElement.status.commentCount,
-                share = feedElement.status.share.toShareUiModel(richTextFormatter, matureContent))
+            date = feedElement.timestamp,
+            user = feedElement.user,
+            statusId = feedElement.status.id,
+            text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
+            commentCount = feedElement.status.commentCount,
+            share = feedElement.status.share.toShareUiModel(richTextFormatter, matureContent))
 
         is UsernameChange -> UsernameChangeItem(
-                id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
-                date = feedElement.timestamp,
-                user = feedElement.user,
-                formerName = feedElement.formerName)
+            id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
+            date = feedElement.timestamp,
+            user = feedElement.user,
+            formerName = feedElement.formerName)
     }
 
     private fun createInnerDeviationItem(deviation: Deviation, index: Int): io.plastique.deviations.list.DeviationItem = if (deviation.isLiterature) {

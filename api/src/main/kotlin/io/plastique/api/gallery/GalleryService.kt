@@ -19,7 +19,8 @@ interface GalleryService {
         @Query("username") username: String?,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
+        @Query("mature_content") matureContent: Boolean
+    ): Single<PagedListResult<DeviationDto>>
 
     @GET("gallery/folders?calculate_size=true")
     fun getFolders(
@@ -27,16 +28,19 @@ interface GalleryService {
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
         @Query("ext_preload") preload: Boolean,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<FolderDto>>
+        @Query("mature_content") matureContent: Boolean
+    ): Single<PagedListResult<FolderDto>>
 
     @GET("gallery/{folderid}")
+    @Suppress("LongParameterList")
     fun getFolderContents(
         @Path("folderid") folderId: String?,
         @Query("username") username: String?,
         @Query("mode") order: SortOrder? = null,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean): Single<PagedListResult<DeviationDto>>
+        @Query("mature_content") matureContent: Boolean
+    ): Single<PagedListResult<DeviationDto>>
 
     @POST("gallery/folders/create")
     @FormUrlEncoded

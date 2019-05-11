@@ -12,8 +12,8 @@ import io.plastique.core.extensions.getParcelableCreator
 import io.plastique.core.lists.ListDiffCallback
 import io.plastique.deviations.R
 
-class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.tagsViewStyle)
-    : RecyclerView(context, attrs, defStyleAttr), TagManager {
+class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.tagsViewStyle) :
+    RecyclerView(context, attrs, defStyleAttr), TagManager {
 
     private val adapter: TagsAdapter
     private val tags = mutableListOf<Tag>()
@@ -68,10 +68,10 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
     ) : DiffUtil.ItemCallback<Tag>() {
 
         override fun areItemsTheSame(oldItem: Tag, newItem: Tag): Boolean =
-                oldItem.type == newItem.type && getTagIndex(oldItem, oldTags) == getTagIndex(newItem, newTags)
+            oldItem.type == newItem.type && getTagIndex(oldItem, oldTags) == getTagIndex(newItem, newTags)
 
         override fun areContentsTheSame(oldItem: Tag, newItem: Tag): Boolean =
-                oldItem == newItem
+            oldItem == newItem
 
         private fun getTagIndex(tag: Tag, tags: List<Tag>): Int {
             var index = 0

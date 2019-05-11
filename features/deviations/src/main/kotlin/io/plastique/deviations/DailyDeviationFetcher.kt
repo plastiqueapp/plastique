@@ -33,18 +33,18 @@ class DailyDeviationFetcher @Inject constructor(
     override fun getCacheKey(params: DailyParams): String = "daily-deviations"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = DailyParams::class.java, cursorType = DateCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = DailyParams::class.java, cursorType = DateCursor::class.java)
 
     override fun fetch(params: DailyParams, cursor: DateCursor?): Single<FetchResult<DateCursor>> {
         val date = cursor?.date
         return deviationService.getDailyDeviations(date?.format(DATE_FORMAT), params.showMatureContent)
-                .map { deviationList ->
-                    val previousDate = (date ?: getDailyDeviationsDate(deviationList)).minusDays(1)
-                    FetchResult(
-                            deviations = deviationList.results,
-                            nextCursor = DateCursor(previousDate),
-                            replaceExisting = cursor == null)
-                }
+            .map { deviationList ->
+                val previousDate = (date ?: getDailyDeviationsDate(deviationList)).minusDays(1)
+                FetchResult(
+                    deviations = deviationList.results,
+                    nextCursor = DateCursor(previousDate),
+                    replaceExisting = cursor == null)
+            }
     }
 
     private fun getDailyDeviationsDate(deviationList: ListResult<DeviationDto>): LocalDate {

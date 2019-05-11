@@ -13,8 +13,8 @@ class DownloadInfoRepository @Inject constructor(
 ) {
     fun getDownloadInfo(deviationId: String): Single<DownloadInfo> {
         return getDownloadInfoFromDb(deviationId)
-                .switchIfEmpty(getDownloadInfoFromServer(deviationId))
-                .map { downloadInfoEntity -> downloadInfoEntity.toDownloadInfo() }
+            .switchIfEmpty(getDownloadInfoFromServer(deviationId))
+            .map { downloadInfoEntity -> downloadInfoEntity.toDownloadInfo() }
     }
 
     private fun getDownloadInfoFromDb(deviationId: String): Maybe<DownloadInfoEntity> {
@@ -23,7 +23,7 @@ class DownloadInfoRepository @Inject constructor(
 
     private fun getDownloadInfoFromServer(deviationId: String): Single<DownloadInfoEntity> {
         return deviationService.getDownloadInfoById(deviationId)
-                .map { persist(deviationId, it) }
+            .map { persist(deviationId, it) }
     }
 
     private fun persist(deviationId: String, downloadInfo: DownloadInfoDto): DownloadInfoEntity {
@@ -34,10 +34,10 @@ class DownloadInfoRepository @Inject constructor(
 }
 
 private fun DownloadInfoDto.toDownloadInfoEntity(deviationId: String): DownloadInfoEntity = DownloadInfoEntity(
-        deviationId = deviationId,
-        downloadUrl = url,
-        size = Size(width, height),
-        fileSize = fileSize)
+    deviationId = deviationId,
+    downloadUrl = url,
+    size = Size(width, height),
+    fileSize = fileSize)
 
 private fun DownloadInfoEntity.toDownloadInfo(): DownloadInfo =
-        DownloadInfo(downloadUrl = downloadUrl, size = size, fileSize = fileSize)
+    DownloadInfo(downloadUrl = downloadUrl, size = size, fileSize = fileSize)

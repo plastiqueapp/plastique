@@ -12,8 +12,8 @@ class CommentSender @Inject constructor(
 ) {
     fun sendComment(threadId: CommentThreadId, text: String, parentCommentId: String?): Completable {
         return postCommentInternal(threadId, text, parentCommentId)
-                .doOnSuccess { comment -> commentRepository.put(listOf(comment)) }
-                .ignoreElement()
+            .doOnSuccess { comment -> commentRepository.put(listOf(comment)) }
+            .ignoreElement()
     }
 
     private fun postCommentInternal(threadId: CommentThreadId, text: String, parentCommentId: String?): Single<CommentDto> = when (threadId) {

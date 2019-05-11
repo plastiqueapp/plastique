@@ -13,9 +13,7 @@ import io.plastique.core.FeedHeaderView
 import io.plastique.glide.GlideRequests
 import io.plastique.util.dimensionRatio
 
-class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
-
+class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private var layoutId: Int = 0
     private var share: ShareUiModel = ShareUiModel.None
 
@@ -54,9 +52,9 @@ class ShareView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     imageView.setBackgroundResource(0)
 
                     glide.load(share.preview.url)
-                            .centerCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(imageView)
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(imageView)
                 }
             }
 

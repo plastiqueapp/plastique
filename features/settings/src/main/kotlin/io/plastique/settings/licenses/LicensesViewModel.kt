@@ -28,9 +28,9 @@ class LicensesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        listener = TimberLogger(LOG_TAG))
 
     val state: Observable<LicensesViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(LicensesViewState(contentState = ContentState.Loading), LoadLicensesEffect).disposeOnDestroy()
@@ -47,20 +47,20 @@ class LicensesEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<LicensesEffect>): Observable<LicensesEvent> {
         return effects.ofType<LoadLicensesEffect>()
-                .switchMapSingle {
-                    loadItems()
-                            .map<LicensesEvent> { items -> LoadFinishedEvent(items) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMapSingle {
+                loadItems()
+                    .map<LicensesEvent> { items -> LoadFinishedEvent(items) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
     }
 
     private fun loadItems(): Single<List<ListItem>> {
         return licenseRepository.getLicenses()
-                .flattenAsObservable(Functions.identity())
-                .map<ListItem> { license -> LicenseItem(license) }
-                .startWith(HeaderItem)
-                .toList()
+            .flattenAsObservable(Functions.identity())
+            .map<ListItem> { license -> LicenseItem(license) }
+            .startWith(HeaderItem)
+            .toList()
     }
 }
 

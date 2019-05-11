@@ -17,18 +17,18 @@ class FoldersDataSource @Inject constructor(
     override fun getData(params: FolderLoadParams): Observable<out PagedData<List<Folder>, *>> {
         this.params.set(params)
         return folderRepository.getFolders(params)
-                .doOnNext { data -> nextCursor.set(data.nextCursor) }
+            .doOnNext { data -> nextCursor.set(data.nextCursor) }
     }
 
     override fun loadMore(): Completable {
         return folderRepository.fetchFolders(params.get(), nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     override fun refresh(): Completable {
         return folderRepository.fetchFolders(params.get())
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 }

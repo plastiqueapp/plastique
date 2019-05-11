@@ -30,9 +30,9 @@ class AboutViewModel @Inject constructor(
 
     lateinit var state: Observable<AboutViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        listener = TimberLogger(LOG_TAG))
 
     fun init(username: String) {
         if (::state.isInitialized) return
@@ -58,13 +58,13 @@ class AboutEffectHandler(
 
     override fun handle(effects: Observable<AboutEffect>): Observable<AboutEvent> {
         return effects.ofType<LoadEffect>()
-                .switchMap { effect ->
-                    userProfileRepository.getUserProfileByName(effect.username)
-                            .valveLatest(screenVisible)
-                            .map<AboutEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                userProfileRepository.getUserProfileByName(effect.username)
+                    .valveLatest(screenVisible)
+                    .map<AboutEvent> { userProfile -> UserProfileChangedEvent(userProfile) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
     }
 }
 
@@ -76,8 +76,8 @@ class AboutStateReducer @Inject constructor(
     override fun reduce(state: AboutViewState, event: AboutEvent): StateWithEffects<AboutViewState, AboutEffect> = when (event) {
         is UserProfileChangedEvent -> {
             next(AboutViewState.Content(
-                    username = state.username,
-                    bio = event.userProfile.bio?.let { SpannedWrapper(richTextFormatter.format(it)) } ?: SpannedWrapper.EMPTY))
+                username = state.username,
+                bio = event.userProfile.bio?.let { SpannedWrapper(richTextFormatter.format(it)) } ?: SpannedWrapper.EMPTY))
         }
 
         is LoadErrorEvent -> {

@@ -31,9 +31,9 @@ class UrlAccessTokenAppender : AccessTokenAppender {
 
     override fun append(accessToken: String, request: Request, builder: Request.Builder) {
         val url = request.url()
-                .newBuilder()
-                .setQueryParameter("access_token", accessToken)
-                .build()
+            .newBuilder()
+            .setQueryParameter("access_token", accessToken)
+            .build()
         builder.url(url)
     }
 }

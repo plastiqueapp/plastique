@@ -49,19 +49,19 @@ fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter, matureCont
             deviation == null -> ShareUiModel.DeletedDeviation
             deviation.isLiterature -> {
                 ShareUiModel.LiteratureDeviation(
-                        deviationId = deviation.id,
-                        date = deviation.publishTime,
-                        author = deviation.author,
-                        title = deviation.title,
-                        excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)),
-                        isJournal = deviation.categoryPath.startsWith("journals"))
-            }
-            else -> ShareUiModel.ImageDeviation(
                     deviationId = deviation.id,
+                    date = deviation.publishTime,
                     author = deviation.author,
                     title = deviation.title,
-                    preview = deviation.preview!!,
-                    isConcealedMature = deviation.properties.isMature && !matureContent)
+                    excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)),
+                    isJournal = deviation.categoryPath.startsWith("journals"))
+            }
+            else -> ShareUiModel.ImageDeviation(
+                deviationId = deviation.id,
+                author = deviation.author,
+                title = deviation.title,
+                preview = deviation.preview!!,
+                isConcealedMature = deviation.properties.isMature && !matureContent)
         }
     }
 
@@ -69,10 +69,10 @@ fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter, matureCont
         val status = status
         if (status != null) {
             ShareUiModel.Status(
-                    statusId = status.id,
-                    author = status.author,
-                    date = status.date,
-                    text = SpannedWrapper(richTextFormatter.format(status.body)))
+                statusId = status.id,
+                author = status.author,
+                date = status.date,
+                text = SpannedWrapper(richTextFormatter.format(status.body)))
         } else {
             ShareUiModel.DeletedStatus
         }

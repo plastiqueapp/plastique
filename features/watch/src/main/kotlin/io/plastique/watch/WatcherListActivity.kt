@@ -54,8 +54,8 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         initToolbar(username)
 
         adapter = WatcherListAdapter(
-                glide = GlideApp.with(this),
-                onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
+            glide = GlideApp.with(this),
+            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -82,11 +82,11 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
 
         viewModel.init(username)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: WatcherListViewState, prevState: WatcherListViewState?, listUpdateData: ListUpdateData<ListItem>) {

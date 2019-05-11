@@ -32,9 +32,9 @@ class SettingsFragment : BasePreferenceFragment() {
         }
 
         sessionManager.sessionChanges
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { session -> matureContentPreference.isEnabled = session is Session.User }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { session -> matureContentPreference.isEnabled = session is Session.User }
+            .disposeOnDestroy()
 
         preferenceScreen.forEach { preference ->
             if (preference is ListPreference) {

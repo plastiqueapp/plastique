@@ -13,12 +13,12 @@ class FeedSettingsManager @Inject constructor(
 ) {
     fun getSettings(): Single<FeedSettings> {
         return feedService.getSettings()
-                .map { FeedSettings(include = it.include) }
+            .map { FeedSettings(include = it.include) }
     }
 
     fun updateSettings(settings: FeedSettings): Completable {
         val params = settings.include.mapKeys { entry -> "include[${entry.key}]" }
         return feedService.updateSettings(params)
-                .doOnComplete { cacheEntryRepository.deleteEntryByKey(FeedRepository.CACHE_KEY) }
+            .doOnComplete { cacheEntryRepository.deleteEntryByKey(FeedRepository.CACHE_KEY) }
     }
 }

@@ -35,21 +35,22 @@ import io.plastique.gallery.FolderDeviationListActivity as GalleryFolderDeviatio
 
 @Singleton
 class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher) :
-        CollectionsNavigator,
-        CommentsNavigator,
-        DeviationsNavigator,
-        FeedNavigator,
-        GalleryNavigator,
-        MainNavigator,
-        NotificationsNavigator,
-        ProfileNavigator,
-        SettingsNavigator,
-        StatusesNavigator,
-        UsersNavigator,
-        WatchNavigator {
+    CollectionsNavigator,
+    CommentsNavigator,
+    DeviationsNavigator,
+    FeedNavigator,
+    GalleryNavigator,
+    MainNavigator,
+    NotificationsNavigator,
+    ProfileNavigator,
+    SettingsNavigator,
+    StatusesNavigator,
+    UsersNavigator,
+    WatchNavigator {
 
     override fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String) {
-        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, CollectionFolderId(folderId, username), folderName))
+        navigationContext.startActivity(CollectionFolderDeviationListActivity.createIntent(navigationContext.context, CollectionFolderId(folderId, username),
+            folderName))
     }
 
     override fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId) {

@@ -66,13 +66,13 @@ class FeedRepository @Inject constructor(
         }
         val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
         return cacheHelper.createObservable(
-                cacheKey = CACHE_KEY,
-                cachedData = getFromDb(CACHE_KEY),
-                updater = fetch(matureContent, null).ignoreElement())
+            cacheKey = CACHE_KEY,
+            cachedData = getFromDb(CACHE_KEY),
+            updater = fetch(matureContent, null).ignoreElement())
     }
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "collection_folders", "deviation_images", "feed_deviations_ordered", "deviations", "statuses", "feed")) {
+        return RxRoom.createObservable(database, SOURCE_TABLES) {
             val feedElements = feedDao.getFeed().map { it.toFeedElement() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
@@ -87,26 +87,26 @@ class FeedRepository @Inject constructor(
 
     fun fetch(matureContent: Boolean, cursor: StringCursor?): Single<Optional<StringCursor>> {
         return feedService.getHomeFeed(cursor?.value, matureContent)
-                .map { feedResult ->
-                    val nextCursor = if (feedResult.hasMore) StringCursor(feedResult.cursor!!) else null
-                    val cacheMetadata = FeedCacheMetadata(matureContent = matureContent, nextCursor = nextCursor)
-                    val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, feedElements = feedResult.items, replaceExisting = cursor == null)
-                    nextCursor.toOptional()
-                }
+            .map { feedResult ->
+                val nextCursor = if (feedResult.hasMore) StringCursor(feedResult.cursor!!) else null
+                val cacheMetadata = FeedCacheMetadata(matureContent = matureContent, nextCursor = nextCursor)
+                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                persist(cacheEntry = cacheEntry, feedElements = feedResult.items, replaceExisting = cursor == null)
+                nextCursor.toOptional()
+            }
     }
 
     private fun persist(cacheEntry: CacheEntry, feedElements: List<FeedElementDto>, replaceExisting: Boolean) {
         val users = feedElements.asSequence()
-                .filter { it !== FeedElementDto.Unknown }
-                .map { feedElement -> feedElement.user }
-                .distinctBy { user -> user.id }
-                .toList()
+            .filter { it !== FeedElementDto.Unknown }
+            .map { feedElement -> feedElement.user }
+            .distinctBy { user -> user.id }
+            .toList()
 
         val feedElementEntities = feedElements.asSequence()
-                .filter { it !== FeedElementDto.Unknown }
-                .map { it.toFeedElementEntity() }
-                .toList()
+            .filter { it !== FeedElementDto.Unknown }
+            .map { it.toFeedElementEntity() }
+            .toList()
 
         val deviations = mutableListOf<DeviationDto>()
         val statuses = mutableListOf<StatusDto>()
@@ -152,7 +152,7 @@ class FeedRepository @Inject constructor(
             deviationsByIndex.forEach { index, deviationIds ->
                 var order = 0
                 deviationLinks += deviationIds.asSequence()
-                        .map { deviationId -> FeedElementDeviation(feedElementIds[index], deviationId, order++) }
+                    .map { deviationId -> FeedElementDeviation(feedElementIds[index], deviationId, order++) }
             }
 
             feedDao.insertDeviationLinks(deviationLinks)
@@ -169,6 +169,7 @@ class FeedRepository @Inject constructor(
     companion object {
         const val CACHE_KEY = "feed"
         private val CACHE_DURATION = Duration.ofHours(1)
+        private val SOURCE_TABLES = arrayOf("users", "collection_folders", "deviation_images", "feed_deviations_ordered", "deviations", "statuses", "feed")
     }
 }
 
@@ -185,38 +186,38 @@ private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
     val user = users.first().toUser()
     return when (feedElement.type) {
         FeedElementTypes.COLLECTION_UPDATE -> FeedElement.CollectionUpdate(
-                timestamp = feedElement.timestamp,
-                user = user,
-                folder = collectionFolders.first().toFolder(),
-                addedCount = feedElement.addedCount)
+            timestamp = feedElement.timestamp,
+            user = user,
+            folder = collectionFolders.first().toFolder(),
+            addedCount = feedElement.addedCount)
 
         FeedElementTypes.DEVIATION_SUBMITTED -> if (deviations.size > 1) {
             FeedElement.MultipleDeviationsSubmitted(
-                    timestamp = feedElement.timestamp,
-                    user = user,
-                    submittedTotal = max(deviations.size, feedElement.bucketTotal),
-                    deviations = deviations.map { it.toDeviation() })
+                timestamp = feedElement.timestamp,
+                user = user,
+                submittedTotal = max(deviations.size, feedElement.bucketTotal),
+                deviations = deviations.map { it.toDeviation() })
         } else {
             FeedElement.DeviationSubmitted(
-                    timestamp = feedElement.timestamp,
-                    user = user,
-                    deviation = deviations.first().toDeviation())
-        }
-
-        FeedElementTypes.JOURNAL_SUBMITTED -> FeedElement.JournalSubmitted(
                 timestamp = feedElement.timestamp,
                 user = user,
                 deviation = deviations.first().toDeviation())
+        }
+
+        FeedElementTypes.JOURNAL_SUBMITTED -> FeedElement.JournalSubmitted(
+            timestamp = feedElement.timestamp,
+            user = user,
+            deviation = deviations.first().toDeviation())
 
         FeedElementTypes.STATUS_UPDATE -> FeedElement.StatusUpdate(
-                timestamp = feedElement.timestamp,
-                user = user,
-                status = statuses.first().toStatus())
+            timestamp = feedElement.timestamp,
+            user = user,
+            status = statuses.first().toStatus())
 
         FeedElementTypes.USERNAME_CHANGE -> FeedElement.UsernameChange(
-                timestamp = feedElement.timestamp,
-                user = user,
-                formerName = feedElement.formerName!!)
+            timestamp = feedElement.timestamp,
+            user = user,
+            formerName = feedElement.formerName!!)
 
         else -> throw IllegalArgumentException("Unhandled feed element type ${feedElement.type}")
     }
@@ -224,29 +225,29 @@ private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
 
 // TODO: Reduce duplication
 private fun FeedDeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
-        id = deviation.id,
-        title = deviation.title,
-        url = deviation.url,
-        categoryPath = deviation.categoryPath,
-        publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
-        content = images.asSequence()
-                .filter { it.type == DeviationImageType.Content }
-                .map { it.toImage() }
-                .firstOrNull(),
-        preview = images.asSequence()
-                .filter { it.type == DeviationImageType.Preview }
-                .map { it.toImage() }
-                .firstOrNull(),
-        thumbnails = images.asSequence()
-                .filter { it.type == DeviationImageType.Thumbnail }
-                .map { it.toImage() }
-                .sortedBy { it.size.width }
-                .toList(),
-        excerpt = deviation.excerpt,
-        author = author.first().toUser(),
-        properties = deviation.properties.toDeviationProperties(),
-        stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
-        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
+    id = deviation.id,
+    title = deviation.title,
+    url = deviation.url,
+    categoryPath = deviation.categoryPath,
+    publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
+    content = images.asSequence()
+        .filter { it.type == DeviationImageType.Content }
+        .map { it.toImage() }
+        .firstOrNull(),
+    preview = images.asSequence()
+        .filter { it.type == DeviationImageType.Preview }
+        .map { it.toImage() }
+        .firstOrNull(),
+    thumbnails = images.asSequence()
+        .filter { it.type == DeviationImageType.Thumbnail }
+        .map { it.toImage() }
+        .sortedBy { it.size.width }
+        .toList(),
+    excerpt = deviation.excerpt,
+    author = author.first().toUser(),
+    properties = deviation.properties.toDeviationProperties(),
+    stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
+    dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
 
 private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
     if (giverId != giver.id) {
@@ -257,35 +258,35 @@ private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.
 
 private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this) {
     is FeedElementDto.CollectionUpdate -> FeedElementEntity(
-            timestamp = timestamp,
-            userId = user.id,
-            type = FeedElementTypes.COLLECTION_UPDATE,
-            folderId = folder.id,
-            addedCount = addedCount)
+        timestamp = timestamp,
+        userId = user.id,
+        type = FeedElementTypes.COLLECTION_UPDATE,
+        folderId = folder.id,
+        addedCount = addedCount)
 
     is FeedElementDto.DeviationSubmitted -> FeedElementEntity(
-            timestamp = timestamp,
-            userId = user.id,
-            type = FeedElementTypes.DEVIATION_SUBMITTED,
-            bucketId = bucketId,
-            bucketTotal = bucketTotal)
+        timestamp = timestamp,
+        userId = user.id,
+        type = FeedElementTypes.DEVIATION_SUBMITTED,
+        bucketId = bucketId,
+        bucketTotal = bucketTotal)
 
     is FeedElementDto.JournalSubmitted -> FeedElementEntity(
-            timestamp = timestamp,
-            userId = user.id,
-            type = FeedElementTypes.JOURNAL_SUBMITTED)
+        timestamp = timestamp,
+        userId = user.id,
+        type = FeedElementTypes.JOURNAL_SUBMITTED)
 
     is FeedElementDto.StatusUpdate -> FeedElementEntity(
-            timestamp = timestamp,
-            userId = user.id,
-            type = FeedElementTypes.STATUS_UPDATE,
-            statusId = status.id)
+        timestamp = timestamp,
+        userId = user.id,
+        type = FeedElementTypes.STATUS_UPDATE,
+        statusId = status.id)
 
     is FeedElementDto.UsernameChange -> FeedElementEntity(
-            timestamp = timestamp,
-            userId = user.id,
-            type = FeedElementTypes.USERNAME_CHANGE,
-            formerName = formerName)
+        timestamp = timestamp,
+        userId = user.id,
+        type = FeedElementTypes.USERNAME_CHANGE,
+        formerName = formerName)
 
     FeedElementDto.Unknown -> throw IllegalArgumentException("Unknown feed element type")
 }
@@ -293,4 +294,4 @@ private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this
 private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
 
 private fun FolderEntity.toFolder(): Folder =
-        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
+    Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

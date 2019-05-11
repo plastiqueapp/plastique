@@ -26,7 +26,7 @@ class ApiCallAdapterFactory @Inject constructor(
             return null
         }
         if (returnType !is ParameterizedType) {
-            throw IllegalStateException(rawType.simpleName + " must be parametrized")
+            throw IllegalStateException("${rawType.simpleName} must be parametrized")
         }
         val responseType = getParameterUpperBound(0, returnType)
         return when (rawType) {

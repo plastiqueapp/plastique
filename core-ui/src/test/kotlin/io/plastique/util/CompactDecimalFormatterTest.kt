@@ -18,16 +18,16 @@ class CompactDecimalFormatterTest {
         @JvmStatic
         fun arguments(): Array<Arguments> {
             return arrayOf(
-                    arguments(999, "999"),
-                    arguments(-999, "-999"),
-                    arguments(1000, "1K"),
-                    arguments(1600, "1.6K"),
-                    arguments(-1600, "-1.6K"),
-                    arguments(1000000, "1M"),
-                    arguments(1600000, "1.6M"),
-                    arguments(1600000000, "1.6B"),
-                    arguments(Int.MAX_VALUE, "2.1B"),
-                    arguments(Int.MIN_VALUE, "-2.1B"))
+                arguments(999, "999"),
+                arguments(-999, "-999"),
+                arguments(1000, "1K"),
+                arguments(1600, "1.6K"),
+                arguments(-1600, "-1.6K"),
+                arguments(1000000, "1M"),
+                arguments(1600000, "1.6M"),
+                arguments(1600000000, "1.6B"),
+                arguments(Int.MAX_VALUE, "2.1B"),
+                arguments(Int.MIN_VALUE, "-2.1B"))
         }
     }
 }

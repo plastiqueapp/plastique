@@ -5,8 +5,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "categories",
-        indices = [Index("parent")])
+@Entity(
+    tableName = "categories",
+    indices = [
+        Index("parent")
+    ])
 data class CategoryEntity(
     @PrimaryKey
     @ColumnInfo(name = "path")

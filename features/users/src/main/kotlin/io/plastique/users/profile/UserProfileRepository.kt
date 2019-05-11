@@ -34,32 +34,32 @@ class UserProfileRepository @Inject constructor(
     fun getUserProfileByName(username: String): Observable<UserProfile> {
         val cacheKey = getCacheKey(username)
         return cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getUserProfileFromDb(username),
-                updater = refreshUserProfile(username, cacheKey))
+            cacheKey = cacheKey,
+            cachedData = getUserProfileFromDb(username),
+            updater = refreshUserProfile(username, cacheKey))
     }
 
     private fun getUserProfileFromDb(username: String): Observable<UserProfile> {
         return userDao.getProfileByName(username)
-                .map { userProfileWithUser -> userProfileWithUser.toUserProfile() }
-                .distinctUntilChanged()
+            .map { userProfileWithUser -> userProfileWithUser.toUserProfile() }
+            .distinctUntilChanged()
     }
 
     private fun refreshUserProfile(username: String, cacheKey: String): Completable {
         return userService.getUserProfile(username)
-                .doOnSuccess { userProfile ->
-                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
-                    persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
+            .doOnSuccess { userProfile ->
+                val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
+                persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
+            }
+            .mapError { error ->
+                if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.code == ERROR_CODE_USER_NOT_FOUND) {
+                    deleteUser(username, cacheKey)
+                    UserNotFoundException(username, error)
+                } else {
+                    error
                 }
-                .mapError { error ->
-                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest && error.errorData.code == ERROR_CODE_USER_NOT_FOUND) {
-                        deleteUser(username, cacheKey)
-                        UserNotFoundException(username, error)
-                    } else {
-                        error
-                    }
-                }
-                .ignoreElement()
+            }
+            .ignoreElement()
     }
 
     private fun persistUserProfile(cacheEntry: CacheEntry, userProfile: UserProfileDto) {
@@ -88,23 +88,23 @@ class UserProfileRepository @Inject constructor(
 }
 
 private fun UserProfileDto.toUserProfileEntity(): UserProfileEntity = UserProfileEntity(
-        userId = user.id,
-        url = url,
-        realName = realName.nullIfEmpty(),
-        bio = bio.nullIfEmpty(),
-        isWatching = isWatching,
-        stats = UserProfileStatsEntity(
-                userDeviations = stats.userDeviations,
-                userFavorites = stats.userFavorites,
-                watchers = user.stats!!.watchers))
+    userId = user.id,
+    url = url,
+    realName = realName.nullIfEmpty(),
+    bio = bio.nullIfEmpty(),
+    isWatching = isWatching,
+    stats = UserProfileStatsEntity(
+        userDeviations = stats.userDeviations,
+        userFavorites = stats.userFavorites,
+        watchers = user.stats!!.watchers))
 
 private fun UserProfileEntityWithRelations.toUserProfile(): UserProfile = UserProfile(
-        user = users.first().toUser(),
-        url = userProfile.url,
-        realName = userProfile.realName,
-        bio = userProfile.bio,
-        isWatching = userProfile.isWatching,
-        stats = UserProfile.Stats(
-                deviations = userProfile.stats.userDeviations,
-                favorites = userProfile.stats.userFavorites,
-                watchers = userProfile.stats.watchers))
+    user = users.first().toUser(),
+    url = userProfile.url,
+    realName = userProfile.realName,
+    bio = userProfile.bio,
+    isWatching = userProfile.isWatching,
+    stats = UserProfile.Stats(
+        deviations = userProfile.stats.userDeviations,
+        favorites = userProfile.stats.userFavorites,
+        watchers = userProfile.stats.watchers))

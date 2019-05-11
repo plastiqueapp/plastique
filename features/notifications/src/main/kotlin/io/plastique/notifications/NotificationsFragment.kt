@@ -38,7 +38,10 @@ import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, ScrollableToTop {
+class NotificationsFragment : MvvmFragment<NotificationsViewModel>(),
+    MainPage,
+    ScrollableToTop {
+
     @Inject lateinit var navigator: NotificationsNavigator
 
     private lateinit var notificationsView: RecyclerView
@@ -89,11 +92,11 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
         super.onActivityCreated(savedInstanceState)
         viewModel.init()
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: NotificationsViewState, prevState: NotificationsViewState?, listUpdateData: ListUpdateData<ListItem>) {
@@ -117,12 +120,12 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(), MainPage, 
 
     private fun createAdapter(): NotificationsAdapter {
         return NotificationsAdapter(
-                glide = GlideApp.with(this),
-                onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
-                onOpenComment = { },
-                onOpenDeviation = { navigator.openDeviation(navigationContext, it) },
-                onOpenStatus = { navigator.openStatus(navigationContext, it) },
-                onOpenUserProfile = { navigator.openUserProfile(navigationContext, it) })
+            glide = GlideApp.with(this),
+            onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
+            onOpenComment = { /* TODO */ },
+            onOpenDeviation = { navigator.openDeviation(navigationContext, it) },
+            onOpenStatus = { navigator.openStatus(navigationContext, it) },
+            onOpenUserProfile = { navigator.openUserProfile(navigationContext, it) })
     }
 
     private fun initSwipe() {

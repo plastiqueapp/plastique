@@ -16,20 +16,20 @@ class CategoryRepository @Inject constructor(
             throw IllegalArgumentException("Category has no subcategories")
         }
         return getCategoriesFromDb(parent.path)
-                .switchIfEmpty(getCategoriesFromServer(parent.path))
-                .flattenAsObservable(Functions.identity())
-                .map { categoryEntity -> categoryEntity.toCategory(parent) }
-                .toList()
+            .switchIfEmpty(getCategoriesFromServer(parent.path))
+            .flattenAsObservable(Functions.identity())
+            .map { categoryEntity -> categoryEntity.toCategory(parent) }
+            .toList()
     }
 
     private fun getCategoriesFromDb(path: String): Maybe<List<CategoryEntity>> {
         return categoryDao.getSubcategories(path)
-                .filter { categories -> categories.isNotEmpty() }
+            .filter { categories -> categories.isNotEmpty() }
     }
 
     private fun getCategoriesFromServer(path: String): Single<List<CategoryEntity>> {
         return deviationService.getCategories(path)
-                .map { categoryList -> persist(categoryList.categories) }
+            .map { categoryList -> persist(categoryList.categories) }
     }
 
     private fun persist(categories: List<CategoryDto>): List<CategoryEntity> {
@@ -40,7 +40,7 @@ class CategoryRepository @Inject constructor(
 }
 
 private fun CategoryDto.toCategoryEntity(): CategoryEntity =
-        CategoryEntity(path = path, parent = parent, title = title, hasChildren = hasChildren)
+    CategoryEntity(path = path, parent = parent, title = title, hasChildren = hasChildren)
 
 private fun CategoryEntity.toCategory(parent: Category): Category {
     if (parent.path != this.parent) {

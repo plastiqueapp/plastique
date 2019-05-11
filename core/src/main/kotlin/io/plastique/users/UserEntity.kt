@@ -5,10 +5,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "users",
-        indices = [
-            Index("name")
-        ])
+@Entity(
+    tableName = "users",
+    indices = [
+        Index("name")
+    ])
 data class UserEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")

@@ -16,5 +16,5 @@ object OkHttpInterceptorModule {
     @Named("network")
     @JvmStatic
     fun provideNetworkInterceptors(connectivityCheckingInterceptor: ConnectivityCheckingInterceptor): List<Interceptor> =
-            listOf(connectivityCheckingInterceptor)
+        listOf(connectivityCheckingInterceptor)
 }

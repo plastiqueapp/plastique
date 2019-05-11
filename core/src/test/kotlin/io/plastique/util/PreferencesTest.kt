@@ -28,9 +28,9 @@ class MutablePreferencesTest {
     fun setUp() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
         preferences = Preferences.Builder()
-                .sharedPreferences(sharedPreferences)
-                .addConverter(Foo::class.java, FooConverter)
-                .build()
+            .sharedPreferences(sharedPreferences)
+            .addConverter(Foo::class.java, FooConverter)
+            .build()
     }
 
     @Test
@@ -100,9 +100,9 @@ class ObservablePreferencesTest {
     fun setUp() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
         preferences = Preferences.Builder()
-                .sharedPreferences(sharedPreferences)
-                .addConverter(Foo::class.java, FooConverter)
-                .build()
+            .sharedPreferences(sharedPreferences)
+            .addConverter(Foo::class.java, FooConverter)
+            .build()
     }
 
     @Test

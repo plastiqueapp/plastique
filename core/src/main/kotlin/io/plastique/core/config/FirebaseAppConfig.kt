@@ -12,8 +12,8 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
     init {
         @Suppress("DEPRECATION")
         remoteConfig.setConfigSettings(FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .build())
+            .setDeveloperModeEnabled(BuildConfig.DEBUG)
+            .build())
         remoteConfig.setDefaults(defaultsResId)
     }
 

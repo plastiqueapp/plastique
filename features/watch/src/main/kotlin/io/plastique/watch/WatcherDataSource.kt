@@ -17,18 +17,18 @@ class WatcherDataSource @Inject constructor(
     override fun getData(params: String?): Observable<out PagedData<List<Watcher>, *>> {
         this.params.set(params)
         return watcherRepository.getWatchers(params)
-                .doOnNext { data -> nextCursor.set(data.nextCursor) }
+            .doOnNext { data -> nextCursor.set(data.nextCursor) }
     }
 
     override fun loadMore(): Completable {
         return watcherRepository.fetchWatchers(params.get(), nextCursor.get()!!)
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 
     override fun refresh(): Completable {
         return watcherRepository.fetchWatchers(params.get())
-                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                .ignoreElement()
+            .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+            .ignoreElement()
     }
 }

@@ -50,7 +50,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
         breadcrumbsView.setOnBreadcrumbClickListener { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }
 
         adapter = CategoryListAdapter(
-                onItemClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
+            onItemClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
         categoriesView = findViewById(R.id.categories)
         categoriesView.layoutManager = LinearLayoutManager(this)
         categoriesView.adapter = adapter
@@ -63,11 +63,11 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
 
         viewModel.init(parentCategory)
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.second, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.second, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

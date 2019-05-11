@@ -47,10 +47,10 @@ private class CommentItemDelegate(
         holder.replyButton.isVisible = item.showReplyButton
 
         glide.load(item.comment.author.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatarView)
     }
 
     class ViewHolder(

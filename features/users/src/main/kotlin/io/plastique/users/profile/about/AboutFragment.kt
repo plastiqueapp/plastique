@@ -53,9 +53,9 @@ class AboutFragment : MvvmFragment<AboutViewModel>(), ScrollableToTop {
         val username = args.getString(ARG_USERNAME)!!
         viewModel.init(username)
         viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it) }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: AboutViewState) {

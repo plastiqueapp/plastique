@@ -22,8 +22,8 @@ class ContentSettings @Inject constructor(
 
     val showMatureChanges: Observable<Boolean>
         get() = Observable.combineLatest(
-                preferences.observable().getBoolean(PREF_SHOW_MATURE_CONTENT, false),
-                sessionManager.sessionChanges) { showMatureContent, session -> showMatureContent && session is Session.User }
+            preferences.observable().getBoolean(PREF_SHOW_MATURE_CONTENT, false),
+            sessionManager.sessionChanges) { showMatureContent, session -> showMatureContent && session is Session.User }
 
     var layoutMode: LayoutMode
         get() = preferences.get(PREF_LAYOUT_MODE, LayoutMode.DEFAULT)

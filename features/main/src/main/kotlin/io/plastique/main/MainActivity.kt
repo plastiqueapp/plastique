@@ -24,7 +24,10 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemReselectedListener {
+class MainActivity : MvvmActivity<MainViewModel>(),
+    BottomNavigationView.OnNavigationItemSelectedListener,
+    BottomNavigationView.OnNavigationItemReselectedListener {
+
     @Inject lateinit var mainFragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
 
@@ -58,15 +61,15 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .add(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, R.id.main_tab_browse))
-                    .commit()
+                .add(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, R.id.main_tab_browse))
+                .commit()
         }
 
         viewModel.init()
         viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { state -> renderState(state) }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { state -> renderState(state) }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -87,8 +90,8 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, item.itemId))
-                .commit()
+            .replace(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, item.itemId))
+            .commit()
         return true
     }
 
@@ -102,15 +105,15 @@ class MainActivity : MvvmActivity<MainViewModel>(), BottomNavigationView.OnNavig
         if (state.user != null) {
             val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
             GlideApp.with(this)
-                    .load(state.user.avatarUrl)
-                    .placeholder(R.drawable.default_avatar_32dp)
-                    .error(R.drawable.default_avatar_32dp)
-                    .circleCrop()
-                    .into(object : CustomDrawableTarget(avatarSize, avatarSize) {
-                        override fun setDrawable(drawable: Drawable?) {
-                            setCurrentUserIcon(drawable)
-                        }
-                    })
+                .load(state.user.avatarUrl)
+                .placeholder(R.drawable.default_avatar_32dp)
+                .error(R.drawable.default_avatar_32dp)
+                .circleCrop()
+                .into(object : CustomDrawableTarget(avatarSize, avatarSize) {
+                    override fun setDrawable(drawable: Drawable?) {
+                        setCurrentUserIcon(drawable)
+                    }
+                })
         } else {
             setCurrentUserIcon(null)
         }

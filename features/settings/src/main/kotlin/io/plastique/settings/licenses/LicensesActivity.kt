@@ -35,24 +35,24 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>() {
         }
 
         adapter = LicensesAdapter(
-                onLicenseClick = { license -> browserLauncher.openUrl(this, license.url) })
+            onLicenseClick = { license -> browserLauncher.openUrl(this, license.url) })
 
         val licensesView = findViewById<RecyclerView>(R.id.licenses)
         licensesView.adapter = adapter
         licensesView.layoutManager = LinearLayoutManager(this)
         licensesView.addItemDecoration(DividerItemDecoration.Builder(this)
-                .divider(R.drawable.preference_list_divider)
-                .viewTypes(LicensesAdapter.TYPE_LICENSE)
-                .build())
+            .divider(R.drawable.preference_list_divider)
+            .viewTypes(LicensesAdapter.TYPE_LICENSE)
+            .build())
 
         contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress)
 
         viewModel.state
-                .pairwiseWithPrevious()
-                .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it.first, it.third) }
-                .disposeOnDestroy()
+            .pairwiseWithPrevious()
+            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it.first, it.third) }
+            .disposeOnDestroy()
     }
 
     private fun renderState(state: LicensesViewState, listUpdateData: ListUpdateData<ListItem>) {

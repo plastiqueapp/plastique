@@ -17,15 +17,15 @@ class DeviationDataSource @Inject constructor(
     override fun getData(params: FetchParams): Observable<out PagedData<List<Deviation>, *>> {
         this.params.set(params)
         return deviationRepository.getDeviations(params)
-                .doOnNext { data -> nextCursor.set(data.nextCursor) }
+            .doOnNext { data -> nextCursor.set(data.nextCursor) }
     }
 
     override fun loadMore(): Completable {
         val params = params.get()
         return if (params != null) {
             deviationRepository.fetch(params, nextCursor.get())
-                    .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                    .ignoreElement()
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+                .ignoreElement()
         } else {
             Completable.complete()
         }
@@ -35,8 +35,8 @@ class DeviationDataSource @Inject constructor(
         val params = params.get()
         return if (params != null) {
             deviationRepository.fetch(params)
-                    .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
-                    .ignoreElement()
+                .doOnSuccess { cursor -> nextCursor.set(cursor.toNullable()) }
+                .ignoreElement()
         } else {
             Completable.complete()
         }

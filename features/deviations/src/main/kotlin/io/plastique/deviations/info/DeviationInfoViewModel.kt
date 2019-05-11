@@ -26,9 +26,9 @@ class DeviationInfoViewModel @Inject constructor(
 
     lateinit var state: Observable<DeviationInfoViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        listener = TimberLogger(LOG_TAG))
 
     fun init(deviationId: String) {
         if (::state.isInitialized) return
@@ -52,12 +52,12 @@ class DeviationInfoEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<DeviationInfoEffect>): Observable<DeviationInfoEvent> {
         return effects.ofType<LoadInfoEffect>()
-                .switchMap { effect ->
-                    deviationInfoRepository.getDeviationInfo(effect.deviationId)
-                            .map<DeviationInfoEvent> { deviationInfo -> DeviationInfoChangedEvent(deviationInfo) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap { effect ->
+                deviationInfoRepository.getDeviationInfo(effect.deviationId)
+                    .map<DeviationInfoEvent> { deviationInfo -> DeviationInfoChangedEvent(deviationInfo) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
     }
 }
 
@@ -66,24 +66,25 @@ class DeviationInfoStateReducer @Inject constructor(
     private val richTextFormatter: RichTextFormatter
 ) : StateReducer<DeviationInfoEvent, DeviationInfoViewState, DeviationInfoEffect> {
 
-    override fun reduce(state: DeviationInfoViewState, event: DeviationInfoEvent): StateWithEffects<DeviationInfoViewState, DeviationInfoEffect> = when (event) {
-        is DeviationInfoChangedEvent -> {
-            next(DeviationInfoViewState.Content(
+    override fun reduce(state: DeviationInfoViewState, event: DeviationInfoEvent): StateWithEffects<DeviationInfoViewState, DeviationInfoEffect> =
+        when (event) {
+            is DeviationInfoChangedEvent -> {
+                next(DeviationInfoViewState.Content(
                     deviationId = state.deviationId,
                     title = event.deviationInfo.title,
                     author = event.deviationInfo.author,
                     publishTime = event.deviationInfo.publishTime,
                     description = SpannedWrapper(richTextFormatter.format(event.deviationInfo.description)),
                     tags = event.deviationInfo.tags))
-        }
+            }
 
-        is LoadErrorEvent -> {
-            val emptyState = errorMessageProvider.getErrorState(event.error)
-            next(DeviationInfoViewState.Error(deviationId = state.deviationId, emptyViewState = emptyState))
-        }
+            is LoadErrorEvent -> {
+                val emptyState = errorMessageProvider.getErrorState(event.error)
+                next(DeviationInfoViewState.Error(deviationId = state.deviationId, emptyViewState = emptyState))
+            }
 
-        RetryClickEvent -> {
-            next(DeviationInfoViewState.Loading(deviationId = state.deviationId), LoadInfoEffect(state.deviationId))
+            RetryClickEvent -> {
+                next(DeviationInfoViewState.Loading(deviationId = state.deviationId), LoadInfoEffect(state.deviationId))
+            }
         }
-    }
 }

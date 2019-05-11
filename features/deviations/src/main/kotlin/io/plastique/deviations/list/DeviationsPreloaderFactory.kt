@@ -45,10 +45,10 @@ class DeviationsPreloaderFactory private constructor(
                 val preview = ImageHelper.choosePreview(item.deviation, maxImageWidth)
                 val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
                 return glide.load(preview.url)
-                        .override(previewSize.width, previewSize.height)
-                        .centerCrop()
-                        .priority(Priority.LOW)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .override(previewSize.width, previewSize.height)
+                    .centerCrop()
+                    .priority(Priority.LOW)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
             }
         }
 
@@ -75,8 +75,8 @@ class DeviationsPreloaderFactory private constructor(
                 val itemSize = gridParams.getItemSize(item.index)
                 val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
                 return glide.load(image.url)
-                        .priority(Priority.LOW)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.LOW)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
             }
         }
 

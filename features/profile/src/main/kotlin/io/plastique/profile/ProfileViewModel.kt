@@ -21,9 +21,9 @@ class ProfileViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
-            reducer = stateReducer,
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     val state: Observable<ProfileViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(ProfileViewState()).disposeOnDestroy()
@@ -31,8 +31,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<ProfileEvent> {
         return sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) }
+            .valveLatest(screenVisible)
+            .map { session -> SessionChangedEvent(session) }
     }
 
     companion object {

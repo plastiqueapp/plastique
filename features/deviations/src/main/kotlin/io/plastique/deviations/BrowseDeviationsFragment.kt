@@ -30,7 +30,11 @@ import io.plastique.deviations.tags.TagsView
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 
-class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), MainPage, ScrollableToTop, TagManagerProvider {
+class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(),
+    MainPage,
+    ScrollableToTop,
+    TagManagerProvider {
+
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     private lateinit var tagsView: TagsView
     private lateinit var pager: ViewPager
@@ -58,11 +62,11 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
         super.onActivityCreated(savedInstanceState)
 
         viewModel.layoutMode
-                .subscribe { layoutMode ->
-                    this.layoutMode = layoutMode
-                    switchLayoutMenuItem?.setIcon(getLayoutModeIconId(layoutMode))
-                }
-                .disposeOnDestroy()
+            .subscribe { layoutMode ->
+                this.layoutMode = layoutMode
+                switchLayoutMenuItem?.setIcon(getLayoutModeIconId(layoutMode))
+            }
+            .disposeOnDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -159,9 +163,9 @@ class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(), Main
 
     companion object {
         private val PAGES = listOf(
-                FragmentListPagerAdapter.Page(R.string.deviations_browse_page_hot, HotDeviationsFragment::class.java),
-                FragmentListPagerAdapter.Page(R.string.deviations_browse_page_popular, PopularDeviationsFragment::class.java),
-                FragmentListPagerAdapter.Page(R.string.deviations_browse_page_undiscovered, UndiscoveredDeviationsFragment::class.java),
-                FragmentListPagerAdapter.Page(R.string.deviations_browse_page_daily, DailyDeviationsFragment::class.java))
+            FragmentListPagerAdapter.Page(R.string.deviations_browse_page_hot, HotDeviationsFragment::class.java),
+            FragmentListPagerAdapter.Page(R.string.deviations_browse_page_popular, PopularDeviationsFragment::class.java),
+            FragmentListPagerAdapter.Page(R.string.deviations_browse_page_undiscovered, UndiscoveredDeviationsFragment::class.java),
+            FragmentListPagerAdapter.Page(R.string.deviations_browse_page_daily, DailyDeviationsFragment::class.java))
     }
 }

@@ -13,13 +13,13 @@ class BucketDeviationFetcher @Inject constructor(private val feedService: FeedSe
     override fun getCacheKey(params: BucketDeviationParams): String = "feed-bucket-${params.bucketId}"
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
-            DeviationCacheMetadataSerializer(paramsType = BucketDeviationParams::class.java, cursorType = OffsetCursor::class.java)
+        DeviationCacheMetadataSerializer(paramsType = BucketDeviationParams::class.java, cursorType = OffsetCursor::class.java)
 
     override fun fetch(params: BucketDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return feedService.getBucket(bucketId = params.bucketId, offset = offset, limit = 20, matureContent = params.showMatureContent)
-                .map { deviationList ->
-                    FetchResult(deviationList.results, deviationList.nextCursor, offset == 0)
-                }
+            .map { deviationList ->
+                FetchResult(deviationList.results, deviationList.nextCursor, offset == 0)
+            }
     }
 }

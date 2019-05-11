@@ -25,25 +25,25 @@ class UserRepositoryImpl @Inject constructor(
     override fun getCurrentUser(userId: String): Observable<User> {
         val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
         return cacheHelper.createObservable(
-                cacheKey = getCacheKey(userId),
-                cachedData = getUserByIdFromDb(userId),
-                updater = fetchCurrentUser(userId))
+            cacheKey = getCacheKey(userId),
+            cachedData = getUserByIdFromDb(userId),
+            updater = fetchCurrentUser(userId))
     }
 
     private fun getUserByIdFromDb(userId: String): Observable<User> {
         return userDao.getUserById(userId)
-                .filter { it.isNotEmpty() }
-                .map { it.first().toUser() }
-                .distinctUntilChanged()
+            .filter { it.isNotEmpty() }
+            .map { it.first().toUser() }
+            .distinctUntilChanged()
     }
 
     private fun fetchCurrentUser(userId: String): Completable {
         return userService.whoami()
-                .doOnSuccess { user ->
-                    if (user.id != userId) throw IllegalStateException("User changed unexpectedly")
-                    persistWithTimestamp(user)
-                }
-                .ignoreElement()
+            .doOnSuccess { user ->
+                if (user.id != userId) throw IllegalStateException("User changed unexpectedly")
+                persistWithTimestamp(user)
+            }
+            .ignoreElement()
     }
 
     override fun persistWithTimestamp(user: UserDto) {
@@ -79,4 +79,4 @@ class UserRepositoryImpl @Inject constructor(
 }
 
 private fun UserDto.toUserEntity(): UserEntity =
-        UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)
+    UserEntity(id = id, name = name, type = type, avatarUrl = avatarUrl)

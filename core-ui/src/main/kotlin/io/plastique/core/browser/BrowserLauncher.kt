@@ -13,10 +13,10 @@ class BrowserLauncher @Inject constructor() {
         a.recycle()
 
         CustomTabsIntent.Builder()
-                .setToolbarColor(toolbarColor)
-                .setShowTitle(true)
-                .setInstantAppsEnabled(false)
-                .build()
-                .launchUrl(context, Uri.parse(url))
+            .setToolbarColor(toolbarColor)
+            .setShowTitle(true)
+            .setInstantAppsEnabled(false)
+            .build()
+            .launchUrl(context, Uri.parse(url))
     }
 }

@@ -25,56 +25,69 @@ class ElapsedTimeFormatterTest(
         @Parameters
         @JvmStatic
         fun data(): Collection<Array<Any>> = listOf(
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 0, 5, 0, ZoneId.systemDefault()),
-                        "just now"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 5, 0, ZoneId.systemDefault()),
+                "just now"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        "just now"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                "just now"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 0, 6, 0, ZoneId.systemDefault()),
-                        "6s"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 6, 0, ZoneId.systemDefault()),
+                "6s"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 0, 59, 0, ZoneId.systemDefault()),
-                        "59s"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 59, 0, ZoneId.systemDefault()),
+                "59s"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 1, 0, 0, ZoneId.systemDefault()),
-                        "1m"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 1, 0, 0, ZoneId.systemDefault()),
+                "1m"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 0, 59, 59, 0, ZoneId.systemDefault()),
-                        "59m"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 0, 59, 59, 0, ZoneId.systemDefault()),
+                "59m"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
-                        "1h"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+                "1h"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 1, 59, 59, 0, ZoneId.systemDefault()),
-                        "1h"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 1, 59, 59, 0, ZoneId.systemDefault()),
+                "1h"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 1, 23, 59, 59, 0, ZoneId.systemDefault()),
-                        "23h"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 1, 23, 59, 59, 0, ZoneId.systemDefault()),
+                "23h"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 2, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        "1d"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 2, 0, 0, 0, 0, ZoneId.systemDefault()),
+                "1d"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 8, 23, 59, 59, 0, ZoneId.systemDefault()),
-                        "7d"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 8, 23, 59, 59, 0, ZoneId.systemDefault()),
+                "7d"),
 
-                arrayOf(ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        "01 Jan"),
+            arrayOf(
+                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
+                "01 Jan"),
 
-                arrayOf(ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
-                        "31 Dec 16"))
+            arrayOf(
+                ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault()),
+                ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
+                "31 Dec 16"))
     }
 }

@@ -46,9 +46,9 @@ class GalleryFolderRepository @Inject constructor(
         return Observable.defer {
             val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
             cacheHelper.createObservable(
-                    cacheKey = cacheKey,
-                    cachedData = getFoldersFromDb(cacheKey),
-                    updater = fetchFolders(params, null, cacheKey).ignoreElement())
+                cacheKey = cacheKey,
+                cachedData = getFoldersFromDb(cacheKey),
+                updater = fetchFolders(params, null, cacheKey).ignoreElement())
         }
     }
 
@@ -62,25 +62,25 @@ class GalleryFolderRepository @Inject constructor(
     private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolders(
-                username = params.username,
-                matureContent = params.matureContent,
-                preload = true,
-                offset = offset,
-                limit = FOLDERS_PER_PAGE)
-                .map { folderList ->
-                    val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
-                    val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
-                    val entities = folderList.results.map { folder -> folder.toFolderEntity() }
-                    persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
-                    cacheMetadata.nextCursor.toOptional()
+            username = params.username,
+            matureContent = params.matureContent,
+            preload = true,
+            offset = offset,
+            limit = FOLDERS_PER_PAGE)
+            .map { folderList ->
+                val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
+                val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
+                val entities = folderList.results.map { folder -> folder.toFolderEntity() }
+                persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
+                cacheMetadata.nextCursor.toOptional()
+            }
+            .mapError { error ->
+                if (params.username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
+                    UserNotFoundException(params.username, error)
+                } else {
+                    error
                 }
-                .mapError { error ->
-                    if (params.username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
-                        UserNotFoundException(params.username, error)
-                    } else {
-                        error
-                    }
-                }
+            }
     }
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
@@ -135,10 +135,10 @@ data class FolderCacheMetadata(
 
 private fun FolderDto.toFolderEntity(): FolderEntity {
     val thumbnailUrl = deviations.asSequence()
-            .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
-            .firstOrNull { it != null }
+        .map { deviation -> deviation.thumbnails.lastOrNull()?.url ?: deviation.preview?.url }
+        .firstOrNull { it != null }
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
 
 private fun FolderEntity.toFolder(): Folder =
-        Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
+    Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

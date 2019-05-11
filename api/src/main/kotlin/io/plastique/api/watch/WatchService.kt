@@ -15,19 +15,22 @@ interface WatchService {
     @GET("user/watchers")
     fun getWatchers(
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<WatcherDto>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<PagedListResult<WatcherDto>>
 
     @GET("user/watchers/{username}")
     fun getWatchers(
         @Path("username") username: String,
         @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int): Single<PagedListResult<WatcherDto>>
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
+    ): Single<PagedListResult<WatcherDto>>
 
     @POST("user/friends/watch/{username}")
     @FormUrlEncoded
     fun watch(
         @Path("username") username: String,
-        @FieldMap params: Map<String, Boolean>): Completable
+        @FieldMap params: Map<String, Boolean>
+    ): Completable
 
     @GET("user/friends/unwatch/{username}")
     fun unwatch(@Path("username") username: String): Completable

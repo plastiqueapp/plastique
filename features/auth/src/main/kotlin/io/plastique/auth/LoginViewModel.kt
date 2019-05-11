@@ -29,9 +29,9 @@ class LoginViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandler,
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandler,
+        listener = TimberLogger(LOG_TAG))
 
     val state: Observable<LoginViewState> by lazy(LazyThreadSafetyMode.NONE) {
         loop.loop(LoginViewState.Initial, GenerateAuthUrlEffect).disposeOnDestroy()
@@ -61,15 +61,15 @@ class LoginEffectHandler @Inject constructor(
 
     override fun handle(effects: Observable<LoginEffect>): Observable<LoginEvent> {
         val generateAuthUrlEvents = effects.ofType<GenerateAuthUrlEffect>()
-                .map { AuthUrlGeneratedEvent(authenticator.generateAuthUrl()) }
+            .map { AuthUrlGeneratedEvent(authenticator.generateAuthUrl()) }
 
         val authenticateEvents = effects.ofType<AuthenticateEffect>()
-                .switchMapSingle { effect ->
-                    authenticator.onRedirect(effect.redirectUri)
-                            .doOnError(Timber::e)
-                            .toSingleDefault<LoginEvent>(AuthSuccessEvent)
-                            .onErrorReturn { error -> AuthErrorEvent(error) }
-                }
+            .switchMapSingle { effect ->
+                authenticator.onRedirect(effect.redirectUri)
+                    .doOnError(Timber::e)
+                    .toSingleDefault<LoginEvent>(AuthSuccessEvent)
+                    .onErrorReturn { error -> AuthErrorEvent(error) }
+            }
 
         return Observable.merge(generateAuthUrlEvents, authenticateEvents)
     }

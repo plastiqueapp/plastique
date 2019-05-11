@@ -1,9 +1,45 @@
+complexity:
+  ComplexMethod:
+    ignoreSingleWhenExpression: true
+  LongMethod:
+    active: false
+  TooManyFunctions:
+    active: false
+
 formatting:
   MaximumLineLength:
     maxLineLength: 160
 
+performance:
+  SpreadOperator:
+    active: false
+
 style:
   ForbiddenComment:
     active: false
+  MandatoryBracesIfStatements:
+    active: true
   MaxLineLength:
     maxLineLength: 160
+  MayBeConst:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: true
+  ReturnCount:
+    max: 5
+  SpacingBetweenPackageAndImports:
+    active: true
+  TrailingWhitespace:
+    active: true
+  UnnecessaryApply:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UnusedImports:
+    active: true
+#  UseCheckOrError:
+#    active: true
+#  UseRequire:
+#    active: true
+  VarCouldBeVal:
+    active: true

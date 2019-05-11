@@ -18,8 +18,8 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
 
     val themeChanges: Observable<ThemeId>
         get() = preferences.observable().get(PREF_UI_THEME, THEME_DEFAULT)
-                .map { it.ensureValid() }
-                .distinctUntilChanged()
+            .map { it.ensureValid() }
+            .distinctUntilChanged()
 
     fun applyTheme(activity: Activity, themeId: ThemeId) {
         val themeResId = getThemeResourceId(activity, themeId)

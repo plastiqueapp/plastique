@@ -44,9 +44,9 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
         progressDialogController = ProgressDialogController(this, supportFragmentManager, titleId = R.string.login_progress_title)
 
         viewModel.state
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderState(it) }
-                .disposeOnDestroy()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderState(it) }
+            .disposeOnDestroy()
     }
 
     override fun onDismissDialog(dialog: DialogFragment) {
@@ -72,8 +72,8 @@ class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
         LoginViewState.Error -> {
             progressDialogController.isShown = false
             val dialog = supportFragmentManager.fragmentFactory.instantiate<MessageDialogFragment>(this, args = MessageDialogFragment.newArgs(
-                    titleId = R.string.common_error,
-                    messageId = R.string.login_error_message))
+                titleId = R.string.common_error,
+                messageId = R.string.login_error_message))
             dialog.showAllowingStateLoss(supportFragmentManager, DIALOG_AUTH_ERROR)
         }
     }

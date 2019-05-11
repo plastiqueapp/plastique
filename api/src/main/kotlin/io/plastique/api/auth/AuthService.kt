@@ -12,23 +12,27 @@ interface AuthService {
         @Query("client_id") clientId: String,
         @Query("state") csrfToken: String,
         @Query("redirect_uri") redirectUri: String,
-        @Query("scope") scope: String): Call<ResponseBody>
+        @Query("scope") scope: String
+    ): Call<ResponseBody>
 
     @GET("/oauth2/token?grant_type=client_credentials")
     fun requestAccessToken(
         @Query("client_id") clientId: String,
-        @Query("client_secret") clientSecret: String): Single<TokenResult>
+        @Query("client_secret") clientSecret: String
+    ): Single<TokenResult>
 
     @GET("/oauth2/token?grant_type=authorization_code")
     fun requestAccessToken(
         @Query("client_id") clientId: String,
         @Query("client_secret") clientSecret: String,
         @Query("code") authCode: String,
-        @Query("redirect_uri") redirectUri: String): Single<TokenResult>
+        @Query("redirect_uri") redirectUri: String
+    ): Single<TokenResult>
 
     @GET("/oauth2/token?grant_type=refresh_token")
     fun refreshAccessToken(
         @Query("client_id") clientId: String,
         @Query("client_secret") clientSecret: String,
-        @Query("refresh_token") refreshToken: String): Single<TokenResult>
+        @Query("refresh_token") refreshToken: String
+    ): Single<TokenResult>
 }

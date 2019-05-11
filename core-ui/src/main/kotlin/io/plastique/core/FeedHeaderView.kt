@@ -12,9 +12,7 @@ import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
 import org.threeten.bp.ZonedDateTime
 
-class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : ConstraintLayout(context, attrs, defStyleAttr) {
-
+class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val avatarView: ImageView
     private val usernameView: TextView
     private val dateView: TextView
@@ -37,10 +35,10 @@ class FeedHeaderView @JvmOverloads constructor(context: Context, attrs: Attribut
     fun setUser(user: User, glide: GlideRequests) {
         usernameView.text = user.name
         glide.load(user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(avatarView)
     }
 
     fun setOnUserClickListener(listener: OnClickListener) {

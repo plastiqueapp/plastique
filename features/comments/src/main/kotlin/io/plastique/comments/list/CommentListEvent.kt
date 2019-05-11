@@ -7,7 +7,7 @@ import io.plastique.core.session.Session
 sealed class CommentListEvent : Event() {
     data class CommentsChangedEvent(val comments: List<CommentUiModel>, val hasMore: Boolean) : CommentListEvent() {
         override fun toString(): String =
-                "CommentsChangedEvent(items=${comments.size}, hasMore=$hasMore)"
+            "CommentsChangedEvent(items=${comments.size}, hasMore=$hasMore)"
     }
 
     data class LoadErrorEvent(val error: Throwable) : CommentListEvent()

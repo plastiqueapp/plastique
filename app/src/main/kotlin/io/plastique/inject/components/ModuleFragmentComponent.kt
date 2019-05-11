@@ -17,14 +17,14 @@ import io.plastique.users.UsersFragmentComponent
 @FragmentScope
 @Subcomponent
 interface ModuleFragmentComponent :
-        FragmentComponent,
-        CollectionsFragmentComponent,
-        CommentsFragmentComponent,
-        DeviationsFragmentComponent,
-        FeedFragmentComponent,
-        GalleryFragmentComponent,
-        NotificationsFragmentComponent,
-        ProfileFragmentComponent,
-        SettingsFragmentComponent,
-        StatusesFragmentComponent,
-        UsersFragmentComponent
+    FragmentComponent,
+    CollectionsFragmentComponent,
+    CommentsFragmentComponent,
+    DeviationsFragmentComponent,
+    FeedFragmentComponent,
+    GalleryFragmentComponent,
+    NotificationsFragmentComponent,
+    ProfileFragmentComponent,
+    SettingsFragmentComponent,
+    StatusesFragmentComponent,
+    UsersFragmentComponent

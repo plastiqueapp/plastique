@@ -49,27 +49,30 @@ class StatusRepositoryImpl @Inject constructor(
         val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
         val cacheKey = getCacheKey(params)
         return cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getStatusesFromDb(cacheKey),
-                updater = fetch(params, null).ignoreElement())
+            cacheKey = cacheKey,
+            cachedData = getStatusesFromDb(cacheKey),
+            updater = fetch(params, null).ignoreElement())
     }
 
     fun fetch(params: StatusListLoadParams, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return statusService.getStatuses(params.username, offset, STATUSES_PER_PAGE, params.matureContent)
-                .map { statusList ->
-                    val cacheMetadata = StatusListCacheMetadata(params, statusList.nextCursor)
-                    val cacheEntry = CacheEntry(key = getCacheKey(params), timestamp = timeProvider.currentInstant, metadata = cacheMetadataConverter.toJson(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, statuses = statusList.results, replaceExisting = offset == 0)
-                    cacheMetadata.nextCursor.toOptional()
+            .map { statusList ->
+                val cacheMetadata = StatusListCacheMetadata(params, statusList.nextCursor)
+                val cacheEntry = CacheEntry(
+                    key = getCacheKey(params),
+                    timestamp = timeProvider.currentInstant,
+                    metadata = cacheMetadataConverter.toJson(cacheMetadata))
+                persist(cacheEntry = cacheEntry, statuses = statusList.results, replaceExisting = offset == 0)
+                cacheMetadata.nextCursor.toOptional()
+            }
+            .mapError { error ->
+                if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
+                    UserNotFoundException(params.username, error)
+                } else {
+                    error
                 }
-                .mapError { error ->
-                    if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
-                        UserNotFoundException(params.username, error)
-                    } else {
-                        error
-                    }
-                }
+            }
     }
 
     private fun persist(cacheEntry: CacheEntry, statuses: List<StatusDto>, replaceExisting: Boolean) {
@@ -124,7 +127,12 @@ class StatusRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun collectEntities(status: StatusDto, statuses: MutableCollection<StatusEntity>, deviations: MutableCollection<DeviationDto>, users: MutableCollection<UserDto>) {
+    private fun collectEntities(
+        status: StatusDto,
+        statuses: MutableCollection<StatusEntity>,
+        deviations: MutableCollection<DeviationDto>,
+        users: MutableCollection<UserDto>
+    ) {
         var shareType: ShareType = ShareType.None
         var sharedDeviationId: String? = null
         var sharedStatusId: String? = null
@@ -151,9 +159,9 @@ class StatusRepositoryImpl @Inject constructor(
         }
 
         statuses += status.toStatusEntity(
-                shareType = shareType,
-                sharedDeviationId = sharedDeviationId,
-                sharedStatusId = sharedStatusId)
+            shareType = shareType,
+            sharedDeviationId = sharedDeviationId,
+            sharedStatusId = sharedStatusId)
     }
 
     private fun getCacheKey(params: StatusListLoadParams): String = "statuses-${params.username}"
@@ -166,15 +174,15 @@ class StatusRepositoryImpl @Inject constructor(
 
 private fun StatusDto.toStatusEntity(shareType: ShareType, sharedDeviationId: String?, sharedStatusId: String?): StatusEntity {
     return StatusEntity(
-            id = id,
-            body = body,
-            timestamp = timestamp,
-            url = url,
-            authorId = author.id,
-            commentCount = commentCount,
-            shareType = shareType,
-            sharedDeviationId = sharedDeviationId,
-            sharedStatusId = sharedStatusId)
+        id = id,
+        body = body,
+        timestamp = timestamp,
+        url = url,
+        authorId = author.id,
+        commentCount = commentCount,
+        shareType = shareType,
+        sharedDeviationId = sharedDeviationId,
+        sharedStatusId = sharedStatusId)
 }
 
 @JsonClass(generateAdapter = true)

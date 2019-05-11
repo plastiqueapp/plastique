@@ -6,7 +6,7 @@ import org.xmlpull.v1.XmlPullParser
 
 class LocalAppConfig(context: Context, @XmlRes resourceId: Int) : AppConfig {
     private val configValues: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) {
-        context.resources.getXml(resourceId).use { readConfigValues(it) }
+        context.resources.getXml(resourceId).use { ConfigXmlReader().read(it) }
     }
 
     override fun getBoolean(key: String): Boolean {
@@ -24,8 +24,10 @@ class LocalAppConfig(context: Context, @XmlRes resourceId: Int) : AppConfig {
     override fun fetch() {
         // No-op
     }
+}
 
-    private fun readConfigValues(xml: XmlPullParser): Map<String, String> {
+private class ConfigXmlReader {
+    fun read(xml: XmlPullParser): Map<String, String> {
         val configValues = linkedMapOf<String, String>()
 
         var tag: String? = null
@@ -39,12 +41,9 @@ class LocalAppConfig(context: Context, @XmlRes resourceId: Int) : AppConfig {
 
                 XmlPullParser.END_TAG -> {
                     if (xml.name == "entry") {
-                        if (key == null) {
-                            throw IllegalStateException("Entry key is null")
-                        }
-                        if (value == null) {
-                            throw IllegalStateException("Entry value is null")
-                        }
+                        checkNotNull(key) { "Entry key is null" }
+                        checkNotNull(value) { "Entry value is null" }
+
                         configValues[key] = value
                         key = null
                         value = null

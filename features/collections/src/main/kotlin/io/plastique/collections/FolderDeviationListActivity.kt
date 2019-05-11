@@ -26,8 +26,8 @@ class FolderDeviationListActivity : BaseActivity() {
         if (savedInstanceState == null) {
             contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = FolderDeviationListFragment.newArgs(folderId))
             supportFragmentManager.beginTransaction()
-                    .add(R.id.deviations_container, contentFragment)
-                    .commit()
+                .add(R.id.deviations_container, contentFragment)
+                .commit()
         } else {
             contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as FolderDeviationListFragment
         }

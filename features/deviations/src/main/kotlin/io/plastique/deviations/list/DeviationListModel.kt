@@ -19,10 +19,10 @@ class DeviationListModel @Inject constructor(
 ) {
     fun getItems(params: FetchParams): Observable<ItemsData> {
         return dataSource.getData(params)
-                .map { pagedData ->
-                    val items = createItems(pagedData.value, params is DailyParams)
-                    ItemsData(items = items, hasMore = pagedData.hasMore)
-                }
+            .map { pagedData ->
+                val items = createItems(pagedData.value, params is DailyParams)
+                ItemsData(items = items, hasMore = pagedData.hasMore)
+            }
     }
 
     fun loadMore(): Completable {

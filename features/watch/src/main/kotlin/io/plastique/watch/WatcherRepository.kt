@@ -46,9 +46,9 @@ class WatcherRepository @Inject constructor(
         return Observable.defer {
             val cacheKey = getCacheKey(username ?: sessionManager.currentUsername)
             cacheHelper.createObservable(
-                    cacheKey = cacheKey,
-                    cachedData = getWatchersFromDb(cacheKey),
-                    updater = fetchWatchers(username, null).ignoreElement())
+                cacheKey = cacheKey,
+                cachedData = getWatchersFromDb(cacheKey),
+                updater = fetchWatchers(username, null).ignoreElement())
         }
     }
 
@@ -66,19 +66,19 @@ class WatcherRepository @Inject constructor(
         } else {
             watchService.getWatchers(offset, WATCHERS_PER_PAGE)
         }
-                .map { watcherList ->
-                    val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
-                    val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
-                    persist(cacheEntry = cacheEntry, watchers = watcherList.results, replaceExisting = offset == 0)
-                    cacheMetadata.nextCursor.toOptional()
+            .map { watcherList ->
+                val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                persist(cacheEntry = cacheEntry, watchers = watcherList.results, replaceExisting = offset == 0)
+                cacheMetadata.nextCursor.toOptional()
+            }
+            .mapError { error ->
+                if (username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
+                    UserNotFoundException(username, error)
+                } else {
+                    error
                 }
-                .mapError { error ->
-                    if (username != null && error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
-                        UserNotFoundException(username, error)
-                    } else {
-                        error
-                    }
-                }
+            }
     }
 
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
@@ -129,4 +129,4 @@ data class WatchersCacheMetadata(
 )
 
 private fun WatcherEntityWithRelations.toWatcher(): Watcher =
-        Watcher(user = users.first().toUser())
+    Watcher(user = users.first().toUser())

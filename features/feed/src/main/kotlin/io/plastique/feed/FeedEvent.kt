@@ -8,7 +8,7 @@ import io.plastique.feed.settings.FeedSettings
 sealed class FeedEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : FeedEvent() {
         override fun toString(): String =
-                "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
+            "ItemsChangedEvent(items=${items.size}, hasMore=$hasMore)"
     }
 
     data class LoadErrorEvent(val error: Throwable) : FeedEvent()

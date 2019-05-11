@@ -12,7 +12,7 @@ class AppWorkerFactory @Inject constructor(
     override fun createWorker(context: Context, workerClassName: String, workerParameters: WorkerParameters): ListenableWorker {
         val workerClass = Class.forName(workerClassName)
         val delegateWorkerFactory = delegateWorkerFactories[workerClass]
-                ?: throw IllegalStateException("No ListenableWorkerFactory is provided for $workerClass")
+            ?: throw IllegalStateException("No ListenableWorkerFactory is provided for $workerClass")
         return delegateWorkerFactory.create(context, workerParameters)
     }
 }

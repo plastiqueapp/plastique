@@ -8,10 +8,11 @@ import androidx.room.TypeConverters
 import io.plastique.core.converters.StringListConverter
 import io.plastique.deviations.DeviationEntity
 
-@Entity(tableName = "deviation_metadata",
-        foreignKeys = [
-            ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
-        ])
+@Entity(
+    tableName = "deviation_metadata",
+    foreignKeys = [
+        ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"], onDelete = ForeignKey.CASCADE)
+    ])
 @TypeConverters(StringListConverter::class)
 data class DeviationMetadataEntity(
     @PrimaryKey

@@ -26,7 +26,7 @@ typealias OnConfigureTabListener = (tab: TabLayout.Tab, position: Int) -> Unit
 
 fun TabLayout.setupWithViewPager(viewPager: ViewPager2, onConfigureTab: OnConfigureTabListener = { _, _ -> }) {
     val adapter: RecyclerView.Adapter<*> = viewPager.adapter
-            ?: throw IllegalStateException("ViewPager2 has no adapter attached")
+        ?: throw IllegalStateException("ViewPager2 has no adapter attached")
 
     val onPageChangeCallback = TabLayoutOnPageChangeCallback(this)
     viewPager.registerOnPageChangeCallback(onPageChangeCallback)
@@ -43,7 +43,12 @@ fun TabLayout.setupWithViewPager(viewPager: ViewPager2, onConfigureTab: OnConfig
     setScrollPosition(viewPager.currentItem, 0f, true)
 }
 
-private fun populateTabsFromPagerAdapter(tabLayout: TabLayout, viewPager: ViewPager2, adapter: RecyclerView.Adapter<*>, onConfigureTab: OnConfigureTabListener) {
+private fun populateTabsFromPagerAdapter(
+    tabLayout: TabLayout,
+    viewPager: ViewPager2,
+    adapter: RecyclerView.Adapter<*>,
+    onConfigureTab: OnConfigureTabListener
+) {
     tabLayout.removeAllTabs()
 
     val adapterCount = adapter.itemCount

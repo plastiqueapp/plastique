@@ -37,18 +37,18 @@ fun StatusEntityWithRelations.toStatus(): Status {
         ShareType.Status -> Status.Share.StatusShare(status = statuses.firstOrNull()?.toStatus())
     }
     return Status(
-            id = status.id,
-            date = status.timestamp,
-            body = status.body,
-            author = users.first().toUser(),
-            commentCount = status.commentCount,
-            share = share)
-}
-
-private fun StatusEntityWithUsers.toStatus(): Status = Status(
         id = status.id,
         date = status.timestamp,
         body = status.body,
         author = users.first().toUser(),
         commentCount = status.commentCount,
-        share = Status.Share.None)
+        share = share)
+}
+
+private fun StatusEntityWithUsers.toStatus(): Status = Status(
+    id = status.id,
+    date = status.timestamp,
+    body = status.body,
+    author = users.first().toUser(),
+    commentCount = status.commentCount,
+    share = Status.Share.None)

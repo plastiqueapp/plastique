@@ -10,18 +10,19 @@ import io.plastique.statuses.StatusEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
 
-@Entity(tableName = "feed",
-        foreignKeys = [
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"]),
-            ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["status_id"]),
-            ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["folder_id"])
-        ],
-        indices = [
-            Index("user_id"),
-            Index("status_id"),
-            Index("folder_id"),
-            Index("bucket_id", unique = true)
-        ])
+@Entity(
+    tableName = "feed",
+    foreignKeys = [
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"]),
+        ForeignKey(entity = StatusEntity::class, parentColumns = ["id"], childColumns = ["status_id"]),
+        ForeignKey(entity = FolderEntity::class, parentColumns = ["id"], childColumns = ["folder_id"])
+    ],
+    indices = [
+        Index("user_id"),
+        Index("status_id"),
+        Index("folder_id"),
+        Index("bucket_id", unique = true)
+    ])
 data class FeedElementEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

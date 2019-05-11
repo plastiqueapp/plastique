@@ -28,14 +28,14 @@ abstract class DatabaseModule {
         @JvmStatic
         fun provideDatabase(context: Context, openHelperFactory: SupportSQLiteOpenHelper.Factory, analytics: Analytics): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, "main.db")
-                    .fallbackToDestructiveMigration()
-                    .openHelperFactory(openHelperFactory)
-                    .addCallback(object : RoomDatabase.Callback() {
-                        override fun onOpen(db: SupportSQLiteDatabase) {
-                            analytics.initDatabaseSize(File(db.path))
-                        }
-                    })
-                    .build()
+                .fallbackToDestructiveMigration()
+                .openHelperFactory(openHelperFactory)
+                .addCallback(object : RoomDatabase.Callback() {
+                    override fun onOpen(db: SupportSQLiteDatabase) {
+                        analytics.initDatabaseSize(File(db.path))
+                    }
+                })
+                .build()
         }
 
         @Provides

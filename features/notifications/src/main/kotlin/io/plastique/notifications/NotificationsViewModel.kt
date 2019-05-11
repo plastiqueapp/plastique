@@ -53,10 +53,10 @@ class NotificationsViewModel @Inject constructor(
 
     lateinit var state: Observable<NotificationsViewState>
     private val loop = MainLoop(
-            reducer = stateReducer,
-            effectHandler = effectHandlerFactory.create(screenVisible),
-            externalEvents = externalEvents(),
-            listener = TimberLogger(LOG_TAG))
+        reducer = stateReducer,
+        effectHandler = effectHandlerFactory.create(screenVisible),
+        externalEvents = externalEvents(),
+        listener = TimberLogger(LOG_TAG))
 
     fun init() {
         if (::state.isInitialized) return
@@ -64,15 +64,15 @@ class NotificationsViewModel @Inject constructor(
         val signedIn = sessionManager.session is Session.User
         val stateAndEffects = if (signedIn) {
             next(NotificationsViewState(
-                    contentState = ContentState.Loading,
-                    isSignedIn = signedIn),
-                    LoadNotificationsEffect)
+                contentState = ContentState.Loading,
+                isSignedIn = signedIn),
+                LoadNotificationsEffect)
         } else {
             next(NotificationsViewState(
-                    contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
-                    isSignedIn = signedIn))
+                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                    message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
+                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                isSignedIn = signedIn))
         }
 
         state = loop.loop(stateAndEffects).disposeOnDestroy()
@@ -84,8 +84,8 @@ class NotificationsViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<NotificationsEvent> {
         return sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) }
+            .valveLatest(screenVisible)
+            .map { session -> SessionChangedEvent(session) }
     }
 
     companion object {
@@ -102,36 +102,36 @@ class NotificationsEffectHandler(
 
     override fun handle(effects: Observable<NotificationsEffect>): Observable<NotificationsEvent> {
         val itemEvents = effects.ofType<LoadNotificationsEffect>()
-                .switchMap {
-                    notificationsModel.items()
-                            .valveLatest(screenVisible)
-                            .takeWhile { sessionManager.session is Session.User }
-                            .map<NotificationsEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadErrorEvent(error) }
-                }
+            .switchMap {
+                notificationsModel.items()
+                    .valveLatest(screenVisible)
+                    .takeWhile { sessionManager.session is Session.User }
+                    .map<NotificationsEvent> { itemsData -> ItemsChangedEvent(itemsData.items, itemsData.hasMore) }
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadErrorEvent(error) }
+            }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-                .switchMapSingle {
-                    notificationsModel.loadMore()
-                            .toSingleDefault<NotificationsEvent>(LoadMoreFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> LoadMoreErrorEvent(error) }
-                }
+            .switchMapSingle {
+                notificationsModel.loadMore()
+                    .toSingleDefault<NotificationsEvent>(LoadMoreFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> LoadMoreErrorEvent(error) }
+            }
 
         val refreshEvents = effects.ofType<RefreshEffect>()
-                .switchMapSingle {
-                    notificationsModel.refresh()
-                            .toSingleDefault<NotificationsEvent>(RefreshFinishedEvent)
-                            .doOnError(Timber::e)
-                            .onErrorReturn { error -> RefreshErrorEvent(error) }
-                }
+            .switchMapSingle {
+                notificationsModel.refresh()
+                    .toSingleDefault<NotificationsEvent>(RefreshFinishedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> RefreshErrorEvent(error) }
+            }
 
         val deleteEvents = effects.ofType<DeleteMessageEffect>()
-                .flatMapCompletable { effect -> notificationsModel.deleteMessageById(effect.messageId) }
+            .flatMapCompletable { effect -> notificationsModel.deleteMessageById(effect.messageId) }
 
         val undoDeleteEvents = effects.ofType<UndoDeleteMessageEffect>()
-                .flatMapCompletable { effect -> notificationsModel.undoDeleteMessageById(effect.messageId) }
+            .flatMapCompletable { effect -> notificationsModel.undoDeleteMessageById(effect.messageId) }
 
         return Observable.mergeArray(itemEvents, loadMoreEvents, refreshEvents, deleteEvents.toObservable(), undoDeleteEvents.toObservable())
     }
@@ -143,94 +143,95 @@ class NotificationsStateReducer @Inject constructor(
     private val resourceProvider: ResourceProvider
 ) : StateReducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
 
-    override fun reduce(state: NotificationsViewState, event: NotificationsEvent): StateWithEffects<NotificationsViewState, NotificationsEffect> = when (event) {
-        is ItemsChangedEvent -> {
-            val contentState = if (event.items.isNotEmpty()) {
-                ContentState.Content
-            } else {
-                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.notifications_message_empty)))
-            }
-            next(state.copy(
+    override fun reduce(state: NotificationsViewState, event: NotificationsEvent): StateWithEffects<NotificationsViewState, NotificationsEffect> =
+        when (event) {
+            is ItemsChangedEvent -> {
+                val contentState = if (event.items.isNotEmpty()) {
+                    ContentState.Content
+                } else {
+                    ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.notifications_message_empty)))
+                }
+                next(state.copy(
                     contentState = contentState,
                     items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                     contentItems = event.items,
                     hasMore = event.hasMore))
-        }
+            }
 
-        is LoadErrorEvent -> {
-            next(state.copy(
+            is LoadErrorEvent -> {
+                next(state.copy(
                     contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
                     items = emptyList(),
                     contentItems = emptyList(),
                     hasMore = false))
-        }
-
-        RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadNotificationsEffect)
-        }
-
-        LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem), LoadMoreEffect)
-            } else {
-                next(state)
             }
-        }
 
-        LoadMoreFinishedEvent -> {
-            next(state.copy(isLoadingMore = false))
-        }
+            RetryClickEvent -> {
+                next(state.copy(contentState = ContentState.Loading), LoadNotificationsEffect)
+            }
 
-        is LoadMoreErrorEvent -> {
-            next(state.copy(
+            LoadMoreEvent -> {
+                if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
+                    next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem), LoadMoreEffect)
+                } else {
+                    next(state)
+                }
+            }
+
+            LoadMoreFinishedEvent -> {
+                next(state.copy(isLoadingMore = false))
+            }
+
+            is LoadMoreErrorEvent -> {
+                next(state.copy(
                     isLoadingMore = false,
                     items = state.contentItems,
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
-        }
-
-        RefreshEvent -> {
-            next(state.copy(isRefreshing = true), RefreshEffect)
-        }
-
-        RefreshFinishedEvent -> {
-            next(state.copy(isRefreshing = false))
-        }
-
-        is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
-        }
-
-        SnackbarShownEvent -> {
-            next(state.copy(snackbarState = SnackbarState.None))
-        }
-
-        is SessionChangedEvent -> {
-            val signedIn = event.session is Session.User
-            if (signedIn != state.isSignedIn) {
-                if (signedIn) {
-                    next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn), LoadNotificationsEffect)
-                } else {
-                    next(state.copy(
-                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                    message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
-                                    button = resourceProvider.getString(R.string.common_button_sign_in))),
-                            isSignedIn = signedIn))
-                }
-            } else {
-                next(state)
             }
-        }
 
-        is DeleteMessageEvent -> {
-            next(state.copy(snackbarState = SnackbarState.MessageWithAction(
+            RefreshEvent -> {
+                next(state.copy(isRefreshing = true), RefreshEffect)
+            }
+
+            RefreshFinishedEvent -> {
+                next(state.copy(isRefreshing = false))
+            }
+
+            is RefreshErrorEvent -> {
+                next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            }
+
+            SnackbarShownEvent -> {
+                next(state.copy(snackbarState = SnackbarState.None))
+            }
+
+            is SessionChangedEvent -> {
+                val signedIn = event.session is Session.User
+                if (signedIn != state.isSignedIn) {
+                    if (signedIn) {
+                        next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn), LoadNotificationsEffect)
+                    } else {
+                        next(state.copy(
+                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                                message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
+                                button = resourceProvider.getString(R.string.common_button_sign_in))),
+                            isSignedIn = signedIn))
+                    }
+                } else {
+                    next(state)
+                }
+            }
+
+            is DeleteMessageEvent -> {
+                next(state.copy(snackbarState = SnackbarState.MessageWithAction(
                     message = resourceProvider.getString(R.string.notifications_message_notification_deleted),
                     actionText = resourceProvider.getString(R.string.common_button_undo),
                     actionData = event.messageId)),
                     DeleteMessageEffect(event.messageId))
-        }
+            }
 
-        is UndoDeleteMessageEvent -> {
-            next(state, UndoDeleteMessageEffect(event.messageId))
+            is UndoDeleteMessageEvent -> {
+                next(state, UndoDeleteMessageEffect(event.messageId))
+            }
         }
-    }
 }

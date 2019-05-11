@@ -13,9 +13,9 @@ class DebugOpenHelperFactory(
     override fun create(configuration: SupportSQLiteOpenHelper.Configuration): SupportSQLiteOpenHelper {
         val config = if (configuration.name != null) {
             SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
-                    .name(configuration.name)
-                    .callback(OpenHelper(configuration.context, configuration.name!!, configuration.callback))
-                    .build()
+                .name(configuration.name)
+                .callback(OpenHelper(configuration.context, configuration.name!!, configuration.callback))
+                .build()
         } else {
             configuration
         }

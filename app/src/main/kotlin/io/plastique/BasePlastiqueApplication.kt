@@ -53,14 +53,14 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
 
     private fun initFabric() {
         val crashlytics = Crashlytics.Builder()
-                .core(CrashlyticsCore.Builder()
-                        .disabled(BuildConfig.DEBUG)
-                        .build())
-                .build()
-        Fabric.with(Fabric.Builder(this)
-                .kits(crashlytics)
-                .debuggable(BuildConfig.DEBUG)
+            .core(CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
                 .build())
+            .build()
+        Fabric.with(Fabric.Builder(this)
+            .kits(crashlytics)
+            .debuggable(BuildConfig.DEBUG)
+            .build())
     }
 
     private fun initRxJava() {
@@ -73,8 +73,8 @@ abstract class BasePlastiqueApplication : Application(), AppComponent.Holder, Ac
 
     private fun initWorkManager() {
         WorkManager.initialize(this, Configuration.Builder()
-                .setWorkerFactory(workerFactory)
-                .build())
+            .setWorkerFactory(workerFactory)
+            .build())
     }
 
     private fun injectDependencies() {

@@ -35,13 +35,14 @@ private class AddToCollectionItemDelegate(
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
         holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
-        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_add_to_collection, item.deviationTitle, item.folderName), 0)
+        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_add_to_collection,
+            item.deviationTitle, item.folderName), 0)
 
         glide.load(item.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatarView)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -79,10 +80,10 @@ private class BadgeGivenItemDelegate(
         holder.descriptionView.text = item.text
 
         glide.load(item.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatarView)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -120,10 +121,10 @@ private class FavoriteItemDelegate(
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_favorite, item.deviationTitle), 0)
 
         glide.load(item.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatarView)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -161,10 +162,10 @@ private class WatchItemDelegate(
         holder.descriptionView.text = holder.itemView.resources.getString(R.string.notifications_item_watch)
 
         glide.load(item.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
-                .into(holder.avatarView)
+            .fallback(R.drawable.default_avatar_64dp)
+            .circleCrop()
+            .dontAnimate()
+            .into(holder.avatarView)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {

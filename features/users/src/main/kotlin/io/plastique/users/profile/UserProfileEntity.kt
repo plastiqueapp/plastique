@@ -7,10 +7,11 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import io.plastique.users.UserEntity
 
-@Entity(tableName = "user_profiles",
-        foreignKeys = [
-            ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"])
-        ])
+@Entity(
+    tableName = "user_profiles",
+    foreignKeys = [
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"])
+    ])
 data class UserProfileEntity(
     @PrimaryKey
     @ColumnInfo(name = "user_id")

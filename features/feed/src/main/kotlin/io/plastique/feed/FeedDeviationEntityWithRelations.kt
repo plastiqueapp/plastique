@@ -8,8 +8,10 @@ import io.plastique.deviations.DeviationEntity
 import io.plastique.deviations.DeviationImageEntity
 import io.plastique.users.UserEntity
 
-@DatabaseView("SELECT deviations.*, feed_deviations.feed_element_id FROM deviations INNER JOIN feed_deviations ON deviations.id = feed_deviations.deviation_id ORDER BY feed_deviations.feed_element_id, feed_deviations.`order`",
-        viewName = "feed_deviations_ordered")
+@DatabaseView("""SELECT deviations.*, feed_deviations.feed_element_id FROM deviations
+INNER JOIN feed_deviations ON deviations.id = feed_deviations.deviation_id
+ORDER BY feed_deviations.feed_element_id, feed_deviations.`order`""",
+    viewName = "feed_deviations_ordered")
 data class FeedDeviationEntityWithRelations(
     @ColumnInfo(name = "feed_element_id")
     val feedElementId: Long,

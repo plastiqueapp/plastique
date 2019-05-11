@@ -44,39 +44,43 @@ import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
 import io.plastique.gallery.FolderEntity as GalleryFolderEntity
 import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
-@Database(entities = [
-    CacheEntry::class,
-    CategoryEntity::class,
+@Database(
+    entities = [
+        CacheEntry::class,
+        CategoryEntity::class,
 
-    CollectionFolderEntity::class,
-    CollectionFolderLinkage::class,
+        CollectionFolderEntity::class,
+        CollectionFolderLinkage::class,
 
-    CommentEntity::class,
-    CommentLinkage::class,
+        CommentEntity::class,
+        CommentLinkage::class,
 
-    DeviationEntity::class,
-    DeviationImageEntity::class,
-    DeviationLinkage::class,
-    DeviationMetadataEntity::class,
-    DownloadInfoEntity::class,
+        DeviationEntity::class,
+        DeviationImageEntity::class,
+        DeviationLinkage::class,
+        DeviationMetadataEntity::class,
+        DownloadInfoEntity::class,
 
-    FeedElementEntity::class,
-    FeedElementDeviation::class,
+        FeedElementEntity::class,
+        FeedElementDeviation::class,
 
-    GalleryFolderEntity::class,
-    GalleryFolderLinkage::class,
+        GalleryFolderEntity::class,
+        GalleryFolderLinkage::class,
 
-    StatusEntity::class,
-    StatusLinkage::class,
+        StatusEntity::class,
+        StatusLinkage::class,
 
-    UserEntity::class,
-    UserProfileEntity::class,
-    WatcherEntity::class,
-    MessageEntity::class,
-    DeletedMessageEntity::class
-], views = [
-    FeedDeviationEntityWithRelations::class
-], version = BuildConfig.DB_VERSION, exportSchema = false)
+        UserEntity::class,
+        UserProfileEntity::class,
+        WatcherEntity::class,
+        MessageEntity::class,
+        DeletedMessageEntity::class
+    ],
+    views = [
+        FeedDeviationEntityWithRelations::class
+    ],
+    version = BuildConfig.DB_VERSION,
+    exportSchema = false)
 @TypeConverters(InstantConverter::class, SizeConverter::class, ZonedDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cacheEntryDao(): CacheEntryDao

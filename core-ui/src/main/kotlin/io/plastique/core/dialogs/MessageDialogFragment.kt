@@ -15,10 +15,10 @@ class MessageDialogFragment : BaseDialogFragment() {
         val message = if (messageId != 0) getString(messageId) else args.getString(ARG_MESSAGE)
 
         return AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(R.string.common_button_ok, null)
-                .create()
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(R.string.common_button_ok, null)
+            .create()
     }
 
     companion object {
