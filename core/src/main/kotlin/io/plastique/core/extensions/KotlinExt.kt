@@ -2,7 +2,7 @@
 
 package io.plastique.core.extensions
 
-inline fun <T : Any> List<T>.replaceIf(crossinline predicate: (T) -> Boolean, crossinline replacer: (T) -> (T)): List<T> {
+inline fun <T : Any> List<T>.replaceIf(predicate: (T) -> Boolean, replacer: (T) -> (T)): List<T> {
     return map { if (predicate(it)) replacer(it) else it }
 }
 
