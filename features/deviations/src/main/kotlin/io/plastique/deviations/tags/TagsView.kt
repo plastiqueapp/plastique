@@ -25,6 +25,8 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         }
 
     init {
+        overScrollMode = OVER_SCROLL_NEVER
+
         val a = context.obtainStyledAttributes(attrs, R.styleable.TagsView, defStyleAttr, 0)
         val tagBackgroundResId = a.getResourceId(R.styleable.TagsView_tagBackground, 0)
         val tagTextAppearance = a.getResourceId(R.styleable.TagsView_tagTextAppearance, 0)
