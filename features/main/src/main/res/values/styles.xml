@@ -9,6 +9,11 @@
         <item name="tagsViewStyle">@style/Widget.App.Dark.Tags</item>
     </style>
 
+    <style name="Base.Widget.App.Tags" parent="">
+        <item name="android:padding">6dp</item>
+        <item name="tagMargin">6dp</item>
+    </style>
+
     <style name="Widget.App.Light.Tags" parent="Base.Widget.App.Tags">
         <item name="tagBackground">@drawable/tag_background_light</item>
         <item name="tagTextAppearance">?android:textAppearanceSmallInverse</item>

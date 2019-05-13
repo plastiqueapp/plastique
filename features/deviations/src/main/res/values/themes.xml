@@ -17,9 +17,4 @@
         <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
     </style>
 
-    <style name="Base.Widget.App.Tags" parent="">
-        <item name="android:padding">6dp</item>
-        <item name="tagMargin">6dp</item>
-    </style>
-
 </resources>
