@@ -2,14 +2,10 @@
 <resources>
 
     <style name="Theme.App.Light.Main">
-        <item name="activeTabColor">#ffffff</item>
-        <item name="inactiveTabColor">#b3ffffff</item>
         <item name="tagsViewStyle">@style/Widget.App.Light.Tags</item>
     </style>
 
     <style name="Theme.App.Dark.Main">
-        <item name="activeTabColor">#ffffff</item>
-        <item name="inactiveTabColor">#b3ffffff</item>
         <item name="tagsViewStyle">@style/Widget.App.Dark.Tags</item>
     </style>
 
