@@ -5,13 +5,7 @@
     <application>
         <activity
             android:name=".categories.list.CategoryListActivity"
-            android:label="@string/deviations_categories_title"
-            android:theme="@style/Theme.App.Light.Categories">
-
-            <meta-data
-                android:name="darkTheme"
-                android:resource="@style/Theme.App.Dark.Categories" />
-        </activity>
+            android:label="@string/deviations_categories_title" />
 
         <activity android:name=".info.DeviationInfoActivity" />
 

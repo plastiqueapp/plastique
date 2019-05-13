@@ -11,8 +11,8 @@ import io.plastique.core.extensions.getParcelableCreator
 import io.plastique.core.lists.ListItem
 import io.plastique.core.ui.R
 
-data class BreadcrumbItem(override val id: String, val breadcrumb: Breadcrumb) : ListItem
-data class SeparatorItem(override val id: String) : ListItem
+internal data class BreadcrumbItem(override val id: String, val breadcrumb: Breadcrumb) : ListItem
+internal data class SeparatorItem(override val id: String) : ListItem
 
 class BreadcrumbsView : RecyclerView {
     private val adapter: BreadcrumbsAdapter

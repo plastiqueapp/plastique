@@ -26,7 +26,9 @@
             android:layout_height="?actionBarSize"
             android:clipToPadding="false"
             android:paddingEnd="8dp"
-            android:paddingStart="8dp" />
+            android:paddingStart="8dp"
+            app:breadcrumbLayoutId="@layout/item_breadcrumb"
+            app:separatorDrawable="@drawable/ic_arrow_right_24dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
