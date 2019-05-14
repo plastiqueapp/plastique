@@ -15,15 +15,16 @@ import io.plastique.core.ui.R
 internal data class BreadcrumbItem(override val id: String, val breadcrumb: Breadcrumb) : ListItem
 internal data class SeparatorItem(override val id: String) : ListItem
 
-class BreadcrumbsView : RecyclerView {
+class BreadcrumbsView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int = R.attr.breadcrumbsStyle
+) : RecyclerView(context, attrs, defStyleAttr) {
+
     private val adapter: BreadcrumbsAdapter
     private var breadcrumbs: List<Breadcrumb> = emptyList()
 
-    constructor(context: Context) : this(context, null)
-
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.breadcrumbsStyle)
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    init {
         overScrollMode = View.OVER_SCROLL_NEVER
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.BreadcrumbsView, defStyleAttr, 0)

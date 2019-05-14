@@ -12,7 +12,7 @@ import io.plastique.core.ui.R
 
 class EmptyView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null,
+    attrs: AttributeSet?,
     defStyleAttr: Int = R.attr.emptyViewStyle,
     defStyleRes: Int = R.style.Widget_App_EmptyView
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {

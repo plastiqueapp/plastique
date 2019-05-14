@@ -12,8 +12,11 @@ import io.plastique.core.extensions.getParcelableCreator
 import io.plastique.core.lists.ListDiffCallback
 import io.plastique.deviations.R
 
-class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = R.attr.tagsViewStyle) :
-    RecyclerView(context, attrs, defStyleAttr), TagManager {
+class TagsView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int = R.attr.tagsViewStyle
+) : RecyclerView(context, attrs, defStyleAttr), TagManager {
 
     private val adapter: TagsAdapter
     private val tags = mutableListOf<Tag>()
