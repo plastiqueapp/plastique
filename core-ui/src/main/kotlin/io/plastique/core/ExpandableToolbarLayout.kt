@@ -305,6 +305,6 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
     }
 
     companion object {
-        private const val EXPAND_ANIMATION_DURATION = 300L
+        private const val EXPAND_ANIMATION_DURATION = 200L
     }
 }
