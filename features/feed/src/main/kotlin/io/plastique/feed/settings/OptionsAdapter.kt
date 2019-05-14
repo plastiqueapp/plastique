@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.feed.R
 
@@ -30,7 +30,7 @@ class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(),
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val optionView: SwitchCompat = itemView.findViewById(R.id.option)
+        val optionView: SwitchMaterial = itemView.findViewById(R.id.option)
     }
 }
 

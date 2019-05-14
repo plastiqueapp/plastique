@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.SwitchCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.switchmaterial.SwitchMaterial xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/option"
+    style="?bottomSheetDialogListItemStyle"
     android:layout_width="match_parent"
-    android:layout_height="?listPreferredItemHeightSmall"
-    android:paddingEnd="?android:listPreferredItemPaddingEnd"
-    android:paddingStart="?android:listPreferredItemPaddingStart"
-    android:textAppearance="?textAppearanceBody1"
-    tools:text="@tools:sample/cities" />
+    android:layout_height="wrap_content"
+    tools:text="@tools:sample/cities"
+    tools:theme="?bottomSheetDialogTheme" />

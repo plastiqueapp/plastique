@@ -13,10 +13,8 @@
     </declare-styleable>
 
     <declare-styleable name="BottomSheetDialog">
-        <attr name="bottomSheetDialogStyle" format="reference" />
         <attr name="bottomSheetDialogTitleStyle" format="reference" />
         <attr name="bottomSheetDialogListItemStyle" format="reference" />
-        <attr name="bottomSheetDialogDividerStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BreadcrumbsView">

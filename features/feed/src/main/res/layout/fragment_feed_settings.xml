@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="180dp">
+    android:minHeight="180dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    tools:theme="?bottomSheetDialogTheme">
 
     <TextView
         android:id="@+id/title"
+        style="?bottomSheetDialogTitleStyle"
         android:layout_width="0dp"
-        android:layout_height="?listPreferredItemHeight"
-        android:gravity="center_vertical"
-        android:paddingStart="?android:listPreferredItemPaddingStart"
-        android:paddingEnd="?android:listPreferredItemPaddingEnd"
+        android:layout_height="wrap_content"
         android:text="@string/feed_settings_title"
-        android:textAppearance="?textAppearanceHeadline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,8 +23,7 @@
         android:id="@+id/options"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
