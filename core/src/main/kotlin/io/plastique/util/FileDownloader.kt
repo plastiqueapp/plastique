@@ -4,11 +4,11 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import androidx.core.content.getSystemService
+import io.plastique.core.extensions.requireSystemService
 import javax.inject.Inject
 
 class FileDownloader @Inject constructor(context: Context) {
-    private val downloadManager = context.getSystemService<DownloadManager>()!!
+    private val downloadManager = context.requireSystemService<DownloadManager>()
 
     fun downloadPicture(uri: Uri) {
         val fileName = guessFileName(uri)
