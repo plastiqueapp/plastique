@@ -6,10 +6,11 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.View
+import android.view.WindowManager
+import android.widget.EditText
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.plastique.core.extensions.args
 import io.plastique.core.extensions.findCallback
 import io.plastique.core.ui.R
@@ -33,10 +34,8 @@ class InputDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val contentView = View.inflate(requireContext(), R.layout.dialog_input, null)
-        val textInputLayout = contentView.findViewById<TextInputLayout>(R.id.input)
-        textInputLayout.hint = getString(args.getInt(ARG_HINT))
-
-        val editText = textInputLayout.editText!!
+        val editText = contentView.findViewById<EditText>(R.id.edit)
+        editText.hint = getString(args.getInt(ARG_HINT))
         editText.requestFocus()
 
         val maxLength = args.getInt(ARG_MAX_LENGTH)
@@ -50,7 +49,7 @@ class InputDialogFragment : BaseDialogFragment() {
             }
         }
 
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(args.getInt(ARG_TITLE))
             .setView(contentView)
             .setPositiveButton(args.getInt(ARG_POSITIVE_BUTTON), listener)
@@ -63,6 +62,8 @@ class InputDialogFragment : BaseDialogFragment() {
         editText.doAfterTextChanged { text ->
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = !text.isNullOrBlank()
         }
+
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         return dialog
     }
 
