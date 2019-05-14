@@ -1,71 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextAppearance.App.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
-        <item name="fontFamily">@font/roboto_light</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.App.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
-        <item name="fontFamily">@font/roboto_light</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
-    </style>
-
-    <style name="TextAppearance.App.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-    </style>
-
-    <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-    </style>
-
-    <style name="TextAppearance.App.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Body2" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Caption" parent="TextAppearance.MaterialComponents.Caption">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-    </style>
-
-    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-    </style>
-
-    <style name="TextAppearance.App.Overline" parent="TextAppearance.MaterialComponents.Overline">
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
-    </style>
-
     <style name="Base.Widget.App.BottomSheetDialog" parent="">
         <item name="android:paddingBottom">8dp</item>
     </style>
@@ -124,17 +59,6 @@
     <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Title</item>
         <item name="subtitleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Subtitle</item>
-    </style>
-
-    <style name="TextAppearance.Widget.App.Toolbar.Title" parent="TextAppearance.App.Headline6">
-        <item name="fontFamily">@font/roboto</item>
-        <item name="android:fontFamily">@font/roboto</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="TextAppearance.Widget.App.Toolbar.Subtitle" parent="TextAppearance.App.Subtitle1">
-        <item name="fontFamily">@font/roboto_light</item>
-        <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
     <style name="App.PreferenceThemeOverlay" parent="PreferenceThemeOverlay.v14.Material">
