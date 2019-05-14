@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="32dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textAppearance="?textAppearanceSubtitle1"
         tools:text="My Collection (+23)" />
 
@@ -25,6 +25,7 @@
         android:id="@+id/thumbnails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         tools:itemCount="6"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_deviation_image_grid"

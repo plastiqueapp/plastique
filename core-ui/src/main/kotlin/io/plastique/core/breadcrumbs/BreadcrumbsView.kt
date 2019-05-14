@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.view.View
 import androidx.customview.view.AbsSavedState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,8 @@ class BreadcrumbsView : RecyclerView {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.breadcrumbsStyle)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        overScrollMode = View.OVER_SCROLL_NEVER
+
         val a = context.obtainStyledAttributes(attrs, R.styleable.BreadcrumbsView, defStyleAttr, 0)
         val breadcrumbLayoutId = a.getResourceId(R.styleable.BreadcrumbsView_breadcrumbLayoutId, 0)
         val separatorDrawableResId = a.getResourceId(R.styleable.BreadcrumbsView_separatorDrawable, 0)
