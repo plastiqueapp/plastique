@@ -8,7 +8,6 @@ import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreferenceCompat
@@ -35,12 +34,6 @@ class SettingsFragment : BasePreferenceFragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { session -> matureContentPreference.isEnabled = session is Session.User }
             .disposeOnDestroy()
-
-        preferenceScreen.forEach { preference ->
-            if (preference is ListPreference) {
-                preference.summary = preference.entry
-            }
-        }
     }
 
     private fun getMatureContentSummary(): CharSequence {

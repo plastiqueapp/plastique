@@ -23,7 +23,8 @@
             android:entryValues="@array/settings_appearance_theme_values"
             android:key="ui.theme"
             android:title="@string/settings_appearance_theme"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
