@@ -7,13 +7,11 @@ import android.preference.PreferenceManager
 import android.webkit.CookieManager
 import androidx.work.WorkManager
 import dagger.Binds
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.plastique.BuildConfig
 import io.plastique.R
-import io.plastique.api.common.ApiConstants
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
@@ -22,8 +20,6 @@ import io.plastique.core.analytics.Tracker
 import io.plastique.core.browser.CookieCleaner
 import io.plastique.core.cache.CacheCleaner
 import io.plastique.core.cache.CleanableRepository
-import io.plastique.core.client.AccessTokenProvider
-import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
@@ -134,24 +130,6 @@ abstract class AppModule {
         } else {
             emptyList()
         }
-
-        @Provides
-        @JvmStatic
-        fun provideAccessTokenProvider(sessionManager: Lazy<SessionManager>): AccessTokenProvider = object : AccessTokenProvider {
-            override fun getAccessToken(invalidatedAccessToken: String?): String {
-                return sessionManager.get().getAccessToken(invalidatedAccessToken)
-            }
-        }
-
-        @Provides
-        @Singleton
-        @JvmStatic
-        fun provideApiConfiguration(context: Context): ApiConfiguration = ApiConfiguration(
-            apiUrl = ApiConstants.URL,
-            authUrl = "${context.packageName}://auth",
-            clientId = context.getString(R.string.api_client_id),
-            clientSecret = context.getString(R.string.api_client_secret),
-            userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
 
         @Provides
         @JvmStatic
