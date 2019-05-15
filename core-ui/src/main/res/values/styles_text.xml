@@ -77,4 +77,8 @@
         <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
+    <style name="TextAppearance.App.Preference.Category.Title" parent="TextAppearance.App.Subtitle2">
+        <item name="android:textAllCaps">true</item>
+    </style>
+
 </resources>

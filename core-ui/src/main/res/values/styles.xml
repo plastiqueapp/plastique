@@ -48,17 +48,13 @@
     </style>
 
     <style name="App.PreferenceThemeOverlay" parent="PreferenceThemeOverlay.v14.Material">
-        <item name="preferenceCategoryStyle">@style/App.Preference.Category</item>
+        <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.App.Preference.Category.Title</item>
         <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment</item>
     </style>
 
     <style name="App.PreferenceFragment" parent="PreferenceFragment.Material">
         <item name="android:divider">@drawable/preference_list_divider</item>
         <item name="allowDividerAfterLastItem">false</item>
-    </style>
-
-    <style name="App.Preference.Category" parent="Preference.Category.Material">
-        <item name="android:layout">@layout/item_preference_category</item>
     </style>
 
 </resources>
