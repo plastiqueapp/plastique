@@ -113,7 +113,7 @@ abstract class AppModule {
 
         @Provides
         @JvmStatic
-        fun provideWorkManager(): WorkManager = WorkManager.getInstance()
+        fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
         @Provides
         @Singleton
