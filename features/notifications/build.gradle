@@ -9,6 +9,7 @@ dependencies {
     implementation project(":libraries:api")
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
+    implementation project(":features:common")
     implementation project(":features:deviations")
 
     compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"

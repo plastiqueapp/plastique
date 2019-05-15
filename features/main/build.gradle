@@ -6,5 +6,6 @@ plugins {
 dependencies {
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
+    implementation project(":features:common")
     implementation project(":features:deviations")
 }

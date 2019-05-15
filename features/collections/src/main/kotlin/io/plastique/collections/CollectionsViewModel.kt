@@ -28,8 +28,8 @@ import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SessionChangedEvent
 import io.plastique.collections.CollectionsEvent.ShowMatureChangedEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
+import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState

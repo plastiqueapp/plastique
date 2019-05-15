@@ -37,8 +37,8 @@ import io.plastique.comments.list.CommentListEvent.RetryClickEvent
 import io.plastique.comments.list.CommentListEvent.SessionChangedEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.comments.list.CommentListEvent.TitleLoadedEvent
+import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState

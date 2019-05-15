@@ -1,9 +1,7 @@
 package io.plastique.core.client
 
-import io.plastique.api.common.ApiConstants
-
 data class ApiConfiguration(
-    val apiUrl: String = ApiConstants.URL,
+    val apiUrl: String,
     val authUrl: String,
     val clientId: String,
     val clientSecret: String,

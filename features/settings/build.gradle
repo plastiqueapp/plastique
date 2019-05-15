@@ -9,6 +9,7 @@ apply from: "$rootDir/gradle/testing.gradle"
 dependencies {
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
+    implementation project(":features:common")
 
     api "androidx.preference:preference:$versions.androidx.preference"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"

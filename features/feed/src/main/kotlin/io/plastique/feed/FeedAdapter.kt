@@ -17,7 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.FeedHeaderView
+import io.plastique.common.FeedHeaderView
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem

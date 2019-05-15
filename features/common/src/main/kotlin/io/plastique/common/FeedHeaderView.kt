@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.common
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,7 +6,6 @@ import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import io.plastique.core.ui.R
 import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter

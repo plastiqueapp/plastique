@@ -9,8 +9,8 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
+import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.users.profile.UserProfileRepository

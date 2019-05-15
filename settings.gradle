@@ -30,6 +30,7 @@ include ":libraries:api"
 include ":libraries:core"
 include ":libraries:core-ui"
 
+include ":features:common"
 include ":features:auth"
 include ":features:collections"
 include ":features:comments"

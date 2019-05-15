@@ -10,9 +10,9 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.exceptions.ApiException
-import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.extensions.nullIfEmpty
 import io.plastique.users.UserDao
+import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.TimeProvider

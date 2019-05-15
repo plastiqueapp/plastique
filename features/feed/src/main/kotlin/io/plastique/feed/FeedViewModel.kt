@@ -10,8 +10,8 @@ import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
+import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState

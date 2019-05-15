@@ -15,12 +15,12 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.exceptions.ApiException
-import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.currentUsername
+import io.plastique.users.UserNotFoundException
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
 import io.reactivex.Observable

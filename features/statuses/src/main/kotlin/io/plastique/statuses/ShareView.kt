@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import io.plastique.core.FeedHeaderView
+import io.plastique.common.FeedHeaderView
 import io.plastique.glide.GlideRequests
 import io.plastique.util.dimensionRatio
 

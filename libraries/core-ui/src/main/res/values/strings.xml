@@ -12,13 +12,8 @@
     <string name="common_error">Error</string>
     <string name="common_hashtag">#%s</string>
 
-    <string name="common_message_link_copied">Link copied to clipboard</string>
     <string name="common_message_load_failed">Cannot load data. Please check your internet connection and try again.</string>
-    <string name="common_message_no_internet_connection">No internet connection</string>
     <string name="common_message_please_wait">Please wait…</string>
-    <string name="common_message_user_not_found">User &lt;b&gt;%1$s&lt;/b&gt; not found</string>
-    <string name="common_message_deviation_not_found">Deviation not found</string>
-    <string name="common_message_authentication_expired">Authentication expired. Please sign-in again.</string>
 
     <string name="common_just_now">just now</string>
     <string name="common_abbr_seconds">%ds</string>

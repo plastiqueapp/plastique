@@ -12,7 +12,6 @@ class ApiException(responseCode: Int, val errorData: ErrorData) : HttpException(
         if (errorData.details.isNotEmpty()) "\n${errorData.details}" else "")
 
 class RateLimitExceededException(responseCode: Int, requestPath: String) : HttpException(responseCode, "Rate limit exceeded for $requestPath")
-class UserNotFoundException(val username: String, cause: Throwable) : Exception("User '$username' not found", cause)
 
 val Throwable.isRetryable: Boolean
     get() = when (this) {

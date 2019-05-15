@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import io.plastique.core.FeedHeaderView
+import io.plastique.common.FeedHeaderView
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate

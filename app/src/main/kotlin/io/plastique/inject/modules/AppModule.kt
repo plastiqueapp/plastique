@@ -13,6 +13,7 @@ import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.plastique.BuildConfig
 import io.plastique.R
+import io.plastique.api.common.ApiConstants
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
@@ -146,6 +147,7 @@ abstract class AppModule {
         @Singleton
         @JvmStatic
         fun provideApiConfiguration(context: Context): ApiConfiguration = ApiConfiguration(
+            apiUrl = ApiConstants.URL,
             authUrl = "${context.packageName}://auth",
             clientId = context.getString(R.string.api_client_id),
             clientSecret = context.getString(R.string.api_client_secret),

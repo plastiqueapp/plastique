@@ -1,15 +1,14 @@
-package io.plastique.core
+package io.plastique.common
 
 import android.content.Context
 import android.text.TextUtils
 import androidx.annotation.StringRes
 import androidx.core.text.HtmlCompat
 import io.plastique.core.content.EmptyState
-import io.plastique.core.exceptions.UserNotFoundException
 import io.plastique.core.network.NoNetworkConnectionException
 import io.plastique.core.session.AuthenticationExpiredException
-import io.plastique.core.ui.R
 import io.plastique.deviations.DeviationNotFoundException
+import io.plastique.users.UserNotFoundException
 import javax.inject.Inject
 
 class ErrorMessageProvider @Inject constructor(

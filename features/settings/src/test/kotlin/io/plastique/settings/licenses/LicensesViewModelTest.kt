@@ -4,7 +4,7 @@ import com.github.technoir42.rxjava2.junit5.OverrideSchedulersExtension
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.plastique.core.ErrorMessageProvider
+import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.reactivex.Single
