@@ -5,6 +5,7 @@ projectFilesBackup/
 local.properties
 
 .idea/caches/
+.idea/dictionaries/
 .idea/libraries/
 .idea/shelf/
 .idea/assetWizardSettings.xml
