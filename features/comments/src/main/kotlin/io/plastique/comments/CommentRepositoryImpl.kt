@@ -6,6 +6,7 @@ import com.gojuno.koptional.toOptional
 import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.ApiException
 import io.plastique.api.comments.CommentDto
 import io.plastique.api.comments.CommentList
 import io.plastique.api.comments.CommentService
@@ -16,7 +17,6 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserNotFoundException

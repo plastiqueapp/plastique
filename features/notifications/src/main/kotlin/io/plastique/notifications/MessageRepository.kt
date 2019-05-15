@@ -5,6 +5,7 @@ import com.gojuno.koptional.Optional
 import com.gojuno.koptional.toOptional
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import io.plastique.api.ApiException
 import io.plastique.api.messages.MessageDto
 import io.plastique.api.messages.MessageService
 import io.plastique.api.messages.MessageTypes
@@ -17,7 +18,6 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.deviations.DeviationRepository

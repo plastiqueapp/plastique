@@ -5,7 +5,6 @@ import com.squareup.moshi.Moshi
 import io.plastique.api.common.ErrorData
 import io.plastique.core.client.ErrorResponseParser
 import io.plastique.core.client.HttpResponseCodes
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.exceptions.HttpException
 import io.plastique.core.exceptions.RateLimitExceededException
 import io.plastique.util.adapter

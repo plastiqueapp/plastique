@@ -2,6 +2,7 @@ package io.plastique.users.profile
 
 import androidx.room.RoomDatabase
 import com.sch.rxjava2.extensions.mapError
+import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.users.UserProfileDto
 import io.plastique.api.users.UserService
@@ -9,7 +10,6 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.extensions.nullIfEmpty
 import io.plastique.users.UserDao
 import io.plastique.users.UserNotFoundException

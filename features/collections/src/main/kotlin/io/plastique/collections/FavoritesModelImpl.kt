@@ -1,7 +1,7 @@
 package io.plastique.collections
 
+import io.plastique.api.ApiException
 import io.plastique.api.collections.CollectionService
-import io.plastique.core.exceptions.ApiException
 import io.plastique.deviations.DeviationDao
 import io.plastique.util.Result
 import io.plastique.util.toResult

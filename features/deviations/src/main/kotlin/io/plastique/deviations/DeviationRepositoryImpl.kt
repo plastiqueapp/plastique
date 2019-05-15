@@ -4,6 +4,7 @@ import androidx.room.RoomDatabase
 import com.gojuno.koptional.Optional
 import com.gojuno.koptional.toOptional
 import com.sch.rxjava2.extensions.mapError
+import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.common.ImageDto
 import io.plastique.api.deviations.DeviationDto
@@ -12,7 +13,6 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.users.UserEntity

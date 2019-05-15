@@ -2,10 +2,10 @@ package io.plastique.auth
 
 import com.sch.rxjava2.extensions.mapError
 import com.sch.rxjava2.extensions.sneakyGet
+import io.plastique.api.ApiException
 import io.plastique.api.auth.AuthService
 import io.plastique.api.common.ErrorType
 import io.plastique.core.client.ApiConfiguration
-import io.plastique.core.exceptions.ApiException
 import io.plastique.core.session.AuthenticationExpiredException
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.Session
