@@ -11,6 +11,7 @@ import dagger.Reusable
 import io.plastique.BuildConfig
 import io.plastique.R
 import io.plastique.api.ErrorResponseParserImpl
+import io.plastique.api.NullIfDeletedJsonAdapterFactory
 import io.plastique.api.auth.AuthService
 import io.plastique.api.collections.CollectionService
 import io.plastique.api.comments.CommentService
@@ -26,7 +27,6 @@ import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.adapters.InstantAdapter
-import io.plastique.core.adapters.NullIfDeletedJsonAdapterFactory
 import io.plastique.core.adapters.OffsetCursorAdapter
 import io.plastique.core.adapters.StringCursorAdapter
 import io.plastique.core.adapters.ZonedDateTimeAdapter
