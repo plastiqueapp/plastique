@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingEnd="?android:listPreferredItemPaddingEnd"
     android:paddingStart="?android:listPreferredItemPaddingStart"
     android:paddingTop="8dp"
+    android:paddingEnd="?android:listPreferredItemPaddingEnd"
+    android:paddingBottom="8dp"
     tools:ignore="Overdraw">
 
     <TextView
@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_light"
         android:textAppearance="?textAppearanceBody2"
-        tools:text="Lorem ipsum dolor sit amet, ei vel velit ubique, alia praesent euripidis cum no, labitur molestie at mea. Quot brute his id, ea pro simul vocent torquatos." />
+        tools:maxLines="3"
+        tools:text="@tools:sample/lorem/random" />
 
     <TextView
         android:id="@+id/license"
