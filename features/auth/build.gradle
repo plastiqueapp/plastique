@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(":api")
-    implementation project(":core")
-    implementation project(":core-ui")
+    implementation project(":libraries:api")
+    implementation project(":libraries:core")
+    implementation project(":libraries:core-ui")
 }

@@ -7,7 +7,7 @@ plugins {
 apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
-    implementation project(":core")
+    implementation project(":libraries:core")
 
     api "androidx.activity:activity:$versions.androidx.activity"
     api "androidx.appcompat:appcompat:$versions.androidx.appcompat"

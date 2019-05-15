@@ -7,8 +7,8 @@ plugins {
 apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
-    implementation project(":core")
-    implementation project(":core-ui")
+    implementation project(":libraries:core")
+    implementation project(":libraries:core-ui")
 
     api "androidx.preference:preference:$versions.androidx.preference"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"

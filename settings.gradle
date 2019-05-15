@@ -26,10 +26,9 @@ pluginManagement {
     }
 }
 
-include ":core"
-include ":core-ui"
-include ":api"
-include ":app"
+include ":libraries:api"
+include ":libraries:core"
+include ":libraries:core-ui"
 
 include ":features:auth"
 include ":features:collections"
@@ -44,3 +43,5 @@ include ":features:settings"
 include ":features:statuses"
 include ":features:users"
 include ":features:watch"
+
+include ":app"

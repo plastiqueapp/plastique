@@ -13,7 +13,7 @@ android {
 }
 
 dependencies {
-    implementation project(":api")
+    implementation project(":libraries:api")
 
     api "androidx.core:core:$versions.androidx.core"
     api "androidx.core:core-ktx:$versions.androidx.core"

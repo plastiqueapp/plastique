@@ -57,10 +57,10 @@ jobs:
           destination: heap_dumps
 
       - store_test_results:
-          path: core/build/test-results
+          path: libraries/core/build/test-results
 
       - store_test_results:
-          path: core-ui/build/test-results
+          path: libraries/core-ui/build/test-results
 
       - store_test_results:
           path: features/settings/build/test-results
