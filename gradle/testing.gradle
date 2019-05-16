@@ -11,17 +11,9 @@ dependencies {
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockitoKotlin"
     testImplementation "org.robolectric:robolectric:$versions.robolectric"
     testImplementation "org.threeten:threetenbp:$versions.threetenbp"
-
-    androidTestImplementation "androidx.test:rules:$versions.androidx.test.rules"
-    androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
-    androidTestImplementation "junit:junit:$versions.junit.four"
 }
 
 android {
-    defaultConfig {
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
     testOptions {
         unitTests {
             includeAndroidResources = true

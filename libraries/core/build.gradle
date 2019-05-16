@@ -6,6 +6,10 @@ plugins {
 apply from: "$rootDir/gradle/testing.gradle"
 
 android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     packagingOptions {
         exclude "META-INF/LICENSE.md"
         exclude "META-INF/LICENSE-notice.md"
@@ -52,6 +56,11 @@ dependencies {
 
     debugApi "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
     releaseApi "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
+
+    androidTestImplementation "junit:junit:$versions.junit.four"
+    androidTestImplementation "androidx.test:core:$versions.androidx.test.core"
+    androidTestImplementation "androidx.test:rules:$versions.androidx.test.rules"
+    androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
 
     constraints {
         implementation "androidx.fragment:fragment:$versions.androidx.fragment"
