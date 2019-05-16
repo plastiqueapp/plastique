@@ -29,6 +29,7 @@ dependencies {
     api "com.jakewharton.timber:timber:$versions.timber"
     api "com.gojuno.koptional:koptional:$versions.koptional"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
+    implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 
     api "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
@@ -43,6 +44,14 @@ dependencies {
 
     api "com.squareup.moshi:moshi:$versions.moshi"
     api "com.squareup.moshi:moshi-adapters:$versions.moshi"
+
+    debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
+    debugImplementation "com.facebook.soloader:soloader:$versions.soloader"
+    debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
+    debugImplementation "com.sch.stetho:stetho-timber:$versions.stethoTimber"
+
+    debugApi "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
+    releaseApi "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
 
     constraints {
         implementation "androidx.fragment:fragment:$versions.androidx.fragment"

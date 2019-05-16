@@ -10,6 +10,7 @@ import io.plastique.inject.modules.AppModule
 import io.plastique.inject.modules.DaoModule
 import io.plastique.inject.modules.DatabaseModule
 import io.plastique.inject.modules.DeviationsModule
+import io.plastique.inject.modules.InitializerModule
 import io.plastique.inject.modules.NetworkModule
 import io.plastique.inject.modules.OkHttpInterceptorModule
 import javax.inject.Singleton
@@ -21,6 +22,7 @@ import javax.inject.Singleton
     DatabaseModule::class,
     DaoModule::class,
     DeviationsModule::class,
+    InitializerModule::class,
     NetworkModule::class,
     OkHttpInterceptorModule::class
 ])

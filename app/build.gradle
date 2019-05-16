@@ -117,18 +117,11 @@ dependencies {
     implementation project(":features:watch")
 
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
-    implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     implementation "io.requery:sqlite-android:$versions.sqlite"
 
     debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
-    debugImplementation "com.facebook.soloader:soloader:$versions.soloader"
-    debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
     debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
-    debugImplementation "com.sch.stetho:stetho-timber:$versions.stethoTimber"
     debugImplementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
-
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
 
     kapt "androidx.room:room-compiler:$versions.androidx.room"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"

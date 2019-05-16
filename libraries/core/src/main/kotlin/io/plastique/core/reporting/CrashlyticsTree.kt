@@ -1,4 +1,4 @@
-package io.plastique.util
+package io.plastique.core.reporting
 
 import com.crashlytics.android.Crashlytics
 import timber.log.Timber
