@@ -31,7 +31,7 @@ jobs:
 
       - run:
           name: Build and Test
-          command: ./gradlew testDebug :app:lintProdDebug :app:lintProdRelease --max-workers=2 --stacktrace
+          command: ./gradlew testDebug :app:lintProdDebug :app:lintProdRelease :detekt --max-workers=2 --stacktrace
           no_output_timeout: 5m
 
       - run:
@@ -47,6 +47,10 @@ jobs:
             - ~/.gradle/wrapper
             - ~/.m2/repository
           key: v3-plastique-{{ checksum  "build.gradle" }}-{{ checksum "gradle/versions.gradle" }}
+
+      - store_artifacts:
+          path: build/reports/detekt
+          destination: reports/detekt
 
       - store_artifacts:
           path: app/build/reports
