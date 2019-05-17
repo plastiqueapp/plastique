@@ -8,5 +8,6 @@ class TimberInitializer @Inject constructor() : Initializer() {
         Timber.plant(Timber.DebugTree())
     }
 
+    @Suppress("MagicNumber")
     override val priority: Int get() = 10
 }
