@@ -109,7 +109,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
             infoPanelView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.systemWindowInsetBottom
             }
-            insets.consumeSystemWindowInsets()
+            insets
         }
 
         contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
