@@ -19,7 +19,7 @@ import javax.crypto.KeyGenerator
 
 class CryptorTest {
     private val keyAlias = UUID.randomUUID().toString()
-    private val keyStore = KeyStore.getInstance("AndroidKeyStore")
+    private val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER)
     private val cryptor = Cryptor.create()
 
     @Before
@@ -96,12 +96,16 @@ class CryptorTest {
     }
 
     private fun generateSecretKey(alias: String): Key {
-        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES)
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE_PROVIDER)
         keyGenerator.init(KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
             .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
             .setRandomizedEncryptionRequired(false)
             .build())
         return keyGenerator.generateKey()
+    }
+
+    companion object {
+        private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
     }
 }
