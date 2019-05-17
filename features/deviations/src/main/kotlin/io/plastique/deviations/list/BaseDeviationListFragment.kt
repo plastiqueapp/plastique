@@ -73,6 +73,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
     protected lateinit var params: ParamsType
     protected abstract val defaultParams: ParamsType
+    protected open val fixedLayoutMode: LayoutMode? = null
     private var tags: List<Tag> = emptyList()
     private val tagManager: TagManager? get() = (parentFragment as? TagManagerProvider)?.tagManager
     private lateinit var gridParams: GridParams
@@ -119,7 +120,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         adapter = DeviationsAdapter(
             context = requireContext(),
             glide = GlideApp.with(this),
-            layoutModeProvider = { state.layoutMode },
+            layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
             itemSizeCallback = DeviationsItemSizeCallback(gridParams),
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
             onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
@@ -130,6 +131,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         deviationsView.addOnScrollListener(onScrollListener)
         deviationsView.adapter = adapter
         preloaderFactory = DeviationsPreloaderFactory(this, deviationsView, adapter)
+        fixedLayoutMode?.let { initLayoutMode(it) }
 
         @Suppress("UNCHECKED_CAST")
         params = savedInstanceState?.getParcelable(STATE_PARAMS) ?: defaultParams
@@ -164,10 +166,8 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             emptyView.state = state.contentState.emptyState
         }
 
-        if (state.layoutMode != prevState?.layoutMode) {
-            deviationsView.layoutManager = createLayoutManager(requireContext(), state.layoutMode)
-            onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(state.layoutMode)
-            preloader = preloaderFactory.createPreloader(state.layoutMode, gridParams)
+        if (fixedLayoutMode == null && state.layoutMode != prevState?.layoutMode) {
+            initLayoutMode(state.layoutMode)
 
             if (adapter.itemCount > 0) {
                 deviationsView.scrollToPosition(0)
@@ -216,6 +216,12 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private fun initTags() {
         tagManager?.setTags(tags, false)
         tagManager?.onTagClickListener = this
+    }
+
+    private fun initLayoutMode(layoutMode: LayoutMode) {
+        deviationsView.layoutManager = createLayoutManager(requireContext(), layoutMode)
+        onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(layoutMode)
+        preloader = preloaderFactory.createPreloader(layoutMode, gridParams)
     }
 
     private fun createLayoutManager(context: Context, layoutMode: LayoutMode): RecyclerView.LayoutManager = when (layoutMode) {
