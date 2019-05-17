@@ -121,6 +121,8 @@ class GridImageDeviationItemDelegate(
             topMargin = if (item.index >= columnCount) spacing else 0
         }
 
+        holder.thumbnail.contentDescription = item.deviation.title
+
         val thumbnail = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
         glide.load(thumbnail.url)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
