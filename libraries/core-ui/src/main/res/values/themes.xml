@@ -39,7 +39,6 @@
 
         <!-- Custom attributes -->
         <item name="emptyViewStyle">@style/Widget.App.EmptyView</item>
-        <item name="imageButtonTint">@color/common_image_button_tint</item>
         <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
         <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
     </style>

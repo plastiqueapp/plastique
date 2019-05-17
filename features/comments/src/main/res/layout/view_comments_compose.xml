@@ -107,9 +107,7 @@
             android:background="@drawable/ripple_20dp"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:tint="?imageButtonTint"
-            android:tintMode="src_in"
-            app:srcCompat="@drawable/ic_post_black_24dp" />
+            android:src="@drawable/ic_comments_post_24dp" />
 
         <ProgressBar
             android:id="@+id/comment_post_progress"
