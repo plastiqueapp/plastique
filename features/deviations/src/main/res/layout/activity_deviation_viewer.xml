@@ -60,6 +60,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:popupTheme="?toolbarPopupTheme" />
+            app:popupTheme="@style/ThemeOverlay.App.DayNight" />
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

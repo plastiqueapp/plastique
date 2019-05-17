@@ -4,7 +4,7 @@
     android:id="@android:id/text1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/tag_background_light"
+    android:background="@drawable/deviations_browse_tag_background"
     android:textColor="#ffffff"
     android:textSize="12sp"
     tools:ignore="UnusedAttribute"

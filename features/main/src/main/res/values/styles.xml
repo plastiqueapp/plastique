@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.App.Light.Main">
-        <item name="tagsViewStyle">@style/Widget.App.Light.Tags</item>
+    <style name="Theme.App.Main" parent="Theme.App.DayNight">
+        <item name="tagsViewStyle">@style/Widget.App.Tags</item>
     </style>
 
-    <style name="Theme.App.Dark.Main">
-        <item name="tagsViewStyle">@style/Widget.App.Dark.Tags</item>
-    </style>
-
-    <style name="Base.Widget.App.Tags" parent="">
+    <style name="Widget.App.Tags" parent="">
         <item name="android:padding">6dp</item>
         <item name="tagMargin">6dp</item>
+        <item name="tagBackground">@drawable/deviations_browse_tag_background</item>
+        <item name="tagTextAppearance">@style/TextAppearance.App.Tag</item>
     </style>
 
-    <style name="Widget.App.Light.Tags" parent="Base.Widget.App.Tags">
-        <item name="tagBackground">@drawable/tag_background_light</item>
-        <item name="tagTextAppearance">?android:textAppearanceSmallInverse</item>
-    </style>
-
-    <style name="Widget.App.Dark.Tags" parent="Base.Widget.App.Tags">
-        <item name="tagBackground">@drawable/tag_background_dark</item>
-        <item name="tagTextAppearance">?android:textAppearanceSmall</item>
+    <style name="TextAppearance.App.Tag" parent="TextAppearance.App.Body2">
+        <item name="android:textColor">?colorOnSecondary</item>
     </style>
 
 </resources>

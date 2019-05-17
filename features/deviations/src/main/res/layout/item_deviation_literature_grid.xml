@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/deviations_list_min_cell_size"
     android:layout_height="@dimen/deviations_list_min_cell_size"
-    android:background="?deviations_literatureBackground"
+    android:background="@color/deviations_literature_background"
     android:foreground="?selectableItemBackground"
     tools:ignore="UnusedAttribute">
 

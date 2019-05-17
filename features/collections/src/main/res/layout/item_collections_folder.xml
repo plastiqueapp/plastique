@@ -5,6 +5,7 @@
     android:layout_width="@dimen/collections_folder_min_width"
     android:layout_height="90dp"
     android:foreground="?selectableItemBackground"
+    android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
     tools:ignore="UnusedAttribute">
 
     <com.commit451.foregroundviews.ForegroundImageView
@@ -23,12 +24,12 @@
         android:id="@+id/folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+        android:textAppearance="?textAppearanceCaption"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/folder_size"
@@ -40,9 +41,9 @@
         android:id="@+id/folder_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:layout_marginEnd="12dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small.Inverse"
+        android:layout_marginBottom="12dp"
+        android:textAppearance="?textAppearanceCaption"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="10" />

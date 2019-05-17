@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="feed_divider">#bbbbbb</color>
+
+    <bool name="light_system_bars">true</bool>
+
 </resources>

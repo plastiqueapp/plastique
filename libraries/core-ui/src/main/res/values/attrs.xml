@@ -4,10 +4,8 @@
     <attr name="breadcrumbsStyle" format="reference" />
     <attr name="emptyViewStyle" format="reference" />
     <attr name="progressBarStyleMedium" format="reference" />
-    <attr name="deviations_literatureBackground" format="color|reference" />
 
     <declare-styleable name="Theme.App">
-        <attr name="dividerColor" format="color" />
         <attr name="imageButtonTint" format="color" />
         <attr name="inlineButtonStyle" format="reference" />
     </declare-styleable>

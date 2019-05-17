@@ -12,11 +12,6 @@
         <activity
             android:name=".viewer.DeviationViewerActivity"
             android:label="@string/deviations_viewer_title"
-            android:theme="@style/Theme.App.Light.DeviationViewer">
-
-            <meta-data
-                android:name="darkTheme"
-                android:resource="@style/Theme.App.Dark.DeviationViewer" />
-        </activity>
+            android:theme="@style/Theme.App.DeviationViewer" />
     </application>
 </manifest>

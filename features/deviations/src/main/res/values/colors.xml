@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="deviations_viewer_status_bar">#99000000</color>
-    <color name="deviations_viewer_navigation_bar">#99000000</color>
-    <color name="deviations_viewer_window_background">#333333</color>
+    <color name="deviations_literature_background">#ffffff</color>
+    <color name="deviations_browse_tag_background">#6ebeff</color>
+
+    <color name="deviations_viewer_status_bar_background">#99000000</color>
+    <color name="deviations_viewer_navigation_bar_background">#99000000</color>
+    <color name="deviations_viewer_window_background">#121212</color>
 
 </resources>

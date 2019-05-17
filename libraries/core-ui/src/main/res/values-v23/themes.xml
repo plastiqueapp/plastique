@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.Theme.App.DayNight.V23" parent="Base.Theme.App.DayNight">
+        <item name="android:windowLightStatusBar">@bool/light_system_bars</item>
+    </style>
+
+    <style name="Theme.App.DayNight" parent="Base.Theme.App.DayNight.V23" />
+
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_primary">#2196F3</color>
+    <color name="color_on_primary">#ffffff</color>
+    <color name="color_secondary">#197ee4</color>
+    <color name="color_on_secondary">#ffffff</color>
+    <color name="color_background">#121212</color>
+    <color name="color_on_background">#ffffff</color>
+    <color name="color_surface">#262626</color>
+    <color name="color_on_surface">#ffffff</color>
+
+    <color name="status_bar_background">#1a1a1a</color>
+    <color name="navigation_bar_background">#1a1a1a</color>
+
+</resources>

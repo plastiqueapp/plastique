@@ -4,7 +4,7 @@
     <item>
         <shape>
             <corners android:radius="14dp" />
-            <solid android:color="#666666" />
+            <solid android:color="@color/deviations_browse_tag_background" />
             <padding
                 android:bottom="4dp"
                 android:left="12dp"

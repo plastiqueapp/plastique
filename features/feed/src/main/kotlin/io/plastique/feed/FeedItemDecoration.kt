@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 class FeedItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val itemSpacing = context.resources.getDimensionPixelOffset(R.dimen.feed_element_spacing)
     private val dividerThickness = context.resources.getDimensionPixelSize(R.dimen.common_divider_thickness)
-    private val dividerPaint = Paint().apply { color = ContextCompat.getColor(context, R.color.feed_divider) }
+    private val dividerPaint = Paint().apply { color = ContextCompat.getColor(context, R.color.common_divider) }
     private val bounds = Rect()
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {

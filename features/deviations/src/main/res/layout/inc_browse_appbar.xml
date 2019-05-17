@@ -9,9 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_pin="true"
-        app:tabIndicatorColor="?colorAccent"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="?colorAccent" />
+        app:tabMode="scrollable" />
 
     <io.plastique.deviations.tags.TagsView
         android:id="@+id/browse_tags"

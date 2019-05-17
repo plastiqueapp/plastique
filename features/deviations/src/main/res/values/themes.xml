@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="Theme.App.Light.DeviationViewer" parent="Theme.App.Light">
-        <item name="android:statusBarColor">@color/deviations_viewer_status_bar</item>
-        <item name="android:navigationBarColor">@color/deviations_viewer_navigation_bar</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    <style name="Base.Theme.App.DeviationViewer" parent="Theme.App.DayNight">
+        <item name="android:statusBarColor">@color/deviations_viewer_status_bar_background</item>
+        <item name="android:navigationBarColor">@color/deviations_viewer_navigation_bar_background</item>
         <item name="android:windowBackground">@color/deviations_viewer_window_background</item>
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
     </style>
 
-    <style name="Theme.App.Dark.DeviationViewer" parent="Theme.App.Dark">
-        <item name="android:statusBarColor">@color/deviations_viewer_status_bar</item>
-        <item name="android:navigationBarColor">@color/deviations_viewer_navigation_bar</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:windowBackground">@color/deviations_viewer_window_background</item>
-        <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
-    </style>
+    <style name="Theme.App.DeviationViewer" parent="Base.Theme.App.DeviationViewer" />
 
 </resources>

@@ -40,9 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?colorPrimary"
-        app:itemIconTint="@color/bottom_navigation_tint"
-        app:itemTextColor="@color/bottom_navigation_tint"
         app:layout_behavior="io.plastique.core.BottomNavigationViewBehavior"
         app:menu="@menu/main_bottom" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

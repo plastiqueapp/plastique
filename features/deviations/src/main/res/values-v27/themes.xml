@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.App.DeviationViewer" parent="Base.Theme.App.DeviationViewer.V23">
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+</resources>

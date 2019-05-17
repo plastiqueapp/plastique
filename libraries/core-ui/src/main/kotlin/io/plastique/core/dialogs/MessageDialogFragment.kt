@@ -3,7 +3,7 @@ package io.plastique.core.dialogs
 import android.app.Dialog
 import android.os.Bundle
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.plastique.core.extensions.args
 import io.plastique.core.ui.R
 
@@ -14,7 +14,7 @@ class MessageDialogFragment : BaseDialogFragment() {
         val title = if (titleId != 0) getString(titleId) else null
         val message = if (messageId != 0) getString(messageId) else args.getString(ARG_MESSAGE)
 
-        return AlertDialog.Builder(requireContext())
+        return MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(R.string.common_button_ok, null)

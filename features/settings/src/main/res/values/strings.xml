@@ -13,12 +13,18 @@
     <string name="settings_about">About</string>
     <string name="settings_about_summary">Feedback, Legal, Version</string>
 
+    <string name="settings_appearance_theme_default">Set by Battery Saver</string>
+    <string name="settings_appearance_theme_light">Light</string>
+    <string name="settings_appearance_theme_dark">Dark</string>
+
     <string-array name="settings_appearance_theme_names">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>@string/settings_appearance_theme_default</item>
+        <item>@string/settings_appearance_theme_light</item>
+        <item>@string/settings_appearance_theme_dark</item>
     </string-array>
 
     <string-array name="settings_appearance_theme_values">
+        <item>default</item>
         <item>light</item>
         <item>dark</item>
     </string-array>

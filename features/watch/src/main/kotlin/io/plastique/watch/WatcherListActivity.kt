@@ -16,7 +16,6 @@ import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
-import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
@@ -63,7 +62,6 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
         watchersView.layoutManager = LinearLayoutManager(this)
         watchersView.adapter = adapter
         watchersView.addOnScrollListener(onScrollListener)
-        watchersView.addItemDecoration(DividerItemDecoration.Builder(this).build())
 
         refreshLayout = findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }

@@ -11,6 +11,7 @@ import io.plastique.core.init.AndroidThreeTenInitializer
 import io.plastique.core.init.Initializer
 import io.plastique.core.init.RxJavaInitializer
 import io.plastique.core.reporting.FabricInitializer
+import io.plastique.core.themes.ThemeInitializer
 import io.plastique.core.work.WorkManagerInitializer
 import javax.inject.Provider
 
@@ -27,6 +28,10 @@ abstract class InitializerModule {
     @Binds
     @IntoSet
     abstract fun bindRxJavaInitializer(impl: RxJavaInitializer): Initializer
+
+    @Binds
+    @IntoSet
+    abstract fun bindThemeInitializer(impl: ThemeInitializer): Initializer
 
     @Binds
     @IntoSet

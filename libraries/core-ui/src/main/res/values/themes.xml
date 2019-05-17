@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="light_window_background">#f5f5f5</color>
+    <style name="Base.Theme.App.DayNight" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_on_primary</item>
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorOnBackground">@color/color_on_background</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnSurface">@color/color_on_surface</item>
 
-    <style name="Base.Theme.App.Light" parent="Theme.MaterialComponents.Light.NoActionBar" />
-
-    <style name="Theme.App.Light" parent="Base.Theme.App.Light">
+        <item name="elevationOverlaysEnabled">false</item>
+        <item name="android:statusBarColor">@color/status_bar_background</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_background</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
         <item name="android:listDivider">@drawable/list_divider</item>
-        <item name="android:textColorHint">#6c000000</item>
-        <item name="android:windowBackground">@color/light_window_background</item>
 
-        <item name="colorPrimary">#fafafa</item>
-        <item name="colorPrimaryDark">#b0b0b0</item>
-        <item name="colorOnPrimary">#000000</item>
-        <item name="colorAccent">#607d8b</item>
-        <item name="colorSurface">?colorPrimary</item>
-        <item name="colorOnSurface">?colorOnPrimary</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.Light.BottomSheetDialog</item>
+        <item name="appBarLayoutStyle">@style/Widget.MaterialComponents.AppBarLayout.Surface</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
         <item name="preferenceTheme">@style/App.PreferenceThemeOverlay</item>
-        <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
+        <item name="tabStyle">@style/Widget.App.TabLayout</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
 
         <item name="textAppearanceHeadline1">@style/TextAppearance.App.Headline1</item>
@@ -35,14 +37,18 @@
         <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>
         <item name="textAppearanceOverline">@style/TextAppearance.App.Overline</item>
 
-        <item name="dividerColor">#33000000</item>
+        <!-- Custom attributes -->
         <item name="emptyViewStyle">@style/Widget.App.EmptyView</item>
-        <item name="imageButtonTint">@color/light_image_button_tint</item>
+        <item name="imageButtonTint">@color/common_image_button_tint</item>
         <item name="inlineButtonStyle">@style/Widget.App.Button.Inline</item>
-        <item name="deviations_literatureBackground">#ffffff</item>
+        <item name="progressBarStyleMedium">@style/Widget.App.ProgressBar.Medium</item>
     </style>
 
-    <style name="ThemeOverlay.App.Light.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog">
+    <style name="Theme.App.DayNight" parent="Base.Theme.App.DayNight" />
+
+    <style name="Base.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog" />
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="Base.ThemeOverlay.App.BottomSheetDialog">
         <item name="bottomSheetDialogTitleStyle">@style/Widget.App.BottomSheetDialog.Title</item>
         <item name="bottomSheetDialogListItemStyle">@style/Widget.App.BottomSheetDialog.ListItem</item>
     </style>

@@ -5,10 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import io.plastique.core.config.AppConfig
-import io.plastique.core.themes.ThemeId
-import io.plastique.core.themes.ThemeManager
 import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.BaseAppComponent
 import io.plastique.inject.BaseFragmentComponent
@@ -19,11 +16,8 @@ import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder, BaseFragmentComponent.Factory {
     @Inject lateinit var appConfig: AppConfig
-    @Inject lateinit var themeManager: ThemeManager
 
     private val disposables = CompositeDisposable()
-    private var themeDisposable: Disposable? = null
-    private var currentTheme: ThemeId? = null
     private var hasMenu: Boolean = true
     protected var optionsMenu: Menu? = null
 
@@ -31,28 +25,12 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectDependencies()
-        themeManager.currentTheme.let { themeId ->
-            currentTheme = themeId
-            themeManager.applyTheme(this, themeId)
-        }
         super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
         super.onStart()
-        themeDisposable = themeManager.themeChanges
-            .filter { theme -> theme != currentTheme }
-            .subscribe { theme ->
-                currentTheme = theme
-                ActivityCompat.recreate(this)
-            }
-
         appConfig.fetch()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        themeDisposable?.dispose()
     }
 
     override fun onDestroy() {

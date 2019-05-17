@@ -2,7 +2,6 @@
 <resources>
 
     <attr name="tagsViewStyle" format="reference" />
-    <attr name="toolbarPopupTheme" format="reference" />
 
     <declare-styleable name="TagsView">
         <attr name="tagBackground" format="reference" />

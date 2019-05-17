@@ -9,7 +9,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_divider_thickness"
-        android:background="?dividerColor"
+        android:background="#ffffff"
+        android:backgroundTint="@color/common_divider"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -41,9 +42,9 @@
         android:id="@+id/text_replying_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:singleLine="true"
         android:textSize="12sp"
         android:visibility="gone"
@@ -62,8 +63,8 @@
         style="?inlineButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/common_button_cancel"
         android:textSize="12sp"
         android:visibility="gone"
@@ -76,10 +77,10 @@
         android:id="@+id/comment_draft"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="14dp"
         android:background="@null"
         android:hint="@string/comments_compose_hint"
         android:importantForAutofill="no"
@@ -104,8 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_20dp"
-            android:minHeight="48dp"
             android:minWidth="48dp"
+            android:minHeight="48dp"
             android:tint="?imageButtonTint"
             android:tintMode="src_in"
             app:srcCompat="@drawable/ic_post_black_24dp" />

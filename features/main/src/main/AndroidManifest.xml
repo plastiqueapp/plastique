@@ -5,17 +5,13 @@
     <application>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.App.Light.Main">
+            android:theme="@style/Theme.App.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data
-                android:name="darkTheme"
-                android:resource="@style/Theme.App.Dark.Main" />
         </activity>
     </application>
 </manifest>
