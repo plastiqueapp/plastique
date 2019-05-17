@@ -2,13 +2,13 @@ package io.plastique.settings
 
 import android.content.Context
 import androidx.preference.PreferenceFragmentCompat
-import io.plastique.inject.ActivityComponent
-import io.plastique.inject.FragmentComponent
+import io.plastique.inject.BaseActivityComponent
+import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BasePreferenceFragment : PreferenceFragmentCompat(), FragmentComponent.Holder {
+abstract class BasePreferenceFragment : PreferenceFragmentCompat(), BaseFragmentComponent.Holder {
     private val disposables = CompositeDisposable()
 
     override fun onAttach(context: Context) {
@@ -28,7 +28,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), FragmentComp
 
     protected abstract fun injectDependencies()
 
-    override val fragmentComponent: FragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
-        requireActivity().getComponent<ActivityComponent>().createFragmentComponent()
+    override val fragmentComponent: BaseFragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
+        requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent()
     }
 }

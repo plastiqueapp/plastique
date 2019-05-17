@@ -6,7 +6,7 @@ import io.plastique.collections.CollectionsActivityComponent
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.gallery.GalleryActivityComponent
-import io.plastique.inject.ActivityComponent
+import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.modules.NavigationModule
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.main.MainActivityComponent
@@ -16,8 +16,8 @@ import io.plastique.watch.WatchActivityComponent
 
 @ActivityScope
 @Subcomponent(modules = [NavigationModule::class])
-interface ModuleActivityComponent :
-    ActivityComponent,
+interface ActivityComponent :
+    BaseActivityComponent,
     AuthActivityComponent,
     CollectionsActivityComponent,
     CommentsActivityComponent,
@@ -28,5 +28,5 @@ interface ModuleActivityComponent :
     UsersActivityComponent,
     WatchActivityComponent {
 
-    override fun createFragmentComponent(): ModuleFragmentComponent
+    override fun createFragmentComponent(): FragmentComponent
 }

@@ -22,7 +22,7 @@ import io.plastique.feed.FeedFragmentComponent
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEvent.RetryClickEvent
 import io.plastique.feed.settings.FeedSettingsEvent.SetEnabledEvent
-import io.plastique.inject.ActivityComponent
+import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -45,7 +45,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
         super.onAttach(context)
         listener = findCallback<OnFeedSettingsChangedListener>()
 
-        (requireActivity().getComponent<ActivityComponent>().createFragmentComponent() as FeedFragmentComponent).inject(this)
+        (requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent() as FeedFragmentComponent).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

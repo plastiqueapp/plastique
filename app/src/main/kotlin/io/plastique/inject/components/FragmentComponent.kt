@@ -6,7 +6,7 @@ import io.plastique.comments.CommentsFragmentComponent
 import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.feed.FeedFragmentComponent
 import io.plastique.gallery.GalleryFragmentComponent
-import io.plastique.inject.FragmentComponent
+import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.scopes.FragmentScope
 import io.plastique.notifications.NotificationsFragmentComponent
 import io.plastique.profile.ProfileFragmentComponent
@@ -16,8 +16,8 @@ import io.plastique.users.UsersFragmentComponent
 
 @FragmentScope
 @Subcomponent
-interface ModuleFragmentComponent :
-    FragmentComponent,
+interface FragmentComponent :
+    BaseFragmentComponent,
     CollectionsFragmentComponent,
     CommentsFragmentComponent,
     DeviationsFragmentComponent,

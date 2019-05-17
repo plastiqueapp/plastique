@@ -5,7 +5,6 @@ import dagger.BindsInstance
 import dagger.Component
 import io.plastique.inject.modules.ApiModule
 import io.plastique.inject.modules.AppModule
-import io.plastique.inject.modules.DaoModule
 import io.plastique.inject.modules.DatabaseModule
 import io.plastique.inject.modules.DebugInitializerModule
 import io.plastique.inject.modules.DebugOkHttpInterceptorModule
@@ -19,16 +18,15 @@ import javax.inject.Singleton
     ApiModule::class,
     AppModule::class,
     DatabaseModule::class,
-    DaoModule::class,
     DebuggingModule::class,
     DebugInitializerModule::class,
     DebugOkHttpInterceptorModule::class,
     DeviationsModule::class,
     NetworkModule::class
 ])
-interface DebugModuleAppComponent : ModuleAppComponent {
+interface DebugAppComponent : AppComponent {
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance application: Application): DebugModuleAppComponent
+        fun create(@BindsInstance application: Application): DebugAppComponent
     }
 }

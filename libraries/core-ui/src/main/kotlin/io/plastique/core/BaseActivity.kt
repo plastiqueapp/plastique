@@ -9,15 +9,15 @@ import androidx.core.app.ActivityCompat
 import io.plastique.core.config.AppConfig
 import io.plastique.core.themes.ThemeId
 import io.plastique.core.themes.ThemeManager
-import io.plastique.inject.ActivityComponent
-import io.plastique.inject.AppComponent
-import io.plastique.inject.FragmentComponent
+import io.plastique.inject.BaseActivityComponent
+import io.plastique.inject.BaseAppComponent
+import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, FragmentComponent.Factory {
+abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder, BaseFragmentComponent.Factory {
     @Inject lateinit var appConfig: AppConfig
     @Inject lateinit var themeManager: ThemeManager
 
@@ -93,13 +93,13 @@ abstract class BaseActivity : AppCompatActivity(), ActivityComponent.Holder, Fra
         return this
     }
 
-    override val activityComponent: ActivityComponent by lazy(LazyThreadSafetyMode.NONE) {
+    override val activityComponent: BaseActivityComponent by lazy(LazyThreadSafetyMode.NONE) {
         @Suppress("DEPRECATION")
-        lastCustomNonConfigurationInstance as ActivityComponent?
-            ?: application.getComponent<AppComponent>().createActivityComponent()
+        lastCustomNonConfigurationInstance as BaseActivityComponent?
+            ?: application.getComponent<BaseAppComponent>().createActivityComponent()
     }
 
-    override fun createFragmentComponent(): FragmentComponent {
+    override fun createFragmentComponent(): BaseFragmentComponent {
         return activityComponent.createFragmentComponent()
     }
 

@@ -16,7 +16,7 @@ import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory
 import java.io.File
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [DaoModule::class])
 abstract class DatabaseModule {
     @Binds
     abstract fun bindRoomDatabase(database: AppDatabase): RoomDatabase

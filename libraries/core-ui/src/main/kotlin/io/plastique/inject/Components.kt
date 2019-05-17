@@ -3,38 +3,41 @@ package io.plastique.inject
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import io.plastique.core.init.Initializer
 
-interface AppComponent : ActivityComponent.Factory {
+interface BaseAppComponent : BaseActivityComponent.Factory {
+    fun initializers(): Set<@JvmSuppressWildcards Initializer>
+
     interface Holder {
-        val appComponent: AppComponent
+        val appComponent: BaseAppComponent
     }
 }
 
-interface ActivityComponent : FragmentComponent.Factory {
+interface BaseActivityComponent : BaseFragmentComponent.Factory {
     interface Factory {
-        fun createActivityComponent(): ActivityComponent
+        fun createActivityComponent(): BaseActivityComponent
     }
 
     interface Holder {
-        val activityComponent: ActivityComponent
+        val activityComponent: BaseActivityComponent
     }
 }
 
-interface FragmentComponent {
+interface BaseFragmentComponent {
     interface Factory {
-        fun createFragmentComponent(): FragmentComponent
+        fun createFragmentComponent(): BaseFragmentComponent
     }
 
     interface Holder {
-        val fragmentComponent: FragmentComponent
+        val fragmentComponent: BaseFragmentComponent
     }
 }
 
 inline fun <reified T> Application.getComponent(): T =
-    (this as AppComponent.Holder).appComponent as T
+    (this as BaseAppComponent.Holder).appComponent as T
 
 inline fun <reified T> Activity.getComponent(): T =
-    (this as ActivityComponent.Holder).activityComponent as T
+    (this as BaseActivityComponent.Holder).activityComponent as T
 
 inline fun <reified T> Fragment.getComponent(): T =
-    (this as FragmentComponent.Holder).fragmentComponent as T
+    (this as BaseFragmentComponent.Holder).fragmentComponent as T
