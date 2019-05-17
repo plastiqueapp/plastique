@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 function write_config_file() {
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>" > $1

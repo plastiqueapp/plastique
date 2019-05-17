@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 os_name=$(uname -s)
 if [[ ! "$os_name" = "Darwin" ]]; then

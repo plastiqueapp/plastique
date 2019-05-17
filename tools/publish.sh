@@ -1,32 +1,44 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"/..
 version_file=build.gradle
 
-# Ensure that working directory is clean
-if [[ ! -z "$(git status --porcelain)" ]]; then
-    echo "Working directory is dirty"
-    exit 1
-fi
+check_configuration() {
+    if [[ ! -f "app/google-services.json" ]]; then
+        echo "google-services.json is missing"
+        exit 1
+    fi
+}
 
-# Ensure that google-services.json exists
-if [[ ! -f "app/google-services.json" ]]; then
-    echo "google-services.json is missing"
-    exit 1
-fi
+check_working_directory() {
+    if [[ ! -z "$(git status --porcelain)" ]]; then
+        echo "Working directory is dirty"
+        exit 1
+    fi
+}
 
-# Increment versionCode
-version_code_pattern="\(.*versionCode: \)\([0-9]*\),"
-version_code=$(sed -n "s/$version_code_pattern/\2/p" "$version_file")
-new_version_code=$((version_code + 1))
-sed -i '' -e "s/$version_code_pattern/\1$new_version_code,/" "$version_file"
+publish() {
+    ./gradlew clean :app:lintProdRelease :app:publishProdReleaseBundle
+}
 
-echo "New versionCode: $new_version_code"
+increment_version() {
+    version_code_pattern="\(.*versionCode: \)\([0-9]*\),"
+    version_code=$(sed -n "s/$version_code_pattern/\2/p" "$version_file")
+    new_version_code=$((version_code + 1))
+    sed -i '' -e "s/$version_code_pattern/\1$new_version_code,/" "$version_file"
 
-# Publish
-./gradlew clean :app:lintProdRelease :app:publishProdReleaseBundle
+    echo "New versionCode: $new_version_code"
+}
 
-# Commit changes
-git add "$version_file"
-git commit -m "Bump versionCode for release"
+commit_version() {
+    git add "$version_file"
+    git commit -m "Bump versionCode for release"
+}
+
+check_configuration
+check_working_directory
+
+increment_version
+publish
+commit_version
