@@ -19,8 +19,8 @@ ext.buildConfig = [
     minSdk     : 21,
     targetSdk  : 28,
 
-    versionCode: 9,
-    versionName: "0.1",
+    versionCode: 10,
+    versionName: "0.2",
     dbVersion  : 1,
 ]
 
