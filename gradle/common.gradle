@@ -53,14 +53,14 @@ afterEvaluate {
         }
     }
 
-    if (plugins.hasPlugin("kotlin-kapt")) {
+    if (plugins.hasPlugin("org.jetbrains.kotlin.kapt")) {
         kapt {
             correctErrorTypes = true
             useBuildCache = true
         }
     }
 
-    if (plugins.hasPlugin("kotlin-android-extensions")) {
+    if (plugins.hasPlugin("org.jetbrains.kotlin.android.extensions")) {
         androidExtensions {
             experimental = true
             features = ["parcelize"]
