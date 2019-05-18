@@ -41,7 +41,9 @@ interface UserDao {
     }
 
     @Transaction
-    @Query("SELECT up.* FROM user_profiles up INNER JOIN users u ON up.user_id = u.id WHERE u.name = :username")
+    @Query("""SELECT user_profiles.* FROM user_profiles
+INNER JOIN users ON user_profiles.user_id = users.id
+WHERE users.name = :username""")
     fun getProfileByName(username: String): Observable<UserProfileEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

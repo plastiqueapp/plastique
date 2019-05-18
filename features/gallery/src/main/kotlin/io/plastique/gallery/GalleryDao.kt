@@ -9,7 +9,10 @@ import androidx.room.Update
 
 @Dao
 interface GalleryDao {
-    @Query("SELECT gf.* FROM gallery_folders gf INNER JOIN user_gallery_folders ugf ON gf.id = ugf.folder_id WHERE ugf.`key` = :key ORDER BY ugf.`order`")
+    @Query("""SELECT gallery_folders.* FROM gallery_folders
+INNER JOIN user_gallery_folders ON gallery_folders.id = user_gallery_folders.folder_id
+WHERE user_gallery_folders.`key` = :key
+ORDER BY user_gallery_folders.`order`""")
     fun getFolders(key: String): List<FolderEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

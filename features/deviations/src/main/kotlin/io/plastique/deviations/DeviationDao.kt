@@ -16,7 +16,10 @@ interface DeviationDao {
     fun getDeviationById(deviationId: String): Observable<List<DeviationEntityWithRelations>>
 
     @Transaction
-    @Query("SELECT d.* FROM deviations d INNER JOIN deviation_linkage dl ON d.id = dl.deviation_id WHERE dl.`key` = :key ORDER BY dl.`order`")
+    @Query("""SELECT deviations.* FROM deviations
+INNER JOIN deviation_linkage ON deviations.id = deviation_linkage.deviation_id
+WHERE deviation_linkage.`key` = :key
+ORDER BY deviation_linkage.`order`""")
     fun getDeviationsByKey(key: String): List<DeviationEntityWithRelations>
 
     @Query("SELECT title FROM deviations WHERE id = :deviationId")

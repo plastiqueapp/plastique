@@ -10,7 +10,10 @@ import androidx.room.Update
 @Dao
 interface CommentDao {
     @Transaction
-    @Query("SELECT c.* FROM comments c INNER JOIN comment_linkage cl ON c.id = cl.comment_id WHERE cl.`key` = :key ORDER BY cl.`order`")
+    @Query("""SELECT comments.* FROM comments
+INNER JOIN comment_linkage ON comments.id = comment_linkage.comment_id
+WHERE comment_linkage.`key` = :key
+ORDER BY comment_linkage.`order`""")
     fun getCommentsByKey(key: String): List<CommentEntityWithRelations>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

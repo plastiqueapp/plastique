@@ -9,7 +9,10 @@ import androidx.room.Update
 
 @Dao
 interface CollectionDao {
-    @Query("SELECT cf.* FROM collection_folders cf INNER JOIN user_collection_folders ucf ON cf.id = ucf.folder_id WHERE ucf.`key` = :key ORDER BY ucf.`order`")
+    @Query("""SELECT collection_folders.* FROM collection_folders
+INNER JOIN user_collection_folders ON collection_folders.id = user_collection_folders.folder_id
+WHERE user_collection_folders.`key` = :key
+ORDER BY user_collection_folders.`order`""")
     fun getFoldersByKey(key: String): List<FolderEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

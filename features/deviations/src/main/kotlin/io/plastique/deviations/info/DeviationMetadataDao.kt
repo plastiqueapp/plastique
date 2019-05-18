@@ -14,9 +14,9 @@ import io.reactivex.Observable
 interface DeviationMetadataDao {
     @Transaction
     @TypeConverters(StringListConverter::class)
-    @Query("""SELECT d.title, d.author_id, d.publish_time, dm.description, dm.tags FROM deviations d
-INNER JOIN deviation_metadata dm ON d.id = dm.deviation_id
-WHERE d.id = :deviationId""")
+    @Query("""SELECT deviations.title, deviations.author_id, deviations.publish_time, deviation_metadata.description, deviation_metadata.tags FROM deviations
+INNER JOIN deviation_metadata ON deviations.id = deviation_metadata.deviation_id
+WHERE deviations.id = :deviationId""")
     fun getDeviationInfoById(deviationId: String): Observable<List<DeviationInfoEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
