@@ -29,6 +29,8 @@ style:
     max: 5
   SpacingBetweenPackageAndImports:
     active: true
+  ThrowsCount:
+    max: 4
   TrailingWhitespace:
     active: true
   UnnecessaryApply:
