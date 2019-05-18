@@ -10,7 +10,6 @@ import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 
 @Parcelize
@@ -37,7 +36,7 @@ class DailyDeviationFetcher @Inject constructor(
 
     override fun fetch(params: DailyParams, cursor: DateCursor?): Single<FetchResult<DateCursor>> {
         val date = cursor?.date
-        return deviationService.getDailyDeviations(date?.format(DATE_FORMAT), params.showMatureContent)
+        return deviationService.getDailyDeviations(date?.format(DateTimeFormatter.ISO_LOCAL_DATE), params.showMatureContent)
             .map { deviationList ->
                 val previousDate = (date ?: getDailyDeviationsDate(deviationList)).minusDays(1)
                 FetchResult(
@@ -49,9 +48,5 @@ class DailyDeviationFetcher @Inject constructor(
 
     private fun getDailyDeviationsDate(deviationList: ListResult<DeviationDto>): LocalDate {
         return deviationList.results.first().dailyDeviation!!.date.toLocalDate()
-    }
-
-    companion object {
-        private val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
     }
 }
