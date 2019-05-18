@@ -18,8 +18,6 @@ import io.plastique.collections.FavoritesModelImpl
 import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
 import io.plastique.core.browser.CookieCleaner
-import io.plastique.core.cache.CacheCleaner
-import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
@@ -28,10 +26,8 @@ import io.plastique.core.session.SessionManager
 import io.plastique.core.themes.ThemeIdConverter
 import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutModeConverter
-import io.plastique.feed.FeedRepository
 import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
-import io.plastique.notifications.MessageRepository
 import io.plastique.users.UserProfilePageProviderImpl
 import io.plastique.users.profile.UserProfilePageProvider
 import io.plastique.util.Cryptor
@@ -42,7 +38,11 @@ import io.plastique.watch.WatchManager
 import io.plastique.watch.WatchManagerImpl
 import javax.inject.Singleton
 
-@Module(includes = [RepositoryModule::class, WorkerModule::class])
+@Module(includes = [
+    CacheModule::class,
+    RepositoryModule::class,
+    WorkerModule::class
+])
 abstract class AppModule {
     @Binds
     abstract fun bindContext(application: Application): Context
@@ -64,23 +64,11 @@ abstract class AppModule {
 
     @Binds
     @IntoSet
-    abstract fun bindCacheCleaner(impl: CacheCleaner): OnLogoutListener
-
-    @Binds
-    @IntoSet
     abstract fun bindCookieCleaner(impl: CookieCleaner): OnLogoutListener
 
     @Binds
     @IntoSet
     abstract fun bindWorkerCleaner(impl: WorkerCleaner): OnLogoutListener
-
-    @Binds
-    @IntoSet
-    abstract fun bindFeedRepository(impl: FeedRepository): CleanableRepository
-
-    @Binds
-    @IntoSet
-    abstract fun bindMessageRepository(impl: MessageRepository): CleanableRepository
 
     @Module
     companion object {
