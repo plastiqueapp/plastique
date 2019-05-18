@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions
 import org.threeten.bp.Duration
+import timber.log.Timber
 import javax.inject.Inject
 
 class MessageRepository @Inject constructor(
@@ -136,28 +137,37 @@ class MessageRepository @Inject constructor(
         }
     }
 
-    fun markAsDeleted(messageId: String, deleted: Boolean): Completable {
-        return Completable.fromAction {
-            if (deleted) {
-                messageDao.insertDeletedMessage(DeletedMessageEntity(messageId))
-            } else {
-                messageDao.clearDeletedMessage(messageId)
-            }
+    fun markAsDeleted(messageId: String, deleted: Boolean): Completable = Completable.fromAction {
+        if (deleted) {
+            messageDao.insertDeletedMessage(DeletedMessageEntity(messageId))
+        } else {
+            messageDao.removeDeletedMessage(messageId)
         }
     }
 
     fun deleteMarkedMessages(): Completable {
         return messageDao.getDeletedMessageIds()
             .flattenAsObservable(Functions.identity())
-            .flatMapCompletable { messageId ->
+            .concatMapCompletable { messageId ->
                 messageService.deleteMessage(messageId)
-                    .onErrorComplete { error -> error is ApiException }
-                    .doOnComplete {
-                        database.runInTransaction {
-                            messageDao.deleteMessageById(messageId)
-                            messageDao.clearDeletedMessage(messageId)
+                    .toSingleDefault(true)
+                    .onErrorResumeNext { error ->
+                        if (error is ApiException) {
+                            Timber.e(error)
+                            Single.just(false)
+                        } else {
+                            Single.error(error)
                         }
                     }
+                    .doOnSuccess { wasDeleted ->
+                        database.runInTransaction {
+                            if (wasDeleted) {
+                                messageDao.deleteMessageById(messageId)
+                            }
+                            messageDao.removeDeletedMessage(messageId)
+                        }
+                    }
+                    .ignoreElement()
             }
     }
 
@@ -165,7 +175,7 @@ class MessageRepository @Inject constructor(
         database.runInTransaction {
             cacheEntryRepository.deleteEntryByKey(CACHE_KEY)
             messageDao.deleteAllMessages()
-            messageDao.clearDeletedMessages()
+            messageDao.removeDeletedMessages()
         }
     }
 

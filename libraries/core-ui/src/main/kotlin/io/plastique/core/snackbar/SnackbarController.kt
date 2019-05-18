@@ -36,7 +36,7 @@ class SnackbarController(private val rootView: View) {
     }
 
     companion object {
-        private const val SNACKBAR_DURATION = 5000
+        private const val SNACKBAR_DURATION = 10000
     }
 }
 

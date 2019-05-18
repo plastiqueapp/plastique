@@ -20,6 +20,7 @@ import io.plastique.collections.CollectionsEvent.LoadMoreEvent
 import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
+import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
@@ -124,6 +125,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
+        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -193,7 +195,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.collections_action_delete_folder -> {
-                    viewModel.dispatch(DeleteFolderEvent(folder))
+                    viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
                     true
                 }
                 else -> false

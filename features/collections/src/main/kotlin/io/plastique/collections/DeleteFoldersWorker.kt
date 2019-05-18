@@ -1,4 +1,4 @@
-package io.plastique.notifications
+package io.plastique.collections
 
 import android.content.Context
 import androidx.work.WorkerParameters
@@ -7,16 +7,15 @@ import com.google.auto.factory.Provided
 import io.plastique.core.work.CompletableWorker
 import io.plastique.core.work.ListenableWorkerFactory
 import io.reactivex.Completable
-import javax.inject.Inject
 
 @AutoFactory(implementing = [ListenableWorkerFactory::class])
-class DeleteMessagesWorker @Inject constructor(
-    context: Context,
+class DeleteFoldersWorker(
+    appContext: Context,
     workerParams: WorkerParameters,
-    @Provided private val messageRepository: MessageRepository
-) : CompletableWorker(context, workerParams) {
+    @Provided private val collectionFolderRepository: CollectionFolderRepository
+) : CompletableWorker(appContext, workerParams) {
 
     override fun createCompletableWork(): Completable {
-        return messageRepository.deleteMarkedMessages()
+        return collectionFolderRepository.deleteMarkedFolders()
     }
 }

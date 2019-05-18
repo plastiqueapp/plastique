@@ -23,9 +23,12 @@ import io.plastique.core.session.currentUsername
 import io.plastique.users.UserNotFoundException
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.internal.functions.Functions
 import org.threeten.bp.Duration
+import timber.log.Timber
 import javax.inject.Inject
 
 class CollectionFolderRepositoryImpl @Inject constructor(
@@ -54,11 +57,11 @@ class CollectionFolderRepositoryImpl @Inject constructor(
     }
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("collection_folders", "user_collection_folders")) {
+        return RxRoom.createObservable(database, arrayOf("collection_folders", "user_collection_folders", "deleted_collection_folders")) {
             val folders = collectionDao.getFoldersByKey(cacheKey).map { it.toFolder() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
-        }
+        }.distinctUntilChanged()
     }
 
     private fun getNextCursor(cacheKey: String): OffsetCursor? {
@@ -103,6 +106,44 @@ class CollectionFolderRepositoryImpl @Inject constructor(
         }
         val entities = folders.map { it.toFolderEntity() }
         collectionDao.insertOrUpdateFolders(entities)
+    }
+
+    override fun markAsDeleted(folderId: String, deleted: Boolean): Completable = Completable.fromAction {
+        if (deleted) {
+            collectionDao.insertDeletedFolder(DeletedFolderEntity(folderId = folderId))
+        } else {
+            collectionDao.removeDeletedFolder(folderId)
+        }
+    }
+
+    override fun deleteMarkedFolders(): Completable {
+        return collectionDao.getDeletedFolderIds()
+            .flattenAsObservable(Functions.identity())
+            .concatMapCompletable { folderId ->
+                collectionService.removeFolder(folderId)
+                    .toSingleDefault(true)
+                    .onErrorResumeNext { error ->
+                        if (error is ApiException) {
+                            Timber.e(error)
+                            Single.just(false)
+                        } else {
+                            Single.error(error)
+                        }
+                    }
+                    .doOnSuccess { wasDeleted ->
+                        database.runInTransaction {
+                            if (wasDeleted) {
+                                collectionDao.deleteFolderById(folderId)
+                            }
+                            collectionDao.removeDeletedFolder(folderId)
+                        }
+                    }
+                    .ignoreElement()
+            }
+    }
+
+    override fun cleanCache(): Completable {
+        return collectionDao.removeDeletedFolders()
     }
 
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderDto>, replaceExisting: Boolean) {

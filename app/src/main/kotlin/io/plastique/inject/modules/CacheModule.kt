@@ -3,6 +3,7 @@ package io.plastique.inject.modules
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
+import io.plastique.collections.CollectionFolderRepository
 import io.plastique.core.cache.CacheCleaner
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.session.OnLogoutListener
@@ -14,6 +15,10 @@ interface CacheModule {
     @Binds
     @IntoSet
     fun bindCacheCleaner(impl: CacheCleaner): OnLogoutListener
+
+    @Binds
+    @IntoSet
+    fun bindCollectionFolderRepository(impl: CollectionFolderRepository): CleanableRepository
 
     @Binds
     @IntoSet

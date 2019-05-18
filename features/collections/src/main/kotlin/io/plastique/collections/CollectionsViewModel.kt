@@ -10,11 +10,14 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
+import io.plastique.collections.CollectionsEffect.DeleteFolderEffect
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
+import io.plastique.collections.CollectionsEffect.UndoDeleteFolderEffect
 import io.plastique.collections.CollectionsEvent.CreateFolderEvent
 import io.plastique.collections.CollectionsEvent.DeleteFolderEvent
+import io.plastique.collections.CollectionsEvent.FolderDeletedEvent
 import io.plastique.collections.CollectionsEvent.ItemsChangedEvent
 import io.plastique.collections.CollectionsEvent.LoadErrorEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreErrorEvent
@@ -27,6 +30,7 @@ import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SessionChangedEvent
 import io.plastique.collections.CollectionsEvent.ShowMatureChangedEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
+import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
@@ -103,6 +107,7 @@ class CollectionsViewModel @Inject constructor(
 @AutoFactory
 class CollectionsEffectHandler(
     @Provided private val dataSource: FoldersWithDeviationsDataSource,
+    @Provided private val collectionsModel: CollectionsModel,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<CollectionsEffect, CollectionsEvent> {
 
@@ -132,7 +137,16 @@ class CollectionsEffectHandler(
                     .onErrorReturn { error -> RefreshErrorEvent(error) }
             }
 
-        return Observable.merge(loadCollectionsEvent, loadMoreEvents, refreshEvents)
+        val deleteFolderEvents = effects.ofType<DeleteFolderEffect>()
+            .flatMapSingle { effect ->
+                collectionsModel.deleteFolderById(effect.folderId)
+                    .toSingleDefault(FolderDeletedEvent(effect.folderId, effect.folderName))
+            }
+
+        val undoDeleteFolderEvents = effects.ofType<UndoDeleteFolderEffect>()
+            .flatMapCompletable { effect -> collectionsModel.undoDeleteFolderById(effect.folderId) }
+
+        return Observable.mergeArray(loadCollectionsEvent, loadMoreEvents, refreshEvents, deleteFolderEvents, undoDeleteFolderEvents.toObservable())
     }
 }
 
@@ -247,8 +261,19 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         is DeleteFolderEvent -> {
-            // TODO
-            next(state)
+            next(state, DeleteFolderEffect(event.folderId, event.folderName))
+        }
+
+        is FolderDeletedEvent -> {
+            next(state.copy(snackbarState = SnackbarState.MessageWithAction(
+                messageResId = R.string.collections_message_folder_deleted,
+                messageArgs = listOf(event.folderName.htmlEncode()),
+                actionTextId = R.string.common_button_undo,
+                actionData = event.folderId)))
+        }
+
+        is UndoDeleteFolderEvent -> {
+            next(state, UndoDeleteFolderEffect(event.folderId))
         }
     }
 }

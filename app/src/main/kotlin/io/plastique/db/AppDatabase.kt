@@ -39,6 +39,7 @@ import io.plastique.users.UserEntity
 import io.plastique.users.profile.UserProfileEntity
 import io.plastique.watch.WatchDao
 import io.plastique.watch.WatcherEntity
+import io.plastique.collections.DeletedFolderEntity as DeletedCollectionFolderEntity
 import io.plastique.collections.FolderEntity as CollectionFolderEntity
 import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
 import io.plastique.gallery.FolderEntity as GalleryFolderEntity
@@ -51,6 +52,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
         CollectionFolderEntity::class,
         CollectionFolderLinkage::class,
+        DeletedCollectionFolderEntity::class,
 
         CommentEntity::class,
         CommentLinkage::class,

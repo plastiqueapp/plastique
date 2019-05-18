@@ -44,20 +44,22 @@ class NotificationsModel @Inject constructor(
 
     fun deleteMessageById(messageId: String): Completable {
         return messageRepository.markAsDeleted(messageId, true)
-            .doOnComplete {
-                val workRequest = OneTimeWorkRequest.Builder(DeleteMessagesWorker::class.java)
-                    .setConstraints(Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build())
-                    .setInitialDelay(DELETE_MESSAGE_DELAY, TimeUnit.MILLISECONDS)
-                    .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
-                    .build()
-                workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
-            }
+            .doOnComplete { scheduleDeletion() }
     }
 
     fun undoDeleteMessageById(messageId: String): Completable {
         return messageRepository.markAsDeleted(messageId, false)
+    }
+
+    private fun scheduleDeletion() {
+        val workRequest = OneTimeWorkRequest.Builder(DeleteMessagesWorker::class.java)
+            .setConstraints(Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build())
+            .setInitialDelay(DELETE_MESSAGE_DELAY, TimeUnit.MILLISECONDS)
+            .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
+            .build()
+        workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
     }
 
     private fun createItem(message: Message): ListItem = when (message) {
@@ -90,7 +92,7 @@ class NotificationsModel @Inject constructor(
     }
 
     companion object {
-        private const val WORK_DELETE_MESSAGES = "delete-messages"
-        private val DELETE_MESSAGE_DELAY = TimeUnit.SECONDS.toMillis(10)
+        private const val WORK_DELETE_MESSAGES = "notifications.delete_messages"
+        private val DELETE_MESSAGE_DELAY = TimeUnit.SECONDS.toMillis(15)
     }
 }
