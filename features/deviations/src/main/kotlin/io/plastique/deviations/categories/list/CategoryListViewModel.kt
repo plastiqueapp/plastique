@@ -9,7 +9,6 @@ import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
 import io.plastique.core.extensions.replaceIf
@@ -78,8 +77,7 @@ class CategoryListEffectHandler @Inject constructor(
 }
 
 class CategoryListStateReducer @Inject constructor(
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<CategoryListEvent, CategoryListViewState, CategoryListEffect> {
 
     override fun reduce(state: CategoryListViewState, event: CategoryListEvent): StateWithEffects<CategoryListViewState, CategoryListEffect> = when (event) {
@@ -128,7 +126,7 @@ class CategoryListStateReducer @Inject constructor(
                     { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
                 next(state.copy(items = items,
                     isExpanding = false,
-                    snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.deviations_categories_load_error))))
+                    snackbarState = SnackbarState.Message(R.string.deviations_categories_load_error)))
             }
         }
 

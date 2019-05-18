@@ -39,7 +39,6 @@ import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.comments.list.CommentListEvent.TitleLoadedEvent
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.ListItem
@@ -193,15 +192,14 @@ class CommentListEffectHandler(
 
 class CommentListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<CommentListEvent, CommentListViewState, CommentListEffect> {
 
     override fun reduce(state: CommentListViewState, event: CommentListEvent): StateWithEffects<CommentListViewState, CommentListEffect> = when (event) {
         is CommentsChangedEvent -> {
             val commentItems = createItems(event.comments, state.isSignedIn)
             val contentState = if (commentItems.isEmpty()) {
-                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.comments_message_empty)))
+                ContentState.Empty(EmptyState.Message(R.string.comments_message_empty))
             } else {
                 ContentState.Content
             }
@@ -241,7 +239,7 @@ class CommentListStateReducer @Inject constructor(
             next(state.copy(
                 isLoadingMore = false,
                 items = state.commentItems,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.comments_message_load_error))))
         }
 
         RefreshEvent -> {
@@ -255,7 +253,7 @@ class CommentListStateReducer @Inject constructor(
         is RefreshErrorEvent -> {
             next(state.copy(
                 isRefreshing = false,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_load_error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.comments_message_load_error))))
         }
 
         is PostCommentEvent -> {
@@ -270,7 +268,7 @@ class CommentListStateReducer @Inject constructor(
         is PostCommentErrorEvent -> {
             next(state.copy(
                 isPostingComment = false,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.comments_message_post_error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.comments_message_post_error))))
         }
 
         is ReplyClickEvent -> {

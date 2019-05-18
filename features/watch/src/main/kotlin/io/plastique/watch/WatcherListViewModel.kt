@@ -1,6 +1,5 @@
 package io.plastique.watch
 
-import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -13,7 +12,6 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -50,7 +48,6 @@ class WatcherListViewModel @Inject constructor(
     stateReducer: WatcherListStateReducer,
     effectHandlerFactory: WatcherListEffectHandlerFactory,
     private val connectivityMonitor: NetworkConnectivityMonitor,
-    private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -69,8 +66,8 @@ class WatcherListViewModel @Inject constructor(
             next(WatcherListViewState(
                 username = username,
                 contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                    message = resourceProvider.getString(R.string.watch_message_sign_in),
-                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                    messageResId = R.string.watch_message_sign_in,
+                    buttonTextId = R.string.common_button_sign_in)),
                 signInNeeded = signInNeeded))
         } else {
             next(WatcherListViewState(
@@ -145,8 +142,7 @@ class WatcherListEffectHandler(
 
 class WatcherListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<WatcherListEvent, WatcherListViewState, WatcherListEffect> {
 
     override fun reduce(state: WatcherListViewState, event: WatcherListEvent): StateWithEffects<WatcherListViewState, WatcherListEffect> = when (event) {
@@ -154,12 +150,12 @@ class WatcherListStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = if (state.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.watch_message_empty, state.username.htmlEncode()), 0)
+                val emptyState = if (state.username != null) {
+                    EmptyState.Message(R.string.watch_message_empty, listOf(state.username.htmlEncode()))
                 } else {
-                    resourceProvider.getString(R.string.watch_message_empty_current_user)
+                    EmptyState.Message(R.string.watch_message_empty_current_user)
                 }
-                ContentState.Empty(EmptyState.Message(emptyMessage))
+                ContentState.Empty(emptyState)
             }
             next(state.copy(
                 contentState = contentState,
@@ -196,7 +192,7 @@ class WatcherListStateReducer @Inject constructor(
             next(state.copy(
                 isLoadingMore = false,
                 items = state.watcherItems,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RefreshEvent -> {
@@ -208,7 +204,7 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         SnackbarShownEvent -> {
@@ -231,8 +227,8 @@ class WatcherListStateReducer @Inject constructor(
                 if (signInNeeded) {
                     next(state.copy(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.watch_message_sign_in),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                            messageResId = R.string.watch_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)),
                         signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(

@@ -1,6 +1,5 @@
 package io.plastique.gallery
 
-import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -13,7 +12,6 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -49,7 +47,6 @@ import javax.inject.Inject
 class GalleryViewModel @Inject constructor(
     stateReducer: GalleryStateReducer,
     effectHandlerFactory: GalleryEffectHandlerFactory,
-    private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {
@@ -70,8 +67,8 @@ class GalleryViewModel @Inject constructor(
             next(GalleryViewState(
                 params = params,
                 contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                    message = resourceProvider.getString(R.string.gallery_message_sign_in),
-                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                    messageResId = R.string.gallery_message_sign_in,
+                    buttonTextId = R.string.common_button_sign_in)),
                 signInNeeded = signInNeeded))
         } else {
             next(GalleryViewState(
@@ -141,8 +138,7 @@ class GalleryEffectHandler(
 
 class GalleryStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<GalleryEvent, GalleryViewState, GalleryEffect> {
 
     override fun reduce(state: GalleryViewState, event: GalleryEvent): StateWithEffects<GalleryViewState, GalleryEffect> = when (event) {
@@ -150,13 +146,12 @@ class GalleryStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = if (state.params.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection, state.params.username.htmlEncode()), 0)
+                val emptyState = if (state.params.username != null) {
+                    EmptyState.Message(R.string.gallery_message_empty_user_collection, listOf(state.params.username.htmlEncode()))
                 } else {
-                    resourceProvider.getString(R.string.gallery_message_empty_collection)
+                    EmptyState.Message(R.string.gallery_message_empty_collection)
                 }
-
-                ContentState.Empty(EmptyState.Message(emptyMessage))
+                ContentState.Empty(emptyState)
             }
             next(state.copy(
                 contentState = contentState,
@@ -189,7 +184,7 @@ class GalleryStateReducer @Inject constructor(
             next(state.copy(
                 isLoadingMore = false,
                 items = state.galleryItems,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RefreshEvent -> {
@@ -201,7 +196,7 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RetryClickEvent -> {
@@ -218,8 +213,8 @@ class GalleryStateReducer @Inject constructor(
                 if (signInNeeded) {
                     next(state.copy(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.gallery_message_sign_in),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                            messageResId = R.string.gallery_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)),
                         signInNeeded = signInNeeded))
                 } else {
                     next(state.copy(

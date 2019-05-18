@@ -11,7 +11,6 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -47,7 +46,6 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     stateReducer: NotificationsStateReducer,
     effectHandlerFactory: NotificationsEffectHandlerFactory,
-    private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -70,8 +68,8 @@ class NotificationsViewModel @Inject constructor(
         } else {
             next(NotificationsViewState(
                 contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                    message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
-                    button = resourceProvider.getString(R.string.common_button_sign_in))),
+                    messageResId = R.string.notifications_message_sign_in_required,
+                    buttonTextId = R.string.common_button_sign_in)),
                 isSignedIn = signedIn))
         }
 
@@ -139,8 +137,7 @@ class NotificationsEffectHandler(
 
 class NotificationsStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
 
     override fun reduce(state: NotificationsViewState, event: NotificationsEvent): StateWithEffects<NotificationsViewState, NotificationsEffect> =
@@ -149,7 +146,7 @@ class NotificationsStateReducer @Inject constructor(
                 val contentState = if (event.items.isNotEmpty()) {
                     ContentState.Content
                 } else {
-                    ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.notifications_message_empty)))
+                    ContentState.Empty(EmptyState.Message(R.string.notifications_message_empty))
                 }
                 next(state.copy(
                     contentState = contentState,
@@ -186,7 +183,7 @@ class NotificationsStateReducer @Inject constructor(
                 next(state.copy(
                     isLoadingMore = false,
                     items = state.contentItems,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
 
             RefreshEvent -> {
@@ -198,7 +195,7 @@ class NotificationsStateReducer @Inject constructor(
             }
 
             is RefreshErrorEvent -> {
-                next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
 
             SnackbarShownEvent -> {
@@ -213,8 +210,8 @@ class NotificationsStateReducer @Inject constructor(
                     } else {
                         next(state.copy(
                             contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                message = resourceProvider.getString(R.string.notifications_message_sign_in_required),
-                                button = resourceProvider.getString(R.string.common_button_sign_in))),
+                                messageResId = R.string.notifications_message_sign_in_required,
+                                buttonTextId = R.string.common_button_sign_in)),
                             isSignedIn = signedIn))
                     }
                 } else {
@@ -224,8 +221,8 @@ class NotificationsStateReducer @Inject constructor(
 
             is DeleteMessageEvent -> {
                 next(state.copy(snackbarState = SnackbarState.MessageWithAction(
-                    message = resourceProvider.getString(R.string.notifications_message_notification_deleted),
-                    actionText = resourceProvider.getString(R.string.common_button_undo),
+                    messageResId = R.string.notifications_message_notification_deleted,
+                    actionTextId = R.string.common_button_undo,
                     actionData = event.messageId)),
                     DeleteMessageEffect(event.messageId))
             }

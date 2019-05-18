@@ -1,6 +1,5 @@
 package io.plastique.statuses.list
 
-import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -13,7 +12,6 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -125,8 +123,7 @@ class StatusListEffectHandler(
 
 class StatusListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<StatusListEvent, StatusListViewState, StatusListEffect> {
 
     override fun reduce(state: StatusListViewState, event: StatusListEvent): StateWithEffects<StatusListViewState, StatusListEffect> = when (event) {
@@ -134,8 +131,7 @@ class StatusListStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, state.params.username.htmlEncode()), 0)
-                ContentState.Empty(EmptyState.Message(emptyMessage))
+                ContentState.Empty(EmptyState.Message(R.string.statuses_message_empty, listOf(state.params.username.htmlEncode())))
             }
             next(state.copy(
                 contentState = contentState,
@@ -168,7 +164,7 @@ class StatusListStateReducer @Inject constructor(
             next(state.copy(
                 isLoadingMore = false,
                 items = state.statusItems,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RefreshEvent -> {
@@ -180,7 +176,7 @@ class StatusListStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RetryClickEvent -> {

@@ -142,8 +142,8 @@ class DeviationViewerStateReducer @Inject constructor(
             }
 
             is DownloadOriginalErrorEvent -> {
-                val errorMessage = errorMessageProvider.getErrorMessage(event.error, R.string.deviations_viewer_message_download_error)
-                next(state.copy(snackbarState = SnackbarState.Message(errorMessage)))
+                next(state.copy(snackbarState = SnackbarState.Message(
+                    errorMessageProvider.getErrorMessageId(event.error, R.string.deviations_viewer_message_download_error))))
             }
 
             is SetFavoriteEvent -> {
@@ -155,8 +155,9 @@ class DeviationViewerStateReducer @Inject constructor(
             }
 
             is SetFavoriteErrorEvent -> {
-                val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-                next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+                next(state.copy(
+                    showProgressDialog = false,
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
 
             SnackbarShownEvent -> {

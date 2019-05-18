@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import io.plastique.core.ui.R
@@ -55,13 +57,13 @@ class EmptyView @JvmOverloads constructor(
     private fun renderState(state: EmptyState) {
         when (state) {
             is EmptyState.Message -> {
-                messageView.text = state.message
+                messageView.text = getMessageWithArgs(state.messageResId, state.messageArgs)
                 button.isVisible = false
             }
 
             is EmptyState.MessageWithButton -> {
-                messageView.text = state.message
-                button.text = state.button
+                messageView.text = getMessageWithArgs(state.messageResId, state.messageArgs)
+                button.setText(state.buttonTextId)
                 button.isVisible = true
             }
         }
@@ -69,5 +71,14 @@ class EmptyView @JvmOverloads constructor(
 
     fun setOnButtonClickListener(listener: (view: View) -> Unit) {
         button.setOnClickListener(listener)
+    }
+
+    private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {
+        val html = if (args.isNotEmpty()) {
+            resources.getString(messageResId, *args.toTypedArray())
+        } else {
+            resources.getString(messageResId)
+        }
+        return HtmlCompat.fromHtml(html, 0)
     }
 }

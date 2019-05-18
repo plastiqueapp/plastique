@@ -12,7 +12,6 @@ import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -56,7 +55,6 @@ class FeedViewModel @Inject constructor(
     stateReducer: FeedStateReducer,
     effectHandlerFactory: FeedEffectHandlerFactory,
     private val contentSettings: ContentSettings,
-    private val resourceProvider: ResourceProvider,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
@@ -77,8 +75,8 @@ class FeedViewModel @Inject constructor(
                 LoadFeedEffect(showMatureContent))
         } else {
             next(FeedViewState(contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                message = resourceProvider.getString(R.string.feed_message_sign_in),
-                button = resourceProvider.getString(R.string.common_button_sign_in))),
+                messageResId = R.string.feed_message_sign_in,
+                buttonTextId = R.string.common_button_sign_in)),
                 isSignedIn = signedIn,
                 showMatureContent = showMatureContent))
         }
@@ -163,8 +161,7 @@ class FeedEffectHandler(
 
 class FeedStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<FeedEvent, FeedViewState, FeedEffect> {
 
     override fun reduce(state: FeedViewState, event: FeedEvent): StateWithEffects<FeedViewState, FeedEffect> = when (event) {
@@ -172,7 +169,7 @@ class FeedStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.feed_message_empty)))
+                ContentState.Empty(EmptyState.Message(R.string.feed_message_empty))
             }
             next(state.copy(
                 contentState = contentState,
@@ -205,7 +202,7 @@ class FeedStateReducer @Inject constructor(
             next(state.copy(
                 isLoadingMore = false,
                 items = state.feedItems,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RefreshEvent -> {
@@ -217,7 +214,7 @@ class FeedStateReducer @Inject constructor(
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error))))
+            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RetryClickEvent -> {
@@ -239,8 +236,8 @@ class FeedStateReducer @Inject constructor(
                 } else {
                     next(state.copy(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            message = resourceProvider.getString(R.string.feed_message_sign_in),
-                            button = resourceProvider.getString(R.string.common_button_sign_in))),
+                            messageResId = R.string.feed_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)),
                         isSignedIn = signedIn))
                 }
             } else {
@@ -278,7 +275,7 @@ class FeedStateReducer @Inject constructor(
         is SettingsChangeErrorEvent -> {
             next(state.copy(
                 isApplyingSettings = false,
-                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.feed_message_settings_change_error))))
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.feed_message_settings_change_error))))
         }
 
         is SetFavoriteEvent -> {
@@ -290,8 +287,9 @@ class FeedStateReducer @Inject constructor(
         }
 
         is SetFavoriteErrorEvent -> {
-            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+            next(state.copy(
+                showProgressDialog = false,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
     }
 }

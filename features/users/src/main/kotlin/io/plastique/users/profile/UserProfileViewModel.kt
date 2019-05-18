@@ -11,7 +11,6 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userId
@@ -121,8 +120,7 @@ class UserProfileEffectHandler(
 }
 
 class UserProfileStateReducer @Inject constructor(
-    private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider
+    private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<UserProfileEvent, UserProfileViewState, UserProfileEffect> {
 
     override fun reduce(state: UserProfileViewState, event: UserProfileEvent): StateWithEffects<UserProfileViewState, UserProfileEffect> = when (event) {
@@ -142,7 +140,7 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         CopyProfileLinkClickEvent -> {
-            next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.common_message_link_copied))),
+            next(state.copy(snackbarState = SnackbarState.Message(R.string.common_message_link_copied)),
                 CopyProfileLinkEffect(state.userProfile!!.url))
         }
 
@@ -159,8 +157,7 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         is SetWatchingErrorEvent -> {
-            val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+            next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         is SessionChangedEvent -> {
@@ -172,7 +169,7 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         SignOutEvent -> {
-            next(state.copy(snackbarState = SnackbarState.Message(resourceProvider.getString(R.string.users_profile_message_signed_out))), SignOutEffect)
+            next(state.copy(snackbarState = SnackbarState.Message(R.string.users_profile_message_signed_out)), SignOutEffect)
         }
     }
 }

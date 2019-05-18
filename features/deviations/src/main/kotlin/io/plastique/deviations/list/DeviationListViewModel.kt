@@ -12,7 +12,6 @@ import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.BaseViewModel
-import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -162,7 +161,6 @@ class DeviationListEffectHandler(
 class DeviationListStateReducer @Inject constructor(
     private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
-    private val resourceProvider: ResourceProvider,
     private val tagFactory: TagFactory
 ) : StateReducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
 
@@ -170,7 +168,7 @@ class DeviationListStateReducer @Inject constructor(
         when (event) {
             is ItemsChangedEvent -> {
                 val contentState = if (event.items.isEmpty()) {
-                    ContentState.Empty(EmptyState.Message(resourceProvider.getString(R.string.deviations_message_empty)))
+                    ContentState.Empty(EmptyState.Message(R.string.deviations_message_empty))
                 } else {
                     ContentState.Content
                 }
@@ -209,7 +207,7 @@ class DeviationListStateReducer @Inject constructor(
                 next(state.copy(
                     isLoadingMore = false,
                     items = state.deviationItems,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.deviations_message_load_error))))
             }
 
             RefreshEvent -> {
@@ -221,8 +219,9 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             is RefreshErrorEvent -> {
-                next(state.copy(isRefreshing = false,
-                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessage(event.error, R.string.deviations_message_load_error))))
+                next(state.copy(
+                    isRefreshing = false,
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.deviations_message_load_error))))
             }
 
             is ParamsChangedEvent -> {
@@ -266,8 +265,7 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             is SetFavoriteErrorEvent -> {
-                val errorMessage = errorMessageProvider.getErrorMessage(event.error)
-                next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessage)))
+                next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
         }
 

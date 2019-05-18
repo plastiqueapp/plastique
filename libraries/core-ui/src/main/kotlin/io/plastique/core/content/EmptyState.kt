@@ -1,12 +1,16 @@
 package io.plastique.core.content
 
+import androidx.annotation.StringRes
+
 sealed class EmptyState {
     data class Message(
-        val message: CharSequence
+        @StringRes val messageResId: Int,
+        val messageArgs: List<Any> = emptyList()
     ) : EmptyState()
 
     data class MessageWithButton(
-        val message: CharSequence,
-        val button: CharSequence
+        @StringRes val messageResId: Int,
+        val messageArgs: List<Any> = emptyList(),
+        @StringRes val buttonTextId: Int
     ) : EmptyState()
 }
