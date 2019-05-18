@@ -23,6 +23,7 @@ import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
@@ -107,7 +108,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
 
     companion object {
         private const val EXTRA_DEVIATION_ID = "deviation_id"
-        private val PUBLISH_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
+        private val PUBLISH_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.ENGLISH)
 
         fun createIntent(context: Context, deviationId: String): Intent {
             return Intent(context, DeviationInfoActivity::class.java)

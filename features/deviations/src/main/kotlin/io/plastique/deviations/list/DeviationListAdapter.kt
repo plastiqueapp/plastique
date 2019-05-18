@@ -24,6 +24,7 @@ import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 
 private class ListImageDeviationItemDelegate(
@@ -249,8 +250,6 @@ class GridLiteratureDeviationItemDelegate(
 }
 
 private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateItemDelegate.ViewHolder>() {
-    private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
-
     override fun isForViewType(item: ListItem): Boolean = item is DateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -259,11 +258,15 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     }
 
     override fun onBindViewHolder(item: DateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.date.text = item.date.format(dateFormatter)
+        holder.date.text = item.date.format(DATE_FORMATTER)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val date: TextView = itemView.findViewById(R.id.date)
+    }
+
+    companion object {
+        private val DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.ENGLISH)
     }
 }
 
