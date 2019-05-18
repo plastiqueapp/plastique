@@ -1,7 +1,7 @@
 package io.plastique.gallery
 
-import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
 import com.sch.neon.EffectHandler
@@ -151,8 +151,7 @@ class GalleryStateReducer @Inject constructor(
                 ContentState.Content
             } else {
                 val emptyMessage = if (state.params.username != null) {
-                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection,
-                        TextUtils.htmlEncode(state.params.username)), 0)
+                    HtmlCompat.fromHtml(resourceProvider.getString(R.string.gallery_message_empty_user_collection, state.params.username.htmlEncode()), 0)
                 } else {
                     resourceProvider.getString(R.string.gallery_message_empty_collection)
                 }

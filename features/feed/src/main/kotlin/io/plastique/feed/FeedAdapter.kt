@@ -1,6 +1,5 @@
 package io.plastique.feed
 
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
@@ -307,7 +307,7 @@ private class UsernameChangeItemDelegate(
         holder.headerView.date = item.date
         holder.headerView.setUser(item.user, glide)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.feed_username_change_description,
-            TextUtils.htmlEncode(item.formerName)), 0)
+            item.formerName.htmlEncode()), 0)
     }
 
     private class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {

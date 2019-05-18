@@ -1,7 +1,7 @@
 package io.plastique.statuses.list
 
-import android.text.TextUtils
 import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
 import com.sch.neon.EffectHandler
@@ -134,8 +134,7 @@ class StatusListStateReducer @Inject constructor(
             val contentState = if (event.items.isNotEmpty()) {
                 ContentState.Content
             } else {
-                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty,
-                    TextUtils.htmlEncode(state.params.username)), 0)
+                val emptyMessage = HtmlCompat.fromHtml(resourceProvider.getString(R.string.statuses_message_empty, state.params.username.htmlEncode()), 0)
                 ContentState.Empty(EmptyState.Message(emptyMessage))
             }
             next(state.copy(

@@ -1,7 +1,6 @@
 package io.plastique.comments.list
 
 import android.content.Context
-import android.text.TextUtils
 import android.transition.ChangeBounds
 import android.transition.Fade
 import android.transition.TransitionManager
@@ -15,6 +14,7 @@ import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import io.plastique.comments.R
@@ -93,8 +93,11 @@ class ComposeCommentView(context: Context, attrs: AttributeSet?) : ConstraintLay
         val replying = username != null
 
         TransitionManager.beginDelayedTransition(this, REPLY_TRANSITION)
-        replyingToView.text = if (replying) HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to,
-            TextUtils.htmlEncode(username)), 0) else null
+        replyingToView.text = if (replying) {
+            HtmlCompat.fromHtml(resources.getString(R.string.comments_compose_replying_to, username?.htmlEncode()), 0)
+        } else {
+            null
+        }
         replyingToView.isVisible = replying
         cancelReplyButton.isVisible = replying
     }

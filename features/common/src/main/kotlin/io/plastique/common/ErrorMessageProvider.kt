@@ -1,9 +1,9 @@
 package io.plastique.common
 
 import android.content.Context
-import android.text.TextUtils
 import androidx.annotation.StringRes
 import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import io.plastique.core.content.EmptyState
 import io.plastique.core.network.NoNetworkConnectionException
 import io.plastique.core.session.AuthenticationExpiredException
@@ -26,7 +26,7 @@ class ErrorMessageProvider @Inject constructor(
             button = context.getString(R.string.common_button_try_again))
 
         is UserNotFoundException -> EmptyState.Message(
-            message = HtmlCompat.fromHtml(context.getString(R.string.common_message_user_not_found, TextUtils.htmlEncode(error.username)), 0))
+            message = HtmlCompat.fromHtml(context.getString(R.string.common_message_user_not_found, error.username.htmlEncode()), 0))
 
         is DeviationNotFoundException -> EmptyState.Message(
             message = context.getString(R.string.common_message_deviation_not_found))
