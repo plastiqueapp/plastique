@@ -10,9 +10,3 @@ interface SessionManager : AccessTokenProvider {
 
     fun logout()
 }
-
-val SessionManager.currentUsername: String
-    get() = when (val session = this.session) {
-        is Session.User -> session.username
-        else -> throw UserNotAuthenticatedException()
-    }

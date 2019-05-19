@@ -19,7 +19,7 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
-import io.plastique.core.session.currentUsername
+import io.plastique.core.session.requireUser
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
@@ -43,20 +43,25 @@ class WatcherRepository @Inject constructor(
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getWatchers(username: String?): Observable<PagedData<List<Watcher>, OffsetCursor>> {
-        return Observable.defer {
-            val cacheKey = getCacheKey(username ?: sessionManager.currentUsername)
-            cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getWatchersFromDb(cacheKey),
-                updater = fetchWatchers(username, null).ignoreElement())
-        }
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMapObservable { session ->
+                val cacheUsername = username ?: session.requireUser().username
+                val cacheKey = getCacheKey(cacheUsername)
+                cacheHelper.createObservable(
+                    cacheKey = cacheKey,
+                    cachedData = getWatchersFromDb(cacheKey),
+                    updater = fetchWatchers(username, null, cacheKey).ignoreElement())
+            }
     }
 
     fun fetchWatchers(username: String?, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
-        return Single.defer {
-            val cacheKey = getCacheKey(username ?: sessionManager.currentUsername)
-            fetchWatchers(username, cursor, cacheKey)
-        }
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMap { session ->
+                val cacheUsername = username ?: session.requireUser().username
+                fetchWatchers(username, cursor, getCacheKey(cacheUsername))
+            }
     }
 
     private fun fetchWatchers(username: String?, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {

@@ -20,3 +20,6 @@ val Session.userId: String?
         is Session.User -> userId
         else -> null
     }
+
+fun Session.requireUser(): Session.User =
+    if (this is Session.User) this else throw UserNotAuthenticatedException()

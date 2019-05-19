@@ -20,7 +20,7 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
-import io.plastique.core.session.currentUsername
+import io.plastique.core.session.requireUser
 import io.plastique.users.UserNotFoundException
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
@@ -48,20 +48,25 @@ class GalleryFolderRepository @Inject constructor(
             metadata?.params == params
         }
         val cacheHelper = CacheHelper(cacheEntryRepository, cacheEntryChecker)
-        return Observable.defer {
-            val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
-            cacheHelper.createObservable(
-                cacheKey = cacheKey,
-                cachedData = getFoldersFromDb(cacheKey),
-                updater = fetchFolders(params, null, cacheKey).ignoreElement())
-        }
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMapObservable { session ->
+                val cacheUsername = params.username ?: session.requireUser().username
+                val cacheKey = getCacheKey(cacheUsername)
+                cacheHelper.createObservable(
+                    cacheKey = cacheKey,
+                    cachedData = getFoldersFromDb(cacheKey),
+                    updater = fetchFolders(params, null, cacheKey).ignoreElement())
+            }
     }
 
     fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor? = null): Single<Optional<OffsetCursor>> {
-        return Single.defer {
-            val cacheKey = getCacheKey(params.username ?: sessionManager.currentUsername)
-            fetchFolders(params, cursor, cacheKey)
-        }
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMap { session ->
+                val cacheUsername = params.username ?: session.requireUser().username
+                fetchFolders(params, cursor, getCacheKey(cacheUsername))
+            }
     }
 
     private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
