@@ -15,8 +15,7 @@ import io.plastique.api.feed.FeedElementTypes
 import io.plastique.api.feed.FeedService
 import io.plastique.api.users.StatusDto
 import io.plastique.collections.CollectionFolderRepository
-import io.plastique.collections.Folder
-import io.plastique.collections.FolderEntity
+import io.plastique.collections.toFolder
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -292,6 +291,3 @@ private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this
 }
 
 private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
-
-private fun FolderEntity.toFolder(): Folder =
-    Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)

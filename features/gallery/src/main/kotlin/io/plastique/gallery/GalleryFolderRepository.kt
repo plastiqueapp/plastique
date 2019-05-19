@@ -19,6 +19,7 @@ import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.nextCursor
+import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
 import io.plastique.users.UserNotFoundException
@@ -51,11 +52,12 @@ class GalleryFolderRepository @Inject constructor(
         return sessionManager.sessionChanges
             .firstOrError()
             .flatMapObservable { session ->
+                val own = params.username == null || params.username == (session as? Session.User)?.username
                 val cacheUsername = params.username ?: session.requireUser().username
                 val cacheKey = getCacheKey(cacheUsername)
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
-                    cachedData = getFoldersFromDb(cacheKey),
+                    cachedData = getFoldersFromDb(cacheKey, own),
                     updater = fetchFolders(params, null, cacheKey).ignoreElement())
             }
     }
@@ -93,9 +95,9 @@ class GalleryFolderRepository @Inject constructor(
             }
     }
 
-    private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
+    private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders", "deleted_gallery_folders")) {
-            val folders = galleryDao.getFolders(cacheKey).map { it.toFolder() }
+            val folders = galleryDao.getFolders(cacheKey).map { it.toFolder(own) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
         }.distinctUntilChanged()
@@ -188,5 +190,9 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
 
-private fun FolderEntity.toFolder(): Folder =
-    Folder(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
+private fun FolderEntity.toFolder(own: Boolean): Folder = Folder(
+    id = id,
+    name = name,
+    size = size,
+    thumbnailUrl = thumbnailUrl,
+    isDeletable = own && name != Folder.FEATURED)

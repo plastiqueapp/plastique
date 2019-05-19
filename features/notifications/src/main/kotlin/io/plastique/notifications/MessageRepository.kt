@@ -10,7 +10,7 @@ import io.plastique.api.messages.MessageDto
 import io.plastique.api.messages.MessageService
 import io.plastique.api.messages.MessageTypes
 import io.plastique.collections.CollectionFolderRepository
-import io.plastique.collections.Folder
+import io.plastique.collections.toFolder
 import io.plastique.comments.CommentRepository
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
@@ -217,7 +217,7 @@ private fun MessageEntityWithRelations.toMessage(): Message? = when (message.typ
         time = message.time,
         user = originator.first().toUser(),
         deviation = subjectDeviation.first().toDeviation(),
-        folder = collectionFolder.first().let { Folder(id = it.id, name = it.name, size = it.size, thumbnailUrl = it.thumbnailUrl) })
+        folder = collectionFolder.first().toFolder())
 
     MessageTypes.FAVORITE -> Message.Favorite(
         id = message.id,
