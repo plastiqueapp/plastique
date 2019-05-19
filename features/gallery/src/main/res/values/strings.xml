@@ -7,6 +7,7 @@
     <string name="gallery_folder_name_hint">Folder name</string>
     <string name="gallery_message_sign_in">Sign in to see your gallery</string>
     <string name="gallery_message_empty_collection">Your gallery is empty</string>
-    <string name="gallery_message_empty_user_collection">&lt;b&gt;%1$s&lt;/b&gt; gallery is empty</string>
+    <string name="gallery_message_empty_user_collection"><![CDATA[<b>%1$s</b> gallery is empty]]></string>
+    <string name="gallery_message_folder_deleted"><![CDATA[Folder <b>%1$s</b> has been deleted]]></string>
 
 </resources>

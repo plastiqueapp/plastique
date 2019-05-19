@@ -8,6 +8,7 @@ import io.plastique.core.cache.CacheCleaner
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.feed.FeedRepository
+import io.plastique.gallery.GalleryFolderRepository
 import io.plastique.notifications.MessageRepository
 
 @Module
@@ -23,6 +24,10 @@ interface CacheModule {
     @Binds
     @IntoSet
     fun bindFeedRepository(impl: FeedRepository): CleanableRepository
+
+    @Binds
+    @IntoSet
+    fun bindGalleryFolderRepository(impl: GalleryFolderRepository): CleanableRepository
 
     @Binds
     @IntoSet

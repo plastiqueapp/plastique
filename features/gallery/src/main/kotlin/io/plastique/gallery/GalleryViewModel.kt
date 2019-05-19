@@ -20,11 +20,14 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
+import io.plastique.gallery.GalleryEffect.DeleteFolderEffect
 import io.plastique.gallery.GalleryEffect.LoadGalleryEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
 import io.plastique.gallery.GalleryEffect.RefreshEffect
+import io.plastique.gallery.GalleryEffect.UndoDeleteFolderEffect
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.DeleteFolderEvent
+import io.plastique.gallery.GalleryEvent.FolderDeletedEvent
 import io.plastique.gallery.GalleryEvent.ItemsChangedEvent
 import io.plastique.gallery.GalleryEvent.LoadErrorEvent
 import io.plastique.gallery.GalleryEvent.LoadMoreErrorEvent
@@ -37,6 +40,7 @@ import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SessionChangedEvent
 import io.plastique.gallery.GalleryEvent.ShowMatureChangedEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
+import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
 import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
@@ -103,6 +107,7 @@ class GalleryViewModel @Inject constructor(
 @AutoFactory
 class GalleryEffectHandler(
     @Provided private val dataSource: FoldersWithDeviationsDataSource,
+    @Provided private val galleryModel: GalleryModel,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<GalleryEffect, GalleryEvent> {
 
@@ -132,7 +137,16 @@ class GalleryEffectHandler(
                     .onErrorReturn { error -> RefreshErrorEvent(error) }
             }
 
-        return Observable.merge(loadEvents, loadMoreEvents, refreshEvents)
+        val deleteFolderEvents = effects.ofType<DeleteFolderEffect>()
+            .flatMapSingle { effect ->
+                galleryModel.deleteFolderById(effect.folderId)
+                    .toSingleDefault(FolderDeletedEvent(effect.folderId, effect.folderName))
+            }
+
+        val undoDeleteFolderEvents = effects.ofType<UndoDeleteFolderEffect>()
+            .flatMapCompletable { effect -> galleryModel.undoDeleteFolderById(effect.folderId) }
+
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, deleteFolderEvents, undoDeleteFolderEvents.toObservable())
     }
 }
 
@@ -247,8 +261,19 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is DeleteFolderEvent -> {
-            // TODO
-            next(state)
+            next(state, DeleteFolderEffect(event.folderId, event.folderName))
+        }
+
+        is FolderDeletedEvent -> {
+            next(state.copy(snackbarState = SnackbarState.MessageWithAction(
+                messageResId = R.string.gallery_message_folder_deleted,
+                messageArgs = listOf(event.folderName.htmlEncode()),
+                actionTextId = R.string.common_button_undo,
+                actionData = event.folderId)))
+        }
+
+        is UndoDeleteFolderEvent -> {
+            next(state, UndoDeleteFolderEffect(event.folderId))
         }
     }
 }

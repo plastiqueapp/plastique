@@ -42,6 +42,7 @@ import io.plastique.gallery.GalleryEvent.LoadMoreEvent
 import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
+import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
@@ -127,6 +128,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(),
         }
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
+        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -196,7 +198,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(),
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.gallery_action_delete_folder -> {
-                    viewModel.dispatch(DeleteFolderEvent(folder))
+                    viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
                     true
                 }
                 else -> false

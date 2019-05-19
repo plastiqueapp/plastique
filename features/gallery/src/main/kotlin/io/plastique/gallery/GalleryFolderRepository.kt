@@ -13,6 +13,7 @@ import io.plastique.api.gallery.GalleryService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
@@ -23,9 +24,12 @@ import io.plastique.core.session.currentUsername
 import io.plastique.users.UserNotFoundException
 import io.plastique.util.RxRoom
 import io.plastique.util.TimeProvider
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.internal.functions.Functions
 import org.threeten.bp.Duration
+import timber.log.Timber
 import javax.inject.Inject
 
 class GalleryFolderRepository @Inject constructor(
@@ -36,7 +40,8 @@ class GalleryFolderRepository @Inject constructor(
     private val metadataConverter: NullFallbackConverter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider
-) {
+) : CleanableRepository {
+
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
         val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
             val metadata = metadataConverter.fromJson<FolderCacheMetadata>(serializedMetadata)
@@ -84,17 +89,55 @@ class GalleryFolderRepository @Inject constructor(
     }
 
     private fun getFoldersFromDb(cacheKey: String): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders")) {
+        return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders", "deleted_gallery_folders")) {
             val folders = galleryDao.getFolders(cacheKey).map { it.toFolder() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
-        }
+        }.distinctUntilChanged()
     }
 
     private fun getNextCursor(cacheKey: String): OffsetCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val metadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<FolderCacheMetadata>(it) }
         return metadata?.nextCursor
+    }
+
+    fun markAsDeleted(folderId: String, deleted: Boolean): Completable = Completable.fromAction {
+        if (deleted) {
+            galleryDao.insertDeletedFolder(DeletedFolderEntity(folderId = folderId))
+        } else {
+            galleryDao.removeDeletedFolder(folderId)
+        }
+    }
+
+    fun deleteMarkedFolders(): Completable {
+        return galleryDao.getDeletedFolderIds()
+            .flattenAsObservable(Functions.identity())
+            .concatMapCompletable { folderId ->
+                galleryService.removeFolder(folderId)
+                    .toSingleDefault(true)
+                    .onErrorResumeNext { error ->
+                        if (error is ApiException) {
+                            Timber.e(error)
+                            Single.just(false)
+                        } else {
+                            Single.error(error)
+                        }
+                    }
+                    .doOnSuccess { wasDeleted ->
+                        database.runInTransaction {
+                            if (wasDeleted) {
+                                galleryDao.deleteFolderById(folderId)
+                            }
+                            galleryDao.removeDeletedFolder(folderId)
+                        }
+                    }
+                    .ignoreElement()
+            }
+    }
+
+    override fun cleanCache(): Completable {
+        return galleryDao.removeDeletedFolders()
     }
 
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderEntity>, replaceExisting: Boolean) {

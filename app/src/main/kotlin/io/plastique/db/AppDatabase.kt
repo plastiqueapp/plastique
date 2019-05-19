@@ -42,6 +42,7 @@ import io.plastique.watch.WatcherEntity
 import io.plastique.collections.DeletedFolderEntity as DeletedCollectionFolderEntity
 import io.plastique.collections.FolderEntity as CollectionFolderEntity
 import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
+import io.plastique.gallery.DeletedFolderEntity as DeletedGalleryFolderEntity
 import io.plastique.gallery.FolderEntity as GalleryFolderEntity
 import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
@@ -68,6 +69,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
         GalleryFolderEntity::class,
         GalleryFolderLinkage::class,
+        DeletedGalleryFolderEntity::class,
 
         StatusEntity::class,
         StatusLinkage::class,
