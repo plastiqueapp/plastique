@@ -103,7 +103,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(refreshLayout)
+        snackbarController = SnackbarController(this, refreshLayout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

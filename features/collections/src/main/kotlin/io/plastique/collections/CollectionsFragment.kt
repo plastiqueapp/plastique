@@ -124,7 +124,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
         }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        snackbarController = SnackbarController(refreshLayout)
+        snackbarController = SnackbarController(this, refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
     }
 

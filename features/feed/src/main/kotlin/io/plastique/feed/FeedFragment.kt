@@ -122,7 +122,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(),
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(refreshLayout)
+        snackbarController = SnackbarController(this, refreshLayout)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -74,7 +74,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTo
         refreshLayout.setOnRefreshListener { viewModel.dispatch(CommentListEvent.RefreshEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        snackbarController = SnackbarController(refreshLayout)
+        snackbarController = SnackbarController(this, refreshLayout)
 
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(CommentListEvent.RetryClickEvent) }

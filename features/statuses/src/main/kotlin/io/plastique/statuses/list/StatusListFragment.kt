@@ -77,7 +77,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop 
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        snackbarController = SnackbarController(view)
+        snackbarController = SnackbarController(this, view)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
