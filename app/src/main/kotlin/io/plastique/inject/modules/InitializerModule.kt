@@ -43,7 +43,6 @@ abstract class InitializerModule {
         @ElementsIntoSet
         @JvmStatic
         fun provideFabricInitializer(fabricInitializer: Provider<FabricInitializer>): Set<Initializer> =
-            @Suppress("ConstantConditionIf")
             if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
                 setOf(fabricInitializer.get())
             } else {

@@ -103,7 +103,6 @@ abstract class AppModule {
         @Provides
         @Singleton
         @JvmStatic
-        @Suppress("ConstantConditionIf")
         fun provideAppConfig(context: Context): AppConfig = if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
             FirebaseAppConfig(R.xml.config_defaults)
         } else {
@@ -112,7 +111,6 @@ abstract class AppModule {
 
         @Provides
         @JvmStatic
-        @Suppress("ConstantConditionIf")
         fun provideAnalyticsTrackers(context: Context): List<Tracker> = if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
             listOf(FirebaseTracker(context))
         } else {

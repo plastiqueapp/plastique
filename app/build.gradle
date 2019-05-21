@@ -19,9 +19,7 @@ android {
         resConfigs "en"
 
         archivesBaseName = "plastique-$versionName"
-
         buildConfigField "int", "DB_VERSION", "$buildConfig.dbVersion"
-        buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
 
         if (rootProject.ext.ci) {
             resValue "string", "api_client_id", "42"
@@ -43,12 +41,14 @@ android {
         debug {
             signingConfig signingConfigs.debug
             ext.alwaysUpdateBuildId = false
+            buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "Boolean.parseBoolean(\"$googleServicesEnabled\")"
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard.cfg"
             signingConfig signingConfigs.release
+            buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
         }
     }
 
