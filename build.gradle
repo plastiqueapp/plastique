@@ -52,7 +52,7 @@ subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = "1.8"
-            freeCompilerArgs = ["-Xnew-inference", "-XXLanguage:+InlineClasses"]
+            freeCompilerArgs = ["-Xnew-inference"]
 
             if (name.toLowerCase().contains("release")) {
                 allWarningsAsErrors = true
