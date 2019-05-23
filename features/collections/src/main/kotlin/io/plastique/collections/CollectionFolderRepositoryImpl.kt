@@ -63,7 +63,10 @@ class CollectionFolderRepositoryImpl @Inject constructor(
 
     private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("collection_folders", "user_collection_folders", "deleted_collection_folders")) {
-            val folders = collectionDao.getFoldersByKey(cacheKey).map { it.toFolder(own) }
+            val folders = collectionDao.getFoldersByKey(cacheKey).asSequence()
+                .filter { own || it.isNotEmpty }
+                .map { it.toFolder(own) }
+                .toList()
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
         }.distinctUntilChanged()
@@ -195,3 +198,6 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
         .firstOrNull { it != null }
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
+
+private val FolderEntity.isNotEmpty: Boolean
+    get() = size > 0 || thumbnailUrl != null
