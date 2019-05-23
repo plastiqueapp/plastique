@@ -25,6 +25,8 @@ android {
             resValue "string", "api_client_id", "42"
             resValue "string", "api_client_secret", "42"
         }
+
+        testInstrumentationRunner "io.plastique.test.PlastiqueJUnitRunner"
     }
 
     signingConfigs {
@@ -126,6 +128,15 @@ dependencies {
 
     kapt "androidx.room:room-compiler:$versions.androidx.room"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
+
+    androidTestImplementation "junit:junit:$versions.junit.four"
+    androidTestImplementation "androidx.test:core:$versions.androidx.test.core"
+    androidTestImplementation "androidx.test:core-ktx:$versions.androidx.test.core"
+    androidTestImplementation "androidx.test:rules:$versions.androidx.test.rules"
+    androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$versions.androidx.test.espresso"
+    androidTestImplementation "com.squareup.rx.idler:rx2-idler:$versions.rxIdler"
 }
 
 kapt {

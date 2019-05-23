@@ -2,6 +2,7 @@ package io.plastique.core.themes
 
 import android.annotation.SuppressLint
 import android.os.Build
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import io.plastique.util.Preferences
 import io.reactivex.Observable
@@ -41,9 +42,11 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
     }
 
     companion object {
-        private const val PREF_UI_THEME = "ui.theme"
+        @VisibleForTesting
+        const val PREF_UI_THEME = "ui.theme"
 
-        private val THEME_DARK = ThemeId("dark")
+        @VisibleForTesting
+        val THEME_DARK = ThemeId("dark")
         private val THEME_LIGHT = ThemeId("light")
         private val THEME_DEFAULT = ThemeId("default")
         private val VALID_THEMES = arrayOf(THEME_DARK, THEME_LIGHT, THEME_DEFAULT)

@@ -14,9 +14,11 @@ ext.versions = [
         viewpager2      : "1.0.0-alpha04",
         work            : "2.1.0-alpha01",
         test            : [
-            core  : "1.1.0",
-            rules : "1.1.1",
-            runner: "1.1.1"
+            core    : "1.1.0",
+            rules   : "1.1.1",
+            runner  : "1.1.1",
+            espresso: "3.1.1",
+            junit   : "1.1.0",
         ]
     ],
 
@@ -50,6 +52,7 @@ ext.versions = [
     rxkotlin             : "2.3.0",
     rxjava2Extensions    : "0.20.8",
     rxJava2ExtensionsSch : "0.1.1",
+    rxIdler              : "0.9.1",
     sqlite               : "3.28.0",
     stetho               : "1.5.1",
     stethoTimber         : "1.0.0",
