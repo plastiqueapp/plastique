@@ -8,6 +8,7 @@
     <string name="collections_message_sign_in">Sign in to see your collections</string>
     <string name="collections_message_empty_collection">Your collection is empty</string>
     <string name="collections_message_empty_user_collection"><![CDATA[<b>%1$s</b> collection is empty]]></string>
+    <string name="collections_message_folder_create_error">Unable to create folder</string>
     <string name="collections_message_folder_deleted"><![CDATA[Folder <b>%1$s</b> has been deleted]]></string>
 
 </resources>

@@ -45,7 +45,7 @@ interface GalleryService {
     @POST("gallery/folders/create")
     @FormUrlEncoded
     @AccessScope("gallery")
-    fun createFolder(@Field("folder") name: String): Single<CreateFolderResult>
+    fun createFolder(@Field("folder") name: String): Single<FolderDto>
 
     @GET("gallery/folders/remove/{folderid}")
     @AccessScope("gallery")

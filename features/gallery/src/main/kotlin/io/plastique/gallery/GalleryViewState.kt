@@ -15,7 +15,8 @@ data class GalleryViewState(
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val showProgressDialog: Boolean = false
 ) {
     val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
@@ -33,7 +34,8 @@ data class GalleryViewState(
                 "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
                 "isLoadingMore=$isLoadingMore, " +
-                "isRefreshing=$isRefreshing" +
+                "isRefreshing=$isRefreshing, " +
+                "showProgressDialog=$showProgressDialog" +
                 ")"
     }
 }

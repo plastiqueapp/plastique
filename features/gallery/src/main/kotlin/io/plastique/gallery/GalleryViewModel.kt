@@ -20,13 +20,16 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
+import io.plastique.gallery.GalleryEffect.CreateFolderEffect
 import io.plastique.gallery.GalleryEffect.DeleteFolderEffect
 import io.plastique.gallery.GalleryEffect.LoadGalleryEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
 import io.plastique.gallery.GalleryEffect.RefreshEffect
 import io.plastique.gallery.GalleryEffect.UndoDeleteFolderEffect
+import io.plastique.gallery.GalleryEvent.CreateFolderErrorEvent
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.DeleteFolderEvent
+import io.plastique.gallery.GalleryEvent.FolderCreatedEvent
 import io.plastique.gallery.GalleryEvent.FolderDeletedEvent
 import io.plastique.gallery.GalleryEvent.ItemsChangedEvent
 import io.plastique.gallery.GalleryEvent.LoadErrorEvent
@@ -137,6 +140,14 @@ class GalleryEffectHandler(
                     .onErrorReturn { error -> RefreshErrorEvent(error) }
             }
 
+        val createFolderEvents = effects.ofType<CreateFolderEffect>()
+            .flatMapSingle { effect ->
+                galleryModel.createFolder(effect.folderName)
+                    .toSingleDefault<GalleryEvent>(FolderCreatedEvent)
+                    .doOnError(Timber::e)
+                    .onErrorReturn { error -> CreateFolderErrorEvent(error) }
+            }
+
         val deleteFolderEvents = effects.ofType<DeleteFolderEffect>()
             .flatMapSingle { effect ->
                 galleryModel.deleteFolderById(effect.folderId)
@@ -145,8 +156,9 @@ class GalleryEffectHandler(
 
         val undoDeleteFolderEvents = effects.ofType<UndoDeleteFolderEffect>()
             .flatMapCompletable { effect -> galleryModel.undoDeleteFolderById(effect.folderId) }
+            .toObservable<GalleryEvent>()
 
-        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, deleteFolderEvents, undoDeleteFolderEvents.toObservable())
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, createFolderEvents, deleteFolderEvents, undoDeleteFolderEvents)
     }
 }
 
@@ -256,8 +268,17 @@ class GalleryStateReducer @Inject constructor(
         }
 
         is CreateFolderEvent -> {
-            // TODO
-            next(state)
+            next(state.copy(showProgressDialog = true), CreateFolderEffect(event.folderName))
+        }
+
+        FolderCreatedEvent -> {
+            next(state.copy(showProgressDialog = false))
+        }
+
+        is CreateFolderErrorEvent -> {
+            next(state.copy(
+                showProgressDialog = false,
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.gallery_message_folder_create_error))))
         }
 
         is DeleteFolderEvent -> {

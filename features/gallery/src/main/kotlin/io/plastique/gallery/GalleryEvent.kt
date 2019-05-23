@@ -27,6 +27,8 @@ sealed class GalleryEvent : Event() {
     data class ShowMatureChangedEvent(val showMature: Boolean) : GalleryEvent()
 
     data class CreateFolderEvent(val folderName: String) : GalleryEvent()
+    object FolderCreatedEvent : GalleryEvent()
+    data class CreateFolderErrorEvent(val error: Throwable) : GalleryEvent()
 
     data class DeleteFolderEvent(val folderId: String, val folderName: String) : GalleryEvent()
     data class FolderDeletedEvent(val folderId: String, val folderName: String) : GalleryEvent()

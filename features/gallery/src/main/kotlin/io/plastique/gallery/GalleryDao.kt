@@ -19,6 +19,9 @@ ORDER BY user_gallery_folders.`order`""")
     fun getFolders(key: String): List<FolderEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertFolder(folder: FolderEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertFolders(folders: Collection<FolderEntity>)
 
     @Update
@@ -38,6 +41,9 @@ ORDER BY user_gallery_folders.`order`""")
 
     @Query("DELETE FROM gallery_folders WHERE id IN (SELECT folder_id FROM user_gallery_folders WHERE `key` = :key)")
     fun deleteFoldersByKey(key: String)
+
+    @Insert
+    fun insertLink(link: FolderLinkage)
 
     @Insert
     fun insertLinks(links: Collection<FolderLinkage>)

@@ -7,6 +7,8 @@ sealed class CollectionsEffect : Effect() {
     object LoadMoreEffect : CollectionsEffect()
     object RefreshEffect : CollectionsEffect()
 
+    data class CreateFolderEffect(val folderName: String) : CollectionsEffect()
+
     data class DeleteFolderEffect(val folderId: String, val folderName: String) : CollectionsEffect()
     data class UndoDeleteFolderEffect(val folderId: String) : CollectionsEffect()
 }

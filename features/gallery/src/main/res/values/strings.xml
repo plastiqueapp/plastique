@@ -8,6 +8,7 @@
     <string name="gallery_message_sign_in">Sign in to see your gallery</string>
     <string name="gallery_message_empty_collection">Your gallery is empty</string>
     <string name="gallery_message_empty_user_collection"><![CDATA[<b>%1$s</b> gallery is empty]]></string>
+    <string name="gallery_message_folder_create_error">Unable to create folder</string>
     <string name="gallery_message_folder_deleted"><![CDATA[Folder <b>%1$s</b> has been deleted]]></string>
 
 </resources>

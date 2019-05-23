@@ -22,6 +22,7 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnInputDialogResultListener
+import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
@@ -62,6 +63,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(),
     private lateinit var adapter: GalleryAdapter
     private lateinit var galleryView: RecyclerView
     private lateinit var contentStateController: ContentStateController
+    private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
 
@@ -127,6 +129,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(),
             }
         }
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
     }
@@ -176,6 +179,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(),
 
         onScrollListener.isEnabled = state.isPagingEnabled
         refreshLayout.isRefreshing = state.isRefreshing
+        progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)

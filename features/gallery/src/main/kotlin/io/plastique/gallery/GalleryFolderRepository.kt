@@ -112,6 +112,17 @@ class GalleryFolderRepository @Inject constructor(
         return metadata?.nextCursor
     }
 
+    fun createFolder(folderName: String): Completable {
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMap { session ->
+                val username = session.requireUser().username
+                galleryService.createFolder(folderName)
+                    .doOnSuccess { folder -> persist(cacheKey = getCacheKey(username), folder = folder) }
+            }
+            .ignoreElement()
+    }
+
     fun markAsDeleted(folderId: String, deleted: Boolean): Completable = Completable.fromAction {
         if (deleted) {
             galleryDao.insertDeletedFolder(DeletedFolderEntity(folderId = folderId))
@@ -164,6 +175,15 @@ class GalleryFolderRepository @Inject constructor(
 
             val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
             galleryDao.insertLinks(userFolders)
+        }
+    }
+
+    private fun persist(cacheKey: String, folder: FolderDto) {
+        database.runInTransaction {
+            val order = galleryDao.maxOrder(cacheKey) + 1
+            val link = FolderLinkage(key = cacheKey, folderId = folder.id, order = order)
+            galleryDao.insertFolder(folder.toFolderEntity())
+            galleryDao.insertLink(link)
         }
     }
 

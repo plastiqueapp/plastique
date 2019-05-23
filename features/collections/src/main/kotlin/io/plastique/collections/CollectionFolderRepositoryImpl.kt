@@ -118,6 +118,17 @@ class CollectionFolderRepositoryImpl @Inject constructor(
         collectionDao.insertOrUpdateFolders(entities)
     }
 
+    override fun createFolder(folderName: String): Completable {
+        return sessionManager.sessionChanges
+            .firstOrError()
+            .flatMap { session ->
+                val username = session.requireUser().username
+                collectionService.createFolder(folderName)
+                    .doOnSuccess { folder -> persist(cacheKey = getCacheKey(username), folder = folder) }
+            }
+            .ignoreElement()
+    }
+
     override fun markAsDeleted(folderId: String, deleted: Boolean): Completable = Completable.fromAction {
         if (deleted) {
             collectionDao.insertDeletedFolder(DeletedFolderEntity(folderId = folderId))
@@ -170,6 +181,15 @@ class CollectionFolderRepositoryImpl @Inject constructor(
 
             val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
             collectionDao.insertLinks(userFolders)
+        }
+    }
+
+    private fun persist(cacheKey: String, folder: FolderDto) {
+        database.runInTransaction {
+            val order = collectionDao.maxOrder(cacheKey) + 1
+            val link = FolderLinkage(key = cacheKey, folderId = folder.id, order = order)
+            collectionDao.insertFolder(folder.toFolderEntity())
+            collectionDao.insertLink(link)
         }
     }
 

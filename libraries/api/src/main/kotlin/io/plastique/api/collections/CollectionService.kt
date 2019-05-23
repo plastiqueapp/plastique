@@ -51,7 +51,7 @@ interface CollectionService {
     @POST("collections/folders/create")
     @FormUrlEncoded
     @AccessScope("collection")
-    fun createFolder(@Field("folder") folderName: String): Single<CreateFolderResult>
+    fun createFolder(@Field("folder") folderName: String): Single<FolderDto>
 
     @GET("collections/folders/remove/{folderid}")
     @AccessScope("collection")

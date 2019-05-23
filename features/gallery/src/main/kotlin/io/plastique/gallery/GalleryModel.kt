@@ -14,6 +14,10 @@ class GalleryModel @Inject constructor(
     private val galleryFolderRepository: GalleryFolderRepository,
     private val workManager: WorkManager
 ) {
+    fun createFolder(folderName: String): Completable {
+        return galleryFolderRepository.createFolder(folderName)
+    }
+
     fun deleteFolderById(folderId: String): Completable {
         return galleryFolderRepository.markAsDeleted(folderId, true)
             .doOnComplete { scheduleDeletion() }

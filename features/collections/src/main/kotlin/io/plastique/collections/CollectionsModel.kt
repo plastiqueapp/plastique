@@ -14,6 +14,10 @@ class CollectionsModel @Inject constructor(
     private val collectionFolderRepository: CollectionFolderRepository,
     private val workManager: WorkManager
 ) {
+    fun createFolder(folderName: String): Completable {
+        return collectionFolderRepository.createFolder(folderName)
+    }
+
     fun deleteFolderById(folderId: String): Completable {
         return collectionFolderRepository.markAsDeleted(folderId, true)
             .doOnComplete { scheduleDeletion() }

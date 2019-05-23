@@ -7,6 +7,8 @@ sealed class GalleryEffect : Effect() {
     object LoadMoreEffect : GalleryEffect()
     object RefreshEffect : GalleryEffect()
 
+    data class CreateFolderEffect(val folderName: String) : GalleryEffect()
+
     data class DeleteFolderEffect(val folderId: String, val folderName: String) : GalleryEffect()
     data class UndoDeleteFolderEffect(val folderId: String) : GalleryEffect()
 }
