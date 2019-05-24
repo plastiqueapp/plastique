@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="collections_title">Collections</string>
+    <string name="collections_title">Favorites</string>
     <string name="collections_action_create_folder">Create folder</string>
     <string name="collections_button_create">Create</string>
     <string name="collections_folder_name_hint">Folder name</string>

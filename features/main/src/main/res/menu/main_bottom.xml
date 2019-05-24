@@ -11,9 +11,9 @@
         android:title="@string/main_tab_watch" />
 
     <item
-        android:id="@+id/main_tab_collections"
-        android:icon="@drawable/ic_tab_collections_24dp"
-        android:title="@string/main_tab_collections" />
+        android:id="@+id/main_tab_favorites"
+        android:icon="@drawable/ic_tab_favorites_24dp"
+        android:title="@string/main_tab_favorites" />
 
     <item
         android:id="@+id/main_tab_gallery"
