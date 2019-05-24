@@ -207,7 +207,7 @@ private class MultipleDeviationsItemDelegate(
         holder.headerView.setUser(item.user, glide)
         val resources = holder.itemView.resources
         holder.descriptionView.text = resources.getString(R.string.feed_multiple_deviations_submitted_description,
-            resources.getQuantityString(R.plurals.feed_deviations, item.submittedTotal, item.submittedTotal))
+            resources.getQuantityString(R.plurals.common_deviations, item.submittedTotal, item.submittedTotal))
         holder.adapter.update(item.items)
     }
 

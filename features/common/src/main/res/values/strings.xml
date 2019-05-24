@@ -7,4 +7,9 @@
     <string name="common_message_deviation_not_found">Deviation not found</string>
     <string name="common_message_user_not_found">User &lt;b&gt;%1$s&lt;/b&gt; not found</string>
 
+    <plurals name="common_deviations">
+        <item quantity="one">%d deviation</item>
+        <item quantity="other">%d deviations</item>
+    </plurals>
+
 </resources>

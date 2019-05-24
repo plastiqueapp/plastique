@@ -9,6 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.text.HtmlCompat
+import androidx.core.text.htmlEncode
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -27,10 +29,13 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.dialogs.ConfirmationDialogFragment
 import io.plastique.core.dialogs.InputDialogFragment
+import io.plastique.core.dialogs.OnConfirmListener
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.add
+import io.plastique.core.extensions.args
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
@@ -54,6 +59,7 @@ import javax.inject.Inject
 class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
     MainPage,
     ScrollableToTop,
+    OnConfirmListener,
     OnInputDialogResultListener {
 
     @Inject lateinit var navigator: CollectionsNavigator
@@ -157,9 +163,19 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
         else -> super.onOptionsItemSelected(item)
     }
 
+    override fun onConfirm(dialog: ConfirmationDialogFragment) {
+        when (dialog.tag) {
+            DIALOG_DELETE_FOLDER -> {
+                val folderId = dialog.args.getString(ARG_DIALOG_FOLDER_ID)!!
+                val folderName = dialog.args.getString(ARG_DIALOG_FOLDER_NAME)!!
+                viewModel.dispatch(DeleteFolderEvent(folderId, folderName))
+            }
+        }
+    }
+
     override fun onInputDialogResult(dialog: InputDialogFragment, text: String) {
-        if (dialog.tag == DIALOG_CREATE_FOLDER) {
-            viewModel.dispatch(CreateFolderEvent(text.trim()))
+        when (dialog.tag) {
+            DIALOG_CREATE_FOLDER -> viewModel.dispatch(CreateFolderEvent(text.trim()))
         }
     }
 
@@ -184,6 +200,25 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
         }
     }
 
+    private fun showFolderPopupMenu(folder: Folder, itemView: View) {
+        val popup = PopupMenu(requireContext(), itemView)
+        popup.inflate(R.menu.collections_folder_popup)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.collections_action_delete_folder -> {
+                    if (folder.isNotEmpty) {
+                        showDeleteFolderDialog(folder)
+                    } else {
+                        viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
     private fun showCreateFolderDialog() {
         val dialog = childFragmentManager.fragmentFactory.instantiate<InputDialogFragment>(requireContext(), args = InputDialogFragment.newArgs(
             title = R.string.collections_action_create_folder,
@@ -193,19 +228,18 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
         dialog.show(childFragmentManager, DIALOG_CREATE_FOLDER)
     }
 
-    private fun showFolderPopupMenu(folder: Folder, itemView: View) {
-        val popup = PopupMenu(requireContext(), itemView)
-        popup.inflate(R.menu.collections_folder_popup)
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.collections_action_delete_folder -> {
-                    viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
-                    true
-                }
-                else -> false
-            }
-        }
-        popup.show()
+    private fun showDeleteFolderDialog(folder: Folder) {
+        val dialog = childFragmentManager.fragmentFactory.instantiate<ConfirmationDialogFragment>(requireContext(), args = ConfirmationDialogFragment.newArgs(
+            titleId = R.string.collections_dialog_delete_folder_title,
+            message = HtmlCompat.fromHtml(getString(R.string.collections_dialog_delete_folder_message, folder.name.htmlEncode(),
+                resources.getQuantityString(R.plurals.common_deviations, folder.size, folder.size)), 0),
+            positiveButtonTextId = R.string.common_button_delete,
+            negativeButtonTextInt = R.string.common_button_cancel
+        ).apply {
+            putString(ARG_DIALOG_FOLDER_ID, folder.id)
+            putString(ARG_DIALOG_FOLDER_NAME, folder.name)
+        })
+        dialog.show(childFragmentManager, DIALOG_DELETE_FOLDER)
     }
 
     override fun getTitle(): Int = R.string.collections_title
@@ -237,7 +271,10 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
 
     companion object {
         private const val ARG_USERNAME = "username"
+        private const val ARG_DIALOG_FOLDER_ID = "folder_id"
+        private const val ARG_DIALOG_FOLDER_NAME = "folder_name"
         private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
+        private const val DIALOG_DELETE_FOLDER = "dialog.delete_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
         private const val LOAD_MORE_THRESHOLD = 4
 

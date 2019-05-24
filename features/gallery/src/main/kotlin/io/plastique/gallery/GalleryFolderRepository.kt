@@ -98,8 +98,8 @@ class GalleryFolderRepository @Inject constructor(
     private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders", "deleted_gallery_folders")) {
             val folders = galleryDao.getFolders(cacheKey).asSequence()
-                .filter { own || it.isNotEmpty }
                 .map { it.toFolder(own) }
+                .filter { own || it.isNotEmpty }
                 .toList()
             val nextCursor = getNextCursor(cacheKey)
             PagedData(folders, nextCursor)
@@ -212,9 +212,6 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
         .firstOrNull { it != null }
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
-
-private val FolderEntity.isNotEmpty: Boolean
-    get() = size > 0 || thumbnailUrl != null
 
 private fun FolderEntity.toFolder(own: Boolean): Folder = Folder(
     id = id,
