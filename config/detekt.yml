@@ -1,3 +1,6 @@
+build:
+  maxIssues: 1
+
 complexity:
   ComplexMethod:
     ignoreSingleWhenExpression: true
