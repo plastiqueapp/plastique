@@ -12,11 +12,11 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.ExpandableToolbarLayout
-import io.plastique.core.MvvmActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.extensions.disableDragging
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setTitleOnClickListener
+import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp

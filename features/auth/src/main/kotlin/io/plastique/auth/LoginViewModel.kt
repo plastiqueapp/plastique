@@ -14,7 +14,7 @@ import io.plastique.auth.LoginEvent.AuthRedirectEvent
 import io.plastique.auth.LoginEvent.AuthSuccessEvent
 import io.plastique.auth.LoginEvent.AuthUrlGeneratedEvent
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
-import io.plastique.core.BaseViewModel
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.inject.scopes.ActivityScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType

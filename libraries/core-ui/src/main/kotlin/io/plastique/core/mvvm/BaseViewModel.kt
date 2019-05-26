@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.core.mvvm
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle

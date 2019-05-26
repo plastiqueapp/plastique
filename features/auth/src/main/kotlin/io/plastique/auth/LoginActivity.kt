@@ -11,13 +11,13 @@ import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
-import io.plastique.core.MvvmActivity
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.showAllowingStateLoss
+import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.reactivex.android.schedulers.AndroidSchedulers

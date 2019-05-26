@@ -1,6 +1,7 @@
-package io.plastique.core
+package io.plastique.core.mvvm
 
 import android.os.Bundle
+import io.plastique.core.BaseFragment
 import io.plastique.core.extensions.isRemovingSelfOrParent
 import javax.inject.Inject
 

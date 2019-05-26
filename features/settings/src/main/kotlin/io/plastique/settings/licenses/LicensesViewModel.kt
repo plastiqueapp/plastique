@@ -7,9 +7,9 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.inject.scopes.ActivityScope
 import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
 import io.plastique.settings.licenses.LicensesEvent.LoadErrorEvent

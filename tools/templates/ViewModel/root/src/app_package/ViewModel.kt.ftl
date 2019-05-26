@@ -5,8 +5,8 @@ import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
 import com.sch.neon.timber.TimberLogger
-import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
+import io.plastique.core.mvvm.BaseViewModel
 import io.reactivex.Observable
 import javax.inject.Inject
 

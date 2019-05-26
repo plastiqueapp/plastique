@@ -1,6 +1,7 @@
-package io.plastique.core
+package io.plastique.core.mvvm
 
 import android.os.Bundle
+import io.plastique.core.BaseActivity
 import javax.inject.Inject
 
 abstract class MvvmActivity<VM : BaseViewModel> : BaseActivity() {

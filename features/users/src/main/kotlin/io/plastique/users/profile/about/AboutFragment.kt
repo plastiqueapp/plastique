@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
-import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.args
+import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersFragmentComponent

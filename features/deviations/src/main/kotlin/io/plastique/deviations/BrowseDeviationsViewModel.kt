@@ -1,6 +1,6 @@
 package io.plastique.deviations
 
-import io.plastique.core.BaseViewModel
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable

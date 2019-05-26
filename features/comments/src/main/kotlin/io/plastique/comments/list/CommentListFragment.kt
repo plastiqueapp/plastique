@@ -14,7 +14,6 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsFragmentComponent
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.R
-import io.plastique.core.MvvmFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
@@ -27,6 +26,7 @@ import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState

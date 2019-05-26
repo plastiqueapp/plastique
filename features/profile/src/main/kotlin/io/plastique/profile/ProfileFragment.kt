@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
-import io.plastique.core.MvvmFragment
+import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers

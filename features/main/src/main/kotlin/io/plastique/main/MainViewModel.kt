@@ -8,7 +8,7 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
-import io.plastique.core.BaseViewModel
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.inject.scopes.ActivityScope

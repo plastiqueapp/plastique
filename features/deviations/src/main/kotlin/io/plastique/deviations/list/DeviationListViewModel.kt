@@ -11,10 +11,10 @@ import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityMonitor

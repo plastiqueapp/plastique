@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
-import io.plastique.core.MvvmActivity
 import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.extensions.add
@@ -15,6 +14,7 @@ import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent

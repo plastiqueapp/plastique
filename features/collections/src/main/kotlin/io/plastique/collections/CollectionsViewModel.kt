@@ -35,10 +35,10 @@ import io.plastique.collections.CollectionsEvent.ShowMatureChangedEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager

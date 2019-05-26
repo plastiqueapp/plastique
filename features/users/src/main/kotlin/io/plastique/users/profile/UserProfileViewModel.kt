@@ -10,8 +10,8 @@ import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.BaseViewModel
 import io.plastique.core.content.ContentState
+import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userId
 import io.plastique.core.snackbar.SnackbarState

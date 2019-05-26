@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
-import io.plastique.core.MvvmActivity
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
@@ -16,6 +15,7 @@ import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
