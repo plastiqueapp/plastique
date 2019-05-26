@@ -24,6 +24,7 @@ dependencies {
     api "androidx.room:room-runtime:$versions.androidx.room"
     api "androidx.room:room-rxjava2:$versions.androidx.room"
     api "androidx.work:work-runtime:$versions.androidx.work"
+    api "androidx.work:work-runtime-ktx:$versions.androidx.work"
     api "androidx.work:work-rxjava2:$versions.androidx.work"
     api "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
     api "com.google.dagger:dagger:$versions.dagger"

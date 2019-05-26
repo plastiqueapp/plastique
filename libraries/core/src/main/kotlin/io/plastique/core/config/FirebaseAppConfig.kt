@@ -4,7 +4,7 @@ import androidx.annotation.XmlRes
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import io.plastique.core.BuildConfig
-import java.util.concurrent.TimeUnit
+import org.threeten.bp.Duration
 
 class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
     private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
@@ -31,14 +31,14 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
 
     override fun fetch() {
         remoteConfig.activate()
-        remoteConfig.fetch(REFRESH_INTERVAL)
+        remoteConfig.fetch(REFRESH_INTERVAL.seconds)
     }
 
     companion object {
         private val REFRESH_INTERVAL = if (BuildConfig.DEBUG) {
-            TimeUnit.MINUTES.toSeconds(1)
+            Duration.ofMinutes(1)
         } else {
-            TimeUnit.HOURS.toSeconds(12)
+            Duration.ofHours(12)
         }
     }
 }

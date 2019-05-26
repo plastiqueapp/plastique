@@ -3,11 +3,12 @@ package io.plastique.gallery
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import io.plastique.core.work.CommonWorkTags
+import io.plastique.core.work.setInitialDelay
 import io.reactivex.Completable
-import java.util.concurrent.TimeUnit
+import org.threeten.bp.Duration
 import javax.inject.Inject
 
 class GalleryModel @Inject constructor(
@@ -28,11 +29,11 @@ class GalleryModel @Inject constructor(
     }
 
     private fun scheduleDeletion() {
-        val workRequest = OneTimeWorkRequest.Builder(DeleteFoldersWorker::class.java)
+        val workRequest = OneTimeWorkRequestBuilder<DeleteFoldersWorker>()
             .setConstraints(Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build())
-            .setInitialDelay(DELETE_FOLDER_DELAY, TimeUnit.MILLISECONDS)
+            .setInitialDelay(DELETE_FOLDER_DELAY)
             .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
             .build()
         workManager.enqueueUniqueWork(WORK_DELETE_FOLDERS, ExistingWorkPolicy.REPLACE, workRequest)
@@ -40,6 +41,6 @@ class GalleryModel @Inject constructor(
 
     companion object {
         private const val WORK_DELETE_FOLDERS = "gallery.delete_folders"
-        private val DELETE_FOLDER_DELAY = TimeUnit.SECONDS.toMillis(15)
+        private val DELETE_FOLDER_DELAY = Duration.ofSeconds(15)
     }
 }

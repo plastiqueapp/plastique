@@ -3,15 +3,16 @@ package io.plastique.notifications
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.work.CommonWorkTags
+import io.plastique.core.work.setInitialDelay
 import io.reactivex.Completable
 import io.reactivex.Observable
-import java.util.concurrent.TimeUnit
+import org.threeten.bp.Duration
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
@@ -52,11 +53,11 @@ class NotificationsModel @Inject constructor(
     }
 
     private fun scheduleDeletion() {
-        val workRequest = OneTimeWorkRequest.Builder(DeleteMessagesWorker::class.java)
+        val workRequest = OneTimeWorkRequestBuilder<DeleteMessagesWorker>()
             .setConstraints(Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build())
-            .setInitialDelay(DELETE_MESSAGE_DELAY, TimeUnit.MILLISECONDS)
+            .setInitialDelay(DELETE_MESSAGE_DELAY)
             .addTag(CommonWorkTags.CANCEL_ON_LOGOUT)
             .build()
         workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
@@ -93,6 +94,6 @@ class NotificationsModel @Inject constructor(
 
     companion object {
         private const val WORK_DELETE_MESSAGES = "notifications.delete_messages"
-        private val DELETE_MESSAGE_DELAY = TimeUnit.SECONDS.toMillis(15)
+        private val DELETE_MESSAGE_DELAY = Duration.ofSeconds(15)
     }
 }

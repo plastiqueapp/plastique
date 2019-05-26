@@ -2,6 +2,7 @@ package io.plastique.core.network
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.threeten.bp.Duration
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
@@ -12,9 +13,9 @@ class OkHttpClientFactory @Inject constructor(
 ) {
     fun createClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-            .readTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
-            .writeTimeout(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)
+            .connectTimeout(CONNECTION_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)
+            .readTimeout(CONNECTION_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)
+            .writeTimeout(CONNECTION_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)
             .apply {
                 interceptors().addAll(interceptors)
                 networkInterceptors().addAll(networkInterceptors)
@@ -23,6 +24,6 @@ class OkHttpClientFactory @Inject constructor(
     }
 
     companion object {
-        private val CONNECTION_TIMEOUT = TimeUnit.SECONDS.toMillis(20)
+        private val CONNECTION_TIMEOUT = Duration.ofSeconds(20)
     }
 }

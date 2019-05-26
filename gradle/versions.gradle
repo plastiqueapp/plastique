@@ -12,7 +12,7 @@ ext.versions = [
         recyclerView    : "1.1.0-alpha05",
         room            : "2.1.0-beta01",
         viewpager2      : "1.0.0-alpha04",
-        work            : "2.1.0-alpha01",
+        work            : "2.1.0-alpha02",
         test            : [
             core    : "1.1.0",
             rules   : "1.1.1",
