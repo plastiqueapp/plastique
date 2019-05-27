@@ -11,6 +11,7 @@ import io.plastique.inject.modules.DebugOkHttpInterceptorModule
 import io.plastique.inject.modules.DebuggingModule
 import io.plastique.inject.modules.DeviationsModule
 import io.plastique.inject.modules.NetworkModule
+import io.plastique.inject.modules.ViewModelModule
 import javax.inject.Singleton
 
 @Singleton
@@ -22,7 +23,8 @@ import javax.inject.Singleton
     DebugInitializerModule::class,
     DebugOkHttpInterceptorModule::class,
     DeviationsModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    ViewModelModule::class
 ])
 interface DebugAppComponent : AppComponent {
     @Component.Factory

@@ -44,13 +44,11 @@ import io.plastique.gallery.GalleryEvent.SessionChangedEvent
 import io.plastique.gallery.GalleryEvent.ShowMatureChangedEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class GalleryViewModel @Inject constructor(
     stateReducer: GalleryStateReducer,
     effectHandlerFactory: GalleryEffectHandlerFactory,

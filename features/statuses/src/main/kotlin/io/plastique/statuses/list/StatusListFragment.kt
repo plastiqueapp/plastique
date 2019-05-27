@@ -38,7 +38,7 @@ import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class StatusListFragment : MvvmFragment<StatusListViewModel>(), ScrollableToTop {
+class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel::class.java), ScrollableToTop {
     @Inject lateinit var navigator: StatusesNavigator
 
     private lateinit var statusesView: RecyclerView

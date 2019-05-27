@@ -30,14 +30,12 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
-import io.plastique.inject.scopes.ActivityScope
 import io.plastique.util.FileDownloader
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class DeviationViewerViewModel @Inject constructor(
     stateReducer: DeviationViewerStateReducer,
     effectHandler: DeviationViewerEffectHandler,

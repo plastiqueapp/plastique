@@ -44,13 +44,11 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class CollectionsViewModel @Inject constructor(
     stateReducer: CollectionsStateReducer,
     effectHandlerFactory: CollectionsEffectHandlerFactory,

@@ -56,7 +56,7 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class GalleryFragment : MvvmFragment<GalleryViewModel>(),
+class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.java),
     MainPage,
     ScrollableToTop,
     OnConfirmListener,

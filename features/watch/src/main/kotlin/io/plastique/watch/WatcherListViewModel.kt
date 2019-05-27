@@ -22,7 +22,6 @@ import io.plastique.core.network.NoNetworkConnectionException
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.inject.scopes.ActivityScope
 import io.plastique.watch.WatcherListEffect.LoadMoreEffect
 import io.plastique.watch.WatcherListEffect.LoadWatchersEffect
 import io.plastique.watch.WatcherListEffect.RefreshEffect
@@ -43,7 +42,6 @@ import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class WatcherListViewModel @Inject constructor(
     stateReducer: WatcherListStateReducer,
     effectHandlerFactory: WatcherListEffectHandlerFactory,

@@ -9,12 +9,10 @@ import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
-import io.plastique.inject.scopes.FragmentScope
 import io.plastique.profile.ProfileEvent.SessionChangedEvent
 import io.reactivex.Observable
 import javax.inject.Inject
 
-@FragmentScope
 class ProfileViewModel @Inject constructor(
     stateReducer: ProfileStateReducer,
     private val sessionManager: SessionManager

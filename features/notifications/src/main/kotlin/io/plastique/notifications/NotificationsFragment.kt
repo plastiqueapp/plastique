@@ -38,7 +38,7 @@ import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class NotificationsFragment : MvvmFragment<NotificationsViewModel>(),
+class NotificationsFragment : MvvmFragment<NotificationsViewModel>(NotificationsViewModel::class.java),
     MainPage,
     ScrollableToTop {
 

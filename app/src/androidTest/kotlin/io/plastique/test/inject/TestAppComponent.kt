@@ -12,6 +12,7 @@ import io.plastique.inject.modules.DebugOkHttpInterceptorModule
 import io.plastique.inject.modules.DebuggingModule
 import io.plastique.inject.modules.DeviationsModule
 import io.plastique.inject.modules.NetworkModule
+import io.plastique.inject.modules.ViewModelModule
 import io.plastique.test.inject.modules.TestInitializerModule
 import javax.inject.Singleton
 
@@ -25,7 +26,8 @@ import javax.inject.Singleton
     DebugOkHttpInterceptorModule::class,
     DeviationsModule::class,
     NetworkModule::class,
-    TestInitializerModule::class
+    TestInitializerModule::class,
+    ViewModelModule::class
 ])
 interface TestAppComponent : AppComponent {
     @Component.Factory

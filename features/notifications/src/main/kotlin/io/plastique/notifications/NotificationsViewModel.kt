@@ -18,7 +18,6 @@ import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.inject.scopes.FragmentScope
 import io.plastique.notifications.NotificationsEffect.DeleteMessageEffect
 import io.plastique.notifications.NotificationsEffect.LoadMoreEffect
 import io.plastique.notifications.NotificationsEffect.LoadNotificationsEffect
@@ -42,7 +41,6 @@ import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class NotificationsViewModel @Inject constructor(
     stateReducer: NotificationsStateReducer,
     effectHandlerFactory: NotificationsEffectHandlerFactory,

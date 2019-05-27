@@ -10,7 +10,6 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
 import io.plastique.core.mvvm.BaseViewModel
-import io.plastique.inject.scopes.ActivityScope
 import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
 import io.plastique.settings.licenses.LicensesEvent.LoadErrorEvent
 import io.plastique.settings.licenses.LicensesEvent.LoadFinishedEvent
@@ -21,7 +20,6 @@ import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class LicensesViewModel @Inject constructor(
     stateReducer: LicensesStateReducer,
     effectHandler: LicensesEffectHandler

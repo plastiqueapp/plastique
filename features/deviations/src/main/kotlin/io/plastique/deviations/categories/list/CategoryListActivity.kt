@@ -28,7 +28,7 @@ import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEv
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CategoryListActivity : MvvmActivity<CategoryListViewModel>() {
+class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListViewModel::class.java) {
     private lateinit var categoriesView: RecyclerView
     private lateinit var breadcrumbsView: BreadcrumbsView
     private lateinit var emptyView: EmptyView

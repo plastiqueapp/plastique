@@ -24,7 +24,7 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class MainActivity : MvvmActivity<MainViewModel>(),
+class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
     BottomNavigationView.OnNavigationItemSelectedListener,
     BottomNavigationView.OnNavigationItemReselectedListener {
 

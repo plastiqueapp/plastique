@@ -21,7 +21,7 @@ import io.plastique.settings.SettingsActivityComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class LicensesActivity : MvvmActivity<LicensesViewModel>() {
+class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::class.java) {
     @Inject lateinit var browserLauncher: BrowserLauncher
 
     private lateinit var adapter: LicensesAdapter

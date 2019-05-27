@@ -51,7 +51,7 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class FeedFragment : MvvmFragment<FeedViewModel>(),
+class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     MainPage,
     ScrollableToTop,
     OnFeedSettingsChangedListener {

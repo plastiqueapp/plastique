@@ -23,13 +23,11 @@ import io.plastique.deviations.categories.list.CategoryListEvent.LoadCategoryErr
 import io.plastique.deviations.categories.list.CategoryListEvent.LoadCategoryFinishEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.RetryClickEvent
 import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEvent
-import io.plastique.inject.scopes.ActivityScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class CategoryListViewModel @Inject constructor(
     stateReducer: CategoryListStateReducer,
     effectHandler: CategoryListEffectHandler

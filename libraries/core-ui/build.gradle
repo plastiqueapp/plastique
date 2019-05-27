@@ -10,10 +10,12 @@ dependencies {
     implementation project(":libraries:core")
 
     api "androidx.activity:activity:$versions.androidx.activity"
+    api "androidx.activity:activity-ktx:$versions.androidx.activity"
     api "androidx.appcompat:appcompat:$versions.androidx.appcompat"
     implementation "androidx.browser:browser:$versions.androidx.browser"
     api "androidx.constraintlayout:constraintlayout:$versions.androidx.constraintLayout"
     api "androidx.fragment:fragment:$versions.androidx.fragment"
+    api "androidx.fragment:fragment-ktx:$versions.androidx.fragment"
     implementation "androidx.lifecycle:lifecycle-common:$versions.androidx.lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$versions.androidx.lifecycle"
     implementation "androidx.preference:preference:$versions.androidx.preference"

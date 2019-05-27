@@ -53,14 +53,12 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DeviationRepository
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class CommentListViewModel @Inject constructor(
     stateReducer: CommentListStateReducer,
     effectHandlerFactory: CommentListEffectHandlerFactory,

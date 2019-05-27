@@ -23,7 +23,11 @@ class FragmentListPagerAdapter private constructor(
 
     override fun getItem(position: Int): Fragment {
         val page = pages[position]
-        return fragmentManager.fragmentFactory.instantiate(context.classLoader, page.fragmentClass.name).apply { arguments = page.args }
+        return fragmentManager.fragmentFactory.instantiate(context.classLoader, page.fragmentClass.name).apply {
+            arguments = Bundle(page.args).apply {
+                putBoolean(ARG_IN_VIEWPAGER, true)
+            }
+        }
     }
 
     override fun getCount(): Int = pages.size
@@ -36,11 +40,16 @@ class FragmentListPagerAdapter private constructor(
         return fragments[position]
     }
 
-    data class Page(@StringRes val titleId: Int, val fragmentClass: Class<out Fragment>, val args: Bundle? = null)
+    data class Page(@StringRes val titleId: Int, val fragmentClass: Class<out Fragment>, val args: Bundle = Bundle.EMPTY)
 
     companion object {
+        internal const val ARG_IN_VIEWPAGER = "in_viewpager"
+
         private val FIELD_FRAGMENTS: Field by lazy(LazyThreadSafetyMode.NONE) {
             FragmentStatePagerAdapter::class.java.getDeclaredField("mFragments").apply { isAccessible = true }
         }
     }
 }
+
+val Fragment.isInViewPager: Boolean
+    get() = arguments?.getBoolean(FragmentListPagerAdapter.ARG_IN_VIEWPAGER, false) == true

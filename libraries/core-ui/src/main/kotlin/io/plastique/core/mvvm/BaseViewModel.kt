@@ -3,12 +3,13 @@ package io.plastique.core.mvvm
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
-abstract class BaseViewModel {
+abstract class BaseViewModel : ViewModel() {
     private val disposables = CompositeDisposable()
     private val _screenVisible: BehaviorSubject<Boolean> = BehaviorSubject.create()
     protected val screenVisible: Observable<Boolean> get() = _screenVisible
@@ -29,7 +30,8 @@ abstract class BaseViewModel {
         })
     }
 
-    fun destroy() {
+    override fun onCleared() {
+        super.onCleared()
         disposables.dispose()
     }
 

@@ -15,9 +15,6 @@ inline val Fragment.args: Bundle
 val Fragment.actionBar: ActionBar
     get() = (activity as AppCompatActivity).supportActionBar!!
 
-val Fragment.isRemovingSelfOrParent: Boolean
-    get() = isRemoving || parentFragment?.isRemovingSelfOrParent ?: false
-
 inline fun <reified T> Fragment.findCallback(): T? {
     return if (parentFragment != null) {
         parentFragment as? T

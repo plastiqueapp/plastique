@@ -35,7 +35,7 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CommentListFragment : MvvmFragment<CommentListViewModel>(), ScrollableToTop {
+class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewModel::class.java), ScrollableToTop {
     @Inject lateinit var navigator: CommentsNavigator
 
     private lateinit var commentsView: RecyclerView

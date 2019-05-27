@@ -8,7 +8,6 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.reactivex.Single
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.io.IOException
@@ -18,11 +17,6 @@ class LicensesViewModelTest {
     private val licenseRepository = mock<LicenseRepository>()
     private val errorMessageProvider = mock<ErrorMessageProvider>()
     private val viewModel = LicensesViewModel(LicensesStateReducer(errorMessageProvider), LicensesEffectHandler(licenseRepository))
-
-    @AfterEach
-    fun tearDown() {
-        viewModel.destroy()
-    }
 
     @Test
     fun `Load success`() {

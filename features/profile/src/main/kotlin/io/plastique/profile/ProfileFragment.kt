@@ -15,7 +15,7 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class ProfileFragment : MvvmFragment<ProfileViewModel>() {
+class ProfileFragment : MvvmFragment<ProfileViewModel>(ProfileViewModel::class.java) {
     @Inject lateinit var navigator: ProfileNavigator
 
     private lateinit var signInButton: Button

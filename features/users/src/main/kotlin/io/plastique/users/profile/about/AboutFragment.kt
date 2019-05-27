@@ -21,7 +21,7 @@ import io.plastique.users.profile.about.AboutEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class AboutFragment : MvvmFragment<AboutViewModel>(), ScrollableToTop {
+class AboutFragment : MvvmFragment<AboutViewModel>(AboutViewModel::class.java), ScrollableToTop {
     @Inject lateinit var navigator: UsersNavigator
 
     private lateinit var contentView: NestedScrollView

@@ -40,7 +40,7 @@ import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class UserProfileActivity : MvvmActivity<UserProfileViewModel>(), CompoundButton.OnCheckedChangeListener {
+class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewModel::class.java), CompoundButton.OnCheckedChangeListener {
     @Inject lateinit var navigator: UsersNavigator
     @Inject lateinit var pageProvider: UserProfilePageProvider
 

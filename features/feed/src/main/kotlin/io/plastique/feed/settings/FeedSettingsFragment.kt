@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -15,22 +16,22 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.add
 import io.plastique.core.extensions.findCallback
-import io.plastique.core.extensions.isRemovingSelfOrParent
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
-import io.plastique.feed.FeedFragmentComponent
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEvent.RetryClickEvent
 import io.plastique.feed.settings.FeedSettingsEvent.SetEnabledEvent
 import io.plastique.inject.BaseActivityComponent
+import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import javax.inject.Inject
 
-class FeedSettingsFragment : BottomSheetDialogFragment() {
-    @Inject lateinit var viewModel: FeedSettingsViewModel
+class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.Holder {
+    private val viewModel: FeedSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProviders.of(this, fragmentComponent.viewModelFactory()).get(FeedSettingsViewModel::class.java)
+    }
 
     private lateinit var optionsView: RecyclerView
     private lateinit var emptyView: EmptyView
@@ -44,8 +45,6 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = findCallback<OnFeedSettingsChangedListener>()
-
-        (requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent() as FeedFragmentComponent).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,9 +87,6 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         disposables.dispose()
-        if (requireActivity().isFinishing || isRemovingSelfOrParent) {
-            viewModel.destroy()
-        }
     }
 
     override fun onDetach() {
@@ -125,6 +121,10 @@ class FeedSettingsFragment : BottomSheetDialogFragment() {
                 emptyView.state = state.contentState.emptyState
             }
         }
+    }
+
+    override val fragmentComponent: BaseFragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
+        requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent()
     }
 }
 

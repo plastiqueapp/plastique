@@ -49,7 +49,7 @@ import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
 @RuntimePermissions
-class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>() {
+class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(DeviationViewerViewModel::class.java) {
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
 

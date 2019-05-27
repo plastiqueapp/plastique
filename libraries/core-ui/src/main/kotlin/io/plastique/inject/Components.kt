@@ -3,6 +3,7 @@ package io.plastique.inject
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import io.plastique.core.init.Initializer
 
 interface BaseAppComponent : BaseActivityComponent.Factory {
@@ -14,6 +15,8 @@ interface BaseAppComponent : BaseActivityComponent.Factory {
 }
 
 interface BaseActivityComponent : BaseFragmentComponent.Factory {
+    fun viewModelFactory(): ViewModelProvider.Factory
+
     interface Factory {
         fun createActivityComponent(): BaseActivityComponent
     }
@@ -24,6 +27,8 @@ interface BaseActivityComponent : BaseFragmentComponent.Factory {
 }
 
 interface BaseFragmentComponent {
+    fun viewModelFactory(): ViewModelProvider.Factory
+
     interface Factory {
         fun createFragmentComponent(): BaseFragmentComponent
     }

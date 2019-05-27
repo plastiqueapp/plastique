@@ -27,7 +27,7 @@ import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
-class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>() {
+class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfoViewModel::class.java) {
     @Inject lateinit var navigator: DeviationsNavigator
 
     private lateinit var authorNameView: TextView

@@ -17,13 +17,11 @@ import io.plastique.feed.settings.FeedSettingsEvent.FeedSettingsLoadedEvent
 import io.plastique.feed.settings.FeedSettingsEvent.LoadErrorEvent
 import io.plastique.feed.settings.FeedSettingsEvent.RetryClickEvent
 import io.plastique.feed.settings.FeedSettingsEvent.SetEnabledEvent
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class FeedSettingsViewModel @Inject constructor(
     stateReducer: FeedSettingsStateReducer,
     effectHandler: FeedSettingsEffectHandler

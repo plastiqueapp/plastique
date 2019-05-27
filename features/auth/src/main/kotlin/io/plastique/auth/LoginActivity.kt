@@ -22,7 +22,7 @@ import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class LoginActivity : MvvmActivity<LoginViewModel>(), OnDismissDialogListener {
+class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), OnDismissDialogListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var webView: WebView
     private lateinit var progressDialogController: ProgressDialogController

@@ -30,7 +30,7 @@ import io.plastique.deviations.tags.TagsView
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 
-class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(),
+class BrowseDeviationsFragment : MvvmFragment<BrowseDeviationsViewModel>(BrowseDeviationsViewModel::class.java),
     MainPage,
     ScrollableToTop,
     TagManagerProvider {

@@ -11,7 +11,6 @@ import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
-import io.plastique.inject.scopes.ActivityScope
 import io.plastique.main.MainEvent.UserChangedEvent
 import io.plastique.users.UserRepository
 import io.reactivex.Observable
@@ -19,7 +18,6 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class MainViewModel @Inject constructor(
     stateReducer: MainStateReducer,
     private val sessionManager: SessionManager,

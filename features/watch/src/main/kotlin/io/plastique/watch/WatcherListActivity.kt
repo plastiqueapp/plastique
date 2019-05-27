@@ -32,7 +32,7 @@ import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class WatcherListActivity : MvvmActivity<WatcherListViewModel>() {
+class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewModel::class.java) {
     @Inject lateinit var navigator: WatchNavigator
 
     private lateinit var watchersView: RecyclerView

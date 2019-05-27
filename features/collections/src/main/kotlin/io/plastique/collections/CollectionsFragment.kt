@@ -56,7 +56,7 @@ import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CollectionsFragment : MvvmFragment<CollectionsViewModel>(),
+class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewModel::class.java),
     MainPage,
     ScrollableToTop,
     OnConfirmListener,

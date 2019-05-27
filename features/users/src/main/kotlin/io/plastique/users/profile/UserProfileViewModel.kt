@@ -15,7 +15,6 @@ import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userId
 import io.plastique.core.snackbar.SnackbarState
-import io.plastique.inject.scopes.ActivityScope
 import io.plastique.users.R
 import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
@@ -38,7 +37,6 @@ import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@ActivityScope
 class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
     effectHandlerFactory: UserProfileEffectHandlerFactory,

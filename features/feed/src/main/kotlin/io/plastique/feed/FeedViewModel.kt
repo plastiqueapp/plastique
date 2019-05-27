@@ -44,13 +44,11 @@ import io.plastique.feed.FeedEvent.SettingsChangedEvent
 import io.plastique.feed.FeedEvent.ShowMatureChangedEvent
 import io.plastique.feed.FeedEvent.SnackbarShownEvent
 import io.plastique.feed.settings.FeedSettingsManager
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class FeedViewModel @Inject constructor(
     stateReducer: FeedStateReducer,
     effectHandlerFactory: FeedEffectHandlerFactory,

@@ -50,13 +50,11 @@ import io.plastique.deviations.list.DeviationListEvent.ShowMatureChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagFactory
-import io.plastique.inject.scopes.FragmentScope
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
 import javax.inject.Inject
 
-@FragmentScope
 class DeviationListViewModel @Inject constructor(
     stateReducer: DeviationListStateReducer,
     effectHandlerFactory: DeviationListEffectHandlerFactory,

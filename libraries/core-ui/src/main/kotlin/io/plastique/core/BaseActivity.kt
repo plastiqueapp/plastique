@@ -15,7 +15,7 @@ import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder, BaseFragmentComponent.Factory {
-    @Inject lateinit var appConfig: AppConfig
+    @Inject protected lateinit var appConfig: AppConfig
 
     private val disposables = CompositeDisposable()
     private var hasMenu: Boolean = true
