@@ -5,5 +5,6 @@ data class ApiConfiguration(
     val authUrl: String,
     val clientId: String,
     val clientSecret: String,
+    val apiVersion: String,
     val userAgent: String
 )

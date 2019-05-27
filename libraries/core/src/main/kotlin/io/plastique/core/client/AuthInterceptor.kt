@@ -1,7 +1,6 @@
 package io.plastique.core.client
 
 import androidx.annotation.Keep
-import io.plastique.api.common.ApiConstants
 import io.plastique.core.BuildConfig
 import okhttp3.Authenticator
 import okhttp3.Interceptor
@@ -37,7 +36,7 @@ class AuthInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val builder = request.newBuilder()
-            .header(HttpHeaders.API_VERSION, ApiConstants.VERSION)
+            .header(HttpHeaders.API_VERSION, configuration.apiVersion)
             .header(HttpHeaders.USER_AGENT, configuration.userAgent)
 
         val providedAccessToken = request.url().queryParameter("access_token")
