@@ -32,13 +32,13 @@ data class CommentListViewState(
     override fun toString(): String {
         return "CommentListViewState(" +
                 "threadId=$threadId, " +
-                "title='$title', " +
+                "title=$title, " +
                 "contentState=$contentState, " +
                 "comments=${comments.size}, " +
                 "items=${items.size}, " +
                 "commentItems=${commentItems.size}, " +
                 "replyComment=$replyComment, " +
-                "commentDraft='$commentDraft', " +
+                "commentDraft=$commentDraft, " +
                 "snackbarState=$snackbarState, " +
                 "hasMore=$hasMore, " +
                 "isLoadingMore=$isLoadingMore, " +

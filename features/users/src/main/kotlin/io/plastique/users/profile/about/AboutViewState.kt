@@ -1,6 +1,7 @@
 package io.plastique.users.profile.about
 
 import io.plastique.core.content.EmptyState
+import io.plastique.core.extensions.truncate
 import io.plastique.core.text.SpannedWrapper
 
 sealed class AboutViewState {
@@ -9,7 +10,16 @@ sealed class AboutViewState {
     data class Content(
         override val username: String,
         val bio: SpannedWrapper
-    ) : AboutViewState()
+    ) : AboutViewState() {
+
+        @Suppress("MagicNumber")
+        override fun toString(): String {
+            return "Content(" +
+                    "username=$username, " +
+                    "bio=${bio.toString().truncate(20)}" +
+                    ")"
+        }
+    }
 
     data class Loading(
         override val username: String

@@ -1,6 +1,7 @@
 package io.plastique.deviations.info
 
 import io.plastique.core.content.EmptyState
+import io.plastique.core.extensions.truncate
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
@@ -19,7 +20,20 @@ sealed class DeviationInfoViewState {
         val publishTime: ZonedDateTime,
         val description: SpannedWrapper,
         val tags: List<String>
-    ) : DeviationInfoViewState()
+    ) : DeviationInfoViewState() {
+
+        @Suppress("MagicNumber")
+        override fun toString(): String {
+            return "Content(" +
+                    "deviationId=$deviationId, " +
+                    "title=$title, " +
+                    "author=$author, " +
+                    "publishTime=$publishTime, " +
+                    "description=${description.toString().truncate(20)}, " +
+                    "tags=$tags" +
+                    ")"
+        }
+    }
 
     data class Error(
         override val deviationId: String,

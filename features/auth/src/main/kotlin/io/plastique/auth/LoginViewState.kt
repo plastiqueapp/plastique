@@ -7,7 +7,7 @@ sealed class LoginViewState {
 
     data class LoadUrl(val authUrl: String) : LoginViewState() {
         override fun toString(): String {
-            return "LoginViewState.LoadUrl(authUrl='$authUrl')"
+            return "LoginViewState.LoadUrl(authUrl=$authUrl)"
         }
     }
 
