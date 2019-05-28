@@ -1,6 +1,5 @@
 configurations.all { config ->
     exclude group: "com.google.code.findbugs", module: "jsr305"
-    exclude group: "org.mozilla", module: "rhino"
 
     resolutionStrategy.eachDependency { details ->
         if (config.name.contains("UnitTest") && details.requested.group == "com.squareup.leakcanary" && details.requested.name == "leakcanary-android") {
