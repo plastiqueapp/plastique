@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.plastique.api.deviations.TimeRange
 import io.plastique.core.extensions.findCallback
 import io.plastique.deviations.R
+import io.plastique.deviations.TimeRange
 
 class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
     private var onTimeRangeSelectedListener: OnTimeRangeSelectedListener? = null

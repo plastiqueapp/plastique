@@ -7,7 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import io.plastique.api.common.StringEnum
 import io.plastique.util.Size
 
 @Entity(
@@ -37,7 +36,7 @@ data class DeviationImageEntity(
     val url: String
 )
 
-enum class DeviationImageType(override val value: String) : StringEnum {
+enum class DeviationImageType(val id: String) {
     Content("content"),
     Preview("preview"),
     Thumbnail("thumbnail")
@@ -46,11 +45,11 @@ enum class DeviationImageType(override val value: String) : StringEnum {
 class DeviationImageTypeConverter {
     @TypeConverter
     fun fromString(value: String): DeviationImageType {
-        return DeviationImageType.values().first { it.value == value }
+        return DeviationImageType.values().first { it.id == value }
     }
 
     @TypeConverter
     fun toString(imageType: DeviationImageType): String {
-        return imageType.value
+        return imageType.id
     }
 }

@@ -28,7 +28,6 @@ class ApiClient @Inject constructor(
             .baseUrl(config.apiUrl)
             .client(createOkHttpClient(authInterceptor, okHttpClient))
             .addCallAdapterFactory(callAdapterFactory)
-            .addConverterFactory(StringConverterFactory())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .validateEagerly(BuildConfig.DEBUG)
             .build()

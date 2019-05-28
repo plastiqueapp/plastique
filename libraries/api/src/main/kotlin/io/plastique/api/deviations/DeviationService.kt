@@ -21,7 +21,7 @@ interface DeviationService {
     fun getPopularDeviations(
         @Query("offset") offset: Int,
         @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
-        @Query("timerange") timeRange: TimeRange?,
+        @Query("timerange") timeRange: String?,
         @Query("category_path") categoryPath: String?,
         @Query("mature_content") matureContent: Boolean
     ): Single<PagedListResult<DeviationDto>>

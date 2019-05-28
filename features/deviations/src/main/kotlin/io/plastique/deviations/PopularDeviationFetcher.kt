@@ -3,7 +3,7 @@ package io.plastique.deviations
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
-import io.plastique.api.deviations.TimeRange
+import io.plastique.api.deviations.TimeRanges
 import io.plastique.api.nextCursor
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.categories.Category
@@ -67,7 +67,7 @@ class PopularDeviationFetcher @Inject constructor(
     override fun fetch(params: PopularParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return deviationService.getPopularDeviations(
-            timeRange = params.timeRange,
+            timeRange = params.timeRange.apiValue,
             categoryPath = normalizeCategoryPath(params.categoryPath),
             matureContent = params.showMatureContent,
             offset = offset,
@@ -79,4 +79,14 @@ class PopularDeviationFetcher @Inject constructor(
                     replaceExisting = offset == 0)
             }
     }
+
+    private val TimeRange.apiValue: String
+        get() = when (this) {
+            TimeRange.Hours8 -> TimeRanges.HOURS_8
+            TimeRange.Hours24 -> TimeRanges.HOURS_24
+            TimeRange.Days3 -> TimeRanges.DAYS_3
+            TimeRange.Week -> TimeRanges.WEEK
+            TimeRange.Month -> TimeRanges.MONTH
+            TimeRange.AllTime -> TimeRanges.ALLTIME
+        }
 }

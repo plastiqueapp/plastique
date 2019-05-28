@@ -17,8 +17,6 @@ android {
 }
 
 dependencies {
-    implementation project(":libraries:api")
-
     api "androidx.core:core:$versions.androidx.core"
     api "androidx.core:core-ktx:$versions.androidx.core"
     api "androidx.room:room-runtime:$versions.androidx.room"

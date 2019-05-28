@@ -247,8 +247,8 @@ private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(si
 private fun createImageEntity(deviationId: String, type: DeviationImageType, imageDto: ImageDto): DeviationImageEntity {
     val size = Size(imageDto.width, imageDto.height)
     val id = when (type) {
-        DeviationImageType.Content, DeviationImageType.Preview -> "$deviationId-${type.value}"
-        DeviationImageType.Thumbnail -> "$deviationId-${type.value}-$size"
+        DeviationImageType.Content, DeviationImageType.Preview -> "$deviationId-${type.id}"
+        DeviationImageType.Thumbnail -> "$deviationId-${type.id}-$size"
     }
     return DeviationImageEntity(id = id, deviationId = deviationId, type = type, size = size, url = imageDto.url)
 }

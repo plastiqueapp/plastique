@@ -4,10 +4,10 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapters.EnumJsonAdapter
 import io.plastique.core.json.DateCursorAdapter
 import io.plastique.core.json.DerivedClassAdapterFactory
 import io.plastique.core.json.OffsetCursorAdapter
-import io.plastique.core.json.StringEnumJsonAdapter
 import io.plastique.core.json.adapter
 import io.plastique.core.paging.Cursor
 
@@ -27,7 +27,7 @@ class DeviationCacheMetadataSerializer(
     private val moshi = Moshi.Builder()
         .add(OffsetCursorAdapter())
         .add(DateCursorAdapter())
-        .add(StringEnumJsonAdapter.Factory())
+        .add(TimeRange::class.java, EnumJsonAdapter.create(TimeRange::class.java))
         .add(DerivedClassAdapterFactory(FetchParams::class.java, paramsType))
         .add(DerivedClassAdapterFactory(Cursor::class.java, cursorType))
         .build()

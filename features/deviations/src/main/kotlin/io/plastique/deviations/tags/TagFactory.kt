@@ -2,8 +2,8 @@ package io.plastique.deviations.tags
 
 import android.content.Context
 import androidx.annotation.StringRes
-import io.plastique.api.deviations.TimeRange
 import io.plastique.deviations.R
+import io.plastique.deviations.TimeRange
 import io.plastique.deviations.categories.Category
 import javax.inject.Inject
 

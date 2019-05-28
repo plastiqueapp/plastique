@@ -7,7 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import io.plastique.api.common.StringEnum
 import io.plastique.deviations.DeviationEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime
@@ -55,7 +54,7 @@ data class StatusEntity(
     val sharedStatusId: String?
 )
 
-enum class ShareType(override val value: String) : StringEnum {
+enum class ShareType(val id: String) {
     None("none"),
     Deviation("deviation"),
     Status("status")
@@ -64,11 +63,11 @@ enum class ShareType(override val value: String) : StringEnum {
 class ShareTypeConverter {
     @TypeConverter
     fun fromString(value: String): ShareType {
-        return ShareType.values().first { it.value == value }
+        return ShareType.values().first { it.id == value }
     }
 
     @TypeConverter
     fun toString(shareType: ShareType): String {
-        return shareType.value
+        return shareType.id
     }
 }

@@ -36,7 +36,7 @@ interface GalleryService {
     fun getFolderContents(
         @Path("folderid") folderId: String?,
         @Query("username") username: String?,
-        @Query("mode") order: SortOrder? = null,
+        @Query("mode") mode: String? = null,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
         @Query("mature_content") matureContent: Boolean

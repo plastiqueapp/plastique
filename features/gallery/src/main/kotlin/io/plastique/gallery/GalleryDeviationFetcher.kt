@@ -3,6 +3,7 @@ package io.plastique.gallery
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.gallery.GalleryService
+import io.plastique.api.gallery.SortModes
 import io.plastique.api.nextCursor
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
@@ -43,6 +44,7 @@ class GalleryDeviationFetcher @Inject constructor(
         return galleryService.getFolderContents(
             username = params.folderId.username,
             folderId = params.folderId.id,
+            mode = SortModes.POPULAR,
             matureContent = params.showMatureContent,
             offset = offset,
             limit = 24)
