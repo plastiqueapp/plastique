@@ -13,4 +13,6 @@
     <color name="status_bar_background">#b0b0b0</color>
     <color name="navigation_bar_background">#b0b0b0</color>
 
+    <color name="common_divider">#33333333</color>
+
 </resources>

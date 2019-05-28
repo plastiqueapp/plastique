@@ -29,7 +29,7 @@
         android:id="@+id/compose"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?android:windowBackground"
+        android:background="?android:colorBackground"
         android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
