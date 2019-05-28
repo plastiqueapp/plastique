@@ -3,8 +3,8 @@ set -euo pipefail
 
 app_id=io.plastique.android.dev
 test_app_id=io.plastique.android.dev.test
-device_screenshot_path="/mnt/sdcard/Pictures/screenshots/plastique"
-screenshot_path="app/src/prod/play/listings/en-US/graphics/phone-screenshots"
+device_screenshot_path="/mnt/sdcard/Pictures/screenshots/plastique/"
+screenshot_path="app/src/prod/play/listings/en-US/graphics/phone-screenshots/"
 
 cd "$(dirname "${BASH_SOURCE[0]}")"/..
 
@@ -80,7 +80,8 @@ uninstall() {
 
 download_screenshots() {
     echo "Downloading screenshots"
-    rm -rf "${screenshot_path}/"*
+    rm -rf "${screenshot_path}"*
+    mkdir -p "${screenshot_path}"
     ${ADB} shell "find $device_screenshot_path -type f -print0" | xargs -0 -n 1 -I "{}" ${ADB} pull "{}" "$screenshot_path" > /dev/null
     ${ADB} shell rm -r "$device_screenshot_path"
 }
