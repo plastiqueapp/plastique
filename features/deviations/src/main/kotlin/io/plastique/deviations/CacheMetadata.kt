@@ -4,12 +4,12 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import io.plastique.core.adapters.DateCursorAdapter
-import io.plastique.core.adapters.DerivedClassAdapterFactory
-import io.plastique.core.adapters.OffsetCursorAdapter
-import io.plastique.core.adapters.StringEnumJsonAdapter
+import io.plastique.core.json.DateCursorAdapter
+import io.plastique.core.json.DerivedClassAdapterFactory
+import io.plastique.core.json.OffsetCursorAdapter
+import io.plastique.core.json.StringEnumJsonAdapter
+import io.plastique.core.json.adapter
 import io.plastique.core.paging.Cursor
-import io.plastique.util.adapter
 
 @JsonClass(generateAdapter = true)
 data class DeviationCacheMetadata(

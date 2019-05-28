@@ -1,6 +1,6 @@
 @file:Suppress("MatchingDeclarationName")
 
-package io.plastique.util
+package io.plastique.core.json
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

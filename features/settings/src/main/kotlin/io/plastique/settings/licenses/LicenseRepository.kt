@@ -2,7 +2,7 @@ package io.plastique.settings.licenses
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import io.plastique.util.adapter
+import io.plastique.core.json.adapter
 import io.reactivex.Single
 import okio.Okio
 import javax.inject.Inject
