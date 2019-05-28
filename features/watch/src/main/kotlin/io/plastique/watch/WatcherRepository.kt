@@ -8,6 +8,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
+import io.plastique.api.nextCursor
 import io.plastique.api.watch.WatchService
 import io.plastique.api.watch.WatcherDto
 import io.plastique.core.cache.CacheEntry
@@ -17,7 +18,6 @@ import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
 import io.plastique.users.UserNotFoundException

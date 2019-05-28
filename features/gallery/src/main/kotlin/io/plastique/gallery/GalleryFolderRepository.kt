@@ -10,6 +10,7 @@ import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.gallery.FolderDto
 import io.plastique.api.gallery.GalleryService
+import io.plastique.api.nextCursor
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -18,7 +19,6 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.paging.nextCursor
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser

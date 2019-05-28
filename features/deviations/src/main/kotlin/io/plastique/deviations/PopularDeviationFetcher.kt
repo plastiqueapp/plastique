@@ -4,8 +4,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.deviations.TimeRange
+import io.plastique.api.nextCursor
 import io.plastique.core.paging.OffsetCursor
-import io.plastique.core.paging.nextCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize

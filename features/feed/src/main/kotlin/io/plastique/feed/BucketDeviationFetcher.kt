@@ -1,8 +1,8 @@
 package io.plastique.feed
 
 import io.plastique.api.feed.FeedService
+import io.plastique.api.nextCursor
 import io.plastique.core.paging.OffsetCursor
-import io.plastique.core.paging.nextCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
 import io.plastique.deviations.FetchResult

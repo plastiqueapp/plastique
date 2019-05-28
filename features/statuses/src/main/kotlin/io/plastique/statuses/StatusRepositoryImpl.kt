@@ -9,6 +9,7 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.deviations.DeviationDto
+import io.plastique.api.nextCursor
 import io.plastique.api.statuses.StatusService
 import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserDto
@@ -19,7 +20,6 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.paging.nextCursor
 import io.plastique.deviations.DeviationRepository
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
