@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="io.plastique">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <application
-        android:name=".DebugPlastiqueApplication"
-        tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="name">
-
+    <application android:name=".DebugPlastiqueApplication">
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />

@@ -36,6 +36,7 @@ afterEvaluate {
             lintOptions {
                 warningsAsErrors true
                 lintConfig rootProject.file("config/lint.xml")
+                disable "GoogleAppIndexingWarning"
 
                 textReport true
                 textOutput "stdout"
