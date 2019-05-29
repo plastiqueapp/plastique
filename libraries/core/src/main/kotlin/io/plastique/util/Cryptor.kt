@@ -30,26 +30,16 @@ abstract class Cryptor {
     abstract fun encrypt(input: ByteArray, keyAlias: String): ByteArray
 
     abstract fun decrypt(input: ByteArray, keyAlias: String): ByteArray
-
-    companion object {
-        fun create(): Cryptor {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Api23Cryptor()
-            } else {
-                NoCryptor()
-            }
-        }
-    }
 }
 
-private class NoCryptor : Cryptor() {
+class NoCryptor : Cryptor() {
     override fun encrypt(input: ByteArray, keyAlias: String): ByteArray = input
 
     override fun decrypt(input: ByteArray, keyAlias: String): ByteArray = input
 }
 
 @RequiresApi(Build.VERSION_CODES.M)
-private class Api23Cryptor : Cryptor() {
+class AesCryptor : Cryptor() {
     private val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER)
 
     init {

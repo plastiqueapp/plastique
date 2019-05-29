@@ -42,6 +42,7 @@ import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.ByteCountFormatter
 import io.plastique.util.Clipboard
+import io.plastique.util.InstantAppHelper
 import io.plastique.util.SystemUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import permissions.dispatcher.NeedsPermission
@@ -52,6 +53,7 @@ import javax.inject.Inject
 class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(DeviationViewerViewModel::class.java) {
     @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var navigator: DeviationsNavigator
+    @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private lateinit var rootView: View
     private lateinit var appBar: AppBarLayout
@@ -251,7 +253,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     private fun Menu.update(menuState: MenuState) {
         findItem(R.id.deviations_viewer_action_download).apply {
             title = getString(R.string.deviations_viewer_action_download, ByteCountFormatter.format(menuState.downloadFileSize))
-            isVisible = menuState.showDownload
+            isVisible = menuState.showDownload && !instantAppHelper.isInstantApp
         }
     }
 

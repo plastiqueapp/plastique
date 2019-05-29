@@ -17,10 +17,10 @@ import java.security.SecureRandom
 import java.util.UUID
 import javax.crypto.KeyGenerator
 
-class CryptorTest {
+class AesCryptorTest {
     private val keyAlias = UUID.randomUUID().toString()
     private val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER)
-    private val cryptor = Cryptor.create()
+    private val cryptor = AesCryptor()
 
     @Before
     fun setUp() {

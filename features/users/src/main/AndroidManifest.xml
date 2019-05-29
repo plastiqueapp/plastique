@@ -4,7 +4,7 @@
 
     <application>
         <activity android:name=".profile.UserProfileActivity">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -19,7 +19,7 @@
                     android:host="*.deviantart.com"
                     android:path="/"
                     android:scheme="https" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
     </application>
 </manifest>

@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/main_action_install_full_version"
+        android:title="@string/main_action_install_full_version"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/main_action_settings"
         android:title="@string/main_action_settings"
         app:showAsAction="never" />

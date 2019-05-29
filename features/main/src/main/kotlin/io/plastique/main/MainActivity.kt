@@ -21,6 +21,7 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
+import io.plastique.util.InstantAppHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -30,6 +31,7 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
 
     @Inject lateinit var mainFragmentFactory: MainFragmentFactory
     @Inject lateinit var navigator: MainNavigator
+    @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
 
@@ -74,6 +76,9 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main, menu)
+
+        val installFullMenuItem = menu.findItem(R.id.main_action_install_full_version)
+        installFullMenuItem.isVisible = instantAppHelper.isInstantApp
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -83,6 +88,10 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
         }
         R.id.main_action_settings -> {
             navigator.openSettings(navigationContext)
+            true
+        }
+        R.id.main_action_install_full_version -> {
+            instantAppHelper.showInstallPrompt(this)
             true
         }
         else -> false

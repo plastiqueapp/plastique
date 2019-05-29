@@ -25,6 +25,7 @@ dependencies {
     api "androidx.work:work-runtime-ktx:$versions.androidx.work"
     api "androidx.work:work-rxjava2:$versions.androidx.work"
     api "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
+    api "com.google.android.gms:play-services-instantapps:$versions.playServices.instantApps"
     api "com.google.dagger:dagger:$versions.dagger"
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
     implementation "com.google.firebase:firebase-config:$versions.firebase.config"

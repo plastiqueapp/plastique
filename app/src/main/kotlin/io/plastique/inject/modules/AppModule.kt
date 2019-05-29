@@ -3,6 +3,7 @@ package io.plastique.inject.modules
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
 import android.webkit.CookieManager
 import androidx.work.WorkManager
@@ -30,7 +31,10 @@ import io.plastique.main.MainFragmentFactory
 import io.plastique.main.MainFragmentFactoryImpl
 import io.plastique.users.UserProfilePageProviderImpl
 import io.plastique.users.profile.UserProfilePageProvider
+import io.plastique.util.AesCryptor
 import io.plastique.util.Cryptor
+import io.plastique.util.InstantAppHelper
+import io.plastique.util.NoCryptor
 import io.plastique.util.Preferences
 import io.plastique.util.SystemTimeProvider
 import io.plastique.util.TimeProvider
@@ -119,6 +123,12 @@ abstract class AppModule {
 
         @Provides
         @JvmStatic
-        fun provideCryptor(): Cryptor = Cryptor.create()
+        fun provideCryptor(instantAppHelper: InstantAppHelper): Cryptor {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !instantAppHelper.isInstantApp) {
+                AesCryptor()
+            } else {
+                NoCryptor()
+            }
+        }
     }
 }

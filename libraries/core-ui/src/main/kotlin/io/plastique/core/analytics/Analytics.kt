@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.google.android.gms.common.GoogleApiAvailability
 import io.plastique.core.ui.R
+import io.plastique.util.InstantAppHelper
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -14,6 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class Analytics @Inject constructor(
     private val context: Context,
+    private val instantAppHelper: InstantAppHelper,
     private val trackers: List<@JvmSuppressWildcards Tracker>
 ) {
 
@@ -22,6 +24,7 @@ class Analytics @Inject constructor(
     }
 
     fun initUserProperties() {
+        setUserProperty(UserProperties.APP_TYPE, if (instantAppHelper.isInstantApp) UserProperties.APP_TYPE_INSTANT else UserProperties.APP_TYPE_INSTALLED)
         setUserProperty(UserProperties.PLAY_SERVICES_VERSION, getPlayServicesVersion())
     }
 
