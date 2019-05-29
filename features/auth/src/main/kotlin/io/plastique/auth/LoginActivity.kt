@@ -1,8 +1,10 @@
 package io.plastique.auth
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebChromeClient
@@ -20,7 +22,9 @@ import io.plastique.core.extensions.showAllowingStateLoss
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
+import io.plastique.util.Intents
 import io.reactivex.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), OnDismissDialogListener {
     private lateinit var progressBar: ProgressBar
@@ -47,6 +51,14 @@ class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), 
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it) }
             .disposeOnDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onDismissDialog(dialog: DialogFragment) {
@@ -101,7 +113,19 @@ class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), 
     private inner class LoginWebViewClient : WebViewClient() {
         @Suppress("OverridingDeprecatedMember")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            return viewModel.onRedirect(url)
+            val uri = Uri.parse(url)
+            if (viewModel.onRedirect(uri)) {
+                return true
+            } else if (uri.host?.endsWith("deviantart.com") == false) {
+                val intent = Intents.view(uri)
+                try {
+                    startActivity(intent)
+                    return true
+                } catch (e: ActivityNotFoundException) {
+                    Timber.e(e)
+                }
+            }
+            return false
         }
     }
 

@@ -29,7 +29,7 @@ class Authenticator @Inject constructor(
         val call = authService.authorize(
             apiConfig.clientId,
             csrfToken,
-            apiConfig.authUrl,
+            apiConfig.authRedirectUrl,
             REQUESTED_SCOPES.joinToString(" "))
         this.csrfToken = csrfToken
         return call.request().url().toString()
@@ -37,7 +37,7 @@ class Authenticator @Inject constructor(
 
     fun isAuthRedirectUri(uri: Uri): Boolean {
         val uriWithoutQuery = uri.buildUpon().clearQuery().build()
-        return uriWithoutQuery == Uri.parse(apiConfig.authUrl)
+        return uriWithoutQuery == Uri.parse(apiConfig.authRedirectUrl)
     }
 
     fun onRedirect(redirectUrl: Uri): Completable {
@@ -50,7 +50,7 @@ class Authenticator @Inject constructor(
                 clientId = apiConfig.clientId,
                 clientSecret = apiConfig.clientSecret,
                 authCode = authCode,
-                redirectUri = apiConfig.authUrl)
+                redirectUri = apiConfig.authRedirectUrl)
         }
             .doOnError { cookieManager.removeAllCookies(null) }
             .flatMap { tokenResult ->

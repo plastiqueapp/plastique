@@ -35,13 +35,12 @@ class LoginViewModel @Inject constructor(
         loop.loop(LoginViewState.Initial, GenerateAuthUrlEffect).disposeOnDestroy()
     }
 
-    fun onRedirect(redirectUrl: String): Boolean {
-        val uri = Uri.parse(redirectUrl)
-        if (!authenticator.isAuthRedirectUri(uri)) {
-            return false
+    fun onRedirect(uri: Uri): Boolean {
+        if (authenticator.isAuthRedirectUri(uri)) {
+            dispatch(AuthRedirectEvent(uri))
+            return true
         }
-        dispatch(AuthRedirectEvent(uri))
-        return true
+        return false
     }
 
     fun dispatch(event: LoginEvent) {

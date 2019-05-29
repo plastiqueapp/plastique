@@ -6,6 +6,10 @@ import android.net.MailTo
 import android.net.Uri
 
 object Intents {
+    fun view(uri: Uri): Intent {
+        return Intent(Intent.ACTION_VIEW, uri)
+    }
+
     fun openPlayStore(context: Context, packageName: String): Intent {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
             .setPackage("com.android.vending")

@@ -100,9 +100,9 @@ abstract class ApiModule {
         @JvmStatic
         fun provideApiConfiguration(context: Context): ApiConfiguration = ApiConfiguration(
             apiUrl = ApiConstants.URL,
-            authUrl = "${context.packageName}://auth",
             clientId = context.getString(R.string.api_client_id),
             clientSecret = context.getString(R.string.api_client_secret),
+            authRedirectUrl = "${context.packageName}://auth",
             apiVersion = ApiConstants.VERSION,
             userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
 
