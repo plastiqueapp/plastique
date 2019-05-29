@@ -1,5 +1,6 @@
 package io.plastique.feed.settings
 
+import com.github.technoir42.kotlin.extensions.replaceIf
 import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
@@ -9,7 +10,6 @@ import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
 import io.plastique.core.content.ContentState
-import io.plastique.core.extensions.replaceIf
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEffect.LoadFeedSettingsEffect

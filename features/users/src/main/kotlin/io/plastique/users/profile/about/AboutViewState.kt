@@ -1,7 +1,7 @@
 package io.plastique.users.profile.about
 
+import com.github.technoir42.kotlin.extensions.truncate
 import io.plastique.core.content.EmptyState
-import io.plastique.core.extensions.truncate
 import io.plastique.core.text.SpannedWrapper
 
 sealed class AboutViewState {

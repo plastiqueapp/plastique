@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.kotlin.extensions.plus
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.add
 import io.plastique.core.extensions.findCallback
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
@@ -79,7 +79,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.
 
         disposables += viewModel.state
             .pairwiseWithPrevious()
-            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .map { it + calculateDiff(it.second?.items, it.first.items) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it.first, it.third) }
     }

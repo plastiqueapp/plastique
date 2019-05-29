@@ -1,6 +1,6 @@
 package io.plastique.deviations.info
 
-import io.plastique.core.extensions.truncate
+import com.github.technoir42.kotlin.extensions.truncate
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 

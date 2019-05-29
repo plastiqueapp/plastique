@@ -1,6 +1,7 @@
 package io.plastique.deviations.categories.list
 
 import android.os.SystemClock
+import com.github.technoir42.kotlin.extensions.replaceIf
 import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
@@ -10,7 +11,6 @@ import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
-import io.plastique.core.extensions.replaceIf
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.R

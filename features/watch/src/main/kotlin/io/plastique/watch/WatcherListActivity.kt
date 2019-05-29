@@ -7,11 +7,11 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.kotlin.extensions.plus
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.add
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.extensions.setSubtitleOnClickListener
 import io.plastique.core.extensions.setTitleOnClickListener
@@ -81,7 +81,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()
-            .map { it.add(calculateDiff(it.second?.items, it.first.items)) }
+            .map { it + calculateDiff(it.second?.items, it.first.items) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it.first, it.second, it.third) }
             .disposeOnDestroy()
