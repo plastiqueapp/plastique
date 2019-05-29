@@ -239,7 +239,10 @@ class GalleryStateReducer @Inject constructor(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             messageResId = R.string.gallery_message_sign_in,
                             buttonTextId = R.string.common_button_sign_in)),
-                        signInNeeded = signInNeeded))
+                        signInNeeded = signInNeeded,
+                        items = emptyList(),
+                        galleryItems = emptyList(),
+                        hasMore = false))
                 } else {
                     next(state.copy(
                         contentState = ContentState.Loading,

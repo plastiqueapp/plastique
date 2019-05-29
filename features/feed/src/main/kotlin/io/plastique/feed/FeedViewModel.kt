@@ -236,7 +236,10 @@ class FeedStateReducer @Inject constructor(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             messageResId = R.string.feed_message_sign_in,
                             buttonTextId = R.string.common_button_sign_in)),
-                        isSignedIn = signedIn))
+                        isSignedIn = signedIn,
+                        items = emptyList(),
+                        feedItems = emptyList(),
+                        hasMore = false))
                 }
             } else {
                 next(state)

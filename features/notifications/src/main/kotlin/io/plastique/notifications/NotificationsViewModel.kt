@@ -210,7 +210,10 @@ class NotificationsStateReducer @Inject constructor(
                             contentState = ContentState.Empty(EmptyState.MessageWithButton(
                                 messageResId = R.string.notifications_message_sign_in_required,
                                 buttonTextId = R.string.common_button_sign_in)),
-                            isSignedIn = signedIn))
+                            isSignedIn = signedIn,
+                            items = emptyList(),
+                            contentItems = emptyList(),
+                            hasMore = false))
                     }
                 } else {
                     next(state)

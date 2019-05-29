@@ -214,7 +214,8 @@ class CommentListStateReducer @Inject constructor(
             next(state.copy(
                 contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
                 items = emptyList(),
-                commentItems = emptyList()))
+                commentItems = emptyList(),
+                hasMore = false))
         }
 
         RetryClickEvent -> {

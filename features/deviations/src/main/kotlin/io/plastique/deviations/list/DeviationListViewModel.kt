@@ -182,7 +182,8 @@ class DeviationListStateReducer @Inject constructor(
                 next(state.copy(
                     contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
                     items = emptyList(),
-                    deviationItems = emptyList()))
+                    deviationItems = emptyList(),
+                    hasMore = false))
             }
 
             RetryClickEvent -> {
