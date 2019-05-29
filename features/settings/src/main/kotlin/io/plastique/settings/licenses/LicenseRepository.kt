@@ -4,7 +4,8 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import io.plastique.core.json.adapter
 import io.reactivex.Single
-import okio.Okio
+import okio.buffer
+import okio.source
 import javax.inject.Inject
 
 class LicenseRepository @Inject constructor(
@@ -16,7 +17,7 @@ class LicenseRepository @Inject constructor(
     }
 
     private fun getLicensesInternal(): List<License> {
-        return Okio.buffer(Okio.source(context.assets.open(LICENSES_FILE_NAME))).use { source ->
+        return context.assets.open(LICENSES_FILE_NAME).source().buffer().use { source ->
             moshi.adapter<List<License>>().fromJson(source)!!
         }
     }

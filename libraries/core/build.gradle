@@ -43,6 +43,7 @@ dependencies {
     api "com.sch.rxjava:rxjava2-extensions:$versions.rxJava2ExtensionsSch"
 
     api "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    api "com.squareup.okio:okio:$versions.okio"
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
 
