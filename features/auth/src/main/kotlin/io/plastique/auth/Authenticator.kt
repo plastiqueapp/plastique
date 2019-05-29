@@ -78,6 +78,17 @@ class Authenticator @Inject constructor(
 
     companion object {
         private val REQUESTED_SCOPES = listOf(
-            "browse", "collection", "comment.post", "feed", "gallery", "message", "note", "publish", "stash", "user", "user.manage")
+            "browse",
+            "browse.mlt",
+            "collection",
+            "comment.post",
+            "feed",
+            "gallery",
+            "message",
+            "note",
+            "publish",
+            "stash",
+            "user",
+            "user.manage")
     }
 }
