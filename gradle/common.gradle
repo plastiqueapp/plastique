@@ -35,12 +35,12 @@ afterEvaluate {
 
             lintOptions {
                 warningsAsErrors true
-                lintConfig rootProject.file("config/lint.xml")
-                disable "GoogleAppIndexingWarning"
-
                 textReport true
                 textOutput "stdout"
                 explainIssues false
+
+                disable "GradleDependency", "GoogleAppIndexingWarning", "ObsoleteLintCustomCheck"
+                ignore "ContentDescription"
             }
 
             sourceSets {
