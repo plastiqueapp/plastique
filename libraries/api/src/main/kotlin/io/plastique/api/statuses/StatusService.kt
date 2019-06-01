@@ -3,8 +3,6 @@ package io.plastique.api.statuses
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
 import io.plastique.api.common.PagedListResult
-import io.plastique.api.users.PostStatusResult
-import io.plastique.api.users.StatusDto
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

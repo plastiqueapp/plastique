@@ -22,8 +22,8 @@ import io.plastique.api.feed.FeedElementTypes
 import io.plastique.api.feed.FeedService
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.messages.MessageService
+import io.plastique.api.statuses.StatusDto
 import io.plastique.api.statuses.StatusService
-import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserService
 import io.plastique.api.watch.WatchService
 import io.plastique.core.client.AccessTokenProvider

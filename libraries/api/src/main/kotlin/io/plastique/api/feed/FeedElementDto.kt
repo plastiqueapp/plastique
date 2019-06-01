@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.FolderDto
 import io.plastique.api.deviations.DeviationDto
-import io.plastique.api.users.StatusDto
+import io.plastique.api.statuses.StatusDto
 import io.plastique.api.users.UserDto
 import org.threeten.bp.ZonedDateTime
 

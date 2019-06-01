@@ -10,8 +10,8 @@ import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.nextCursor
+import io.plastique.api.statuses.StatusDto
 import io.plastique.api.statuses.StatusService
-import io.plastique.api.users.StatusDto
 import io.plastique.api.users.UserDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository

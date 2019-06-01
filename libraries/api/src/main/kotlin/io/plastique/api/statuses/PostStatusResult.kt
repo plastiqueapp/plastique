@@ -1,4 +1,4 @@
-package io.plastique.api.users
+package io.plastique.api.statuses
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

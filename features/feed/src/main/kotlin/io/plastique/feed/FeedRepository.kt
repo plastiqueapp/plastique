@@ -13,7 +13,7 @@ import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.feed.FeedElementDto
 import io.plastique.api.feed.FeedElementTypes
 import io.plastique.api.feed.FeedService
-import io.plastique.api.users.StatusDto
+import io.plastique.api.statuses.StatusDto
 import io.plastique.collections.CollectionFolderRepository
 import io.plastique.collections.toFolder
 import io.plastique.core.cache.CacheEntry
