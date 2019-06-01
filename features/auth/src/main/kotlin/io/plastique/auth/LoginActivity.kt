@@ -62,8 +62,8 @@ class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), 
     }
 
     override fun onDismissDialog(dialog: DialogFragment) {
-        if (DIALOG_AUTH_ERROR == dialog.tag) {
-            viewModel.dispatch(ErrorDialogDismissedEvent)
+        when (dialog.tag) {
+            DIALOG_AUTH_ERROR -> viewModel.dispatch(ErrorDialogDismissedEvent)
         }
     }
 
