@@ -56,7 +56,11 @@ class StatusRepositoryImpl @Inject constructor(
 
     fun fetch(params: StatusListLoadParams, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
-        return statusService.getStatuses(params.username, offset, STATUSES_PER_PAGE, params.matureContent)
+        return statusService.getStatuses(
+            username = params.username,
+            matureContent = params.matureContent,
+            offset = offset,
+            limit = STATUSES_PER_PAGE)
             .map { statusList ->
                 val cacheMetadata = StatusListCacheMetadata(params, statusList.nextCursor)
                 val cacheEntry = CacheEntry(

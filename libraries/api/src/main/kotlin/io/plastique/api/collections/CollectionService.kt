@@ -15,15 +15,17 @@ import retrofit2.http.Query
 
 interface CollectionService {
     @GET("collections/folders?calculate_size=true")
+    @AccessScope("browse")
     fun getFolders(
         @Query("username") username: String?,
         @Query("ext_preload") preload: Boolean,
         @Query("mature_content") matureContent: Boolean,
-        @Query("offset") offset: Int,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int
     ): Single<PagedListResult<FolderDto>>
 
     @GET("collections/{folderid}")
+    @AccessScope("browse")
     fun getFolderContents(
         @Path("folderid") folderId: String,
         @Query("username") username: String?,
@@ -34,7 +36,7 @@ interface CollectionService {
 
     @POST("collections/fave")
     @FormUrlEncoded
-    @AccessScope("collection")
+    @AccessScope("browse", "collection")
     fun addToFolder(
         @Field("deviationid") deviationId: String,
         @Field("folderid[0]") folderId: String?
@@ -42,7 +44,7 @@ interface CollectionService {
 
     @POST("collections/unfave")
     @FormUrlEncoded
-    @AccessScope("collection")
+    @AccessScope("browse", "collection")
     fun removeFromFolder(
         @Field("deviationid") deviationId: String,
         @Field("folderid[0]") folderId: String?
@@ -50,10 +52,10 @@ interface CollectionService {
 
     @POST("collections/folders/create")
     @FormUrlEncoded
-    @AccessScope("collection")
+    @AccessScope("browse", "collection")
     fun createFolder(@Field("folder") folderName: String): Single<FolderDto>
 
     @GET("collections/folders/remove/{folderid}")
-    @AccessScope("collection")
+    @AccessScope("browse", "collection")
     fun removeFolder(@Path("folderid") folderId: String): Completable
 }

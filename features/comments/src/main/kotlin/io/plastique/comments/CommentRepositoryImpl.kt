@@ -90,8 +90,19 @@ class CommentRepositoryImpl @Inject constructor(
 
     private fun getCommentList(threadId: CommentThreadId, parentCommentId: String?, maxDepth: Int, offset: Int, pageSize: Int): Single<CommentList> =
         when (threadId) {
-            is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(threadId.deviationId, parentCommentId, maxDepth, offset, pageSize)
-            is CommentThreadId.Profile -> commentService.getCommentsOnProfile(threadId.username, parentCommentId, maxDepth, offset, pageSize)
+            is CommentThreadId.Deviation -> commentService.getCommentsOnDeviation(
+                deviationId = threadId.deviationId,
+                parentCommentId = parentCommentId,
+                maxDepth = maxDepth,
+                offset = offset,
+                limit = pageSize)
+
+            is CommentThreadId.Profile -> commentService.getCommentsOnProfile(
+                username = threadId.username,
+                parentCommentId = parentCommentId,
+                maxDepth = maxDepth,
+                offset = offset,
+                limit = pageSize)
                 .mapError { error ->
                     if (error is ApiException && error.errorData.type == ErrorType.InvalidRequest) {
                         UserNotFoundException(threadId.username, error)
@@ -99,7 +110,13 @@ class CommentRepositoryImpl @Inject constructor(
                         error
                     }
                 }
-            is CommentThreadId.Status -> commentService.getCommentsOnStatus(threadId.statusId, parentCommentId, maxDepth, offset, pageSize)
+
+            is CommentThreadId.Status -> commentService.getCommentsOnStatus(
+                statusId = threadId.statusId,
+                parentCommentId = parentCommentId,
+                maxDepth = maxDepth,
+                offset = offset,
+                limit = pageSize)
         }
 
     override fun put(comments: Collection<CommentDto>) {

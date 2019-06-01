@@ -39,9 +39,9 @@ interface FeedService {
     @AccessScope("feed")
     fun getBucket(
         @Path("bucketid") bucketId: String,
-        @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 120) limit: Int,
-        @Query("mature_content") matureContent: Boolean
+        @Query("mature_content") matureContent: Boolean,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
+        @Query("limit") @IntRange(from = 1, to = 120) limit: Int
     ): Single<PagedListResult<DeviationDto>>
 
     @GET("feed/settings")

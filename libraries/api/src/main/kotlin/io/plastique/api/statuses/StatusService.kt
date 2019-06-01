@@ -13,14 +13,16 @@ import retrofit2.http.Query
 
 interface StatusService {
     @GET("user/statuses/")
+    @AccessScope("browse")
     fun getStatuses(
         @Query("username") username: String,
-        @Query("offset") offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
-        @Query("mature_content") matureContent: Boolean
+        @Query("mature_content") matureContent: Boolean,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
     ): Single<PagedListResult<StatusDto>>
 
     @GET("user/statuses/{statusid}")
+    @AccessScope("browse")
     fun getStatusById(
         @Path("statusid") statusId: String,
         @Query("mature_content") matureContent: Boolean

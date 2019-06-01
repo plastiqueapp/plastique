@@ -12,6 +12,7 @@ import retrofit2.http.Query
 
 interface UserService {
     @GET("user/profile/{username}?expand=user.stats")
+    @AccessScope("browse")
     fun getUserProfile(@Path("username") username: String): Single<UserProfileDto>
 
     @GET("user/whoami")
@@ -20,5 +21,6 @@ interface UserService {
 
     @POST("user/whois")
     @FormUrlEncoded
+    @AccessScope("browse")
     fun whois(@FieldMap usernames: Map<String, String>): Single<ListResult<UserDto>>
 }

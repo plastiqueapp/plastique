@@ -15,39 +15,42 @@ import retrofit2.http.Query
 
 interface GalleryService {
     @GET("gallery/all")
+    @AccessScope("browse")
     fun getAllContents(
         @Query("username") username: String?,
+        @Query("mature_content") matureContent: Boolean,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean
+        @Query("limit") @IntRange(from = 1, to = 24) limit: Int
     ): Single<PagedListResult<DeviationDto>>
 
     @GET("gallery/folders?calculate_size=true")
+    @AccessScope("browse")
     fun getFolders(
         @Query("username") username: String?,
-        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 50) limit: Int,
         @Query("ext_preload") preload: Boolean,
-        @Query("mature_content") matureContent: Boolean
+        @Query("mature_content") matureContent: Boolean,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
+        @Query("limit") @IntRange(from = 1, to = 50) limit: Int
     ): Single<PagedListResult<FolderDto>>
 
     @GET("gallery/{folderid}")
+    @AccessScope("browse")
     @Suppress("LongParameterList")
     fun getFolderContents(
         @Path("folderid") folderId: String?,
         @Query("username") username: String?,
         @Query("mode") mode: String? = null,
+        @Query("mature_content") matureContent: Boolean,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
-        @Query("limit") @IntRange(from = 1, to = 24) limit: Int,
-        @Query("mature_content") matureContent: Boolean
+        @Query("limit") @IntRange(from = 1, to = 24) limit: Int
     ): Single<PagedListResult<DeviationDto>>
 
     @POST("gallery/folders/create")
     @FormUrlEncoded
-    @AccessScope("gallery")
+    @AccessScope("browse", "gallery")
     fun createFolder(@Field("folder") name: String): Single<FolderDto>
 
     @GET("gallery/folders/remove/{folderid}")
-    @AccessScope("gallery")
+    @AccessScope("browse", "gallery")
     fun removeFolder(@Path("folderid") folderId: String): Completable
 }

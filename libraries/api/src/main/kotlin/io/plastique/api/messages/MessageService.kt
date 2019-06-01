@@ -21,7 +21,7 @@ interface MessageService {
     @AccessScope("message")
     fun getFeedbackMessagesFromStack(
         @Path("stackid") stackId: String,
-        @Query("offset") offset: Int,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int
     ): Single<PagedListResult<MessageDto>>
 
@@ -29,11 +29,12 @@ interface MessageService {
     @AccessScope("message")
     fun getMentionsFromStack(
         @Path("stackid") stackId: String,
-        @Query("offset") offset: Int,
+        @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
         @Query("limit") @IntRange(from = 1, to = 50) limit: Int
     ): Single<PagedListResult<MessageDto>>
 
     @POST("messages/delete")
     @FormUrlEncoded
+    @AccessScope("message")
     fun deleteMessage(@Field("messageid") messageId: String): Completable
 }

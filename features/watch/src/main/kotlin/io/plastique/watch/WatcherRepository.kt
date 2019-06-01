@@ -67,9 +67,9 @@ class WatcherRepository @Inject constructor(
     private fun fetchWatchers(username: String?, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return if (username != null) {
-            watchService.getWatchers(username, offset, WATCHERS_PER_PAGE)
+            watchService.getWatchers(username = username, offset = offset, limit = WATCHERS_PER_PAGE)
         } else {
-            watchService.getWatchers(offset, WATCHERS_PER_PAGE)
+            watchService.getWatchers(offset = offset, limit = WATCHERS_PER_PAGE)
         }
             .map { watcherList ->
                 val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
