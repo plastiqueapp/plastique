@@ -2,6 +2,8 @@ package io.plastique.api.statuses
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.AccessScopes.BROWSE
+import io.plastique.api.common.AccessScopes.USER_MANAGE
 import io.plastique.api.common.PagedListResult
 import io.reactivex.Single
 import retrofit2.http.Field
@@ -13,7 +15,7 @@ import retrofit2.http.Query
 
 interface StatusService {
     @GET("user/statuses/")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getStatuses(
         @Query("username") username: String,
         @Query("mature_content") matureContent: Boolean,
@@ -22,7 +24,7 @@ interface StatusService {
     ): Single<PagedListResult<StatusDto>>
 
     @GET("user/statuses/{statusid}")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getStatusById(
         @Path("statusid") statusId: String,
         @Query("mature_content") matureContent: Boolean
@@ -30,7 +32,7 @@ interface StatusService {
 
     @POST("user/statuses/post")
     @FormUrlEncoded
-    @AccessScope("user.manage")
+    @AccessScope(USER_MANAGE)
     fun postStatus(
         @Field("body") body: String?,
         @Field("id") shareObjectId: String?,

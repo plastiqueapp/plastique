@@ -2,6 +2,7 @@ package io.plastique.api.feed
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.AccessScopes.FEED
 import io.plastique.api.common.PagedListResult
 import io.plastique.api.deviations.DeviationDto
 import io.reactivex.Completable
@@ -15,28 +16,28 @@ import retrofit2.http.Query
 
 interface FeedService {
     @GET("feed/home")
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun getHomeFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
     ): Single<FeedElementList>
 
     @GET("feed/profile")
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun getProfileFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
     ): Single<FeedElementList>
 
     @GET("feed/notifications")
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun getNotificationsFeed(
         @Query("cursor") cursor: String?,
         @Query("mature_content") matureContent: Boolean
     ): Single<FeedElementList>
 
     @GET("feed/home/{bucketid}")
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun getBucket(
         @Path("bucketid") bucketId: String,
         @Query("mature_content") matureContent: Boolean,
@@ -45,11 +46,11 @@ interface FeedService {
     ): Single<PagedListResult<DeviationDto>>
 
     @GET("feed/settings")
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun getSettings(): Single<FeedSettingsDto>
 
     @POST("feed/settings/update")
     @FormUrlEncoded
-    @AccessScope("feed")
+    @AccessScope(FEED)
     fun updateSettings(@FieldMap include: Map<String, Boolean>): Completable
 }

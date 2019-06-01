@@ -2,6 +2,8 @@ package io.plastique.api.comments
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.AccessScopes.BROWSE
+import io.plastique.api.common.AccessScopes.COMMENT_POST
 import io.reactivex.Single
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -12,7 +14,7 @@ import retrofit2.http.Query
 
 interface CommentService {
     @GET("comments/deviation/{deviationid}")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getCommentsOnDeviation(
         @Path("deviationid") deviationId: String,
         @Query("commentid") parentCommentId: String?,
@@ -22,7 +24,7 @@ interface CommentService {
     ): Single<CommentList>
 
     @GET("comments/profile/{username}")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getCommentsOnProfile(
         @Path("username") username: String,
         @Query("commentid") parentCommentId: String?,
@@ -32,7 +34,7 @@ interface CommentService {
     ): Single<CommentList>
 
     @GET("comments/status/{statusid}")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getCommentsOnStatus(
         @Path("statusid") statusId: String,
         @Query("commentid") parentCommentId: String?,
@@ -43,7 +45,7 @@ interface CommentService {
 
     @POST("comments/post/deviation/{deviationid}")
     @FormUrlEncoded
-    @AccessScope("browse", "comment.post")
+    @AccessScope(BROWSE, COMMENT_POST)
     fun postCommentOnDeviation(
         @Path("deviationid") deviationId: String,
         @Query("commentid") parentCommentId: String?,
@@ -52,7 +54,7 @@ interface CommentService {
 
     @POST("comments/post/profile/{username}")
     @FormUrlEncoded
-    @AccessScope("browse", "comment.post")
+    @AccessScope(BROWSE, COMMENT_POST)
     fun postCommentOnProfile(
         @Path("username") username: String,
         @Query("commentid") parentCommentId: String?,
@@ -61,7 +63,7 @@ interface CommentService {
 
     @POST("comments/post/status/{statusid}")
     @FormUrlEncoded
-    @AccessScope("browse", "comment.post")
+    @AccessScope(BROWSE, COMMENT_POST)
     fun postCommentOnStatus(
         @Path("statusid") statusId: String,
         @Query("commentid") parentCommentId: String?,

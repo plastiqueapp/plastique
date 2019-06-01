@@ -2,6 +2,7 @@ package io.plastique.api.messages
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.AccessScopes.MESSAGE
 import io.plastique.api.common.PagedListResult
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -14,11 +15,11 @@ import retrofit2.http.Query
 
 interface MessageService {
     @GET("messages/feed?stack=false")
-    @AccessScope("message")
+    @AccessScope(MESSAGE)
     fun getAllMessages(@Query("cursor") cursor: String?): Single<GetAllMessagesResult>
 
     @GET("messages/feedback/{stackid}")
-    @AccessScope("message")
+    @AccessScope(MESSAGE)
     fun getFeedbackMessagesFromStack(
         @Path("stackid") stackId: String,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
@@ -26,7 +27,7 @@ interface MessageService {
     ): Single<PagedListResult<MessageDto>>
 
     @GET("messages/mentions/{stackid}")
-    @AccessScope("message")
+    @AccessScope(MESSAGE)
     fun getMentionsFromStack(
         @Path("stackid") stackId: String,
         @Query("offset") @IntRange(from = 0, to = 50000) offset: Int,
@@ -35,6 +36,6 @@ interface MessageService {
 
     @POST("messages/delete")
     @FormUrlEncoded
-    @AccessScope("message")
+    @AccessScope(MESSAGE)
     fun deleteMessage(@Field("messageid") messageId: String): Completable
 }

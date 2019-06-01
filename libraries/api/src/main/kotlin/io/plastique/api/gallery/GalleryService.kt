@@ -2,6 +2,8 @@ package io.plastique.api.gallery
 
 import androidx.annotation.IntRange
 import io.plastique.api.common.AccessScope
+import io.plastique.api.common.AccessScopes.BROWSE
+import io.plastique.api.common.AccessScopes.GALLERY
 import io.plastique.api.common.PagedListResult
 import io.plastique.api.deviations.DeviationDto
 import io.reactivex.Completable
@@ -15,7 +17,7 @@ import retrofit2.http.Query
 
 interface GalleryService {
     @GET("gallery/all")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getAllContents(
         @Query("username") username: String?,
         @Query("mature_content") matureContent: Boolean,
@@ -24,7 +26,7 @@ interface GalleryService {
     ): Single<PagedListResult<DeviationDto>>
 
     @GET("gallery/folders?calculate_size=true")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     fun getFolders(
         @Query("username") username: String?,
         @Query("ext_preload") preload: Boolean,
@@ -34,7 +36,7 @@ interface GalleryService {
     ): Single<PagedListResult<FolderDto>>
 
     @GET("gallery/{folderid}")
-    @AccessScope("browse")
+    @AccessScope(BROWSE)
     @Suppress("LongParameterList")
     fun getFolderContents(
         @Path("folderid") folderId: String?,
@@ -47,10 +49,10 @@ interface GalleryService {
 
     @POST("gallery/folders/create")
     @FormUrlEncoded
-    @AccessScope("browse", "gallery")
+    @AccessScope(BROWSE, GALLERY)
     fun createFolder(@Field("folder") name: String): Single<FolderDto>
 
     @GET("gallery/folders/remove/{folderid}")
-    @AccessScope("browse", "gallery")
+    @AccessScope(BROWSE, GALLERY)
     fun removeFolder(@Path("folderid") folderId: String): Completable
 }

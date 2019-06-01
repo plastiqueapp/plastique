@@ -3,6 +3,7 @@ package io.plastique.auth
 import android.net.Uri
 import android.webkit.CookieManager
 import io.plastique.api.auth.AuthService
+import io.plastique.api.common.AccessScopes
 import io.plastique.api.users.UserService
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.session.Session
@@ -78,17 +79,17 @@ class Authenticator @Inject constructor(
 
     companion object {
         private val REQUESTED_SCOPES = listOf(
-            "browse",
-            "browse.mlt",
-            "collection",
-            "comment.post",
-            "feed",
-            "gallery",
-            "message",
-            "note",
-            "publish",
-            "stash",
-            "user",
-            "user.manage")
+            AccessScopes.BROWSE,
+            AccessScopes.BROWSE_MLT,
+            AccessScopes.COLLECTION,
+            AccessScopes.COMMENT_POST,
+            AccessScopes.FEED,
+            AccessScopes.GALLERY,
+            AccessScopes.MESSAGE,
+            AccessScopes.NOTE,
+            AccessScopes.PUBLISH,
+            AccessScopes.STASH,
+            AccessScopes.USER,
+            AccessScopes.USER_MANAGE)
     }
 }
