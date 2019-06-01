@@ -1,4 +1,4 @@
-package io.plastique.api.common
+package io.plastique.api.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

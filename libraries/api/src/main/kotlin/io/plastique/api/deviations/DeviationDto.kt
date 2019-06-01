@@ -2,7 +2,6 @@ package io.plastique.api.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.plastique.api.common.ImageDto
 import io.plastique.api.users.UserDto
 import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
