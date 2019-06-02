@@ -63,30 +63,30 @@ class NotificationsModel @Inject constructor(
         workManager.enqueueUniqueWork(WORK_DELETE_MESSAGES, ExistingWorkPolicy.REPLACE, workRequest)
     }
 
-    private fun createItem(message: Message): ListItem = when (message) {
-        is Message.AddToCollection -> AddToCollectionItem(
+    private fun createItem(message: Message): ListItem = when (message.data) {
+        is Message.Data.AddToCollection -> AddToCollectionItem(
             messageId = message.id,
             time = message.time,
             user = message.user,
-            deviationId = message.deviation.id,
-            deviationTitle = message.deviation.title,
-            folderId = message.folder.id,
-            folderName = message.folder.name)
+            deviationId = message.data.deviation.id,
+            deviationTitle = message.data.deviation.title,
+            folderId = message.data.folder.id,
+            folderName = message.data.folder.name)
 
-        is Message.BadgeGiven -> BadgeGivenItem(
+        is Message.Data.BadgeGiven -> BadgeGivenItem(
             messageId = message.id,
             time = message.time,
             user = message.user,
-            text = message.text)
+            text = message.data.text)
 
-        is Message.Favorite -> FavoriteItem(
+        is Message.Data.Favorite -> FavoriteItem(
             messageId = message.id,
             time = message.time,
             user = message.user,
-            deviationId = message.deviation.id,
-            deviationTitle = message.deviation.title)
+            deviationId = message.data.deviation.id,
+            deviationTitle = message.data.deviation.title)
 
-        is Message.Watch -> WatchItem(
+        Message.Data.Watch -> WatchItem(
             messageId = message.id,
             time = message.time,
             user = message.user)

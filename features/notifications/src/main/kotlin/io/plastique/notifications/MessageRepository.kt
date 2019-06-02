@@ -205,30 +205,25 @@ private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
         commentId = subject?.comment?.id,
         collectionFolderId = subject?.collection?.id))
 
-private fun MessageEntityWithRelations.toMessage(): Message? = when (message.type) {
-    MessageTypes.BADGE_GIVEN -> Message.BadgeGiven(
+private fun MessageEntityWithRelations.toMessage(): Message? {
+    val data = when (message.type) {
+        MessageTypes.BADGE_GIVEN -> Message.Data.BadgeGiven(
+            text = message.html!!)
+
+        MessageTypes.COLLECT -> Message.Data.AddToCollection(
+            deviation = subjectDeviation.first().toDeviation(),
+            folder = collectionFolder.first().toFolder())
+
+        MessageTypes.FAVORITE -> Message.Data.Favorite(
+            deviation = subjectDeviation.first().toDeviation())
+
+        MessageTypes.WATCH -> Message.Data.Watch
+
+        else -> return null // Unknown type
+    }
+    return Message(
         id = message.id,
         time = message.time,
         user = originator.first().toUser(),
-        text = message.html!!)
-
-    MessageTypes.COLLECT -> Message.AddToCollection(
-        id = message.id,
-        time = message.time,
-        user = originator.first().toUser(),
-        deviation = subjectDeviation.first().toDeviation(),
-        folder = collectionFolder.first().toFolder())
-
-    MessageTypes.FAVORITE -> Message.Favorite(
-        id = message.id,
-        time = message.time,
-        user = originator.first().toUser(),
-        deviation = subjectDeviation.first().toDeviation())
-
-    MessageTypes.WATCH -> Message.Watch(
-        id = message.id,
-        time = message.time,
-        user = originator.first().toUser())
-
-    else -> null // Unknown type
+        data = data)
 }

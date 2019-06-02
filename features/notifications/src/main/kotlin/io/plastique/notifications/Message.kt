@@ -5,36 +5,28 @@ import io.plastique.deviations.Deviation
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
-sealed class Message {
-    abstract val id: String
-    abstract val time: ZonedDateTime
-    abstract val user: User
+data class Message(
+    val id: String,
+    val time: ZonedDateTime,
+    val user: User,
+    val data: Data
+) {
+    sealed class Data {
+        data class AddToCollection(
+            val deviation: Deviation,
+            val folder: Folder
+        ) : Data()
 
-    data class AddToCollection(
-        override val id: String,
-        override val time: ZonedDateTime,
-        override val user: User,
-        val deviation: Deviation,
-        val folder: Folder
-    ) : Message()
+        data class BadgeGiven(
+            val text: String
+        ) : Data()
 
-    data class BadgeGiven(
-        override val id: String,
-        override val time: ZonedDateTime,
-        override val user: User,
-        val text: String
-    ) : Message()
+        data class Favorite(
+            val deviation: Deviation
+        ) : Data()
 
-    data class Favorite(
-        override val id: String,
-        override val time: ZonedDateTime,
-        override val user: User,
-        val deviation: Deviation
-    ) : Message()
-
-    data class Watch(
-        override val id: String,
-        override val time: ZonedDateTime,
-        override val user: User
-    ) : Message()
+        object Watch : Data() {
+            override fun toString(): String = "Watch"
+        }
+    }
 }
