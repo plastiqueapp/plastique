@@ -28,7 +28,7 @@ class DiffUtilExtTest {
     }
 
     @Test
-    fun calculateDiff_NonEmptyToNonEmpty() {
+    fun calculateDiff_nonEmptyToNonEmpty() {
         val newItems = listOf(FakeItem("0"), FakeItem("1"))
         val result = calculateDiff(listOf(FakeItem("0")), newItems)
         assertTrue(result is ListUpdateData.Diff)
@@ -36,7 +36,7 @@ class DiffUtilExtTest {
     }
 
     @Test
-    fun calculateDiff_NonEmptyToEqualNonEmpty() {
+    fun calculateDiff_nonEmptyToEqualNonEmpty() {
         val result = calculateDiff(listOf(FakeItem("0")), listOf(FakeItem("0")))
         assertEquals(ListUpdateData.Empty, result)
     }

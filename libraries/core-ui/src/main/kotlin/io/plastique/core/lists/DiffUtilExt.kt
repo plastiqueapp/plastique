@@ -6,12 +6,16 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import timber.log.Timber
 
+fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> {
+    return calculateDiff(oldItems, newItems) { it.id }
+}
+
 @Suppress("UNCHECKED_CAST")
-fun <T : ListItem> calculateDiff(oldItems: List<T>?, newItems: List<T>): ListUpdateData<T> = when {
+fun <T : Any> calculateDiff(oldItems: List<T>?, newItems: List<T>, keySelector: (T) -> Any): ListUpdateData<T> = when {
     oldItems.orEmpty() == newItems -> ListUpdateData.Empty as ListUpdateData<T>
     oldItems.isNullOrEmpty() -> ListUpdateData.Full(newItems)
     else -> {
-        val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems, newItems, ListItemCallback))
+        val diffResult = DiffUtil.calculateDiff(ListDiffCallback(oldItems, newItems, ItemCallback(keySelector)))
         ListUpdateData.Diff(newItems, diffResult)
     }
 }
@@ -25,7 +29,7 @@ sealed class ListUpdateData<T> {
 
     abstract fun log(tag: String)
 
-    data class Full<T : ListItem>(override val items: List<T>) : ListUpdateData<T>() {
+    data class Full<T>(override val items: List<T>) : ListUpdateData<T>() {
         override fun applyTo(adapter: BaseListAdapter<T, *>) {
             adapter.items = items
             adapter.notifyDataSetChanged()
@@ -41,7 +45,7 @@ sealed class ListUpdateData<T> {
         }
     }
 
-    data class Diff<T : ListItem>(override val items: List<T>, private val diffResult: DiffUtil.DiffResult) : ListUpdateData<T>() {
+    data class Diff<T>(override val items: List<T>, private val diffResult: DiffUtil.DiffResult) : ListUpdateData<T>() {
         override fun applyTo(adapter: BaseListAdapter<T, *>) {
             adapter.items = items
             diffResult.dispatchUpdatesTo(adapter)
@@ -93,12 +97,12 @@ class ListDiffCallback<T>(
         itemCallback.getChangePayload(oldItems[oldItemPosition], newItems[newItemPosition])
 }
 
-private object ListItemCallback : DiffUtil.ItemCallback<ListItem>() {
-    override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
-        oldItem.javaClass === newItem.javaClass && oldItem.id == newItem.id
+private class ItemCallback<T : Any>(private val keySelector: (T) -> Any) : DiffUtil.ItemCallback<T>() {
+    override fun areItemsTheSame(oldItem: T, newItem: T): Boolean =
+        oldItem.javaClass === newItem.javaClass && keySelector(oldItem) == keySelector(newItem)
 
     @SuppressLint("DiffUtilEquals")
-    override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
+    override fun areContentsTheSame(oldItem: T, newItem: T): Boolean =
         oldItem == newItem
 }
 
