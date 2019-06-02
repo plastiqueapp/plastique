@@ -56,13 +56,13 @@ class FeedModel @Inject constructor(
             folderItems = emptyList())
 
         is FeedElement.MultipleDeviationsSubmitted -> {
-            var index = 0
+            val items = feedElement.deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
             MultipleDeviationsItem(
                 id = "${feedElement.user.id}-${feedElement.timestamp}",
                 date = feedElement.timestamp,
                 user = feedElement.user,
                 submittedTotal = feedElement.submittedTotal,
-                items = feedElement.deviations.map { deviation -> deviationItemFactory.create(deviation, index++) })
+                items = items)
         }
 
         is FeedElement.DeviationSubmitted -> if (feedElement.deviation.isLiterature) {

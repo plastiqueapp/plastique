@@ -67,8 +67,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     }
 
     private fun createFolderItems(folders: List<Folder>): List<FolderItem> {
-        var index = 0
-        return folders.map { folder -> FolderItem(folder = folder, index = index++) }
+        return folders.mapIndexed { index, folder -> FolderItem(folder = folder, index = index) }
     }
 
     private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
@@ -83,8 +82,8 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
         return if (deviations.isNotEmpty()) {
-            var index = 0
-            listOf(HeaderItem(folderId = folder.id, title = folder.name)) + deviations.map { deviation -> deviationItemFactory.create(deviation, index++) }
+            listOf(HeaderItem(folderId = folder.id, title = folder.name)) +
+                    deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
         } else {
             emptyList()
         }

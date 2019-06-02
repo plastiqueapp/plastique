@@ -32,8 +32,8 @@ class DeviationListModel @Inject constructor(
     }
 
     private fun createItems(deviations: List<Deviation>, daily: Boolean): List<ListItem> {
-        var index = 0
         return if (daily) {
+            var index = 0
             val items = ArrayList<ListItem>(deviations.size + 1)
             var prevDate: LocalDate? = null
             for (deviation in deviations) {
@@ -47,7 +47,7 @@ class DeviationListModel @Inject constructor(
             }
             items
         } else {
-            deviations.map { deviation -> deviationItemFactory.create(deviation, index++) }
+            deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
         }
     }
 }

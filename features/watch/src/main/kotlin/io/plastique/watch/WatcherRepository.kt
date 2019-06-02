@@ -101,14 +101,16 @@ class WatcherRepository @Inject constructor(
             userRepository.put(users)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 watchDao.deleteWatchersByKey(cacheEntry.key)
                 1
             } else {
                 watchDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val watcherEntities = watchers.map { WatcherEntity(key = cacheEntry.key, userId = it.user.id, order = order++) }
+            val watcherEntities = watchers.mapIndexed { index, watcher ->
+                WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = startIndex + index)
+            }
             watchDao.insertWatchers(watcherEntities)
         }
     }

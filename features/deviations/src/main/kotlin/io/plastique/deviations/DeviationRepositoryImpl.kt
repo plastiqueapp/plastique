@@ -133,14 +133,16 @@ class DeviationRepositoryImpl @Inject constructor(
             put(deviations)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 deviationDao.deleteLinksByKey(cacheEntry.key)
                 1
             } else {
                 deviationDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val links = deviations.map { DeviationLinkage(cacheEntry.key, it.id, order++) }
+            val links = deviations.mapIndexed { index, deviation ->
+                DeviationLinkage(key = cacheEntry.key, deviationId = deviation.id, order = startIndex + index)
+            }
             deviationDao.insertLinks(links)
         }
     }

@@ -140,14 +140,16 @@ class CommentRepositoryImpl @Inject constructor(
             put(comments)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 commentDao.deleteLinks(cacheEntry.key)
                 1
             } else {
                 commentDao.maxOrder(cacheEntry.key) + 1
             }
 
-            val links = comments.map { CommentLinkage(cacheEntry.key, it.id, order++) }
+            val links = comments.mapIndexed { index, comment ->
+                CommentLinkage(key = cacheEntry.key, commentId = comment.id, order = startIndex + index)
+            }
             commentDao.insertLinks(links)
         }
     }

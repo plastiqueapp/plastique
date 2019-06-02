@@ -169,7 +169,7 @@ class CollectionFolderRepositoryImpl @Inject constructor(
 
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderDto>, replaceExisting: Boolean) {
         database.runInTransaction {
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 collectionDao.deleteFoldersByKey(cacheEntry.key)
                 1
             } else {
@@ -179,7 +179,9 @@ class CollectionFolderRepositoryImpl @Inject constructor(
             put(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
+            val userFolders = folders.mapIndexed { index, folder ->
+                FolderLinkage(key = cacheEntry.key, folderId = folder.id, order = startIndex + index)
+            }
             collectionDao.insertLinks(userFolders)
         }
     }

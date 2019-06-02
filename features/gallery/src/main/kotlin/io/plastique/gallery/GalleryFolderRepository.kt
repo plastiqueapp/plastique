@@ -163,7 +163,7 @@ class GalleryFolderRepository @Inject constructor(
 
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderEntity>, replaceExisting: Boolean) {
         database.runInTransaction {
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 galleryDao.deleteFoldersByKey(cacheEntry.key)
                 1
             } else {
@@ -173,7 +173,9 @@ class GalleryFolderRepository @Inject constructor(
             galleryDao.insertOrUpdateFolders(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
-            val userFolders = folders.map { FolderLinkage(key = cacheEntry.key, folderId = it.id, order = order++) }
+            val userFolders = folders.mapIndexed { index, folder ->
+                FolderLinkage(key = cacheEntry.key, folderId = folder.id, order = startIndex + index)
+            }
             galleryDao.insertLinks(userFolders)
         }
     }

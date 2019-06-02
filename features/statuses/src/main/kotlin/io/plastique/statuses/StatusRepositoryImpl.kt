@@ -84,14 +84,16 @@ class StatusRepositoryImpl @Inject constructor(
             cacheEntryRepository.setEntry(cacheEntry)
             put(statuses)
 
-            var order = if (replaceExisting) {
+            val startIndex = if (replaceExisting) {
                 statusDao.deleteLinksByKey(cacheEntry.key)
                 1
             } else {
                 statusDao.getMaxOrder(cacheEntry.key) + 1
             }
 
-            val links = statuses.map { StatusLinkage(key = cacheEntry.key, statusId = it.id, order = order++) }
+            val links = statuses.mapIndexed { index, status ->
+                StatusLinkage(key = cacheEntry.key, statusId = status.id, order = startIndex + index)
+            }
             statusDao.insertLinks(links)
         }
     }

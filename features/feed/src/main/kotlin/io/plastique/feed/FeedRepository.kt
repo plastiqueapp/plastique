@@ -148,10 +148,9 @@ class FeedRepository @Inject constructor(
             val feedElementIds = feedDao.insert(feedElementEntities)
 
             val deviationLinks = mutableListOf<FeedElementDeviation>()
-            deviationsByIndex.forEach { index, deviationIds ->
-                var order = 0
+            deviationsByIndex.forEach { elementIndex, deviationIds ->
                 deviationLinks += deviationIds.asSequence()
-                    .map { deviationId -> FeedElementDeviation(feedElementIds[index], deviationId, order++) }
+                    .mapIndexed { index, deviationId -> FeedElementDeviation(feedElementIds[elementIndex], deviationId, index) }
             }
 
             feedDao.insertDeviationLinks(deviationLinks)
