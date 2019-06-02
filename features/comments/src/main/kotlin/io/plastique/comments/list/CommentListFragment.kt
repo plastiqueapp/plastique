@@ -9,12 +9,21 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Priority
+import com.bumptech.glide.RequestBuilder
 import com.github.technoir42.kotlin.extensions.plus
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsFragmentComponent
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.R
+import io.plastique.comments.list.CommentListEvent.CancelReplyClickEvent
+import io.plastique.comments.list.CommentListEvent.LoadMoreEvent
+import io.plastique.comments.list.CommentListEvent.PostCommentEvent
+import io.plastique.comments.list.CommentListEvent.RefreshEvent
+import io.plastique.comments.list.CommentListEvent.ReplyClickEvent
+import io.plastique.comments.list.CommentListEvent.RetryClickEvent
+import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
@@ -31,7 +40,10 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
+import io.plastique.glide.RecyclerViewPreloader
 import io.plastique.inject.getComponent
+import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -52,9 +64,10 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val glide = GlideApp.with(this)
         adapter = CommentListAdapter(
-            glide = GlideApp.with(this),
-            onReplyClick = { commentId -> viewModel.dispatch(CommentListEvent.ReplyClickEvent(commentId)) },
+            glide = glide,
+            onReplyClick = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) },
             onReplyingToClick = { commentId -> scrollToComment(commentId) },
             onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
 
@@ -62,22 +75,24 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
         commentsView.adapter = adapter
         commentsView.layoutManager = LinearLayoutManager(requireContext())
         commentsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(CommentListEvent.LoadMoreEvent) }
+        commentsView.addOnScrollListener(createPreloader(glide, adapter))
+
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
 
         composeView = view.findViewById(R.id.compose)
-        composeView.onPostCommentListener = { text -> viewModel.dispatch(CommentListEvent.PostCommentEvent(text)) }
+        composeView.onPostCommentListener = { text -> viewModel.dispatch(PostCommentEvent(text)) }
         composeView.onSignInClickListener = { navigator.openLogin(navigationContext) }
-        composeView.onCancelReplyClickListener = { viewModel.dispatch(CommentListEvent.CancelReplyClickEvent) }
+        composeView.onCancelReplyClickListener = { viewModel.dispatch(CancelReplyClickEvent) }
 
         refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(CommentListEvent.RefreshEvent) }
+        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, refreshLayout)
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(CommentListEvent.RetryClickEvent) }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -119,8 +134,34 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
-            viewModel.dispatch(CommentListEvent.SnackbarShownEvent)
+            viewModel.dispatch(SnackbarShownEvent)
         }
+    }
+
+    private fun createPreloader(glide: GlideRequests, adapter: CommentListAdapter): RecyclerViewPreloader<*> {
+        val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_medium)
+        val preloadSize = Size(avatarSize, avatarSize)
+
+        val callback = object : RecyclerViewPreloader.Callback<String> {
+            override fun getPreloadItems(position: Int): List<String> {
+                return when (val item = adapter.items[position]) {
+                    is CommentItem -> listOfNotNull(item.comment.author.avatarUrl)
+                    else -> emptyList()
+                }
+            }
+
+            override fun createRequestBuilder(item: String): RequestBuilder<*> {
+                return glide.load(item)
+                    .circleCrop()
+                    .dontAnimate()
+                    .skipMemoryCache(true)
+                    .priority(Priority.LOW)
+            }
+
+            override fun getPreloadSize(item: String): Size = preloadSize
+        }
+
+        return RecyclerViewPreloader(glide, lifecycle, callback, maxPreload = 5)
     }
 
     override fun scrollToTop() {

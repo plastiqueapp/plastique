@@ -3,7 +3,6 @@ package io.plastique.deviations.list
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -13,6 +12,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
 import io.plastique.glide.RecyclerViewPreloader
+import io.plastique.util.Size
 
 class DeviationsPreloaderFactory private constructor(
     private val glide: GlideRequests,
@@ -32,7 +32,7 @@ class DeviationsPreloaderFactory private constructor(
     }
 
     private fun createListPreloader(): RecyclerViewPreloader<*> {
-        val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
+        val callback = object : RecyclerViewPreloader.Callback<DeviationItem> {
             override fun getPreloadItems(position: Int): List<DeviationItem> {
                 return when (val item = adapter.items[position]) {
                     is ImageDeviationItem -> listOf(item)
@@ -40,30 +40,29 @@ class DeviationsPreloaderFactory private constructor(
                 }
             }
 
-            override fun getPreloadRequestBuilder(item: DeviationItem): RequestBuilder<*>? {
+            override fun createRequestBuilder(item: DeviationItem): RequestBuilder<*> {
                 val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
                 val preview = ImageHelper.choosePreview(item.deviation, maxImageWidth)
                 val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
                 return glide.load(preview.url)
                     .override(previewSize.width, previewSize.height)
                     .centerCrop()
-                    .priority(Priority.LOW)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.LOW)
+            }
+
+            override fun getPreloadSize(item: DeviationItem): Size {
+                val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
+                val image = ImageHelper.choosePreview(item.deviation, maxImageWidth)
+                return ImageHelper.calculateOptimalPreviewSize(image, maxImageWidth)
             }
         }
 
-        val preloadSizeProvider = ListPreloader.PreloadSizeProvider<DeviationItem> { item, _, _ ->
-            val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
-            val image = ImageHelper.choosePreview(item.deviation, maxImageWidth)
-            val size = ImageHelper.calculateOptimalPreviewSize(image, maxImageWidth)
-            intArrayOf(size.width, size.height)
-        }
-
-        return RecyclerViewPreloader(glide, lifecycle, preloadModelProvider, preloadSizeProvider, MAX_PRELOAD_ITEMS_LIST)
+        return RecyclerViewPreloader(glide, lifecycle, callback, MAX_PRELOAD_ITEMS_LIST)
     }
 
     private fun createGridPreloader(gridParams: GridParams): RecyclerViewPreloader<*> {
-        val preloadModelProvider = object : ListPreloader.PreloadModelProvider<DeviationItem> {
+        val callback = object : RecyclerViewPreloader.Callback<DeviationItem> {
             override fun getPreloadItems(position: Int): List<DeviationItem> {
                 return when (val item = adapter.items[position]) {
                     is ImageDeviationItem -> listOf(item)
@@ -71,21 +70,20 @@ class DeviationsPreloaderFactory private constructor(
                 }
             }
 
-            override fun getPreloadRequestBuilder(item: DeviationItem): RequestBuilder<*>? {
+            override fun createRequestBuilder(item: DeviationItem): RequestBuilder<*> {
                 val itemSize = gridParams.getItemSize(item.index)
                 val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
                 return glide.load(image.url)
-                    .priority(Priority.LOW)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.LOW)
+            }
+
+            override fun getPreloadSize(item: DeviationItem): Size {
+                return gridParams.getItemSize(item.index)
             }
         }
 
-        val preloadSizeProvider = ListPreloader.PreloadSizeProvider<DeviationItem> { item, _, _ ->
-            val itemSize = gridParams.getItemSize(item.index)
-            intArrayOf(itemSize.width, itemSize.height)
-        }
-
-        return RecyclerViewPreloader(glide, lifecycle, preloadModelProvider, preloadSizeProvider, MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
+        return RecyclerViewPreloader(glide, lifecycle, callback, maxPreload = MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
     }
 
     companion object {
