@@ -4,7 +4,7 @@ import io.plastique.core.lists.ItemsData
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
-import io.plastique.deviations.Deviation
+import io.plastique.deviations.list.DeviationItemFactory
 import io.plastique.feed.FeedElement.CollectionUpdate
 import io.plastique.feed.FeedElement.JournalSubmitted
 import io.plastique.feed.FeedElement.StatusUpdate
@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 class FeedModel @Inject constructor(
     private val feedRepository: FeedRepository,
+    private val deviationItemFactory: DeviationItemFactory,
     private val richTextFormatter: RichTextFormatter
 ) {
     private var matureContent: Boolean = false
@@ -61,7 +62,7 @@ class FeedModel @Inject constructor(
                 date = feedElement.timestamp,
                 user = feedElement.user,
                 submittedTotal = feedElement.submittedTotal,
-                items = feedElement.deviations.map { deviation -> createInnerDeviationItem(deviation, index++) })
+                items = feedElement.deviations.map { deviation -> deviationItemFactory.create(deviation, index++) })
         }
 
         is FeedElement.DeviationSubmitted -> if (feedElement.deviation.isLiterature) {
@@ -96,11 +97,5 @@ class FeedModel @Inject constructor(
             date = feedElement.timestamp,
             user = feedElement.user,
             formerName = feedElement.formerName)
-    }
-
-    private fun createInnerDeviationItem(deviation: Deviation, index: Int): io.plastique.deviations.list.DeviationItem = if (deviation.isLiterature) {
-        io.plastique.deviations.list.LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
-    } else {
-        io.plastique.deviations.list.ImageDeviationItem(deviation, index = index)
     }
 }

@@ -2,8 +2,6 @@ package io.plastique.deviations.list
 
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
-import io.plastique.core.text.RichTextFormatter
-import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.DailyParams
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
@@ -15,7 +13,7 @@ import javax.inject.Inject
 
 class DeviationListModel @Inject constructor(
     private val dataSource: DeviationDataSource,
-    private val richTextFormatter: RichTextFormatter
+    private val deviationItemFactory: DeviationItemFactory
 ) {
     fun getItems(params: FetchParams): Observable<ItemsData> {
         return dataSource.getData(params)
@@ -45,17 +43,11 @@ class DeviationListModel @Inject constructor(
                     prevDate = date
                     index = 0
                 }
-                items += createDeviationItem(deviation, index++)
+                items += deviationItemFactory.create(deviation, index++)
             }
             items
         } else {
-            deviations.map { deviation -> createDeviationItem(deviation, index++) }
+            deviations.map { deviation -> deviationItemFactory.create(deviation, index++) }
         }
-    }
-
-    private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)))
-    } else {
-        ImageDeviationItem(deviation, index = index)
     }
 }

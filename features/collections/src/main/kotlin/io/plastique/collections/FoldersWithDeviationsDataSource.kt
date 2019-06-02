@@ -5,19 +5,17 @@ import com.gojuno.koptional.Some
 import com.gojuno.koptional.toOptional
 import io.plastique.core.lists.ItemsData
 import io.plastique.core.lists.ListItem
-import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
-import io.plastique.deviations.list.DeviationItem
-import io.plastique.deviations.list.ImageDeviationItem
-import io.plastique.deviations.list.LiteratureDeviationItem
+import io.plastique.deviations.list.DeviationItemFactory
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class FoldersWithDeviationsDataSource @Inject constructor(
     private val foldersDataSource: FoldersDataSource,
-    private val deviationDataSource: DeviationDataSource
+    private val deviationDataSource: DeviationDataSource,
+    private val deviationItemFactory: DeviationItemFactory
 ) {
     @Volatile private var hasMoreFolders = false
     @Volatile private var hasMoreDeviations = false
@@ -86,15 +84,9 @@ class FoldersWithDeviationsDataSource @Inject constructor(
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
         return if (deviations.isNotEmpty()) {
             var index = 0
-            listOf(HeaderItem(folderId = folder.id, title = folder.name)) + deviations.map { deviation -> createDeviationItem(deviation, index++) }
+            listOf(HeaderItem(folderId = folder.id, title = folder.name)) + deviations.map { deviation -> deviationItemFactory.create(deviation, index++) }
         } else {
             emptyList()
         }
-    }
-
-    private fun createDeviationItem(deviation: Deviation, index: Int): DeviationItem = if (deviation.isLiterature) {
-        LiteratureDeviationItem(deviation, index = index, excerpt = SpannedWrapper.EMPTY)
-    } else {
-        ImageDeviationItem(deviation, index = index)
     }
 }
