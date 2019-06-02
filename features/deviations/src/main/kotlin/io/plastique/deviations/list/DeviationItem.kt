@@ -15,12 +15,12 @@ abstract class DeviationItem : ListItem, IndexedItem {
 
 data class ImageDeviationItem(
     override val deviation: Deviation,
-    override var index: Int
+    override val index: Int
 ) : DeviationItem()
 
 data class LiteratureDeviationItem(
     override val deviation: Deviation,
-    override var index: Int,
+    override val index: Int,
     val excerpt: SpannedWrapper
 ) : DeviationItem()
 

@@ -68,7 +68,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun createFolderItems(folders: List<Folder>): List<FolderItem> {
         var index = 0
-        return folders.map { folder -> FolderItem(folder).also { it.index = index++ } }
+        return folders.map { folder -> FolderItem(folder = folder, index = index++) }
     }
 
     private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
