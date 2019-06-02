@@ -26,6 +26,12 @@ pluginManagement {
     }
 }
 
+buildCache {
+    local {
+        enabled = !System.getenv().containsKey("CI")
+    }
+}
+
 include ":libraries:api"
 include ":libraries:core"
 include ":libraries:core-ui"
