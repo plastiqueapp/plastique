@@ -23,6 +23,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.deviations.list.ImageHelper
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
@@ -99,7 +100,7 @@ private class ImageDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_deviation_image, parent, false)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -111,15 +112,22 @@ private class ImageDeviationItemDelegate(
         holder.favoriteButton.text = item.deviation.stats.favorites.toString()
         holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
 
-        val image = item.deviation.preview ?: item.deviation.content!!
-        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = image.size.dimensionRatio
+        val preview = ImageHelper.choosePreview(item.deviation, holder.maxImageWidth)
+        val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
+        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
-        glide.load(image.url)
+        glide.load(preview.url)
+            .override(previewSize.width, previewSize.height)
+            .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.imageView)
     }
 
-    class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class ViewHolder(
+        itemView: View,
+        private val onClickListener: OnViewHolderClickListener,
+        val maxImageWidth: Int
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)

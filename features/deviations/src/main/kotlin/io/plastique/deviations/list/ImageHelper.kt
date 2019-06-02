@@ -5,7 +5,7 @@ import io.plastique.deviations.Deviation
 import io.plastique.util.Size
 import kotlin.math.min
 
-internal object ImageHelper {
+object ImageHelper {
     private const val MAX_IMAGE_WIDTH = 1080
     private const val MAX_ASPECT_RATIO = 2.5 // height / width
 

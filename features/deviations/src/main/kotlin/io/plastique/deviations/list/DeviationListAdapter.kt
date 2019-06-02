@@ -57,8 +57,7 @@ private class ListImageDeviationItemDelegate(
 
         val preview = ImageHelper.choosePreview(item.deviation, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
-        val layoutParams = holder.imageView.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = previewSize.dimensionRatio
+        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
         glide.load(preview.url)
             .override(previewSize.width, previewSize.height)
