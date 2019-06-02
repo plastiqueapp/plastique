@@ -27,7 +27,7 @@ data class CommentEntity(
     val parentId: String? = null,
 
     @ColumnInfo(name = "author_id")
-    var authorId: String,
+    val authorId: String,
 
     @ColumnInfo(name = "date_posted")
     val datePosted: ZonedDateTime,
