@@ -14,6 +14,9 @@ import androidx.core.text.htmlEncode
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
@@ -49,7 +52,10 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
+import io.plastique.deviations.list.ImageDeviationItem
+import io.plastique.deviations.list.ImageHelper
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -85,21 +91,22 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val folderParams = GridParamsCalculator.calculateGridParams(
+        val folderGridParams = GridParamsCalculator.calculateGridParams(
             width = displayMetrics.widthPixels,
             minItemWidth = resources.getDimensionPixelSize(R.dimen.collections_folder_min_width),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.collections_folder_spacing),
             heightToWidthRatio = 0.75f)
 
-        val deviationParams = GridParamsCalculator.calculateGridParams(
+        val deviationGridParams = GridParamsCalculator.calculateGridParams(
             width = displayMetrics.widthPixels,
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
+        val glide = GlideApp.with(this)
         adapter = CollectionsAdapter(
             context = requireContext(),
-            glide = GlideApp.with(this),
-            itemSizeCallback = CollectionsItemSizeCallback(folderParams, deviationParams),
+            glide = glide,
+            itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },
             onFolderLongClick = { item, itemView ->
                 if (state.showMenu && item.folder.isDeletable) {
@@ -111,13 +118,17 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
-
         collectionsView = view.findViewById(R.id.collections)
         collectionsView.adapter = adapter
         collectionsView.layoutManager = FlexboxLayoutManager(context)
         collectionsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         collectionsView.addOnScrollListener(onScrollListener)
+
+        createPreloader(glide, adapter, folderGridParams, deviationGridParams)
+            .subscribeToLifecycle(lifecycle)
+            .attach(collectionsView)
 
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
@@ -242,6 +253,37 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         dialog.show(childFragmentManager, DIALOG_DELETE_FOLDER)
     }
 
+    private fun createPreloader(
+        glide: GlideRequests,
+        adapter: CollectionsAdapter,
+        folderGridParams: GridParams,
+        deviationsGridParams: GridParams
+    ): ListPreloader {
+        val callback = ListPreloader.Callback { position, preloader ->
+            when (val item = adapter.items[position]) {
+                is FolderItem -> {
+                    item.folder.thumbnailUrl?.let { thumbnailUrl ->
+                        val itemSize = folderGridParams.getItemSize(item.index)
+                        val request = glide.load(thumbnailUrl)
+                            .centerCrop()
+                            .priority(Priority.LOW)
+                        preloader.preload(request, itemSize.width, itemSize.height)
+                    }
+                }
+
+                is ImageDeviationItem -> {
+                    val itemSize = deviationsGridParams.getItemSize(item.index)
+                    val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
+                    val request = glide.load(image.url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .priority(Priority.LOW)
+                    preloader.preload(request, itemSize.width, itemSize.height)
+                }
+            }
+        }
+        return ListPreloader(glide, callback, MAX_PRELOAD_ROWS * deviationsGridParams.columnCount)
+    }
+
     override fun getTitle(): Int = R.string.collections_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
@@ -277,6 +319,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         private const val DIALOG_DELETE_FOLDER = "dialog.delete_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
         private const val LOAD_MORE_THRESHOLD = 4
+        private const val MAX_PRELOAD_ROWS = 4
 
         fun newArgs(username: String? = null): Bundle {
             return Bundle().apply {

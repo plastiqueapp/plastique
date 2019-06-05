@@ -14,6 +14,9 @@ import androidx.core.text.htmlEncode
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
@@ -42,6 +45,8 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
+import io.plastique.deviations.list.ImageDeviationItem
+import io.plastique.deviations.list.ImageHelper
 import io.plastique.gallery.GalleryEvent.CreateFolderEvent
 import io.plastique.gallery.GalleryEvent.DeleteFolderEvent
 import io.plastique.gallery.GalleryEvent.LoadMoreEvent
@@ -50,6 +55,7 @@ import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -85,21 +91,22 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val folderParams = GridParamsCalculator.calculateGridParams(
+        val folderGridParams = GridParamsCalculator.calculateGridParams(
             width = displayMetrics.widthPixels,
             minItemWidth = resources.getDimensionPixelSize(R.dimen.gallery_folder_min_width),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.gallery_folder_spacing),
             heightToWidthRatio = 0.75f)
 
-        val deviationParams = GridParamsCalculator.calculateGridParams(
+        val deviationGridParams = GridParamsCalculator.calculateGridParams(
             width = displayMetrics.widthPixels,
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
+        val glide = GlideApp.with(this)
         adapter = GalleryAdapter(
             context = requireContext(),
-            glide = GlideApp.with(this),
-            itemSizeCallback = GalleryItemSizeCallback(folderParams, deviationParams),
+            glide = glide,
+            itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item ->
                 navigator.openGalleryFolder(navigationContext,
                     GalleryFolderId(id = item.folder.id, username = state.params.username),
@@ -115,13 +122,17 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
-
         galleryView = view.findViewById(R.id.gallery)
         galleryView.adapter = adapter
         galleryView.layoutManager = FlexboxLayoutManager(context)
         galleryView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         galleryView.addOnScrollListener(onScrollListener)
+
+        createPreloader(glide, adapter, folderGridParams, deviationGridParams)
+            .subscribeToLifecycle(lifecycle)
+            .attach(galleryView)
 
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
@@ -245,6 +256,37 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         dialog.show(childFragmentManager, DIALOG_DELETE_FOLDER)
     }
 
+    private fun createPreloader(
+        glide: GlideRequests,
+        adapter: GalleryAdapter,
+        folderGridParams: GridParams,
+        deviationsGridParams: GridParams
+    ): ListPreloader {
+        val callback = ListPreloader.Callback { position, preloader ->
+            when (val item = adapter.items[position]) {
+                is FolderItem -> {
+                    item.folder.thumbnailUrl?.let { thumbnailUrl ->
+                        val itemSize = folderGridParams.getItemSize(item.index)
+                        val request = glide.load(thumbnailUrl)
+                            .centerCrop()
+                            .priority(Priority.LOW)
+                        preloader.preload(request, itemSize.width, itemSize.height)
+                    }
+                }
+
+                is ImageDeviationItem -> {
+                    val itemSize = deviationsGridParams.getItemSize(item.index)
+                    val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
+                    val request = glide.load(image.url)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .priority(Priority.LOW)
+                    preloader.preload(request, itemSize.width, itemSize.height)
+                }
+            }
+        }
+        return ListPreloader(glide, callback, MAX_PRELOAD_ROWS * deviationsGridParams.columnCount)
+    }
+
     override fun getTitle(): Int = R.string.gallery_title
 
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
@@ -280,6 +322,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         private const val DIALOG_DELETE_FOLDER = "dialog.delete_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
         private const val LOAD_MORE_THRESHOLD = 4
+        private const val MAX_PRELOAD_ROWS = 4
 
         fun newArgs(username: String? = null): Bundle {
             return Bundle().apply {
