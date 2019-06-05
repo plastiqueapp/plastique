@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestBuilder
+import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
@@ -41,9 +41,7 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
-import io.plastique.glide.RecyclerViewPreloader
 import io.plastique.inject.getComponent
-import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -75,10 +73,13 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
         commentsView.adapter = adapter
         commentsView.layoutManager = LinearLayoutManager(requireContext())
         commentsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
-        commentsView.addOnScrollListener(createPreloader(glide, adapter))
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
+
+        createPreloader(glide, adapter)
+            .subscribeToLifecycle(lifecycle)
+            .attach(commentsView)
 
         composeView = view.findViewById(R.id.compose)
         composeView.onPostCommentListener = { text -> viewModel.dispatch(PostCommentEvent(text)) }
@@ -138,30 +139,23 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
         }
     }
 
-    private fun createPreloader(glide: GlideRequests, adapter: CommentListAdapter): RecyclerViewPreloader<*> {
+    private fun createPreloader(glide: GlideRequests, adapter: CommentListAdapter): ListPreloader {
         val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_medium)
-        val preloadSize = Size(avatarSize, avatarSize)
-
-        val callback = object : RecyclerViewPreloader.Callback<String> {
-            override fun getPreloadItems(position: Int): List<String> {
-                return when (val item = adapter.items[position]) {
-                    is CommentItem -> listOfNotNull(item.comment.author.avatarUrl)
-                    else -> emptyList()
-                }
-            }
-
-            override fun createRequestBuilder(item: String): RequestBuilder<*> {
-                return glide.load(item)
+        val callback = ListPreloader.Callback { position, preloader ->
+            val item = adapter.items[position] as? CommentItem ?: return@Callback
+            val avatarUrl = item.comment.author.avatarUrl
+            if (avatarUrl != null) {
+                val request = glide.load(avatarUrl)
                     .circleCrop()
                     .dontAnimate()
-                    .skipMemoryCache(true)
                     .priority(Priority.LOW)
-            }
+                    .skipMemoryCache(true)
 
-            override fun getPreloadSize(item: String): Size = preloadSize
+                preloader.preload(request, avatarSize, avatarSize)
+            }
         }
 
-        return RecyclerViewPreloader(glide, lifecycle, callback, maxPreload = 5)
+        return ListPreloader(glide, callback, MAX_PRELOAD)
     }
 
     override fun scrollToTop() {
@@ -182,6 +176,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
     companion object {
         private const val ARG_THREAD_ID = "thread_id"
         private const val LOAD_MORE_THRESHOLD = 5
+        private const val MAX_PRELOAD = 5
 
         fun newArgs(threadId: CommentThreadId): Bundle {
             return Bundle().apply {

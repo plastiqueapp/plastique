@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
@@ -50,7 +51,6 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
 import io.plastique.glide.GlideApp
-import io.plastique.glide.RecyclerViewPreloader
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -80,11 +80,11 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private lateinit var state: DeviationListViewState
 
     private lateinit var preloaderFactory: DeviationsPreloaderFactory
-    private var preloader: RecyclerViewPreloader<*>? = null
+    private var preloader: ListPreloader? = null
         set(value) {
-            field?.let { deviationsView.removeOnScrollListener(it) }
+            field?.detach()
             field = value
-            value?.let { deviationsView.addOnScrollListener(it) }
+            value?.attach(deviationsView)
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,9 +117,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
+        val glide = GlideApp.with(this)
         adapter = DeviationsAdapter(
             context = requireContext(),
-            glide = GlideApp.with(this),
+            glide = glide,
             layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
             itemSizeCallback = DeviationsItemSizeCallback(gridParams),
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
@@ -127,10 +128,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
 
+        preloaderFactory = DeviationsPreloaderFactory(glide, deviationsView, adapter)
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
         deviationsView.adapter = adapter
-        preloaderFactory = DeviationsPreloaderFactory(this, deviationsView, adapter)
         fixedLayoutMode?.let { initLayoutMode(it) }
 
         @Suppress("UNCHECKED_CAST")
@@ -221,7 +222,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private fun initLayoutMode(layoutMode: LayoutMode) {
         deviationsView.layoutManager = createLayoutManager(requireContext(), layoutMode)
         onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(layoutMode)
-        preloader = preloaderFactory.createPreloader(layoutMode, gridParams)
+        preloader = preloaderFactory.createPreloader(layoutMode, gridParams).subscribeToLifecycle(lifecycle)
     }
 
     private fun createLayoutManager(context: Context, layoutMode: LayoutMode): RecyclerView.LayoutManager = when (layoutMode) {

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Priority
-import com.bumptech.glide.RequestBuilder
+import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.content.ContentState
@@ -27,9 +27,7 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
-import io.plastique.glide.RecyclerViewPreloader
 import io.plastique.inject.getComponent
-import io.plastique.util.Size
 import io.plastique.watch.WatcherListEvent.RefreshEvent
 import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
@@ -64,7 +62,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         watchersView = findViewById(R.id.watchers)
         watchersView.layoutManager = LinearLayoutManager(this)
         watchersView.adapter = adapter
-        watchersView.addOnScrollListener(createPreloader(glide, adapter))
+        createPreloader(glide, adapter).attach(watchersView)
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(WatcherListEvent.LoadMoreEvent) }
         watchersView.addOnScrollListener(onScrollListener)
@@ -112,30 +110,23 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         }
     }
 
-    private fun createPreloader(glide: GlideRequests, adapter: WatcherListAdapter): RecyclerView.OnScrollListener {
+    private fun createPreloader(glide: GlideRequests, adapter: WatcherListAdapter): ListPreloader {
         val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
-        val preloadSize = Size(avatarSize, avatarSize)
-
-        val callback = object : RecyclerViewPreloader.Callback<String> {
-            override fun getPreloadItems(position: Int): List<String> {
-                return when (val item = adapter.items[position]) {
-                    is WatcherItem -> listOfNotNull(item.watcher.user.avatarUrl)
-                    else -> emptyList()
-                }
-            }
-
-            override fun createRequestBuilder(item: String): RequestBuilder<*> {
-                return glide.load(item)
+        val callback = ListPreloader.Callback { position, preloader ->
+            val item = adapter.items[position] as? WatcherItem ?: return@Callback
+            val avatarUrl = item.watcher.user.avatarUrl
+            if (avatarUrl != null) {
+                val request = glide.load(avatarUrl)
                     .circleCrop()
                     .dontAnimate()
-                    .skipMemoryCache(true)
                     .priority(Priority.LOW)
-            }
+                    .skipMemoryCache(true)
 
-            override fun getPreloadSize(item: String): Size = preloadSize
+                preloader.preload(request, avatarSize, avatarSize)
+            }
         }
 
-        return RecyclerViewPreloader(glide, lifecycle, callback, maxPreload = 10)
+        return ListPreloader(glide, callback, MAX_PRELOAD)
     }
 
     private fun initToolbar(username: String?) {
@@ -157,6 +148,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
     companion object {
         private const val EXTRA_USERNAME = "username"
         private const val LOAD_MORE_THRESHOLD = 10
+        private const val MAX_PRELOAD = 10
 
         fun createIntent(context: Context, username: String?): Intent {
             return Intent(context, WatcherListActivity::class.java).apply {
