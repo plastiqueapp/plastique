@@ -13,7 +13,7 @@ sealed class ShareUiModel {
         val deviationId: String,
         val author: User,
         val title: String,
-        val preview: Deviation.Image,
+        val preview: Deviation.ImageInfo,
         val isConcealedMature: Boolean
     ) : ShareUiModel()
 

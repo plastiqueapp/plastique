@@ -230,15 +230,15 @@ private fun FeedDeviationEntityWithRelations.toDeviation(): Deviation = Deviatio
     publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
     content = images.asSequence()
         .filter { it.type == DeviationImageType.Content }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .firstOrNull(),
     preview = images.asSequence()
         .filter { it.type == DeviationImageType.Preview }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .firstOrNull(),
     thumbnails = images.asSequence()
         .filter { it.type == DeviationImageType.Thumbnail }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .sortedBy { it.size.width }
         .toList(),
     excerpt = deviation.excerpt,
@@ -289,4 +289,4 @@ private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this
     FeedElementDto.Unknown -> throw IllegalArgumentException("Unknown feed element type")
 }
 
-private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
+private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)

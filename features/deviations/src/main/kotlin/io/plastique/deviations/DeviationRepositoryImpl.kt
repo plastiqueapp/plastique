@@ -216,15 +216,15 @@ fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
 
     content = images.asSequence()
         .filter { it.type == DeviationImageType.Content }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .firstOrNull(),
     preview = images.asSequence()
         .filter { it.type == DeviationImageType.Preview }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .firstOrNull(),
     thumbnails = images.asSequence()
         .filter { it.type == DeviationImageType.Thumbnail }
-        .map { it.toImage() }
+        .map { it.toImageInfo() }
         .sortedBy { it.size.width }
         .toList(),
 
@@ -244,7 +244,7 @@ fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = De
     allowsComments = allowsComments,
     downloadFileSize = downloadFileSize)
 
-private fun DeviationImageEntity.toImage(): Deviation.Image = Deviation.Image(size = size, url = url)
+private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
 
 private fun createImageEntity(deviationId: String, type: DeviationImageType, imageDto: ImageDto): DeviationImageEntity {
     val size = Size(imageDto.width, imageDto.height)

@@ -15,9 +15,9 @@ data class Deviation(
     val stats: Stats,
     val dailyDeviation: DailyDeviation?,
 
-    val content: Image?,
-    val preview: Image?,
-    val thumbnails: List<Image>,
+    val content: ImageInfo?,
+    val preview: ImageInfo?,
+    val thumbnails: List<ImageInfo>,
 
     val excerpt: String?
 ) {
@@ -43,7 +43,7 @@ data class Deviation(
         val favorites: Int
     )
 
-    data class Image(
+    data class ImageInfo(
         val size: Size,
         val url: String
     )

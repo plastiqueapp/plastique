@@ -15,20 +15,20 @@ object ImageHelper {
         return min(parentWidth, MAX_IMAGE_WIDTH)
     }
 
-    fun chooseThumbnail(deviation: Deviation, itemWidth: Int): Deviation.Image {
+    fun chooseThumbnail(deviation: Deviation, itemWidth: Int): Deviation.ImageInfo {
         return deviation.thumbnails.firstOrNull { it.size.width >= itemWidth } ?: deviation.thumbnails.last()
     }
 
-    fun choosePreview(deviation: Deviation, maxImageWidth: Int): Deviation.Image {
+    fun choosePreview(deviation: Deviation, maxImageWidth: Int): Deviation.ImageInfo {
         val content = deviation.content
         val preview = deviation.preview
         return if (preview != null && (content == null || preview.size.width >= maxImageWidth)) preview else content
             ?: throw IllegalStateException("No preview available")
     }
 
-    fun calculateOptimalPreviewSize(image: Deviation.Image, maxImageWidth: Int): Size {
-        var imageWidth = image.size.width
-        var imageHeight = image.size.height
+    fun calculateOptimalPreviewSize(imageInfo: Deviation.ImageInfo, maxImageWidth: Int): Size {
+        var imageWidth = imageInfo.size.width
+        var imageHeight = imageInfo.size.height
         var aspectRatio = imageHeight / imageWidth.toDouble()
         if (aspectRatio > MAX_ASPECT_RATIO || imageWidth > maxImageWidth) {
             aspectRatio = min(aspectRatio, MAX_ASPECT_RATIO)
@@ -36,6 +36,6 @@ object ImageHelper {
             imageHeight = (imageWidth * aspectRatio).toInt()
             return Size(imageWidth, imageHeight)
         }
-        return image.size
+        return imageInfo.size
     }
 }
