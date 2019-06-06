@@ -8,4 +8,13 @@ dependencies {
     implementation project(":libraries:api")
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
+
+    api "com.github.Commit451.ForegroundViews:foregroundviews:$versions.foregroundViews"
+    api "com.github.Commit451.ForegroundViews:foregroundviews-constraintlayout:$versions.foregroundViews"
+    api "com.gojuno.koptional:koptional:$versions.koptional"
+    api "com.sch.neon:neon:$versions.neon"
+    api "com.sch.neon:neon-timber:$versions.neon"
+
+    api "com.github.technoir42:glide-preloader:$versions.glidePreloader"
+    debugApi "com.github.technoir42:glide-debug-indicator:$versions.glideDebugIndicator"
 }

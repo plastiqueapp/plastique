@@ -120,6 +120,7 @@ dependencies {
     implementation project(":features:watch")
 
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
+    implementation "com.squareup.moshi:moshi-adapters:$versions.moshi"
     implementation "io.requery:sqlite-android:$versions.sqlite"
 
     debugImplementation "com.facebook.flipper:flipper:$versions.flipper"

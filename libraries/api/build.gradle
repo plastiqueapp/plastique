@@ -6,12 +6,16 @@ plugins {
 
 dependencies {
     implementation "androidx.annotation:annotation:$versions.androidx.annotation"
+    api "io.reactivex.rxjava2:rxjava:$versions.rxjava"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    implementation "io.reactivex.rxjava2:rxjava:$versions.rxjava"
-    implementation "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
+    api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
 
     implementation "com.squareup.moshi:moshi:$versions.moshi"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+
+    constraints {
+        implementation "com.squareup.okio:okio:$versions.okio"
+    }
 }

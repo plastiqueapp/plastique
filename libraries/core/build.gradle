@@ -17,6 +17,7 @@ android {
 }
 
 dependencies {
+    api "androidx.annotation:annotation:$versions.androidx.annotation"
     api "androidx.core:core:$versions.androidx.core"
     api "androidx.core:core-ktx:$versions.androidx.core"
     api "androidx.room:room-runtime:$versions.androidx.room"
@@ -25,13 +26,11 @@ dependencies {
     api "androidx.work:work-runtime-ktx:$versions.androidx.work"
     api "androidx.work:work-rxjava2:$versions.androidx.work"
     api "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
-    api "com.google.android.gms:play-services-instantapps:$versions.playServices.instantApps"
     api "com.google.dagger:dagger:$versions.dagger"
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
     implementation "com.google.firebase:firebase-config:$versions.firebase.config"
     implementation "com.jakewharton:process-phoenix:$versions.processPhoenix"
     api "com.jakewharton.timber:timber:$versions.timber"
-    api "com.gojuno.koptional:koptional:$versions.koptional"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
@@ -40,16 +39,12 @@ dependencies {
     api "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
     api "io.reactivex.rxjava2:rxjava:$versions.rxjava"
     api "io.reactivex.rxjava2:rxkotlin:$versions.rxkotlin"
-    api "com.github.akarnokd:rxjava2-extensions:$versions.rxjava2Extensions"
-    api "com.github.technoir42:rxjava2-extensions:$versions.rxJava2Extensions2"
+    api "com.github.technoir42:rxjava2-extensions:$versions.rxJava2Extensions"
 
     api "com.squareup.okhttp3:okhttp:$versions.okhttp"
-    api "com.squareup.okio:okio:$versions.okio"
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$versions.retrofit"
-
     api "com.squareup.moshi:moshi:$versions.moshi"
-    api "com.squareup.moshi:moshi-adapters:$versions.moshi"
 
     debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
     debugImplementation "com.facebook.soloader:soloader:$versions.soloader"
@@ -66,5 +61,6 @@ dependencies {
 
     constraints {
         implementation "androidx.fragment:fragment:$versions.androidx.fragment"
+        implementation "com.squareup.okio:okio:$versions.okio"
     }
 }
