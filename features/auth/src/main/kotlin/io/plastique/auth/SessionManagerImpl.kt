@@ -1,7 +1,7 @@
 package io.plastique.auth
 
-import com.sch.rxjava2.extensions.mapError
-import com.sch.rxjava2.extensions.sneakyGet
+import com.github.technoir42.rxjava2.extensions.mapError
+import com.github.technoir42.rxjava2.extensions.sneakyGet
 import io.plastique.api.ApiException
 import io.plastique.api.auth.AuthService
 import io.plastique.api.common.ErrorType

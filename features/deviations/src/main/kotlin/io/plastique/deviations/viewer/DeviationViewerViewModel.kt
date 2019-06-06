@@ -1,13 +1,13 @@
 package io.plastique.deviations.viewer
 
 import android.net.Uri
+import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
-import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.collections.FavoritesModel
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState

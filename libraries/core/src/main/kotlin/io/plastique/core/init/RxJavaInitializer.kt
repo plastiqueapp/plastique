@@ -1,7 +1,7 @@
 package io.plastique.core.init
 
 import android.os.Looper
-import com.sch.rxjava2.extensions.FailFastErrorHandler
+import com.github.technoir42.rxjava2.extensions.FailFastErrorHandler
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins

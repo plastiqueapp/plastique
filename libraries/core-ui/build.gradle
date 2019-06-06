@@ -18,6 +18,7 @@ dependencies {
     api "androidx.fragment:fragment-ktx:$versions.androidx.fragment"
     implementation "androidx.lifecycle:lifecycle-common:$versions.androidx.lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$versions.androidx.lifecycle"
+    api "androidx.lifecycle:lifecycle-extensions:$versions.androidx.lifecycle"
     implementation "androidx.preference:preference:$versions.androidx.preference"
     api "androidx.recyclerview:recyclerview:$versions.androidx.recyclerView"
     api "androidx.viewpager2:viewpager2:$versions.androidx.viewpager2"

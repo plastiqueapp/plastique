@@ -12,7 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Priority
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
-import com.sch.rxjava2.extensions.pairwiseWithPrevious
+import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsFragmentComponent
 import io.plastique.comments.CommentsNavigator

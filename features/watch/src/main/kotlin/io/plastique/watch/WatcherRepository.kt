@@ -1,9 +1,9 @@
 package io.plastique.watch
 
 import androidx.room.RoomDatabase
+import com.github.technoir42.rxjava2.extensions.mapError
 import com.gojuno.koptional.Optional
 import com.gojuno.koptional.toOptional
-import com.sch.rxjava2.extensions.mapError
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.ApiException

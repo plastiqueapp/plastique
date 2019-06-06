@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.kotlin.extensions.plus
-import com.sch.rxjava2.extensions.pairwiseWithPrevious
+import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController

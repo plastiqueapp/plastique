@@ -2,7 +2,7 @@ package io.plastique.users.profile
 
 import androidx.room.RoomDatabase
 import com.github.technoir42.kotlin.extensions.nullIfEmpty
-import com.sch.rxjava2.extensions.mapError
+import com.github.technoir42.rxjava2.extensions.mapError
 import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.users.UserProfileDto

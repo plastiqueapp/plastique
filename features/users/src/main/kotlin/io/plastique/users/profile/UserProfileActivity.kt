@@ -13,8 +13,8 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
+import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.tabs.TabLayout
-import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState

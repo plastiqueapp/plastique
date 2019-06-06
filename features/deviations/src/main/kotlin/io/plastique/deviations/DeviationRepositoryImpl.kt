@@ -1,9 +1,9 @@
 package io.plastique.deviations
 
 import androidx.room.RoomDatabase
+import com.github.technoir42.rxjava2.extensions.mapError
 import com.gojuno.koptional.Optional
 import com.gojuno.koptional.toOptional
-import com.sch.rxjava2.extensions.mapError
 import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.deviations.DeviationDto

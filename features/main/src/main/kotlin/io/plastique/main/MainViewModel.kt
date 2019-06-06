@@ -1,5 +1,6 @@
 package io.plastique.main
 
+import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.gojuno.koptional.None
 import com.gojuno.koptional.toOptional
 import com.sch.neon.MainLoop
@@ -7,7 +8,6 @@ import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
-import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager

@@ -1,7 +1,7 @@
 package io.plastique.deviations.info
 
 import androidx.room.RoomDatabase
-import com.sch.rxjava2.extensions.mapError
+import com.github.technoir42.rxjava2.extensions.mapError
 import io.plastique.api.ApiException
 import io.plastique.api.common.ErrorType
 import io.plastique.api.deviations.DeviationMetadataDto

@@ -1,6 +1,7 @@
 package io.plastique.statuses.list
 
 import androidx.core.text.htmlEncode
+import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
 import com.sch.neon.EffectHandler
@@ -9,7 +10,6 @@ import com.sch.neon.StateReducer
 import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
-import com.sch.rxjava2.extensions.valveLatest
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState

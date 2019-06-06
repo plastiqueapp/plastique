@@ -18,8 +18,8 @@ import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
+import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
-import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.collections.CollectionsEvent.CreateFolderEvent
 import io.plastique.collections.CollectionsEvent.DeleteFolderEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreEvent

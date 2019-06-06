@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.kotlin.extensions.plus
+import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.sch.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
