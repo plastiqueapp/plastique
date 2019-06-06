@@ -106,13 +106,13 @@ private class ImageDeviationItemDelegate(
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.headerView.date = item.date
         holder.headerView.setUser(item.user, glide)
-        holder.titleView.text = item.deviation.title
-        holder.commentsButton.text = item.deviation.stats.comments.toString()
-        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
-        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
+        holder.titleView.text = item.title
+        holder.commentsButton.text = item.commentCount.toString()
+        holder.commentsButton.isVisible = item.allowsComments
+        holder.favoriteButton.text = item.favoriteCount.toString()
+        holder.favoriteButton.isChecked = item.isFavorite
 
-        val preview = ImageHelper.choosePreview(item.deviation, holder.maxImageWidth)
+        val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
@@ -165,12 +165,12 @@ private class LiteratureDeviationItemDelegate(
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.headerView.date = item.date
         holder.headerView.setUser(item.user, glide)
-        holder.titleView.text = item.deviation.title
+        holder.titleView.text = item.title
         holder.excerptView.text = item.excerpt.value
-        holder.commentsButton.text = item.deviation.stats.comments.toString()
-        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
-        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
+        holder.commentsButton.text = item.commentCount.toString()
+        holder.commentsButton.isVisible = item.allowsComments
+        holder.favoriteButton.text = item.favoriteCount.toString()
+        holder.favoriteButton.isChecked = item.isFavorite
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -363,23 +363,23 @@ class FeedAdapter(
             view is FeedHeaderView -> onUserClick((item as FeedListItem).user)
             view.id == R.id.button_comments -> {
                 val threadId = when (item) {
-                    is DeviationItem -> CommentThreadId.Deviation(item.deviation.id)
+                    is DeviationItem -> CommentThreadId.Deviation(item.deviationId)
                     is StatusUpdateItem -> CommentThreadId.Status(item.statusId)
                     else -> throw IllegalStateException("Unexpected item ${item.javaClass}")
                 }
                 onCommentsClick(threadId)
             }
             view.id == R.id.button_favorite -> {
-                val deviation = (item as DeviationItem).deviation
-                onFavoriteClick(deviation.id, !deviation.properties.isFavorite)
+                val deviationItem = (item as DeviationItem)
+                onFavoriteClick(deviationItem.id, !deviationItem.isFavorite)
             }
             view.id == R.id.button_share -> {
                 val shareObjectId = getObjectToShare(item)
                 onShareClick(shareObjectId)
             }
             view.id == R.id.deviation_image || view.id == R.id.deviation_title || view.id == R.id.deviation_excerpt -> {
-                val deviation = (item as DeviationItem).deviation
-                onDeviationClick(deviation.id)
+                val deviationItem = (item as DeviationItem)
+                onDeviationClick(deviationItem.deviationId)
             }
             view.id == R.id.status_text -> {
                 val statusId = (item as StatusUpdateItem).statusId
@@ -408,7 +408,7 @@ class FeedAdapter(
             is ShareUiModel.Status -> ShareObjectId.Status(item.share.statusId, item.statusId)
             else -> throw IllegalStateException("Nothing to share")
         }
-        is DeviationItem -> ShareObjectId.Deviation(item.deviation.id)
+        is DeviationItem -> ShareObjectId.Deviation(item.deviationId)
         else -> throw IllegalStateException("Unexpected item ${item.javaClass}")
     }
 }

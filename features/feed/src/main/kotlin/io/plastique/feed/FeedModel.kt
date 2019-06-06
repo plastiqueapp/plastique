@@ -69,19 +69,36 @@ class FeedModel @Inject constructor(
             LiteratureDeviationItem(
                 date = feedElement.timestamp,
                 user = feedElement.user,
-                deviation = feedElement.deviation,
+                deviationId = feedElement.deviation.id,
+                title = feedElement.deviation.title,
+                isFavorite = feedElement.deviation.properties.isFavorite,
+                allowsComments = feedElement.deviation.properties.allowsComments,
+                favoriteCount = feedElement.deviation.stats.favorites,
+                commentCount = feedElement.deviation.stats.comments,
                 excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
         } else {
             ImageDeviationItem(
                 date = feedElement.timestamp,
                 user = feedElement.user,
-                deviation = feedElement.deviation)
+                deviationId = feedElement.deviation.id,
+                title = feedElement.deviation.title,
+                isFavorite = feedElement.deviation.properties.isFavorite,
+                allowsComments = feedElement.deviation.properties.allowsComments,
+                favoriteCount = feedElement.deviation.stats.favorites,
+                commentCount = feedElement.deviation.stats.comments,
+                preview = feedElement.deviation.preview!!,
+                content = feedElement.deviation.content)
         }
 
         is JournalSubmitted -> LiteratureDeviationItem(
             date = feedElement.timestamp,
             user = feedElement.user,
-            deviation = feedElement.deviation,
+            deviationId = feedElement.deviation.id,
+            title = feedElement.deviation.title,
+            isFavorite = feedElement.deviation.properties.isFavorite,
+            allowsComments = feedElement.deviation.properties.allowsComments,
+            favoriteCount = feedElement.deviation.stats.favorites,
+            commentCount = feedElement.deviation.stats.comments,
             excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
 
         is StatusUpdate -> StatusUpdateItem(

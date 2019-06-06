@@ -49,13 +49,13 @@ private class ListImageDeviationItemDelegate(
             topMargin = if (position > 0) spacing else 0
         }
 
-        holder.titleView.text = item.deviation.title
-        holder.commentsButton.text = item.deviation.stats.comments.toString()
-        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
-        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
+        holder.titleView.text = item.title
+        holder.commentsButton.text = item.commentCount.toString()
+        holder.commentsButton.isVisible = item.allowsComments
+        holder.favoriteButton.text = item.favoriteCount.toString()
+        holder.favoriteButton.isChecked = item.isFavorite
 
-        val preview = ImageHelper.choosePreview(item.deviation, holder.maxImageWidth)
+        val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
@@ -121,9 +121,9 @@ class GridImageDeviationItemDelegate(
             topMargin = if (item.index >= columnCount) spacing else 0
         }
 
-        holder.thumbnail.contentDescription = item.deviation.title
+        holder.thumbnail.contentDescription = item.title
 
-        val thumbnail = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
+        val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
         glide.load(thumbnail.url)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.thumbnail)
@@ -167,12 +167,12 @@ private class ListLiteratureDeviationItemDelegate(
             topMargin = if (position > 0) spacing else 0
         }
 
-        holder.titleView.text = item.deviation.title
+        holder.titleView.text = item.title
         holder.excerptView.text = item.excerpt.value
-        holder.commentsButton.text = item.deviation.stats.comments.toString()
-        holder.commentsButton.isVisible = item.deviation.properties.allowsComments
-        holder.favoriteButton.text = item.deviation.stats.favorites.toString()
-        holder.favoriteButton.isChecked = item.deviation.properties.isFavorite
+        holder.commentsButton.text = item.commentCount.toString()
+        holder.commentsButton.isVisible = item.allowsComments
+        holder.favoriteButton.text = item.favoriteCount.toString()
+        holder.favoriteButton.isChecked = item.isFavorite
     }
 
     class ViewHolder(
@@ -228,7 +228,7 @@ class GridLiteratureDeviationItemDelegate(
             topMargin = if (item.index >= columnCount) spacing else 0
         }
 
-        holder.title.text = item.deviation.title
+        holder.title.text = item.title
     }
 
     class ViewHolder(
@@ -295,18 +295,18 @@ class DeviationsAdapter(
         val item = items[position] as DeviationItem
         when (view.id) {
             R.id.button_comments -> {
-                onCommentsClick(CommentThreadId.Deviation(item.deviation.id))
+                onCommentsClick(CommentThreadId.Deviation(item.deviationId))
             }
 
             R.id.button_favorite -> {
-                onFavoriteClick(item.deviation.id, !item.deviation.properties.isFavorite)
+                onFavoriteClick(item.deviationId, !item.isFavorite)
             }
 
             R.id.button_share -> {
-                onShareClick(ShareObjectId.Deviation(item.deviation.id))
+                onShareClick(ShareObjectId.Deviation(item.deviationId))
             }
 
-            else -> onDeviationClick(item.deviation.id)
+            else -> onDeviationClick(item.deviationId)
         }
     }
 }

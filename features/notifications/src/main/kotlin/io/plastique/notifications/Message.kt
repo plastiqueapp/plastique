@@ -1,7 +1,6 @@
 package io.plastique.notifications
 
 import io.plastique.collections.Folder
-import io.plastique.deviations.Deviation
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
@@ -13,7 +12,8 @@ data class Message(
 ) {
     sealed class Data {
         data class AddToCollection(
-            val deviation: Deviation,
+            val deviationId: String,
+            val deviationTitle: String,
             val folder: Folder
         ) : Data()
 
@@ -22,7 +22,8 @@ data class Message(
         ) : Data()
 
         data class Favorite(
-            val deviation: Deviation
+            val deviationId: String,
+            val deviationTitle: String
         ) : Data()
 
         object Watch : Data() {

@@ -27,7 +27,7 @@ class DeviationsPreloaderFactory(
             val item = adapter.items[position] as? ImageDeviationItem ?: return@Callback
 
             val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
-            val preview = ImageHelper.choosePreview(item.deviation, maxImageWidth)
+            val preview = ImageHelper.choosePreview(item.preview, item.content, maxImageWidth)
             val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
             val request = glide.load(preview.url)
                 .override(previewSize.width, previewSize.height)
@@ -47,7 +47,7 @@ class DeviationsPreloaderFactory(
             val item = adapter.items[position] as? ImageDeviationItem ?: return@Callback
 
             val itemSize = gridParams.getItemSize(item.index)
-            val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
+            val image = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
             val request = glide.load(image.url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .priority(Priority.LOW)

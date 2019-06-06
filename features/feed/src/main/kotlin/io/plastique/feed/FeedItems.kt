@@ -23,21 +23,38 @@ data class CollectionUpdateItem(
 ) : FeedListItem()
 
 abstract class DeviationItem : FeedListItem() {
-    abstract val deviation: Deviation
+    abstract val deviationId: String
+    abstract val title: String
+    abstract val isFavorite: Boolean
+    abstract val allowsComments: Boolean
+    abstract val favoriteCount: Int
+    abstract val commentCount: Int
 
-    override val id: String get() = deviation.id
+    override val id: String get() = deviationId
 }
 
 data class ImageDeviationItem(
     override val date: ZonedDateTime,
     override val user: User,
-    override val deviation: Deviation
+    override val deviationId: String,
+    override val title: String,
+    override val isFavorite: Boolean,
+    override val allowsComments: Boolean,
+    override val favoriteCount: Int,
+    override val commentCount: Int,
+    val content: Deviation.ImageInfo?,
+    val preview: Deviation.ImageInfo
 ) : DeviationItem()
 
 data class LiteratureDeviationItem(
     override val date: ZonedDateTime,
     override val user: User,
-    override val deviation: Deviation,
+    override val deviationId: String,
+    override val title: String,
+    override val isFavorite: Boolean,
+    override val allowsComments: Boolean,
+    override val favoriteCount: Int,
+    override val commentCount: Int,
     val excerpt: SpannedWrapper
 ) : DeviationItem()
 

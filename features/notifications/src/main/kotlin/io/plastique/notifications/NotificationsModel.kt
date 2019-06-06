@@ -68,8 +68,8 @@ class NotificationsModel @Inject constructor(
             messageId = message.id,
             time = message.time,
             user = message.user,
-            deviationId = message.data.deviation.id,
-            deviationTitle = message.data.deviation.title,
+            deviationId = message.data.deviationId,
+            deviationTitle = message.data.deviationTitle,
             folderId = message.data.folder.id,
             folderName = message.data.folder.name)
 
@@ -83,8 +83,8 @@ class NotificationsModel @Inject constructor(
             messageId = message.id,
             time = message.time,
             user = message.user,
-            deviationId = message.data.deviation.id,
-            deviationTitle = message.data.deviation.title)
+            deviationId = message.data.deviationId,
+            deviationTitle = message.data.deviationTitle)
 
         Message.Data.Watch -> WatchItem(
             messageId = message.id,

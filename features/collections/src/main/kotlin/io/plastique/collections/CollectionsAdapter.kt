@@ -118,7 +118,7 @@ class CollectionsAdapter(
         if (position == RecyclerView.NO_POSITION) return
         when (val item = items[position]) {
             is FolderItem -> onFolderClick(item)
-            is DeviationItem -> onDeviationClick(item.deviation.id)
+            is DeviationItem -> onDeviationClick(item.deviationId)
         }
     }
 

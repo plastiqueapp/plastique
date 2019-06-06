@@ -207,19 +207,28 @@ private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
 
 private fun MessageEntityWithRelations.toMessage(): Message? {
     val data = when (message.type) {
-        MessageTypes.BADGE_GIVEN -> Message.Data.BadgeGiven(
-            text = message.html!!)
+        MessageTypes.BADGE_GIVEN ->
+            Message.Data.BadgeGiven(
+                text = message.html!!)
 
-        MessageTypes.COLLECT -> Message.Data.AddToCollection(
-            deviation = subjectDeviation.first().toDeviation(),
-            folder = collectionFolder.first().toFolder())
+        MessageTypes.COLLECT -> {
+            val deviation = subjectDeviation.first().toDeviation()
+            Message.Data.AddToCollection(
+                deviationId = deviation.id,
+                deviationTitle = deviation.title,
+                folder = collectionFolder.first().toFolder())
+        }
 
-        MessageTypes.FAVORITE -> Message.Data.Favorite(
-            deviation = subjectDeviation.first().toDeviation())
+        MessageTypes.FAVORITE -> {
+            val deviation = subjectDeviation.first().toDeviation()
+            Message.Data.Favorite(
+                deviationId = deviation.id,
+                deviationTitle = deviation.title)
+        }
 
         MessageTypes.WATCH -> Message.Data.Watch
 
-        else -> return null // Unknown type
+        else -> return null // Unsupported type
     }
     return Message(
         id = message.id,

@@ -15,15 +15,12 @@ object ImageHelper {
         return min(parentWidth, MAX_IMAGE_WIDTH)
     }
 
-    fun chooseThumbnail(deviation: Deviation, itemWidth: Int): Deviation.ImageInfo {
-        return deviation.thumbnails.firstOrNull { it.size.width >= itemWidth } ?: deviation.thumbnails.last()
+    fun chooseThumbnail(thumbnails: Collection<Deviation.ImageInfo>, itemWidth: Int): Deviation.ImageInfo {
+        return thumbnails.firstOrNull { it.size.width >= itemWidth } ?: thumbnails.last()
     }
 
-    fun choosePreview(deviation: Deviation, maxImageWidth: Int): Deviation.ImageInfo {
-        val content = deviation.content
-        val preview = deviation.preview
-        return if (preview != null && (content == null || preview.size.width >= maxImageWidth)) preview else content
-            ?: throw IllegalStateException("No preview available")
+    fun choosePreview(preview: Deviation.ImageInfo, content: Deviation.ImageInfo?, maxImageWidth: Int): Deviation.ImageInfo {
+        return if (content == null || preview.size.width >= maxImageWidth) preview else content
     }
 
     fun calculateOptimalPreviewSize(imageInfo: Deviation.ImageInfo, maxImageWidth: Int): Size {

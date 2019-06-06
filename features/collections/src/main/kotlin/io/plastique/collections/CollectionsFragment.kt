@@ -273,7 +273,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
 
                 is ImageDeviationItem -> {
                     val itemSize = deviationsGridParams.getItemSize(item.index)
-                    val image = ImageHelper.chooseThumbnail(item.deviation, itemSize.width)
+                    val image = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
                     val request = glide.load(image.url)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .priority(Priority.LOW)
