@@ -9,6 +9,7 @@ import io.plastique.api.common.ErrorType
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.deviations.ImageDto
+import io.plastique.api.deviations.VideoDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
@@ -69,6 +70,7 @@ class DeviationRepositoryImpl @Inject constructor(
         val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
 
         val imageEntities = mutableListOf<DeviationImageEntity>()
+        val videoEntities = mutableListOf<DeviationVideoEntity>()
         deviations.forEach { deviation ->
             imageEntities += deviation.thumbnails.asSequence()
                 .map { createImageEntity(deviation.id, DeviationImageType.Thumbnail, it) }
@@ -76,12 +78,15 @@ class DeviationRepositoryImpl @Inject constructor(
 
             deviation.preview?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Preview, it) }
             deviation.content?.let { imageEntities += createImageEntity(deviation.id, DeviationImageType.Content, it) }
+
+            videoEntities += deviation.videos.asSequence().map { it.toVideoEntity(deviation.id) }
         }
 
         database.runInTransaction {
             userRepository.put(users)
             deviationDao.insertOrUpdate(deviationEntities)
             deviationDao.replaceImages(imageEntities)
+            deviationDao.replaceVideos(videoEntities)
         }
     }
 
@@ -101,7 +106,7 @@ class DeviationRepositoryImpl @Inject constructor(
         params: FetchParams,
         metadataSerializer: DeviationCacheMetadataSerializer
     ): Observable<PagedData<List<Deviation>, Cursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "deviation_linkage")) {
+        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviation_videos", "deviations", "deviation_linkage")) {
             val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
             val deviations = combineAndFilter(deviationsWithRelations, params)
             val nextCursor = getNextCursor(key, metadataSerializer)
@@ -254,3 +259,10 @@ private fun createImageEntity(deviationId: String, type: DeviationImageType, ima
     }
     return DeviationImageEntity(id = id, deviationId = deviationId, type = type, size = size, url = imageDto.url)
 }
+
+private fun VideoDto.toVideoEntity(deviationId: String): DeviationVideoEntity = DeviationVideoEntity(
+    deviationId = deviationId,
+    quality = quality,
+    url = url,
+    duration = duration,
+    fileSize = fileSize)

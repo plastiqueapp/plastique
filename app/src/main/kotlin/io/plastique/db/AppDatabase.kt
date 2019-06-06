@@ -17,6 +17,7 @@ import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationEntity
 import io.plastique.deviations.DeviationImageEntity
 import io.plastique.deviations.DeviationLinkage
+import io.plastique.deviations.DeviationVideoEntity
 import io.plastique.deviations.categories.CategoryDao
 import io.plastique.deviations.categories.CategoryEntity
 import io.plastique.deviations.download.DownloadInfoDao
@@ -60,6 +61,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
 
         DeviationEntity::class,
         DeviationImageEntity::class,
+        DeviationVideoEntity::class,
         DeviationLinkage::class,
         DeviationMetadataEntity::class,
         DownloadInfoEntity::class,

@@ -15,5 +15,8 @@ data class DeviationEntityWithRelations(
     val dailyDeviationGiver: List<UserEntity>,
 
     @Relation(parentColumn = "id", entityColumn = "deviation_id")
-    val images: List<DeviationImageEntity>
+    val images: List<DeviationImageEntity>,
+
+    @Relation(parentColumn = "id", entityColumn = "deviation_id")
+    val videos: List<DeviationVideoEntity>
 )

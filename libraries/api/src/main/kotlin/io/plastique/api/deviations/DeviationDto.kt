@@ -44,6 +44,12 @@ data class DeviationDto(
     @Json(name = "thumbs")
     val thumbnails: List<ImageDto> = emptyList(),
 
+    @Json(name = "videos")
+    val videos: List<VideoDto> = emptyList(),
+
+    @Json(name = "flash")
+    val flash: FlashDto? = null,
+
     @Json(name = "excerpt")
     val excerpt: String? = null,
 

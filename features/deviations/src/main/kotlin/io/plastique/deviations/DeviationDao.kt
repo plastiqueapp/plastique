@@ -72,14 +72,27 @@ ORDER BY deviation_linkage.`order`""")
     fun updateImages(images: Collection<DeviationImageEntity>)
 
     @Query("DELETE FROM deviation_images WHERE deviation_id IN (:deviationIds) AND id NOT IN (:exceptIds)")
-    fun deleteImages(exceptIds: Collection<String>, deviationIds: Collection<String>)
+    fun deleteImages(deviationIds: Collection<String>, exceptIds: Collection<String>)
 
     @Transaction
     fun replaceImages(images: Collection<DeviationImageEntity>) {
         val ids = images.mapTo(mutableSetOf()) { it.id }
         val deviationIds = images.mapTo(mutableSetOf()) { it.deviationId }
-        deleteImages(deviationIds = deviationIds, exceptIds = ids)
+        deleteImages(deviationIds, ids)
         updateImages(images)
         insertImages(images)
+    }
+
+    @Insert
+    fun insertVideos(videos: Collection<DeviationVideoEntity>)
+
+    @Query("DELETE FROM deviation_videos WHERE deviation_id IN (:deviationIds)")
+    fun deleteVideos(deviationIds: Collection<String>)
+
+    @Transaction
+    fun replaceVideos(videos: Collection<DeviationVideoEntity>) {
+        val deviationIds = videos.mapTo(mutableSetOf()) { it.deviationId }
+        deleteVideos(deviationIds)
+        insertVideos(videos)
     }
 }
