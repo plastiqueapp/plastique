@@ -53,7 +53,7 @@
         <item name="subtitleTextAppearance">@style/TextAppearance.Widget.App.Toolbar.Subtitle</item>
     </style>
 
-    <style name="App.PreferenceThemeOverlay" parent="PreferenceThemeOverlay.v14.Material">
+    <style name="App.PreferenceThemeOverlay" parent="PreferenceThemeOverlay">
         <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.App.Preference.Category.Title</item>
         <item name="preferenceFragmentCompatStyle">@style/App.PreferenceFragment</item>
     </style>
