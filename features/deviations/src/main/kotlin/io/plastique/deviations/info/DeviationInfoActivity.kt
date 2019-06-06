@@ -20,6 +20,7 @@ import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.info.DeviationInfoEvent.RetryClickEvent
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.threeten.bp.format.DateTimeFormatter
@@ -39,6 +40,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
     private lateinit var contentStateController: ContentStateController
     private lateinit var tagsView: RecyclerView
     private lateinit var tagListAdapter: TagListAdapter
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,8 +86,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
                 descriptionView.text = state.description.value
                 publishDateView.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)
 
-                GlideApp.with(this)
-                    .load(state.author.avatarUrl)
+                glide.load(state.author.avatarUrl)
                     .fallback(R.drawable.default_avatar_64dp)
                     .circleCrop()
                     .dontAnimate()

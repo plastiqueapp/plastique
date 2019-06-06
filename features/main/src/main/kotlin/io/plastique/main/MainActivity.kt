@@ -20,6 +20,7 @@ import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.InstantAppHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,6 +34,7 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
     @Inject lateinit var navigator: MainNavigator
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
 
     private lateinit var state: MainViewState
@@ -113,8 +115,7 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
 
         if (state.user != null) {
             val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
-            GlideApp.with(this)
-                .load(state.user.avatarUrl)
+            glide.load(state.user.avatarUrl)
                 .placeholder(R.drawable.default_avatar_32dp)
                 .error(R.drawable.default_avatar_32dp)
                 .circleCrop()

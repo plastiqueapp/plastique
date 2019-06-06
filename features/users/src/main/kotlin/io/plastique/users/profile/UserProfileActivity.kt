@@ -28,6 +28,7 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersActivityComponent
@@ -54,6 +55,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
 
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private lateinit var state: UserProfileViewState
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -157,8 +159,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
             watchButton.isChecked = state.userProfile.isWatching
             watchButton.setOnCheckedChangeListener(this)
 
-            GlideApp.with(this)
-                .load(state.userProfile.user.avatarUrl)
+            glide.load(state.userProfile.user.avatarUrl)
                 .fallback(R.drawable.default_avatar_64dp)
                 .circleCrop()
                 .dontAnimate()

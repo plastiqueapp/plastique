@@ -38,6 +38,7 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequest
+import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.ByteCountFormatter
@@ -63,6 +64,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private val systemUiController = SystemUiController(this)
     private lateinit var lastState: DeviationViewerViewState
 
@@ -183,7 +185,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         }
 
         if (state.infoViewState != null && state.infoViewState != prevState?.infoViewState) {
-            infoPanelView.render(state.infoViewState, GlideApp.with(this))
+            infoPanelView.render(state.infoViewState, glide)
             infoPanelView.isVisible = true
         }
 
@@ -201,8 +203,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     }
 
     private fun loadImage(url: String, thumbnailUrls: List<String>) {
-        val glide = GlideApp.with(this)
-
         // Build a chain of thumbnail requests with higher resolution thumbnails having a higher priority
         val thumbnailRequest = thumbnailUrls.asSequence()
             .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
