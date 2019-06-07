@@ -4,6 +4,7 @@ import io.plastique.core.lists.ItemsData
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
+import io.plastique.deviations.Deviation
 import io.plastique.deviations.list.DeviationItemFactory
 import io.plastique.feed.FeedElement.CollectionUpdate
 import io.plastique.feed.FeedElement.JournalSubmitted
@@ -46,14 +47,15 @@ class FeedModel @Inject constructor(
     }
 
     private fun createItem(feedElement: FeedElement, matureContent: Boolean): FeedListItem = when (feedElement) {
-        is CollectionUpdate -> CollectionUpdateItem(
-            id = feedElement.timestamp.toString(),
-            date = feedElement.timestamp,
-            user = feedElement.user,
-            folderId = feedElement.folder.id,
-            folderName = feedElement.folder.name,
-            addedCount = feedElement.addedCount,
-            folderItems = emptyList())
+        is CollectionUpdate ->
+            CollectionUpdateItem(
+                id = feedElement.timestamp.toString(),
+                date = feedElement.timestamp,
+                user = feedElement.user,
+                folderId = feedElement.folder.id,
+                folderName = feedElement.folder.name,
+                addedCount = feedElement.addedCount,
+                folderItems = emptyList())
 
         is FeedElement.MultipleDeviationsSubmitted -> {
             val items = feedElement.deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
@@ -65,7 +67,39 @@ class FeedModel @Inject constructor(
                 items = items)
         }
 
-        is FeedElement.DeviationSubmitted -> if (feedElement.deviation.isLiterature) {
+        is FeedElement.DeviationSubmitted -> {
+            when (val data = feedElement.deviation.data) {
+                is Deviation.Data.Image ->
+                    ImageDeviationItem(
+                        date = feedElement.timestamp,
+                        user = feedElement.user,
+                        deviationId = feedElement.deviation.id,
+                        title = feedElement.deviation.title,
+                        isFavorite = feedElement.deviation.properties.isFavorite,
+                        allowsComments = feedElement.deviation.properties.allowsComments,
+                        favoriteCount = feedElement.deviation.stats.favorites,
+                        commentCount = feedElement.deviation.stats.comments,
+                        preview = data.preview,
+                        content = data.content)
+
+                is Deviation.Data.Literature ->
+                    LiteratureDeviationItem(
+                        date = feedElement.timestamp,
+                        user = feedElement.user,
+                        deviationId = feedElement.deviation.id,
+                        title = feedElement.deviation.title,
+                        isFavorite = feedElement.deviation.properties.isFavorite,
+                        allowsComments = feedElement.deviation.properties.allowsComments,
+                        favoriteCount = feedElement.deviation.stats.favorites,
+                        commentCount = feedElement.deviation.stats.comments,
+                        excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)))
+
+                is Deviation.Data.Video -> TODO()
+            }
+        }
+
+        is JournalSubmitted -> {
+            val data = feedElement.deviation.data as Deviation.Data.Literature
             LiteratureDeviationItem(
                 date = feedElement.timestamp,
                 user = feedElement.user,
@@ -75,44 +109,23 @@ class FeedModel @Inject constructor(
                 allowsComments = feedElement.deviation.properties.allowsComments,
                 favoriteCount = feedElement.deviation.stats.favorites,
                 commentCount = feedElement.deviation.stats.comments,
-                excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
-        } else {
-            ImageDeviationItem(
-                date = feedElement.timestamp,
-                user = feedElement.user,
-                deviationId = feedElement.deviation.id,
-                title = feedElement.deviation.title,
-                isFavorite = feedElement.deviation.properties.isFavorite,
-                allowsComments = feedElement.deviation.properties.allowsComments,
-                favoriteCount = feedElement.deviation.stats.favorites,
-                commentCount = feedElement.deviation.stats.comments,
-                preview = feedElement.deviation.preview!!,
-                content = feedElement.deviation.content)
+                excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)))
         }
 
-        is JournalSubmitted -> LiteratureDeviationItem(
-            date = feedElement.timestamp,
-            user = feedElement.user,
-            deviationId = feedElement.deviation.id,
-            title = feedElement.deviation.title,
-            isFavorite = feedElement.deviation.properties.isFavorite,
-            allowsComments = feedElement.deviation.properties.allowsComments,
-            favoriteCount = feedElement.deviation.stats.favorites,
-            commentCount = feedElement.deviation.stats.comments,
-            excerpt = SpannedWrapper(richTextFormatter.format(feedElement.deviation.excerpt!!)))
+        is StatusUpdate ->
+            StatusUpdateItem(
+                date = feedElement.timestamp,
+                user = feedElement.user,
+                statusId = feedElement.status.id,
+                text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
+                commentCount = feedElement.status.commentCount,
+                share = feedElement.status.share.toShareUiModel(richTextFormatter, matureContent))
 
-        is StatusUpdate -> StatusUpdateItem(
-            date = feedElement.timestamp,
-            user = feedElement.user,
-            statusId = feedElement.status.id,
-            text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
-            commentCount = feedElement.status.commentCount,
-            share = feedElement.status.share.toShareUiModel(richTextFormatter, matureContent))
-
-        is UsernameChange -> UsernameChangeItem(
-            id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
-            date = feedElement.timestamp,
-            user = feedElement.user,
-            formerName = feedElement.formerName)
+        is UsernameChange ->
+            UsernameChangeItem(
+                id = "${feedElement.user.name}-${feedElement.formerName}-${feedElement.timestamp}",
+                date = feedElement.timestamp,
+                user = feedElement.user,
+                formerName = feedElement.formerName)
     }
 }

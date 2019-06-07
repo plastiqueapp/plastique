@@ -9,19 +9,8 @@ class DeviationItemFactory @Inject constructor(
     private val richTextFormatter: RichTextFormatter
 ) {
     fun create(deviation: Deviation, index: Int): DeviationItem {
-        return when {
-            deviation.isLiterature ->
-                LiteratureDeviationItem(
-                    deviationId = deviation.id,
-                    title = deviation.title,
-                    isFavorite = deviation.properties.isFavorite,
-                    allowsComments = deviation.properties.allowsComments,
-                    favoriteCount = deviation.stats.favorites,
-                    commentCount = deviation.stats.comments,
-                    excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)),
-                    index = index)
-
-            else ->
+        return when (val data = deviation.data) {
+            is Deviation.Data.Image ->
                 ImageDeviationItem(
                     deviationId = deviation.id,
                     title = deviation.title,
@@ -29,10 +18,23 @@ class DeviationItemFactory @Inject constructor(
                     allowsComments = deviation.properties.allowsComments,
                     favoriteCount = deviation.stats.favorites,
                     commentCount = deviation.stats.comments,
-                    content = deviation.content,
-                    preview = deviation.preview!!,
-                    thumbnails = deviation.thumbnails,
+                    content = data.content,
+                    preview = data.preview,
+                    thumbnails = data.thumbnails,
                     index = index)
+
+            is Deviation.Data.Literature ->
+                LiteratureDeviationItem(
+                    deviationId = deviation.id,
+                    title = deviation.title,
+                    isFavorite = deviation.properties.isFavorite,
+                    allowsComments = deviation.properties.allowsComments,
+                    favoriteCount = deviation.stats.favorites,
+                    commentCount = deviation.stats.comments,
+                    excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)),
+                    index = index)
+
+            is Deviation.Data.Video -> TODO()
         }
     }
 }

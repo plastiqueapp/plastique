@@ -44,24 +44,29 @@ fun Status.Share.toShareUiModel(richTextFormatter: RichTextFormatter, matureCont
     Status.Share.None -> ShareUiModel.None
 
     is Status.Share.DeviationShare -> {
-        val deviation = deviation
-        when {
-            deviation == null -> ShareUiModel.DeletedDeviation
-            deviation.isLiterature -> {
-                ShareUiModel.LiteratureDeviation(
-                    deviationId = deviation.id,
-                    date = deviation.publishTime,
-                    author = deviation.author,
-                    title = deviation.title,
-                    excerpt = SpannedWrapper(richTextFormatter.format(deviation.excerpt!!)),
-                    isJournal = deviation.categoryPath.startsWith("journals"))
+        if (deviation == null) {
+            ShareUiModel.DeletedDeviation
+        } else {
+            when (val data = deviation.data) {
+                is Deviation.Data.Literature ->
+                    ShareUiModel.LiteratureDeviation(
+                        deviationId = deviation.id,
+                        date = deviation.publishTime,
+                        author = deviation.author,
+                        title = deviation.title,
+                        excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)),
+                        isJournal = deviation.categoryPath.startsWith("journals"))
+
+                is Deviation.Data.Image ->
+                    ShareUiModel.ImageDeviation(
+                        deviationId = deviation.id,
+                        author = deviation.author,
+                        title = deviation.title,
+                        preview = data.preview,
+                        isConcealedMature = deviation.properties.isMature && !matureContent)
+
+                is Deviation.Data.Video -> TODO()
             }
-            else -> ShareUiModel.ImageDeviation(
-                deviationId = deviation.id,
-                author = deviation.author,
-                title = deviation.title,
-                preview = deviation.preview!!,
-                isConcealedMature = deviation.properties.isMature && !matureContent)
         }
     }
 

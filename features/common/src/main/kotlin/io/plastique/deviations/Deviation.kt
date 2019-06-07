@@ -11,18 +11,28 @@ data class Deviation(
     val categoryPath: String,
     val publishTime: ZonedDateTime,
     val author: User,
+    val data: Data,
     val properties: Properties,
     val stats: Stats,
-    val dailyDeviation: DailyDeviation?,
-
-    val content: ImageInfo?,
-    val preview: ImageInfo?,
-    val thumbnails: List<ImageInfo>,
-
-    val excerpt: String?
+    val dailyDeviation: DailyDeviation?
 ) {
-    val isLiterature: Boolean
-        get() = excerpt != null
+    sealed class Data {
+        data class Image(
+            val content: ImageInfo,
+            val preview: ImageInfo,
+            val thumbnails: List<ImageInfo>
+        ) : Data()
+
+        data class Literature(
+            val excerpt: String
+        ) : Data()
+
+        data class Video(
+            val thumbnails: List<ImageInfo>,
+            val preview: ImageInfo,
+            val videos: List<VideoInfo>
+        ) : Data()
+    }
 
     data class DailyDeviation(
         val body: String,
@@ -45,6 +55,11 @@ data class Deviation(
 
     data class ImageInfo(
         val size: Size,
+        val url: String
+    )
+
+    data class VideoInfo(
+        val quality: String,
         val url: String
     )
 }

@@ -181,6 +181,10 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
                 is DeviationContent.Literature -> {
                     // TODO
                 }
+
+                is DeviationContent.Video -> {
+                    // TODO
+                }
             }
         }
 

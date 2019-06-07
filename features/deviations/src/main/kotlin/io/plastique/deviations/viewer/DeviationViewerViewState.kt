@@ -2,6 +2,7 @@ package io.plastique.deviations.viewer
 
 import io.plastique.core.content.ContentState
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.deviations.Deviation
 import io.plastique.users.User
 
 sealed class DeviationContent {
@@ -12,6 +13,11 @@ sealed class DeviationContent {
 
     data class Literature(
         val html: String
+    ) : DeviationContent()
+
+    data class Video(
+        val thumbnailUrls: List<String>,
+        val videos: List<Deviation.VideoInfo>
     ) : DeviationContent()
 }
 

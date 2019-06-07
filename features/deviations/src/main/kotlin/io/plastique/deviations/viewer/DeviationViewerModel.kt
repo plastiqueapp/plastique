@@ -38,13 +38,20 @@ class DeviationViewerModel @Inject constructor(
         }
     }
 
-    private fun Deviation.toDeviationContent(): DeviationContent = when {
-        isLiterature -> DeviationContent.Literature(html = "") // TODO
-        else -> {
-            val previewUrl = preview!!.url
-            DeviationContent.Image(
-                url = content?.url ?: previewUrl,
-                thumbnailUrls = thumbnails.map { it.url } + previewUrl) // Ordered from lowest to highest resolution
+    private fun Deviation.toDeviationContent(): DeviationContent {
+        return when (val data = data) {
+            is Deviation.Data.Image ->
+                DeviationContent.Image(
+                    url = data.content.url,
+                    thumbnailUrls = data.thumbnails.map { it.url } + data.preview.url)
+
+            is Deviation.Data.Literature ->
+                DeviationContent.Literature(html = "") // TODO
+
+            is Deviation.Data.Video ->
+                DeviationContent.Video(
+                    thumbnailUrls = data.thumbnails.map { it.url } + data.preview.url,
+                    videos = data.videos)
         }
     }
 }

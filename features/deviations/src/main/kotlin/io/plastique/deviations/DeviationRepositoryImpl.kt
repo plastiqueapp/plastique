@@ -129,8 +129,8 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     private fun matchesParams(deviation: Deviation, params: FetchParams): Boolean {
-        return (!deviation.isLiterature || params.showLiterature) &&
-                (!deviation.properties.isMature || params.showMatureContent)
+        return (params.showLiterature || deviation.data !is Deviation.Data.Literature) &&
+                (params.showMatureContent || !deviation.properties.isMature)
     }
 
     private fun persist(cacheEntry: CacheEntry, deviations: List<DeviationDto>, replaceExisting: Boolean) {
@@ -208,32 +208,70 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
     DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
-fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation = Deviation(
-    id = deviation.id,
-    title = deviation.title,
-    url = deviation.url,
-    categoryPath = deviation.categoryPath,
-    publishTime = deviation.publishTime.atZone(timeZone),
-    author = author.first().toUser(),
-    properties = deviation.properties.toDeviationProperties(),
-    stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
-    dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()),
+fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
+    val data = when {
+        deviation.excerpt != null ->
+            Deviation.Data.Literature(excerpt = deviation.excerpt!!)
 
-    content = images.asSequence()
-        .filter { it.type == DeviationImageType.Content }
-        .map { it.toImageInfo() }
-        .firstOrNull(),
-    preview = images.asSequence()
-        .filter { it.type == DeviationImageType.Preview }
-        .map { it.toImageInfo() }
-        .firstOrNull(),
-    thumbnails = images.asSequence()
-        .filter { it.type == DeviationImageType.Thumbnail }
-        .map { it.toImageInfo() }
-        .sortedBy { it.size.width }
-        .toList(),
+        videos.isNotEmpty() -> {
+            val preview = images.asSequence()
+                .filter { it.type == DeviationImageType.Preview }
+                .map { it.toImageInfo() }
+                .first()
 
-    excerpt = deviation.excerpt)
+            val thumbnails = images.asSequence()
+                .filter { it.type == DeviationImageType.Thumbnail }
+                .map { it.toImageInfo() }
+                .sortedBy { it.size.width }
+                .toList()
+
+            val videos = videos.asSequence()
+                .map { it.toVideoInfo() }
+                .sortedBy { it.quality }
+                .toList()
+
+            Deviation.Data.Video(
+                thumbnails = thumbnails,
+                preview = preview,
+                videos = videos)
+        }
+
+        else -> {
+            val content = images.asSequence()
+                .filter { it.type == DeviationImageType.Content }
+                .map { it.toImageInfo() }
+                .first()
+
+            val preview = images.asSequence()
+                .filter { it.type == DeviationImageType.Preview }
+                .map { it.toImageInfo() }
+                .first()
+
+            val thumbnails = images.asSequence()
+                .filter { it.type == DeviationImageType.Thumbnail }
+                .map { it.toImageInfo() }
+                .sortedBy { it.size.width }
+                .toList()
+
+            Deviation.Data.Image(
+                content = content,
+                preview = preview,
+                thumbnails = thumbnails)
+        }
+    }
+
+    return Deviation(
+        id = deviation.id,
+        title = deviation.title,
+        url = deviation.url,
+        categoryPath = deviation.categoryPath,
+        publishTime = deviation.publishTime.atZone(timeZone),
+        author = author.first().toUser(),
+        data = data,
+        properties = deviation.properties.toDeviationProperties(),
+        stats = deviation.stats.toDeviationStats(),
+        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
+}
 
 private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
     if (giverId != giver.id) {
@@ -242,12 +280,14 @@ private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.
     return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
 
-fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
+private fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
     isDownloadable = isDownloadable,
     isFavorite = isFavorite,
     isMature = isMature,
     allowsComments = allowsComments,
     downloadFileSize = downloadFileSize)
+
+private fun DeviationStatsEntity.toDeviationStats(): Deviation.Stats = Deviation.Stats(comments = comments, favorites = favorites)
 
 private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
 
@@ -266,3 +306,5 @@ private fun VideoDto.toVideoEntity(deviationId: String): DeviationVideoEntity = 
     url = url,
     duration = duration,
     fileSize = fileSize)
+
+private fun DeviationVideoEntity.toVideoInfo(): Deviation.VideoInfo = Deviation.VideoInfo(quality = quality, url = url)
