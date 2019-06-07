@@ -22,9 +22,9 @@ import io.plastique.core.paging.PagedData
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
+import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.util.RxRoom
-import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

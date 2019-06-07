@@ -13,10 +13,10 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.users.UserType
-import io.plastique.util.ElapsedTimeFormatter
 
 private class AddToCollectionItemDelegate(
     private val glide: GlideRequests,

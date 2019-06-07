@@ -10,10 +10,10 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationNotFoundException
 import io.plastique.deviations.DeviationRepository
 import io.plastique.users.toUser
-import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Singles

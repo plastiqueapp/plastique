@@ -13,13 +13,13 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.R
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
-import io.plastique.util.ElapsedTimeFormatter
 
 class StatusItemDelegate(
     private val glide: GlideRequests,

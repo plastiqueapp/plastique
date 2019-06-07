@@ -26,6 +26,7 @@ import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.statuses.R
@@ -35,7 +36,6 @@ import io.plastique.statuses.list.StatusListEvent.LoadMoreEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
 import io.plastique.statuses.list.StatusListEvent.RetryClickEvent
 import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
-import io.plastique.util.ElapsedTimeFormatter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 

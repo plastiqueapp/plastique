@@ -34,6 +34,7 @@ import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.feed.FeedEvent.LoadMoreEvent
 import io.plastique.feed.FeedEvent.RefreshEvent
@@ -47,7 +48,6 @@ import io.plastique.feed.settings.OnFeedSettingsChangedListener
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
-import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 package io.plastique.core.cache
 
-import io.plastique.util.TimeProvider
+import io.plastique.core.time.TimeProvider
 import org.threeten.bp.Duration
 
 enum class CacheStatus {

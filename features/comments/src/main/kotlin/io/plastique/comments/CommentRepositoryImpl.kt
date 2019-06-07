@@ -19,11 +19,11 @@ import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
+import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
-import io.plastique.util.TimeProvider
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration

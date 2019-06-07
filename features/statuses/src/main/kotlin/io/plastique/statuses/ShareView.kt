@@ -10,8 +10,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.common.FeedHeaderView
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
-import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.dimensionRatio
 
 class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {

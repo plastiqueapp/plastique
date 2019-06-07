@@ -20,13 +20,13 @@ import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
+import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.toDeviation
 import io.plastique.statuses.StatusRepository
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
-import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

@@ -11,11 +11,11 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserDao
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import org.threeten.bp.Duration

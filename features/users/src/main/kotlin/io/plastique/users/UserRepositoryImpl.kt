@@ -7,7 +7,7 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
-import io.plastique.util.TimeProvider
+import io.plastique.core.time.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
 import org.threeten.bp.Duration

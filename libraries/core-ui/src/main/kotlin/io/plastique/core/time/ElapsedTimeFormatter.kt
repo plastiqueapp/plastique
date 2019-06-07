@@ -1,4 +1,4 @@
-package io.plastique.util
+package io.plastique.core.time
 
 import android.content.Context
 import io.plastique.core.ui.R

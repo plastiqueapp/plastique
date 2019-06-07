@@ -1,4 +1,4 @@
-package io.plastique.util
+package io.plastique.core.time
 
 import androidx.test.core.app.ApplicationProvider
 import com.nhaarman.mockitokotlin2.mock

@@ -16,12 +16,12 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
+import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
 import io.plastique.util.Size
-import io.plastique.util.TimeProvider
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration

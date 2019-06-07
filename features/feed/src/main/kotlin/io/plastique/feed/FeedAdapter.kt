@@ -23,6 +23,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.list.ImageHelper
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
@@ -30,7 +31,6 @@ import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
 import io.plastique.users.User
-import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.dimensionRatio
 
 private class CollectionUpdateItemDelegate(
