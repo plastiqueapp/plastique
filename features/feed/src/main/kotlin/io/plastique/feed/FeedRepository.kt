@@ -36,6 +36,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
+import org.threeten.bp.ZoneId
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -66,7 +67,7 @@ class FeedRepository @Inject constructor(
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
         return RxRoom.createObservable(database, DATA_TABLES) {
-            val feedElements = feedDao.getFeed().map { it.toFeedElement() }
+            val feedElements = feedDao.getFeed().map { it.toFeedElement(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
         }
@@ -175,7 +176,7 @@ data class FeedCacheMetadata(
     val nextCursor: StringCursor?
 )
 
-private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
+private fun FeedElementEntityWithRelations.toFeedElement(timeZone: ZoneId): FeedElement {
     val user = users.first().toUser()
     return when (feedElement.type) {
         FeedElementTypes.COLLECTION_UPDATE -> FeedElement.CollectionUpdate(
@@ -189,23 +190,23 @@ private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
                 timestamp = feedElement.timestamp,
                 user = user,
                 submittedTotal = max(deviations.size, feedElement.bucketTotal),
-                deviations = deviations.map { it.deviationEntityWithRelations.toDeviation() })
+                deviations = deviations.map { it.deviationEntityWithRelations.toDeviation(timeZone) })
         } else {
             FeedElement.DeviationSubmitted(
                 timestamp = feedElement.timestamp,
                 user = user,
-                deviation = deviations.first().deviationEntityWithRelations.toDeviation())
+                deviation = deviations.first().deviationEntityWithRelations.toDeviation(timeZone))
         }
 
         FeedElementTypes.JOURNAL_SUBMITTED -> FeedElement.JournalSubmitted(
             timestamp = feedElement.timestamp,
             user = user,
-            deviation = deviations.first().deviationEntityWithRelations.toDeviation())
+            deviation = deviations.first().deviationEntityWithRelations.toDeviation(timeZone))
 
         FeedElementTypes.STATUS_UPDATE -> FeedElement.StatusUpdate(
             timestamp = feedElement.timestamp,
             user = user,
-            status = statuses.first().toStatus())
+            status = statuses.first().toStatus(timeZone))
 
         FeedElementTypes.USERNAME_CHANGE -> FeedElement.UsernameChange(
             timestamp = feedElement.timestamp,

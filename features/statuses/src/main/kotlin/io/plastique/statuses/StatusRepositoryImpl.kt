@@ -100,7 +100,7 @@ class StatusRepositoryImpl @Inject constructor(
 
     private fun getStatusesFromDb(cacheKey: String): Observable<PagedData<List<Status>, OffsetCursor>> {
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "statuses", "user_statuses")) {
-            val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus() }
+            val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             cacheEntryRepository.getEntryByKey(cacheKey)
             PagedData(statuses, nextCursor)

@@ -1,6 +1,7 @@
 package io.plastique.util
 
 import androidx.test.core.app.ApplicationProvider
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.runner.RunWith
@@ -15,7 +16,8 @@ class ElapsedTimeFormatterTest(
     private val to: ZonedDateTime,
     private val expected: String
 ) {
-    private val elapsedTimeFormatter = ElapsedTimeFormatter(ApplicationProvider.getApplicationContext())
+    private val timeProvider = mock<TimeProvider>()
+    private val elapsedTimeFormatter = ElapsedTimeFormatter(ApplicationProvider.getApplicationContext(), timeProvider)
 
     @Test
     fun format() {

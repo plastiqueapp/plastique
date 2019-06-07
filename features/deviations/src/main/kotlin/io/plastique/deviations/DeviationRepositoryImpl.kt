@@ -123,7 +123,7 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun combineAndFilter(deviationsWithRelations: List<DeviationEntityWithRelations>, params: FetchParams): List<Deviation> {
         return deviationsWithRelations
             .asSequence()
-            .map { it.toDeviation() }
+            .map { it.toDeviation(timeProvider.timeZone) }
             .filter { matchesParams(it, params) }
             .toList()
     }
@@ -161,7 +161,7 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {
         return deviationDao.getDeviationById(deviationId)
             .takeWhile { it.isNotEmpty() }
-            .map { it.first().toDeviation() }
+            .map { it.first().toDeviation(timeProvider.timeZone) }
             .distinctUntilChanged()
     }
 
@@ -208,12 +208,12 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
     DailyDeviationEntity(body = body, date = date, giverId = giver.id)
 
-fun DeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
+fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation = Deviation(
     id = deviation.id,
     title = deviation.title,
     url = deviation.url,
     categoryPath = deviation.categoryPath,
-    publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
+    publishTime = deviation.publishTime.atZone(timeZone),
     author = author.first().toUser(),
     properties = deviation.properties.toDeviationProperties(),
     stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),

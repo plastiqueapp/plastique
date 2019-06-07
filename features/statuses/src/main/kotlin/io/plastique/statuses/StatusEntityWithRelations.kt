@@ -7,6 +7,7 @@ import io.plastique.deviations.DeviationEntityWithRelations
 import io.plastique.deviations.toDeviation
 import io.plastique.users.UserEntity
 import io.plastique.users.toUser
+import org.threeten.bp.ZoneId
 
 data class StatusEntityWithRelations(
     @Embedded
@@ -30,10 +31,10 @@ data class StatusEntityWithUsers(
     val users: List<UserEntity>
 )
 
-fun StatusEntityWithRelations.toStatus(): Status {
+fun StatusEntityWithRelations.toStatus(timeZone: ZoneId): Status {
     val share = when (status.shareType) {
         ShareType.None -> Status.Share.None
-        ShareType.Deviation -> Status.Share.DeviationShare(deviation = deviations.firstOrNull()?.toDeviation())
+        ShareType.Deviation -> Status.Share.DeviationShare(deviation = deviations.firstOrNull()?.toDeviation(timeZone))
         ShareType.Status -> Status.Share.StatusShare(status = statuses.firstOrNull()?.toStatus())
     }
     return Status(

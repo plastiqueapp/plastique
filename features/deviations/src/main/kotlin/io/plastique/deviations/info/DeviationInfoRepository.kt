@@ -56,7 +56,7 @@ class DeviationInfoRepository @Inject constructor(
     private fun getDeviationInfoFromDb(deviationId: String): Observable<DeviationInfo> {
         return deviationMetadataDao.getDeviationInfoById(deviationId)
             .filter { it.isNotEmpty() }
-            .map { it.first().toDeviationInfo(ZoneId.systemDefault()) }
+            .map { it.first().toDeviationInfo(timeProvider.timeZone) }
             .distinctUntilChanged()
     }
 
@@ -74,10 +74,10 @@ class DeviationInfoRepository @Inject constructor(
     }
 }
 
-private fun DeviationInfoEntity.toDeviationInfo(zoneId: ZoneId): DeviationInfo = DeviationInfo(
+private fun DeviationInfoEntity.toDeviationInfo(timeZone: ZoneId): DeviationInfo = DeviationInfo(
     title = title,
     author = users.first().toUser(),
-    publishTime = publishTime.atZone(zoneId),
+    publishTime = publishTime.atZone(timeZone),
     description = description,
     tags = tags)
 

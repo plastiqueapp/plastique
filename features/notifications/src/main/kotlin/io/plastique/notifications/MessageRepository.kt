@@ -32,6 +32,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions
 import org.threeten.bp.Duration
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -72,7 +73,7 @@ class MessageRepository @Inject constructor(
         return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages")) {
             val messages = messageDao.getMessages()
                 .asSequence()
-                .map { it.toMessage() }
+                .map { it.toMessage(timeProvider.timeZone) }
                 .filterNotNull()
                 .toList()
             val nextCursor = getNextCursor(cacheKey)
@@ -205,14 +206,14 @@ private fun MessageDto.toMessageEntity(): MessageEntity = MessageEntity(
         commentId = subject?.comment?.id,
         collectionFolderId = subject?.collection?.id))
 
-private fun MessageEntityWithRelations.toMessage(): Message? {
+private fun MessageEntityWithRelations.toMessage(timeZone: ZoneId): Message? {
     val data = when (message.type) {
         MessageTypes.BADGE_GIVEN ->
             Message.Data.BadgeGiven(
                 text = message.html!!)
 
         MessageTypes.COLLECT -> {
-            val deviation = subjectDeviation.first().toDeviation()
+            val deviation = subjectDeviation.first().toDeviation(timeZone)
             Message.Data.AddToCollection(
                 deviationId = deviation.id,
                 deviationTitle = deviation.title,
@@ -220,7 +221,7 @@ private fun MessageEntityWithRelations.toMessage(): Message? {
         }
 
         MessageTypes.FAVORITE -> {
-            val deviation = subjectDeviation.first().toDeviation()
+            val deviation = subjectDeviation.first().toDeviation(timeZone)
             Message.Data.Favorite(
                 deviationId = deviation.id,
                 deviationTitle = deviation.title)
