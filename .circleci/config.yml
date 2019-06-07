@@ -41,6 +41,13 @@ jobs:
             cp *.hprof /tmp/heap_dumps 2>/dev/null || :
           when: on_fail
 
+      - run:
+          name: Copy Kotlin Daemon logs
+          command: |
+            mkdir -p /tmp/kotlin_daemon_logs
+            find $TMPDIR -name "kotlin-daemon.*.log" -exec cp {} /tmp/kotlin_daemon_logs/ \;
+          when: on_fail
+
       - save_cache:
           paths:
             - ~/.gradle/caches
@@ -59,6 +66,10 @@ jobs:
       - store_artifacts:
           path: /tmp/heap_dumps
           destination: heap_dumps
+
+      - store_artifacts:
+          path: /tmp/kotlin_daemon_logs
+          destination: kotlin_daemon_logs
 
       - store_test_results:
           path: libraries/core/build/test-results
