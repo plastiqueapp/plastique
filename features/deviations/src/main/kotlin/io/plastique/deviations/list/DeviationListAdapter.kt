@@ -1,6 +1,7 @@
 package io.plastique.deviations.list
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,9 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
+import io.plastique.glide.GlideRequest
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.util.dimensionRatio
@@ -59,7 +62,18 @@ private class ListImageDeviationItemDelegate(
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
+        val thumbnailRequest = item.thumbnails.asSequence()
+            .fold<Deviation.ImageInfo, GlideRequest<Drawable>?>(null) { previous, thumbnail ->
+                val current = glide.load(thumbnail.url).onlyRetrieveFromCache(true)
+                if (previous != null) {
+                    current.thumbnail(previous)
+                } else {
+                    current
+                }
+            }
+
         glide.load(preview.url)
+            .thumbnail(thumbnailRequest)
             .override(previewSize.width, previewSize.height)
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
