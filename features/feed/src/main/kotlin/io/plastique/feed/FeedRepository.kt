@@ -24,15 +24,10 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
-import io.plastique.deviations.DailyDeviationEntity
-import io.plastique.deviations.Deviation
-import io.plastique.deviations.DeviationImageEntity
-import io.plastique.deviations.DeviationImageType
 import io.plastique.deviations.DeviationRepository
-import io.plastique.deviations.toDeviationProperties
+import io.plastique.deviations.toDeviation
 import io.plastique.statuses.StatusRepository
 import io.plastique.statuses.toStatus
-import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
@@ -41,7 +36,6 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
-import org.threeten.bp.ZoneId
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -71,7 +65,7 @@ class FeedRepository @Inject constructor(
     }
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
-        return RxRoom.createObservable(database, SOURCE_TABLES) {
+        return RxRoom.createObservable(database, DATA_TABLES) {
             val feedElements = feedDao.getFeed().map { it.toFeedElement() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
@@ -167,7 +161,8 @@ class FeedRepository @Inject constructor(
     companion object {
         const val CACHE_KEY = "feed"
         private val CACHE_DURATION = Duration.ofHours(1)
-        private val SOURCE_TABLES = arrayOf("users", "collection_folders", "deviation_images", "feed_deviations_ordered", "deviations", "statuses", "feed")
+        private val DATA_TABLES = arrayOf(
+            "deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses", "feed", "users")
     }
 }
 
@@ -194,18 +189,18 @@ private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
                 timestamp = feedElement.timestamp,
                 user = user,
                 submittedTotal = max(deviations.size, feedElement.bucketTotal),
-                deviations = deviations.map { it.toDeviation() })
+                deviations = deviations.map { it.deviationEntityWithRelations.toDeviation() })
         } else {
             FeedElement.DeviationSubmitted(
                 timestamp = feedElement.timestamp,
                 user = user,
-                deviation = deviations.first().toDeviation())
+                deviation = deviations.first().deviationEntityWithRelations.toDeviation())
         }
 
         FeedElementTypes.JOURNAL_SUBMITTED -> FeedElement.JournalSubmitted(
             timestamp = feedElement.timestamp,
             user = user,
-            deviation = deviations.first().toDeviation())
+            deviation = deviations.first().deviationEntityWithRelations.toDeviation())
 
         FeedElementTypes.STATUS_UPDATE -> FeedElement.StatusUpdate(
             timestamp = feedElement.timestamp,
@@ -219,39 +214,6 @@ private fun FeedElementEntityWithRelations.toFeedElement(): FeedElement {
 
         else -> throw IllegalArgumentException("Unhandled feed element type ${feedElement.type}")
     }
-}
-
-// TODO: Reduce duplication
-private fun FeedDeviationEntityWithRelations.toDeviation(): Deviation = Deviation(
-    id = deviation.id,
-    title = deviation.title,
-    url = deviation.url,
-    categoryPath = deviation.categoryPath,
-    publishTime = deviation.publishTime.atZone(ZoneId.systemDefault()),
-    content = images.asSequence()
-        .filter { it.type == DeviationImageType.Content }
-        .map { it.toImageInfo() }
-        .firstOrNull(),
-    preview = images.asSequence()
-        .filter { it.type == DeviationImageType.Preview }
-        .map { it.toImageInfo() }
-        .firstOrNull(),
-    thumbnails = images.asSequence()
-        .filter { it.type == DeviationImageType.Thumbnail }
-        .map { it.toImageInfo() }
-        .sortedBy { it.size.width }
-        .toList(),
-    excerpt = deviation.excerpt,
-    author = author.first().toUser(),
-    properties = deviation.properties.toDeviationProperties(),
-    stats = Deviation.Stats(comments = deviation.stats.comments, favorites = deviation.stats.favorites),
-    dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
-
-private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
-    if (giverId != giver.id) {
-        throw IllegalArgumentException("Expected user with id $giverId but got ${giver.id}")
-    }
-    return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
 
 private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this) {
@@ -288,5 +250,3 @@ private fun FeedElementDto.toFeedElementEntity(): FeedElementEntity = when (this
 
     FeedElementDto.Unknown -> throw IllegalArgumentException("Unknown feed element type")
 }
-
-private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
