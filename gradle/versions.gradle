@@ -40,7 +40,7 @@ ext.versions = [
     materialComponents   : "1.1.0-alpha07",
     glide                : "4.9.0",
     glideDebugIndicator  : "0.9.1",
-    glidePreloader       : "0.1",
+    glidePreloader       : "0.1.1",
     okhttp               : "3.14.2",
     okio                 : "2.2.2",
     retrofit             : "2.6.0",
