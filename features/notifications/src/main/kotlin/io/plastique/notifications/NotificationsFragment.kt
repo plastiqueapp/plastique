@@ -35,6 +35,7 @@ import io.plastique.notifications.NotificationsEvent.RefreshEvent
 import io.plastique.notifications.NotificationsEvent.RetryClickEvent
 import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
 import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
+import io.plastique.util.ElapsedTimeFormatter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -42,6 +43,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
     MainPage,
     ScrollableToTop {
 
+    @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: NotificationsNavigator
 
     private lateinit var notificationsView: RecyclerView
@@ -121,6 +123,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
     private fun createAdapter(): NotificationsAdapter {
         return NotificationsAdapter(
             glide = GlideApp.with(this),
+            elapsedTimeFormatter = elapsedTimeFormatter,
             onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
             onOpenComment = { /* TODO */ },
             onOpenDeviation = { navigator.openDeviation(navigationContext, it) },

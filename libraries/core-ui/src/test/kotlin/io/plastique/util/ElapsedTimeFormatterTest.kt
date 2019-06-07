@@ -15,9 +15,11 @@ class ElapsedTimeFormatterTest(
     private val to: ZonedDateTime,
     private val expected: String
 ) {
+    private val elapsedTimeFormatter = ElapsedTimeFormatter(ApplicationProvider.getApplicationContext())
+
     @Test
     fun format() {
-        val result = ElapsedTimeFormatter.format(ApplicationProvider.getApplicationContext(), from, to)
+        val result = elapsedTimeFormatter.format(from, to)
         assertEquals(expected, result)
     }
 
@@ -26,68 +28,73 @@ class ElapsedTimeFormatterTest(
         @JvmStatic
         fun data(): Collection<Array<Any>> = listOf(
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 5, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 0, minute = 0, second = 5),
                 "just now"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 1, minute = 0, second = 0),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
                 "just now"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 6, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 0, minute = 0, second = 6),
                 "6s"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 59, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 0, minute = 0, second = 59),
                 "59s"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 1, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 0, minute = 1, second = 0),
                 "1m"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 0, 59, 59, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 0, minute = 59, second = 59),
                 "59m"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 1, 0, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 1, minute = 0, second = 0),
                 "1h"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 1, 59, 59, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 1, minute = 59, second = 59),
                 "1h"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 1, 23, 59, 59, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1, hour = 23, minute = 59, second = 59),
                 "23h"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 2, 0, 0, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 2),
                 "1d"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 8, 23, 59, 59, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 8, hour = 23, minute = 59, second = 59),
                 "7d"),
 
             arrayOf(
-                ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 1),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 9),
                 "01 Jan"),
 
             arrayOf(
-                ZonedDateTime.of(2016, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault()),
-                ZonedDateTime.of(2017, 1, 9, 0, 0, 0, 0, ZoneId.systemDefault()),
+                dateTimeOf(year = 2016, month = 12, dayOfMonth = 31),
+                dateTimeOf(year = 2017, month = 1, dayOfMonth = 9),
                 "31 Dec 16"))
+
+        @Suppress("LongParameterList")
+        private fun dateTimeOf(year: Int, month: Int, dayOfMonth: Int, hour: Int = 0, minute: Int = 0, second: Int = 0): ZonedDateTime {
+            return ZonedDateTime.of(year, month, dayOfMonth, hour, minute, second, 0, ZoneId.systemDefault())
+        }
     }
 }

@@ -17,10 +17,10 @@ import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.users.UserType
 import io.plastique.util.ElapsedTimeFormatter
-import org.threeten.bp.ZonedDateTime
 
 private class AddToCollectionItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<AddToCollectionItem, ListItem, AddToCollectionItemDelegate.ViewHolder>() {
 
@@ -34,7 +34,7 @@ private class AddToCollectionItemDelegate(
     override fun onBindViewHolder(item: AddToCollectionItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
+        holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_add_to_collection,
             item.deviationTitle, item.folderName), 0)
 
@@ -63,6 +63,7 @@ private class AddToCollectionItemDelegate(
 
 private class BadgeGivenItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<BadgeGivenItem, ListItem, BadgeGivenItemDelegate.ViewHolder>() {
 
@@ -76,7 +77,7 @@ private class BadgeGivenItemDelegate(
     override fun onBindViewHolder(item: BadgeGivenItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
+        holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = item.text
 
         glide.load(item.user.avatarUrl)
@@ -104,6 +105,7 @@ private class BadgeGivenItemDelegate(
 
 private class FavoriteItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<FavoriteItem, ListItem, FavoriteItemDelegate.ViewHolder>() {
 
@@ -117,7 +119,7 @@ private class FavoriteItemDelegate(
     override fun onBindViewHolder(item: FavoriteItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
+        holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_favorite, item.deviationTitle), 0)
 
         glide.load(item.user.avatarUrl)
@@ -145,6 +147,7 @@ private class FavoriteItemDelegate(
 
 private class WatchItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<WatchItem, ListItem, WatchItemDelegate.ViewHolder>() {
 
@@ -158,7 +161,7 @@ private class WatchItemDelegate(
     override fun onBindViewHolder(item: WatchItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = ElapsedTimeFormatter.format(holder.itemView.context, item.time, ZonedDateTime.now())
+        holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = holder.itemView.resources.getString(R.string.notifications_item_watch)
 
         glide.load(item.user.avatarUrl)
@@ -186,6 +189,7 @@ private class WatchItemDelegate(
 
 class NotificationsAdapter(
     glide: GlideRequests,
+    elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onOpenCollection: OnOpenCollectionListener,
     private val onOpenComment: OnOpenCommentListener,
     private val onOpenDeviation: OnOpenDeviationListener,
@@ -195,10 +199,10 @@ class NotificationsAdapter(
 
     init {
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate.VIEW_TYPE, LoadingIndicatorItemDelegate())
-        delegatesManager.addDelegate(AddToCollectionItemDelegate(glide, this))
-        delegatesManager.addDelegate(BadgeGivenItemDelegate(glide, this))
-        delegatesManager.addDelegate(FavoriteItemDelegate(glide, this))
-        delegatesManager.addDelegate(WatchItemDelegate(glide, this))
+        delegatesManager.addDelegate(AddToCollectionItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(BadgeGivenItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(FavoriteItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(WatchItemDelegate(glide, elapsedTimeFormatter, this))
     }
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {

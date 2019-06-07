@@ -6,13 +6,18 @@ import org.threeten.bp.Duration
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
+import javax.inject.Inject
 
-@Suppress("MagicNumber")
-object ElapsedTimeFormatter {
-    private val DAY_MONTH = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH)
-    private val DAY_MONTH_YEAR = DateTimeFormatter.ofPattern("dd MMM yy", Locale.ENGLISH)
+class ElapsedTimeFormatter @Inject constructor(
+    private val context: Context,
+    private val timeProvider: TimeProvider
+) {
+    fun format(from: ZonedDateTime): String {
+        return format(from, timeProvider.currentTime)
+    }
 
-    fun format(context: Context, from: ZonedDateTime, to: ZonedDateTime): String {
+    @Suppress("MagicNumber")
+    fun format(from: ZonedDateTime, to: ZonedDateTime): String {
         val elapsed = Duration.between(from, to)
         return when {
             elapsed.seconds <= 5 -> context.getString(R.string.common_just_now)
@@ -23,5 +28,10 @@ object ElapsedTimeFormatter {
             from.year == to.year -> DAY_MONTH.format(from)
             else -> DAY_MONTH_YEAR.format(from)
         }
+    }
+
+    companion object {
+        private val DAY_MONTH = DateTimeFormatter.ofPattern("dd MMM", Locale.ENGLISH)
+        private val DAY_MONTH_YEAR = DateTimeFormatter.ofPattern("dd MMM yy", Locale.ENGLISH)
     }
 }

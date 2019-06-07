@@ -6,22 +6,20 @@ import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import io.plastique.glide.GlideRequests
 import io.plastique.users.User
-import io.plastique.util.ElapsedTimeFormatter
-import org.threeten.bp.ZonedDateTime
 
 class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val avatarView: ImageView
     private val usernameView: TextView
     private val dateView: TextView
 
-    var date: ZonedDateTime? = null
+    var time: String? = null
         set(value) {
-            if (field != value) {
-                field = value
-                renderDate(value)
-            }
+            field = value
+            dateView.text = value
+            dateView.isVisible = value != null
         }
 
     init {
@@ -44,9 +42,5 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
         val wrapper = OnClickListener { listener.onClick(this) }
         avatarView.setOnClickListener(wrapper)
         usernameView.setOnClickListener(wrapper)
-    }
-
-    private fun renderDate(dateTime: ZonedDateTime?) {
-        dateView.text = if (dateTime != null) ElapsedTimeFormatter.format(context, dateTime, ZonedDateTime.now()) else null
     }
 }

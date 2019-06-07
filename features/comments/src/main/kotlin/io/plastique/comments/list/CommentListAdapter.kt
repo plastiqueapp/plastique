@@ -17,10 +17,10 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.util.ElapsedTimeFormatter
-import org.threeten.bp.ZonedDateTime
 
 private class CommentItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<CommentItem, ListItem, CommentItemDelegate.ViewHolder>() {
 
@@ -34,7 +34,7 @@ private class CommentItemDelegate(
     override fun onBindViewHolder(item: CommentItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.authorView.text = item.comment.author.name
         holder.textView.text = item.comment.text.value
-        holder.timeView.text = ElapsedTimeFormatter.format(holder.timeView.context, item.comment.datePosted, ZonedDateTime.now())
+        holder.timeView.text = elapsedTimeFormatter.format(item.comment.datePosted)
 
         val replyingTo = if (item.comment.isReply) {
             holder.itemView.context.getString(R.string.comments_replying_to, item.comment.parentAuthorName)
@@ -80,13 +80,14 @@ private class CommentItemDelegate(
 
 class CommentListAdapter(
     glide: GlideRequests,
+    elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onReplyClick: OnReplyClickListener,
     private val onReplyingToClick: OnReplyingToClickListener,
     private val onUserClick: OnUserClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(CommentItemDelegate(glide, this))
+        delegatesManager.addDelegate(CommentItemDelegate(glide, elapsedTimeFormatter, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

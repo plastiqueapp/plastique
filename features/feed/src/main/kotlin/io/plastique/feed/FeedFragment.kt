@@ -47,6 +47,7 @@ import io.plastique.feed.settings.OnFeedSettingsChangedListener
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
+import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -56,6 +57,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     ScrollableToTop,
     OnFeedSettingsChangedListener {
 
+    @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: FeedNavigator
 
     private lateinit var feedView: RecyclerView
@@ -89,6 +91,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
 
         adapter = FeedAdapter(
             glide = GlideApp.with(this),
+            elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = DeviationsGridItemSizeCallback(deviationParams),
             onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
             onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },

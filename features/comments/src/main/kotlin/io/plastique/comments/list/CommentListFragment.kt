@@ -42,10 +42,12 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
+import io.plastique.util.ElapsedTimeFormatter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewModel::class.java), ScrollableToTop {
+    @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: CommentsNavigator
 
     private lateinit var commentsView: RecyclerView
@@ -65,6 +67,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
         val glide = GlideApp.with(this)
         adapter = CommentListAdapter(
             glide = glide,
+            elapsedTimeFormatter = elapsedTimeFormatter,
             onReplyClick = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) },
             onReplyingToClick = { commentId -> scrollToComment(commentId) },
             onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })

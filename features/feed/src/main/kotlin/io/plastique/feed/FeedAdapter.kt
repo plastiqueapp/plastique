@@ -30,10 +30,12 @@ import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
 import io.plastique.users.User
+import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.dimensionRatio
 
 private class CollectionUpdateItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -47,7 +49,7 @@ private class CollectionUpdateItemDelegate(
     }
 
     override fun onBindViewHolder(item: CollectionUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.folderNameView.text = holder.itemView.resources.getString(R.string.feed_collection_folder_name, item.folderName, item.addedCount)
         holder.folderItemsAdapter.update(item.folderItems)
@@ -93,6 +95,7 @@ private class CollectionUpdateItemDelegate(
 
 private class ImageDeviationItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ImageDeviationItemDelegate.ViewHolder>() {
 
@@ -104,7 +107,7 @@ private class ImageDeviationItemDelegate(
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.title
         holder.commentsButton.text = item.commentCount.toString()
@@ -152,6 +155,7 @@ private class ImageDeviationItemDelegate(
 
 private class LiteratureDeviationItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, LiteratureDeviationItemDelegate.ViewHolder>() {
 
@@ -163,7 +167,7 @@ private class LiteratureDeviationItemDelegate(
     }
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.title
         holder.excerptView.text = item.excerpt.value
@@ -198,6 +202,7 @@ private class LiteratureDeviationItemDelegate(
 
 private class MultipleDeviationsItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val gridItemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -211,7 +216,7 @@ private class MultipleDeviationsItemDelegate(
     }
 
     override fun onBindViewHolder(item: MultipleDeviationsItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         val resources = holder.itemView.resources
         holder.descriptionView.text = resources.getString(R.string.feed_multiple_deviations_submitted_description,
@@ -256,6 +261,7 @@ private class MultipleDeviationsItemDelegate(
 
 private class StatusItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<StatusUpdateItem, ListItem, StatusItemDelegate.ViewHolder>() {
 
@@ -267,13 +273,13 @@ private class StatusItemDelegate(
     }
 
     override fun onBindViewHolder(item: StatusUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.statusTextView.text = item.text.value
         holder.commentsButton.text = item.commentCount.toString()
         holder.shareButton.isVisible = !item.share.isDeleted
 
-        holder.shareView.setShare(item.share, glide)
+        holder.shareView.setShare(item.share, glide, elapsedTimeFormatter)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
@@ -301,6 +307,7 @@ private class StatusItemDelegate(
 
 private class UsernameChangeItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<UsernameChangeItem, ListItem, UsernameChangeItemDelegate.ViewHolder>() {
 
@@ -312,7 +319,7 @@ private class UsernameChangeItemDelegate(
     }
 
     override fun onBindViewHolder(item: UsernameChangeItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.feed_username_change_description,
             item.formerName.htmlEncode()), 0)
@@ -334,6 +341,7 @@ private class UsernameChangeItemDelegate(
 
 class FeedAdapter(
     glide: GlideRequests,
+    elapsedTimeFormatter: ElapsedTimeFormatter,
     gridItemSizeCallback: ItemSizeCallback,
     private val onCollectionFolderClick: OnCollectionFolderClickListener,
     private val onCommentsClick: OnCommentsClickListener,
@@ -345,12 +353,12 @@ class FeedAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(CollectionUpdateItemDelegate(glide, gridItemSizeCallback, onDeviationClick, this))
-        delegatesManager.addDelegate(ImageDeviationItemDelegate(glide, this))
-        delegatesManager.addDelegate(LiteratureDeviationItemDelegate(glide, this))
-        delegatesManager.addDelegate(MultipleDeviationsItemDelegate(glide, gridItemSizeCallback, onDeviationClick, this))
-        delegatesManager.addDelegate(StatusItemDelegate(glide, this))
-        delegatesManager.addDelegate(UsernameChangeItemDelegate(glide, this))
+        delegatesManager.addDelegate(CollectionUpdateItemDelegate(glide, elapsedTimeFormatter, gridItemSizeCallback, onDeviationClick, this))
+        delegatesManager.addDelegate(ImageDeviationItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(LiteratureDeviationItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(MultipleDeviationsItemDelegate(glide, elapsedTimeFormatter, gridItemSizeCallback, onDeviationClick, this))
+        delegatesManager.addDelegate(StatusItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(UsernameChangeItemDelegate(glide, elapsedTimeFormatter, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

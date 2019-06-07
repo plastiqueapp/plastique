@@ -11,20 +11,21 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.common.FeedHeaderView
 import io.plastique.glide.GlideRequests
+import io.plastique.util.ElapsedTimeFormatter
 import io.plastique.util.dimensionRatio
 
 class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private var layoutId: Int = 0
     private var share: ShareUiModel = ShareUiModel.None
 
-    fun setShare(share: ShareUiModel, glide: GlideRequests) {
+    fun setShare(share: ShareUiModel, glide: GlideRequests, elapsedTimeFormatter: ElapsedTimeFormatter) {
         if (this.share != share) {
             this.share = share
-            renderShare(share, glide)
+            renderShare(share, glide, elapsedTimeFormatter)
         }
     }
 
-    private fun renderShare(share: ShareUiModel, glide: GlideRequests) {
+    private fun renderShare(share: ShareUiModel, glide: GlideRequests, elapsedTimeFormatter: ElapsedTimeFormatter) {
         when (share) {
             ShareUiModel.None -> {
                 setLayout(0)
@@ -66,7 +67,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val excerptView: TextView = findViewById(R.id.deviation_excerpt)
                 headerView.setUser(share.author, glide)
-                headerView.date = if (share.isJournal) share.date else null
+                headerView.time = if (share.isJournal) elapsedTimeFormatter.format(share.date) else null
                 titleView.text = share.title
                 excerptView.text = share.excerpt.value
             }
@@ -78,7 +79,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val statusTextView: TextView = findViewById(R.id.status_text)
                 headerView.setUser(share.author, glide)
-                headerView.date = share.date
+                headerView.time = elapsedTimeFormatter.format(share.date)
                 statusTextView.text = share.text.value
             }
 

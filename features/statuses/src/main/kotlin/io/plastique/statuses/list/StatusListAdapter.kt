@@ -19,9 +19,11 @@ import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.isDeleted
+import io.plastique.util.ElapsedTimeFormatter
 
 class StatusItemDelegate(
     private val glide: GlideRequests,
+    private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<StatusItem, ListItem, StatusItemDelegate.ViewHolder>() {
 
@@ -33,13 +35,13 @@ class StatusItemDelegate(
     }
 
     override fun onBindViewHolder(item: StatusItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.headerView.date = item.date
+        holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.author, glide)
         holder.textView.text = item.statusText.value
         holder.commentsButton.text = item.commentCount.toString()
         holder.shareButton.isVisible = !item.share.isDeleted
 
-        holder.shareView.setShare(item.share, glide)
+        holder.shareView.setShare(item.share, glide, elapsedTimeFormatter)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
@@ -65,6 +67,7 @@ class StatusItemDelegate(
 
 class StatusListAdapter(
     glide: GlideRequests,
+    elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onDeviationClick: OnDeviationClickListener,
     private val onStatusClick: OnStatusClickListener,
     private val onShareClick: OnShareClickListener,
@@ -72,7 +75,7 @@ class StatusListAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(StatusItemDelegate(glide, this))
+        delegatesManager.addDelegate(StatusItemDelegate(glide, elapsedTimeFormatter, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

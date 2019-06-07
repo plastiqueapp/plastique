@@ -35,10 +35,12 @@ import io.plastique.statuses.list.StatusListEvent.LoadMoreEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
 import io.plastique.statuses.list.StatusListEvent.RetryClickEvent
 import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
+import io.plastique.util.ElapsedTimeFormatter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel::class.java), ScrollableToTop {
+    @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: StatusesNavigator
 
     private lateinit var statusesView: RecyclerView
@@ -56,6 +58,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         statusesAdapter = StatusListAdapter(
             glide = GlideApp.with(this),
+            elapsedTimeFormatter = elapsedTimeFormatter,
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
             onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
             onCommentsClick = { statusId -> navigator.openComments(navigationContext, CommentThreadId.Status(statusId)) },
