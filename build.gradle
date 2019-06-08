@@ -13,7 +13,7 @@ plugins {
     id "io.gitlab.arturbosch.detekt" version "1.0.0-RC15"
 }
 
-ext.ci = System.getenv("CI") == "true"
+ext.ci = System.getenv("CI") != null
 ext.buildConfig = [
     compileSdk : 28,
     minSdk     : 21,
@@ -77,6 +77,18 @@ buildScan {
     if (ext.ci) {
         tag "CI"
         publishAlways()
+
+        def buildUrl = System.getenv("CIRCLE_BUILD_URL")
+        if (buildUrl != null) {
+            link "Build", buildUrl
+        }
+
+        def pullRequestUrl = System.getenv("CIRCLE_PULL_REQUEST")
+        if (pullRequestUrl != null) {
+            link "Pull Request", pullRequestUrl
+        }
+    } else {
+        tag "Local"
     }
 }
 

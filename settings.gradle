@@ -28,7 +28,7 @@ pluginManagement {
 
 buildCache {
     local {
-        enabled = !System.getenv().containsKey("CI")
+        enabled = System.getenv("CI") == null
     }
 }
 
