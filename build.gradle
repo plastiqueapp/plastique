@@ -104,3 +104,7 @@ tasks.named("detekt").configure {
 }
 
 apply from: "gradle/versions.gradle"
+
+if (ext.ci) {
+    apply from: "gradle/ci.gradle"
+}
