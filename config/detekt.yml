@@ -9,6 +9,11 @@ complexity:
   TooManyFunctions:
     active: false
 
+empty-blocks:
+  EmptyFunctionBlock:
+    # Remove after https://github.com/arturbosch/detekt/issues/1684 is fixed
+    ignoreOverriddenFunctions: true
+
 formatting:
   MaximumLineLength:
     maxLineLength: 160
@@ -42,9 +47,5 @@ style:
     active: true
   UnusedImports:
     active: true
-#  UseCheckOrError:
-#    active: true
-#  UseRequire:
-#    active: true
   VarCouldBeVal:
     active: true
