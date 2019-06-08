@@ -32,9 +32,7 @@ class BreadcrumbsView @JvmOverloads constructor(
         val separatorDrawableResId = a.getResourceId(R.styleable.BreadcrumbsView_separatorDrawable, 0)
         a.recycle()
 
-        if (breadcrumbLayoutId == 0) {
-            throw IllegalStateException("Required attribute breadcrumbLayoutId is not set")
-        }
+        check(breadcrumbLayoutId != 0) { "Required attribute breadcrumbLayoutId is not set" }
 
         adapter = BreadcrumbsAdapter(breadcrumbLayoutId, separatorDrawableResId)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

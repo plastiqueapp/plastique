@@ -274,9 +274,7 @@ fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
 }
 
 private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
-    if (giverId != giver.id) {
-        throw IllegalArgumentException("Expected user with id $giverId but got ${giver.id}")
-    }
+    require(giverId == giver.id) { "Expected user with id $giverId but got ${giver.id}" }
     return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
 }
 

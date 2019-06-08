@@ -25,9 +25,7 @@ class ApiCallAdapterFactory @Inject constructor(
         if (rawType != Single::class.java && rawType != Maybe::class.java) {
             return null
         }
-        if (returnType !is ParameterizedType) {
-            throw IllegalStateException("${rawType.simpleName} must be parametrized")
-        }
+        require(returnType is ParameterizedType) { "${rawType.simpleName} must be parametrized" }
         val responseType = getParameterUpperBound(0, returnType)
         return when (rawType) {
             Single::class.java -> RxJava2CallAdapter<Any, Single<Any>>(responseType, callExecutor) { it.toSingle() }

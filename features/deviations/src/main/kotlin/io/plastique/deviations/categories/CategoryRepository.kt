@@ -12,9 +12,8 @@ class CategoryRepository @Inject constructor(
     private val deviationService: DeviationService
 ) {
     fun getCategories(parent: Category): Single<List<Category>> {
-        if (!parent.hasChildren) {
-            throw IllegalArgumentException("Category has no subcategories")
-        }
+        require(parent.hasChildren) { "Category has no children" }
+
         return getCategoriesFromDb(parent.path)
             .switchIfEmpty(getCategoriesFromServer(parent.path))
             .flattenAsObservable(Functions.identity())
@@ -43,8 +42,6 @@ private fun CategoryDto.toCategoryEntity(): CategoryEntity =
     CategoryEntity(path = path, parent = parent, title = title, hasChildren = hasChildren)
 
 private fun CategoryEntity.toCategory(parent: Category): Category {
-    if (parent.path != this.parent) {
-        throw IllegalArgumentException("Expected Category with id ${this.parent} but got ${parent.path}")
-    }
+    require(this.parent == parent.path) { "Expected Category with id ${this.parent} but got ${parent.path}" }
     return Category(path = path, title = title, parent = parent, hasChildren = hasChildren)
 }

@@ -175,9 +175,7 @@ class CommentListEffectHandler(
     }
 
     private fun Comment.toCommentUiModel(parent: Comment?): CommentUiModel {
-        if (parentId != parent?.id) {
-            throw IllegalArgumentException("Expected parent comment with id $parentId but got ${parent?.id}")
-        }
+        require(parentId == parent?.id) { "Expected parent comment with id $parentId but got ${parent?.id}" }
         return CommentUiModel(
             id = id,
             datePosted = datePosted,
