@@ -42,10 +42,10 @@ jobs:
           when: on_fail
 
       - run:
-          name: Copy Kotlin Daemon logs
+          name: Copy logs
           command: |
-            mkdir -p /tmp/kotlin_daemon_logs
-            find $TMPDIR -name "kotlin-daemon.*.log" -exec cp {} /tmp/kotlin_daemon_logs/ \;
+            mkdir -p /tmp/logs
+            find /tmp -name "kotlin-daemon.*.log" -exec cp {} /tmp/logs/ \;
           when: on_fail
 
       - save_cache:
@@ -68,8 +68,8 @@ jobs:
           destination: heap_dumps
 
       - store_artifacts:
-          path: /tmp/kotlin_daemon_logs
-          destination: kotlin_daemon_logs
+          path: /tmp/logs
+          destination: logs
 
       - store_test_results:
           path: libraries/core/build/test-results
