@@ -15,6 +15,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.setActionBar
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.text.RichTextView
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
@@ -34,7 +35,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
     private lateinit var authorNameView: TextView
     private lateinit var authorAvatarView: ImageView
     private lateinit var titleView: TextView
-    private lateinit var descriptionView: TextView
+    private lateinit var descriptionView: RichTextView
     private lateinit var publishDateView: TextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController

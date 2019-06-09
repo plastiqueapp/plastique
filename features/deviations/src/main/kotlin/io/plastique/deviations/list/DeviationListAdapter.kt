@@ -20,6 +20,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.text.RichTextView
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.R
 import io.plastique.glide.GlideRequest
@@ -195,7 +196,7 @@ private class ListLiteratureDeviationItemDelegate(
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
-        val excerptView: TextView = itemView.findViewById(R.id.deviation_excerpt)
+        val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
         val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
         private val shareButton: View = itemView.findViewById(R.id.button_share)

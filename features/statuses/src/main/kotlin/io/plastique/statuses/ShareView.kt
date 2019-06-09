@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.common.FeedHeaderView
+import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
 import io.plastique.util.dimensionRatio
@@ -65,7 +66,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val titleView: TextView = findViewById(R.id.deviation_title)
-                val excerptView: TextView = findViewById(R.id.deviation_excerpt)
+                val excerptView: RichTextView = findViewById(R.id.deviation_excerpt)
                 headerView.setUser(share.author, glide)
                 headerView.time = if (share.isJournal) elapsedTimeFormatter.format(share.date) else null
                 titleView.text = share.title
@@ -77,7 +78,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 setBackgroundResource(R.drawable.status_share_background)
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
-                val statusTextView: TextView = findViewById(R.id.status_text)
+                val statusTextView: RichTextView = findViewById(R.id.status_text)
                 headerView.setUser(share.author, glide)
                 headerView.time = elapsedTimeFormatter.format(share.date)
                 statusTextView.text = share.text.value

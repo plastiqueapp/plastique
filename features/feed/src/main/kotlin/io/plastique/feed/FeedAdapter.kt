@@ -23,6 +23,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.list.ImageHelper
 import io.plastique.glide.GlideRequests
@@ -180,7 +181,7 @@ private class LiteratureDeviationItemDelegate(
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
-        val excerptView: TextView = itemView.findViewById(R.id.deviation_excerpt)
+        val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
         val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
         private val shareButton: View = itemView.findViewById(R.id.button_share)
@@ -285,7 +286,7 @@ private class StatusItemDelegate(
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
-        val statusTextView: TextView = itemView.findViewById(R.id.status_text)
+        val statusTextView: RichTextView = itemView.findViewById(R.id.status_text)
         val shareView: ShareView = itemView.findViewById(R.id.status_share)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
         val shareButton: View = itemView.findViewById(R.id.button_share)

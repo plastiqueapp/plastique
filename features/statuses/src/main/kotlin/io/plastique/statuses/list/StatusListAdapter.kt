@@ -13,6 +13,7 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.R
@@ -47,7 +48,7 @@ class StatusItemDelegate(
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
-        val textView: TextView = itemView.findViewById(R.id.status_text)
+        val textView: RichTextView = itemView.findViewById(R.id.status_text)
         val shareView: ShareView = itemView.findViewById(R.id.status_share)
         val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
         val shareButton: View = itemView.findViewById(R.id.button_share)

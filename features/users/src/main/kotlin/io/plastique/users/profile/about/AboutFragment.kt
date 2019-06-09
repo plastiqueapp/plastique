@@ -5,7 +5,6 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
@@ -13,6 +12,7 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.args
 import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.text.RichTextView
 import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersFragmentComponent
@@ -26,7 +26,7 @@ class AboutFragment : MvvmFragment<AboutViewModel>(AboutViewModel::class.java), 
 
     private lateinit var contentView: NestedScrollView
     private lateinit var bioHeaderView: View
-    private lateinit var bioView: TextView
+    private lateinit var bioView: RichTextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
 

@@ -25,7 +25,7 @@
                 android:text="@string/users_profile_about_bio"
                 android:textAppearance="?textAppearanceHeadline6" />
 
-            <TextView
+            <io.plastique.core.text.RichTextView
                 android:id="@+id/bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

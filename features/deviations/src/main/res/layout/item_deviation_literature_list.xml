@@ -16,7 +16,7 @@
         android:textAppearance="?textAppearanceHeadline6"
         tools:text="@tools:sample/lorem" />
 
-    <TextView
+    <io.plastique.core.text.RichTextView
         android:id="@+id/deviation_excerpt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -14,6 +14,7 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
+import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideRequests
 import io.plastique.users.User
@@ -61,7 +62,7 @@ private class CommentItemDelegate(
         val authorView: TextView = itemView.findViewById(R.id.comment_author_name)
         val timeView: TextView = itemView.findViewById(R.id.comment_time)
         val replyingToView: TextView = itemView.findViewById(R.id.comment_replying_to)
-        val textView: TextView = itemView.findViewById(R.id.comment_text)
+        val textView: RichTextView = itemView.findViewById(R.id.comment_text)
         val replyButton: ImageButton = itemView.findViewById(R.id.comment_button_reply)
 
         init {

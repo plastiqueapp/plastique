@@ -77,7 +77,7 @@
         tools:text="Replying to a.wesker"
         tools:visibility="visible" />
 
-    <TextView
+    <io.plastique.core.text.RichTextView
         android:id="@+id/comment_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
