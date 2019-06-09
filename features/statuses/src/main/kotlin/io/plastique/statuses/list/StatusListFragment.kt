@@ -15,7 +15,6 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.args
 import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.EndlessScrollListener
@@ -86,7 +85,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = args.getString(ARG_USERNAME)!!
+        val username = requireArguments().getString(ARG_USERNAME)!!
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()

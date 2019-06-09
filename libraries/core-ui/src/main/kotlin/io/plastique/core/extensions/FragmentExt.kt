@@ -9,9 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 
-inline val Fragment.args: Bundle
-    get() = arguments!!
-
 val Fragment.actionBar: ActionBar
     get() = (activity as AppCompatActivity).supportActionBar!!
 

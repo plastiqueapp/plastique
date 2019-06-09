@@ -3,7 +3,6 @@ package io.plastique.core.dialogs
 import android.app.Dialog
 import android.os.Bundle
 import androidx.annotation.StringRes
-import io.plastique.core.extensions.args
 
 class ProgressDialogFragment : BaseDialogFragment() {
     init {
@@ -11,6 +10,7 @@ class ProgressDialogFragment : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val args = requireArguments()
         val titleId = args.getInt(ARG_TITLE_ID)
         val messageId = args.getInt(ARG_MESSAGE_ID)
 

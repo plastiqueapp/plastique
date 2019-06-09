@@ -37,7 +37,6 @@ import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnConfirmListener
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.args
 import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
@@ -151,7 +150,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = arguments?.getString(ARG_USERNAME)
+        val username = requireArguments().getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()
@@ -177,8 +176,8 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
     override fun onConfirm(dialog: ConfirmationDialogFragment) {
         when (dialog.tag) {
             DIALOG_DELETE_FOLDER -> {
-                val folderId = dialog.args.getString(ARG_DIALOG_FOLDER_ID)!!
-                val folderName = dialog.args.getString(ARG_DIALOG_FOLDER_NAME)!!
+                val folderId = dialog.requireArguments().getString(ARG_DIALOG_FOLDER_ID)!!
+                val folderName = dialog.requireArguments().getString(ARG_DIALOG_FOLDER_NAME)!!
                 viewModel.dispatch(DeleteFolderEvent(folderId, folderName))
             }
         }

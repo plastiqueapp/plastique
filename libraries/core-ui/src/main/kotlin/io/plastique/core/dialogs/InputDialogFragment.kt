@@ -11,7 +11,6 @@ import android.widget.EditText
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.plastique.core.extensions.args
 import io.plastique.core.extensions.findCallback
 import io.plastique.core.ui.R
 
@@ -33,6 +32,7 @@ class InputDialogFragment : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val args = requireArguments()
         val contentView = View.inflate(requireContext(), R.layout.dialog_input, null)
         val editText = contentView.findViewById<EditText>(R.id.edit)
         editText.hint = getString(args.getInt(ARG_HINT))

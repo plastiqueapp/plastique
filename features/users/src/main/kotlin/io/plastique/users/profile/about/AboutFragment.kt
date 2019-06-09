@@ -10,7 +10,6 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.args
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.text.RichTextView
 import io.plastique.inject.getComponent
@@ -50,7 +49,7 @@ class AboutFragment : MvvmFragment<AboutViewModel>(AboutViewModel::class.java), 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val username = args.getString(ARG_USERNAME)!!
+        val username = requireArguments().getString(ARG_USERNAME)!!
         viewModel.init(username)
         viewModel.state
             .observeOn(AndroidSchedulers.mainThread())

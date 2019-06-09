@@ -29,7 +29,6 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.extensions.actionBar
-import io.plastique.core.extensions.args
 import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
@@ -102,7 +101,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val threadId = args.getParcelable<CommentThreadId>(ARG_THREAD_ID)!!
+        val threadId = requireArguments().getParcelable<CommentThreadId>(ARG_THREAD_ID)!!
         viewModel.init(threadId)
         viewModel.state
             .pairwiseWithPrevious()

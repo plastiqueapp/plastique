@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.annotation.StringRes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.plastique.core.extensions.args
 import io.plastique.core.extensions.findCallback
 
 class ConfirmationDialogFragment : BaseDialogFragment() {
@@ -23,6 +22,7 @@ class ConfirmationDialogFragment : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val args = requireArguments()
         val titleId = args.getInt(ARG_TITLE_ID)
         val messageId = args.getInt(ARG_MESSAGE_ID)
         val positiveButtonTextId = args.getInt(ARG_POSITIVE_BUTTON_TEXT_ID)

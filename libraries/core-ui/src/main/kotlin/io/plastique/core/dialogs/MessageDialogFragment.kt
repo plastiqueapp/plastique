@@ -4,11 +4,11 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.annotation.StringRes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.plastique.core.extensions.args
 import io.plastique.core.ui.R
 
 class MessageDialogFragment : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val args = requireArguments()
         val titleId = args.getInt(ARG_TITLE_ID)
         val messageId = args.getInt(ARG_MESSAGE_ID)
         val buttonTextId = args.getInt(ARG_BUTTON_TEXT_ID)

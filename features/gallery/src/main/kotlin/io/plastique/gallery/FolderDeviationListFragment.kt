@@ -1,14 +1,13 @@
 package io.plastique.gallery
 
 import android.os.Bundle
-import io.plastique.core.extensions.args
 import io.plastique.deviations.list.BaseDeviationListFragment
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.inject.getComponent
 
 class FolderDeviationListFragment : BaseDeviationListFragment<GalleryDeviationParams>() {
     override val defaultParams: GalleryDeviationParams
-        get() = GalleryDeviationParams(folderId = args.getParcelable(ARG_FOLDER_ID)!!)
+        get() = GalleryDeviationParams(folderId = requireArguments().getParcelable(ARG_FOLDER_ID)!!)
     override val fixedLayoutMode: LayoutMode? get() = LayoutMode.Grid
 
     override fun injectDependencies() {

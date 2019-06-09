@@ -16,8 +16,8 @@ import javax.inject.Inject
 class MainFragmentFactoryImpl @Inject constructor() : MainFragmentFactory {
     override fun createFragment(context: Context, fragmentFactory: FragmentFactory, @IdRes itemId: Int): Fragment = when (itemId) {
         R.id.main_tab_browse -> fragmentFactory.instantiate<BrowseDeviationsFragment>(context)
-        R.id.main_tab_favorites -> fragmentFactory.instantiate<CollectionsFragment>(context)
-        R.id.main_tab_gallery -> fragmentFactory.instantiate<GalleryFragment>(context)
+        R.id.main_tab_favorites -> fragmentFactory.instantiate<CollectionsFragment>(context, args = CollectionsFragment.newArgs())
+        R.id.main_tab_gallery -> fragmentFactory.instantiate<GalleryFragment>(context, args = GalleryFragment.newArgs())
         R.id.main_tab_notifications -> fragmentFactory.instantiate<NotificationsFragment>(context)
         R.id.main_tab_watch -> fragmentFactory.instantiate<FeedFragment>(context)
         else -> throw IllegalArgumentException("Unhandled itemId $itemId")
