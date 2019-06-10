@@ -1,6 +1,5 @@
 package io.plastique.comments.list
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -8,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.R
 import io.plastique.core.lists.BaseAdapterDelegate
@@ -28,7 +28,7 @@ private class CommentItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is CommentItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
+        val view = parent.inflate(R.layout.item_comment)
         return ViewHolder(view, onViewHolderClickListener)
     }
 

@@ -1,12 +1,12 @@
 package io.plastique.gallery
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
@@ -31,7 +31,7 @@ private class FolderItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is FolderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_folder, parent, false)
+        val view = parent.inflate(R.layout.item_gallery_folder)
         return ViewHolder(view, onViewHolderClickListener, onViewHolderLongClickListener)
     }
 
@@ -82,7 +82,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     override fun isForViewType(item: ListItem): Boolean = item is HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gallery_header, parent, false)
+        val view = parent.inflate(R.layout.item_gallery_header)
         return ViewHolder(view)
     }
 

@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.getCallback
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.findCallback
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.feed.R
@@ -44,7 +44,7 @@ class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = findCallback<OnFeedSettingsChangedListener>()
+        listener = getCallback()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

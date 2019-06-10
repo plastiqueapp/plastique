@@ -1,14 +1,14 @@
 package io.plastique.notifications
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.isStrikethrough
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import io.plastique.core.extensions.isStrikethrough
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
@@ -27,7 +27,7 @@ private class AddToCollectionItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is AddToCollectionItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notifications_simple, parent, false)
+        val view = parent.inflate(R.layout.item_notifications_simple)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -70,7 +70,7 @@ private class BadgeGivenItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is BadgeGivenItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notifications_simple, parent, false)
+        val view = parent.inflate(R.layout.item_notifications_simple)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -112,7 +112,7 @@ private class FavoriteItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is FavoriteItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notifications_simple, parent, false)
+        val view = parent.inflate(R.layout.item_notifications_simple)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -154,7 +154,7 @@ private class WatchItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is WatchItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notifications_simple, parent, false)
+        val view = parent.inflate(R.layout.item_notifications_simple)
         return ViewHolder(view, onViewHolderClickListener)
     }
 

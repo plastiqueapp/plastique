@@ -2,7 +2,7 @@ package io.plastique.deviations.list
 
 import android.app.Activity
 import android.content.Intent
-import io.plastique.core.extensions.instantiate
+import com.github.technoir42.android.extensions.instantiate
 import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.deviations.PopularParams
 import io.plastique.deviations.TimeRange

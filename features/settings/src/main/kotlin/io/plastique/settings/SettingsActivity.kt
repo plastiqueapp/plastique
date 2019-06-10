@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.github.technoir42.android.extensions.instantiate
+import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.BaseActivity
-import io.plastique.core.extensions.instantiate
-import io.plastique.core.extensions.setActionBar
 import io.plastique.inject.getComponent
 
 class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {

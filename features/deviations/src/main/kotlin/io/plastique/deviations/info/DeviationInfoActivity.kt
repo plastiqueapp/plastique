@@ -9,10 +9,10 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.setActionBar
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.text.RichTextView

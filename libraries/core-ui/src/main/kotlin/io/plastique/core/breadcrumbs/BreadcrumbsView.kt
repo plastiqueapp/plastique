@@ -8,7 +8,7 @@ import android.view.View
 import androidx.customview.view.AbsSavedState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.plastique.core.extensions.getParcelableCreator
+import com.github.technoir42.android.extensions.getParcelableCreator
 import io.plastique.core.lists.ListItem
 import io.plastique.core.ui.R
 

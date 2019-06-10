@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.extensions.setActionBar
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData

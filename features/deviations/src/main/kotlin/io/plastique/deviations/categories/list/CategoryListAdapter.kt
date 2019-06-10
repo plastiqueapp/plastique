@@ -2,12 +2,12 @@ package io.plastique.deviations.categories.list
 
 import android.content.res.Resources
 import android.os.SystemClock
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
@@ -18,7 +18,7 @@ class CategoryListAdapter(
 ) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>(), OnViewHolderClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
+        val view = parent.inflate(R.layout.item_category)
         return ViewHolder(view, this)
     }
 

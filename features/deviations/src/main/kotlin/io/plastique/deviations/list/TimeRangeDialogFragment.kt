@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
+import com.github.technoir42.android.extensions.getCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.plastique.core.extensions.findCallback
 import io.plastique.deviations.R
 import io.plastique.deviations.TimeRange
 
@@ -17,7 +17,7 @@ class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListene
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        onTimeRangeSelectedListener = findCallback<OnTimeRangeSelectedListener>()
+        onTimeRangeSelectedListener = getCallback()
     }
 
     override fun onDetach() {

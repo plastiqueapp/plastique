@@ -1,17 +1,17 @@
 package io.plastique.deviations.info
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 
 class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapter<String, TagListAdapter.ViewHolder>(), OnViewHolderClickListener {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_tag, parent, false)
+        val view = parent.inflate(R.layout.item_deviation_tag)
         return ViewHolder(view, this)
     }
 

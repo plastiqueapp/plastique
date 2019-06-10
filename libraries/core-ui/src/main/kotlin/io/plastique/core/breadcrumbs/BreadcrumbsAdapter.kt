@@ -1,12 +1,12 @@
 package io.plastique.core.breadcrumbs
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
@@ -21,7 +21,7 @@ private class BreadcrumbItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is BreadcrumbItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+        val view = parent.inflate(layoutId)
         return ViewHolder(view, onClickListener)
     }
 

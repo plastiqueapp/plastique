@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.customview.view.AbsSavedState
+import com.github.technoir42.android.extensions.getLayoutBehavior
+import com.github.technoir42.android.extensions.invalidateScrollRanges
 import com.google.android.material.appbar.AppBarLayout
-import io.plastique.core.extensions.getLayoutBehavior
-import io.plastique.core.extensions.invalidateScrollRanges
 import io.plastique.core.ui.R
 import io.plastique.util.OffsetLimitingBehavior
 import timber.log.Timber

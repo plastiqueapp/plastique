@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
+import com.github.technoir42.android.extensions.instantiate
 import io.plastique.R
 import io.plastique.collections.CollectionsFragment
-import io.plastique.core.extensions.instantiate
 import io.plastique.deviations.BrowseDeviationsFragment
 import io.plastique.feed.FeedFragment
 import io.plastique.gallery.GalleryFragment

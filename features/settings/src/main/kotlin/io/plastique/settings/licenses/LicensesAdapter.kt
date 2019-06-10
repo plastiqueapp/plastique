@@ -1,11 +1,11 @@
 package io.plastique.settings.licenses
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
@@ -16,7 +16,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     override fun isForViewType(item: ListItem): Boolean = item === HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_licenses_header, parent, false)
+        val view = parent.inflate(R.layout.item_licenses_header)
         return ViewHolder(view)
     }
 
@@ -33,7 +33,7 @@ private class LicenseItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is LicenseItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_licenses_license, parent, false)
+        val view = parent.inflate(R.layout.item_licenses_license)
         return ViewHolder(view, onViewHolderClickListener)
     }
 

@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.bumptech.glide.request.target.ImageViewTarget
 import com.github.chrisbanes.photoview.PhotoView
+import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +25,6 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.setActionBar
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController

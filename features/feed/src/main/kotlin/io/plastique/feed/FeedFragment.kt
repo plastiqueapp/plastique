@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -21,7 +22,6 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.content.ProgressViewController
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator

@@ -1,12 +1,12 @@
 package io.plastique.statuses.list
 
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.common.FeedHeaderView
 import io.plastique.core.lists.BaseAdapterDelegate
@@ -31,7 +31,7 @@ class StatusItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is StatusItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_statuses_status, parent, false)
+        val view = parent.inflate(R.layout.item_statuses_status)
         return ViewHolder(view, onViewHolderClickListener)
     }
 

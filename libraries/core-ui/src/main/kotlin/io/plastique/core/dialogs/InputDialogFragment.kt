@@ -10,8 +10,8 @@ import android.view.WindowManager
 import android.widget.EditText
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
+import com.github.technoir42.android.extensions.getCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.plastique.core.extensions.findCallback
 import io.plastique.core.ui.R
 
 interface OnInputDialogResultListener {
@@ -23,7 +23,7 @@ class InputDialogFragment : BaseDialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        onInputDialogResultListener = findCallback<OnInputDialogResultListener>()
+        onInputDialogResultListener = getCallback()
     }
 
     override fun onDetach() {

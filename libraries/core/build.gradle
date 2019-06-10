@@ -34,6 +34,7 @@ dependencies {
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+    api "com.github.technoir42:android-extensions:$versions.androidExtensions"
     api "com.github.technoir42:kotlin-extensions:$versions.kotlinExtensions"
 
     api "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"

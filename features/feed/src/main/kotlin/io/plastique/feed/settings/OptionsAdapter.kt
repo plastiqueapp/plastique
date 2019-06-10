@@ -1,10 +1,10 @@
 package io.plastique.feed.settings
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.google.android.material.switchmaterial.SwitchMaterial
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.feed.R
@@ -13,7 +13,7 @@ class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(),
     var onOptionCheckedChangedListener: OnOptionCheckedChangedListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_settings_option, parent, false)
+        val view = parent.inflate(R.layout.item_feed_settings_option)
         return ViewHolder(view)
     }
 

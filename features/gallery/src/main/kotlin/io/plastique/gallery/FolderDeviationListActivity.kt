@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.github.technoir42.android.extensions.instantiate
+import com.github.technoir42.android.extensions.setActionBar
+import com.github.technoir42.android.extensions.setSubtitleOnClickListener
+import com.github.technoir42.android.extensions.setTitleOnClickListener
 import io.plastique.core.BaseActivity
-import io.plastique.core.extensions.instantiate
-import io.plastique.core.extensions.setActionBar
-import io.plastique.core.extensions.setSubtitleOnClickListener
-import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.inject.getComponent
 
 class FolderDeviationListActivity : BaseActivity() {

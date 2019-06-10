@@ -3,8 +3,8 @@ package io.plastique.core.dialogs
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
-import io.plastique.core.extensions.instantiate
-import io.plastique.core.extensions.showAllowingStateLoss
+import com.github.technoir42.android.extensions.instantiate
+import com.github.technoir42.android.extensions.showAllowingStateLoss
 import io.plastique.core.ui.R
 
 class ProgressDialogController(

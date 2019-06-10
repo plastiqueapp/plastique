@@ -5,15 +5,15 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.annotation.StringRes
+import com.github.technoir42.android.extensions.getCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.plastique.core.extensions.findCallback
 
 class ConfirmationDialogFragment : BaseDialogFragment() {
     private var onConfirmListener: OnConfirmListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        onConfirmListener = findCallback()
+        onConfirmListener = getCallback()
     }
 
     override fun onDetach() {

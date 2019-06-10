@@ -7,8 +7,8 @@ import android.util.AttributeSet
 import androidx.customview.view.AbsSavedState
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.getParcelableCreator
 import com.google.android.flexbox.FlexboxLayoutManager
-import io.plastique.core.extensions.getParcelableCreator
 import io.plastique.core.lists.ListDiffCallback
 import io.plastique.deviations.R
 

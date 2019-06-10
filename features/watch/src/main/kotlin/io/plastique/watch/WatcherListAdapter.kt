@@ -1,11 +1,11 @@
 package io.plastique.watch
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
@@ -22,7 +22,7 @@ private class WatcherItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is WatcherItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_watcher, parent, false)
+        val view = parent.inflate(R.layout.item_watcher)
         return ViewHolder(view, onViewHolderClickListener)
     }
 

@@ -9,13 +9,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
+import com.github.technoir42.android.extensions.disableDragging
+import com.github.technoir42.android.extensions.setActionBar
+import com.github.technoir42.android.extensions.setTitleOnClickListener
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.extensions.disableDragging
-import io.plastique.core.extensions.setActionBar
-import io.plastique.core.extensions.setTitleOnClickListener
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget

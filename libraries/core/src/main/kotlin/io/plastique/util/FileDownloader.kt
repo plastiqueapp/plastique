@@ -4,7 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
-import io.plastique.core.extensions.requireSystemService
+import com.github.technoir42.android.extensions.requireSystemService
 import javax.inject.Inject
 
 class FileDownloader @Inject constructor(context: Context) {

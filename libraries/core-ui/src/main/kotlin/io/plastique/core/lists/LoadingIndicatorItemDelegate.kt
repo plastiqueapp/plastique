@@ -1,16 +1,16 @@
 package io.plastique.core.lists
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.ui.R
 
 class LoadingIndicatorItemDelegate : BaseAdapterDelegate<LoadingIndicatorItem, ListItem, LoadingIndicatorItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item === LoadingIndicatorItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
+        val view = parent.inflate(R.layout.item_loading)
         return ViewHolder(view)
     }
 

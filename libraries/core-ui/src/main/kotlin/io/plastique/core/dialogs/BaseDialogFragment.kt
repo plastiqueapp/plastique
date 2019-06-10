@@ -3,7 +3,7 @@ package io.plastique.core.dialogs
 import android.content.Context
 import android.content.DialogInterface
 import androidx.fragment.app.DialogFragment
-import io.plastique.core.extensions.findCallback
+import com.github.technoir42.android.extensions.getCallback
 
 abstract class BaseDialogFragment : DialogFragment() {
     private var onCancelDialogListener: OnCancelDialogListener? = null
@@ -11,8 +11,8 @@ abstract class BaseDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        onCancelDialogListener = findCallback<OnCancelDialogListener>()
-        onDismissDialogListener = findCallback<OnDismissDialogListener>()
+        onCancelDialogListener = getCallback()
+        onDismissDialogListener = getCallback()
     }
 
     override fun onDetach() {

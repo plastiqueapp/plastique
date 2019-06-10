@@ -13,6 +13,8 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
+import com.github.technoir42.android.extensions.doOnTabReselected
+import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.tabs.TabLayout
 import io.plastique.core.FragmentListPagerAdapter
@@ -21,8 +23,6 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.doOnTabReselected
-import io.plastique.core.extensions.setActionBar
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController

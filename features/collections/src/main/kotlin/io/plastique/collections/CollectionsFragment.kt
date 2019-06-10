@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
@@ -37,7 +38,6 @@ import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnConfirmListener
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.instantiate
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator

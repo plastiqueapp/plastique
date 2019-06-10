@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,6 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.actionBar
 import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
@@ -113,6 +113,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
 
     private fun renderState(state: CommentListViewState, prevState: CommentListViewState?, listUpdateData: ListUpdateData<ListItem>) {
         if (activity is CommentListActivity) {
+            val actionBar = (activity as AppCompatActivity).supportActionBar!!
             actionBar.subtitle = state.title
         }
 

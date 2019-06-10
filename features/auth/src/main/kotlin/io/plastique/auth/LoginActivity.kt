@@ -12,13 +12,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
+import com.github.technoir42.android.extensions.instantiate
+import com.github.technoir42.android.extensions.setActionBar
+import com.github.technoir42.android.extensions.showAllowingStateLoss
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.extensions.instantiate
-import io.plastique.core.extensions.setActionBar
-import io.plastique.core.extensions.showAllowingStateLoss
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations

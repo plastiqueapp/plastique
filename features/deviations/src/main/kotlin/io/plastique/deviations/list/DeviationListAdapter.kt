@@ -2,7 +2,6 @@ package io.plastique.deviations.list
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
@@ -12,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.CommentThreadId
@@ -44,7 +44,7 @@ private class ListImageDeviationItemDelegate(
         item is ImageDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_list, parent, false)
+        val view = parent.inflate(R.layout.item_deviation_image_list)
         return ViewHolder(view, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
     }
 
@@ -121,7 +121,7 @@ class GridImageDeviationItemDelegate(
         item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_image_grid, parent, false)
+        val view: View = parent.inflate(R.layout.item_deviation_image_grid)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -173,7 +173,7 @@ private class ListLiteratureDeviationItemDelegate(
         item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.List
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_list, parent, false)
+        val view = parent.inflate(R.layout.item_deviation_literature_list)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -228,7 +228,7 @@ class GridLiteratureDeviationItemDelegate(
         item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviation_literature_grid, parent, false)
+        val view = parent.inflate(R.layout.item_deviation_literature_grid)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -267,7 +267,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     override fun isForViewType(item: ListItem): Boolean = item is DateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_deviations_date, parent, false)
+        val view = parent.inflate(R.layout.item_deviations_date)
         return ViewHolder(view)
     }
 

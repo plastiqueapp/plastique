@@ -2,7 +2,7 @@ package io.plastique.core.network
 
 import android.content.Context
 import android.net.ConnectivityManager
-import io.plastique.core.extensions.requireSystemService
+import com.github.technoir42.android.extensions.requireSystemService
 import javax.inject.Inject
 import javax.inject.Singleton
 

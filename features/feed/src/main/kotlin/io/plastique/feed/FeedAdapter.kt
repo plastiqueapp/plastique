@@ -1,7 +1,6 @@
 package io.plastique.feed
 
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckedTextView
@@ -14,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.CommentThreadId
@@ -45,7 +45,7 @@ private class CollectionUpdateItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is CollectionUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_collection_update, parent, false)
+        val view = parent.inflate(R.layout.item_feed_collection_update)
         return ViewHolder(view, glide, itemSizeCallback, onDeviationClick, onViewHolderClickListener)
     }
 
@@ -103,7 +103,7 @@ private class ImageDeviationItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is ImageDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_deviation_image, parent, false)
+        val view = parent.inflate(R.layout.item_feed_deviation_image)
         return ViewHolder(view, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
     }
 
@@ -163,7 +163,7 @@ private class LiteratureDeviationItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is LiteratureDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_deviation_literature, parent, false)
+        val view = parent.inflate(R.layout.item_feed_deviation_literature)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -212,7 +212,7 @@ private class MultipleDeviationsItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is MultipleDeviationsItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_multiple_deviations, parent, false)
+        val view = parent.inflate(R.layout.item_feed_multiple_deviations)
         return ViewHolder(view, glide, gridItemSizeCallback, onDeviationClick, onViewHolderClickListener)
     }
 
@@ -269,7 +269,7 @@ private class StatusItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is StatusUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_status, parent, false)
+        val view = parent.inflate(R.layout.item_feed_status)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
@@ -315,7 +315,7 @@ private class UsernameChangeItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is UsernameChangeItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_username_change, parent, false)
+        val view = parent.inflate(R.layout.item_feed_username_change)
         return ViewHolder(view, onViewHolderClickListener)
     }
 
