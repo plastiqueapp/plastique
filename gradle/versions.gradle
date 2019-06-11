@@ -51,7 +51,7 @@ ext.versions = [
     adapterDelegates     : "4.0.0",
     foregroundViews      : "2.5.0",
     crashlytics          : "2.10.1",
-    neon                 : "0.10.0",
+    neon                 : "0.11.0",
     permissionsDispatcher: "4.3.1",
     photoView            : "2.3.0",
     processPhoenix       : "2.0.0",
