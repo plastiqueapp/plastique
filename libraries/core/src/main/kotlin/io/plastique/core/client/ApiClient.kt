@@ -2,7 +2,6 @@ package io.plastique.core.client
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import io.plastique.core.BuildConfig
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -29,7 +28,7 @@ class ApiClient @Inject constructor(
             .client(createOkHttpClient(authInterceptor, okHttpClient))
             .addCallAdapterFactory(callAdapterFactory)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .validateEagerly(BuildConfig.DEBUG)
+            .validateEagerly(config.debug)
             .build()
     }
 

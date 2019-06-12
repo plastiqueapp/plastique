@@ -1,5 +1,6 @@
 package io.plastique.inject.modules
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -13,7 +14,6 @@ import io.plastique.core.init.RxJavaInitializer
 import io.plastique.core.reporting.FabricInitializer
 import io.plastique.core.themes.ThemeInitializer
 import io.plastique.core.work.WorkManagerInitializer
-import javax.inject.Provider
 
 @Module
 abstract class InitializerModule {
@@ -42,9 +42,9 @@ abstract class InitializerModule {
         @Provides
         @ElementsIntoSet
         @JvmStatic
-        fun provideFabricInitializer(fabricInitializer: Provider<FabricInitializer>): Set<Initializer> =
+        fun provideFabricInitializer(context: Context): Set<Initializer> =
             if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
-                setOf(fabricInitializer.get())
+                setOf(FabricInitializer(context, BuildConfig.DEBUG))
             } else {
                 emptySet()
             }

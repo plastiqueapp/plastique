@@ -104,7 +104,8 @@ abstract class ApiModule {
             clientSecret = context.getString(R.string.api_client_secret),
             authRedirectUrl = "${context.packageName}://auth",
             apiVersion = ApiConstants.VERSION,
-            userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}")
+            userAgent = "Plastique/android ${BuildConfig.VERSION_NAME}",
+            debug = BuildConfig.DEBUG)
 
         @Provides
         @Reusable

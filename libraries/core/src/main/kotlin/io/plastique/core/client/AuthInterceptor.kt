@@ -1,7 +1,6 @@
 package io.plastique.core.client
 
 import androidx.annotation.Keep
-import io.plastique.core.BuildConfig
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -14,7 +13,7 @@ class AuthInterceptor @Inject constructor(
     private val accessTokenProvider: AccessTokenProvider
 ) : Authenticator, Interceptor {
 
-    private val accessTokenAppender: AccessTokenAppender = if (BuildConfig.DEBUG) UrlAccessTokenAppender() else HeaderAccessTokenAppender()
+    private val accessTokenAppender: AccessTokenAppender = if (configuration.debug) UrlAccessTokenAppender() else HeaderAccessTokenAppender()
 
     override fun authenticate(route: Route?, response: Response): Request? {
         // Stop if previous attempt has failed

@@ -6,5 +6,6 @@ data class ApiConfiguration(
     val clientSecret: String,
     val authRedirectUrl: String,
     val apiVersion: String,
-    val userAgent: String
+    val userAgent: String,
+    val debug: Boolean
 )
