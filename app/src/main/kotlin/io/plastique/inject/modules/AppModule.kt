@@ -40,6 +40,7 @@ import io.plastique.util.NoCryptor
 import io.plastique.util.Preferences
 import io.plastique.watch.WatchManager
 import io.plastique.watch.WatchManagerImpl
+import org.threeten.bp.Duration
 import javax.inject.Singleton
 
 @Module(includes = [
@@ -76,6 +77,12 @@ abstract class AppModule {
 
     @Module
     companion object {
+        private val CONFIG_FETCH_INTERVAL = if (BuildConfig.DEBUG) {
+            Duration.ofMinutes(2)
+        } else {
+            Duration.ofHours(6)
+        }
+
         @Provides
         @JvmStatic
         fun provideTimeProvider(): TimeProvider = SystemTimeProvider
@@ -108,7 +115,7 @@ abstract class AppModule {
         @Singleton
         @JvmStatic
         fun provideAppConfig(context: Context): AppConfig = if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
-            FirebaseAppConfig(R.xml.config_defaults)
+            FirebaseAppConfig(R.xml.config_defaults, CONFIG_FETCH_INTERVAL)
         } else {
             LocalAppConfig(context, R.xml.config_defaults)
         }

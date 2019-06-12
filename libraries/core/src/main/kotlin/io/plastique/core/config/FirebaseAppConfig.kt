@@ -3,18 +3,16 @@ package io.plastique.core.config
 import androidx.annotation.XmlRes
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
-import io.plastique.core.BuildConfig
 import org.threeten.bp.Duration
 
-class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
+class FirebaseAppConfig(@XmlRes defaultsResId: Int, minFetchInterval: Duration) : AppConfig {
     private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     init {
-        @Suppress("DEPRECATION")
-        remoteConfig.setConfigSettings(FirebaseRemoteConfigSettings.Builder()
-            .setDeveloperModeEnabled(BuildConfig.DEBUG)
+        remoteConfig.setConfigSettingsAsync(FirebaseRemoteConfigSettings.Builder()
+            .setMinimumFetchIntervalInSeconds(minFetchInterval.seconds)
             .build())
-        remoteConfig.setDefaults(defaultsResId)
+        remoteConfig.setDefaultsAsync(defaultsResId)
     }
 
     override fun getBoolean(key: String): Boolean {
@@ -31,14 +29,6 @@ class FirebaseAppConfig(@XmlRes defaultsResId: Int) : AppConfig {
 
     override fun fetch() {
         remoteConfig.activate()
-        remoteConfig.fetch(REFRESH_INTERVAL.seconds)
-    }
-
-    companion object {
-        private val REFRESH_INTERVAL = if (BuildConfig.DEBUG) {
-            Duration.ofMinutes(1)
-        } else {
-            Duration.ofHours(12)
-        }
+        remoteConfig.fetch()
     }
 }
