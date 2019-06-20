@@ -34,7 +34,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             is ShareUiModel.ImageDeviation -> {
-                setLayout(R.layout.inc_feed_shared_deviation_image)
+                setLayout(R.layout.inc_statuses_shared_deviation_image)
                 setBackgroundResource(R.drawable.status_share_background)
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
@@ -61,7 +61,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             is ShareUiModel.LiteratureDeviation -> {
-                setLayout(R.layout.inc_feed_shared_deviation_literature)
+                setLayout(R.layout.inc_statuses_shared_deviation_literature)
                 setBackgroundResource(R.drawable.status_share_background)
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
@@ -74,7 +74,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             is ShareUiModel.Status -> {
-                setLayout(R.layout.inc_feed_shared_status)
+                setLayout(R.layout.inc_statuses_shared_status)
                 setBackgroundResource(R.drawable.status_share_background)
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
@@ -85,7 +85,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             ShareUiModel.DeletedDeviation -> {
-                setLayout(R.layout.inc_feed_shared_object_deleted)
+                setLayout(R.layout.inc_statuses_shared_object_deleted)
                 setBackgroundResource(R.drawable.status_share_deleted_background)
 
                 val textView: TextView = findViewById(R.id.text)
@@ -93,7 +93,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             ShareUiModel.DeletedStatus -> {
-                setLayout(R.layout.inc_feed_shared_object_deleted)
+                setLayout(R.layout.inc_statuses_shared_object_deleted)
                 setBackgroundResource(R.drawable.status_share_deleted_background)
 
                 val textView: TextView = findViewById(R.id.text)
