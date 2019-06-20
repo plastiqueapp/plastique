@@ -30,6 +30,111 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 
+// region Grid
+class GridImageDeviationItemDelegate(
+    context: Context,
+    private val glide: GlideRequests,
+    private val layoutModeProvider: LayoutModeProvider,
+    private val itemSizeCallback: ItemSizeCallback,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<ImageDeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
+
+    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
+
+    override fun isForViewType(item: ListItem): Boolean =
+        item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
+
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        val view: View = parent.inflate(R.layout.item_deviation_image_grid)
+        return ViewHolder(view, onViewHolderClickListener)
+    }
+
+    override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val itemSize = itemSizeCallback.getItemSize(item)
+        val columnCount = itemSizeCallback.getColumnCount(item)
+
+        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
+            width = itemSize.width
+            height = itemSize.height
+            leftMargin = if (item.index % columnCount != 0) spacing else 0
+            topMargin = if (item.index >= columnCount) spacing else 0
+        }
+
+        holder.thumbnail.contentDescription = item.title
+
+        val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
+        glide.load(thumbnail.url)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.thumbnail)
+    }
+
+    class ViewHolder(
+        itemView: View,
+        private val onClickListener: OnViewHolderClickListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        val thumbnail: ImageView = itemView.findViewById(R.id.deviation_thumbnail)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            onClickListener.onViewHolderClick(this, view)
+        }
+    }
+}
+
+class GridLiteratureDeviationItemDelegate(
+    context: Context,
+    private val layoutModeProvider: LayoutModeProvider,
+    private val itemSizeCallback: ItemSizeCallback,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
+
+    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
+
+    override fun isForViewType(item: ListItem): Boolean =
+        item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
+
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        val view = parent.inflate(R.layout.item_deviation_literature_grid)
+        return ViewHolder(view, onViewHolderClickListener)
+    }
+
+    override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val itemSize = itemSizeCallback.getItemSize(item)
+        val columnCount = itemSizeCallback.getColumnCount(item)
+
+        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
+            width = itemSize.width
+            height = itemSize.height
+            leftMargin = if (item.index % columnCount != 0) spacing else 0
+            topMargin = if (item.index >= columnCount) spacing else 0
+        }
+
+        holder.title.text = item.title
+    }
+
+    class ViewHolder(
+        itemView: View,
+        private val onClickListener: OnViewHolderClickListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        val title: TextView = itemView.findViewById(R.id.deviation_title)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            onClickListener.onViewHolderClick(this, view)
+        }
+    }
+}
+// endregion
+
+// region List
 private class ListImageDeviationItemDelegate(
     context: Context,
     private val glide: GlideRequests,
@@ -101,60 +206,6 @@ private class ListImageDeviationItemDelegate(
     }
 }
 
-class GridImageDeviationItemDelegate(
-    context: Context,
-    private val glide: GlideRequests,
-    private val layoutModeProvider: LayoutModeProvider,
-    private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<ImageDeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
-
-    override fun isForViewType(item: ListItem): Boolean =
-        item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
-
-    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view: View = parent.inflate(R.layout.item_deviation_image_grid)
-        return ViewHolder(view, onViewHolderClickListener)
-    }
-
-    override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        val itemSize = itemSizeCallback.getItemSize(item)
-        val columnCount = itemSizeCallback.getColumnCount(item)
-
-        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
-            width = itemSize.width
-            height = itemSize.height
-            leftMargin = if (item.index % columnCount != 0) spacing else 0
-            topMargin = if (item.index >= columnCount) spacing else 0
-        }
-
-        holder.thumbnail.contentDescription = item.title
-
-        val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
-        glide.load(thumbnail.url)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(holder.thumbnail)
-    }
-
-    class ViewHolder(
-        itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        val thumbnail: ImageView = itemView.findViewById(R.id.deviation_thumbnail)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
-        }
-    }
-}
-
 private class ListLiteratureDeviationItemDelegate(
     context: Context,
     private val layoutModeProvider: LayoutModeProvider,
@@ -203,54 +254,7 @@ private class ListLiteratureDeviationItemDelegate(
         }
     }
 }
-
-class GridLiteratureDeviationItemDelegate(
-    context: Context,
-    private val layoutModeProvider: LayoutModeProvider,
-    private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener
-) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
-
-    override fun isForViewType(item: ListItem): Boolean =
-        item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
-
-    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_deviation_literature_grid)
-        return ViewHolder(view, onViewHolderClickListener)
-    }
-
-    override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        val itemSize = itemSizeCallback.getItemSize(item)
-        val columnCount = itemSizeCallback.getColumnCount(item)
-
-        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
-            width = itemSize.width
-            height = itemSize.height
-            leftMargin = if (item.index % columnCount != 0) spacing else 0
-            topMargin = if (item.index >= columnCount) spacing else 0
-        }
-
-        holder.title.text = item.title
-    }
-
-    class ViewHolder(
-        itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        val title: TextView = itemView.findViewById(R.id.deviation_title)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
-        }
-    }
-}
+// endregion
 
 private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item is DateItem
@@ -285,10 +289,12 @@ class DeviationsAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, glide, layoutModeProvider, this))
         delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(context, layoutModeProvider, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+
+        delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, glide, layoutModeProvider, this))
+        delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(context, layoutModeProvider, this))
+
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(DateItemDelegate())
     }
