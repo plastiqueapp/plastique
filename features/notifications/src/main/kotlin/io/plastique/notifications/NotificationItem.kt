@@ -4,7 +4,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
-abstract class NotificationItem : ListItem {
+sealed class NotificationItem : ListItem {
     abstract val messageId: String
     abstract val time: ZonedDateTime
     abstract val user: User

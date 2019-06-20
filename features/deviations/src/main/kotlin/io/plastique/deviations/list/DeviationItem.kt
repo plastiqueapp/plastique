@@ -5,7 +5,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
 
-abstract class DeviationItem : ListItem, IndexedItem {
+sealed class DeviationItem : ListItem, IndexedItem {
     abstract val deviationId: String
     abstract val title: String
     abstract val isFavorite: Boolean

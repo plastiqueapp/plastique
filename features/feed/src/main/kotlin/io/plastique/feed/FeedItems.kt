@@ -7,7 +7,7 @@ import io.plastique.statuses.ShareUiModel
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
-abstract class FeedListItem : ListItem {
+sealed class FeedListItem : ListItem {
     abstract val date: ZonedDateTime
     abstract val user: User
 }
@@ -22,7 +22,7 @@ data class CollectionUpdateItem(
     val folderItems: List<ListItem>
 ) : FeedListItem()
 
-abstract class DeviationItem : FeedListItem() {
+sealed class DeviationItem : FeedListItem() {
     abstract val deviationId: String
     abstract val title: String
     abstract val isFavorite: Boolean
