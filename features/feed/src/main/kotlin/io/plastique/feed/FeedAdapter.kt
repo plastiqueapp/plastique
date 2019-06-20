@@ -115,13 +115,13 @@ private class ImageDeviationItemDelegate(
 
         val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
-        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
+        (holder.previewView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
         glide.load(preview.url)
             .override(previewSize.width, previewSize.height)
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(holder.imageView)
+            .into(holder.previewView)
     }
 
     class ViewHolder(
@@ -130,13 +130,13 @@ private class ImageDeviationItemDelegate(
         val maxImageWidth: Int
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
-        val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
+        val previewView: ImageView = itemView.findViewById(R.id.deviation_preview)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
             headerView.setOnUserClickListener(this)
-            imageView.setOnClickListener(this)
+            previewView.setOnClickListener(this)
             titleView.setOnClickListener(this)
             actionsView.setOnFavoriteClickListener(this)
             actionsView.setOnCommentsClickListener(this)
@@ -381,7 +381,7 @@ class FeedAdapter(
                 require(item is StatusUpdateItem)
                 onShareClick(item.shareObjectId)
             }
-            view.id == R.id.deviation_image || view.id == R.id.deviation_title || view.id == R.id.deviation_excerpt -> {
+            view.id == R.id.deviation_preview || view.id == R.id.deviation_title || view.id == R.id.deviation_excerpt -> {
                 require(item is DeviationItem)
                 onDeviationClick(item.deviationId)
             }

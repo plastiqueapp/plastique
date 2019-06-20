@@ -16,7 +16,7 @@
         tools:maxHeight="48dp" />
 
     <ImageView
-        android:id="@+id/deviation_image"
+        android:id="@+id/deviation_preview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,10 +33,10 @@
         android:textAppearance="?textAppearanceCaption"
         android:textSize="16sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/deviation_image"
-        app:layout_constraintEnd_toEndOf="@id/deviation_image"
-        app:layout_constraintStart_toStartOf="@id/deviation_image"
-        app:layout_constraintTop_toTopOf="@id/deviation_image"
+        app:layout_constraintBottom_toBottomOf="@id/deviation_preview"
+        app:layout_constraintEnd_toEndOf="@id/deviation_preview"
+        app:layout_constraintStart_toStartOf="@id/deviation_preview"
+        app:layout_constraintTop_toTopOf="@id/deviation_preview"
         tools:visibility="visible" />
 
     <TextView
@@ -46,12 +46,12 @@
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:minHeight="40dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:singleLine="true"
         android:textAppearance="?textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deviation_image"
+        app:layout_constraintTop_toBottomOf="@id/deviation_preview"
         tools:text="@tools:sample/lorem" />
 </androidx.constraintlayout.widget.ConstraintLayout>

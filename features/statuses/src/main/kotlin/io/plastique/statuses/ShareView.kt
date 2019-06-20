@@ -39,24 +39,24 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val titleView: TextView = findViewById(R.id.deviation_title)
-                val imageView: ImageView = findViewById(R.id.deviation_image)
+                val previewView: ImageView = findViewById(R.id.deviation_preview)
                 val matureContentView: TextView = findViewById(R.id.mature_content)
                 headerView.setUser(share.author, glide)
                 titleView.text = share.title
                 matureContentView.isVisible = share.isConcealedMature
-                (imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = share.preview.size.dimensionRatio
+                (previewView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = share.preview.size.dimensionRatio
 
                 if (share.isConcealedMature) {
-                    glide.clear(imageView)
-                    imageView.setImageDrawable(null)
-                    imageView.setBackgroundResource(R.color.statuses_placeholder_background)
+                    glide.clear(previewView)
+                    previewView.setImageDrawable(null)
+                    previewView.setBackgroundResource(R.color.statuses_placeholder_background)
                 } else {
-                    imageView.setBackgroundResource(0)
+                    previewView.setBackgroundResource(0)
 
                     glide.load(share.preview.url)
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(imageView)
+                        .into(previewView)
                 }
             }
 

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/deviation_image"
+        android:id="@+id/deviation_preview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
         android:textAppearance="?textAppearanceSubtitle1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/deviation_image"
+        app:layout_constraintTop_toBottomOf="@id/deviation_preview"
         tools:text="@tools:sample/lorem" />
 
     <io.plastique.deviations.DeviationActionsView

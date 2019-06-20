@@ -57,7 +57,7 @@ private class ListImageDeviationItemDelegate(
 
         val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
-        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
+        (holder.previewView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
         val thumbnailRequest = item.thumbnails.asSequence()
             .fold<Deviation.ImageInfo, GlideRequest<Drawable>?>(null) { previous, thumbnail ->
@@ -74,7 +74,7 @@ private class ListImageDeviationItemDelegate(
             .override(previewSize.width, previewSize.height)
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .into(holder.imageView)
+            .into(holder.previewView)
     }
 
     class ViewHolder(
@@ -84,11 +84,11 @@ private class ListImageDeviationItemDelegate(
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
-        val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
+        val previewView: ImageView = itemView.findViewById(R.id.deviation_preview)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            imageView.setOnClickListener(this)
+            previewView.setOnClickListener(this)
             titleView.setOnClickListener(this)
             actionsView.setOnFavoriteClickListener(this)
             actionsView.setOnCommentsClickListener(this)
