@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
         android:drawablePadding="@dimen/common_button_drawable_padding"
-        android:drawableStart="@drawable/ic_favorite_24dp"
+        android:drawableStart="@drawable/ic_common_favorite_24dp"
         android:gravity="center_vertical"
         android:minHeight="48dp"
         android:minWidth="48dp"

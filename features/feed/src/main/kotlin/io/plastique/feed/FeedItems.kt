@@ -3,7 +3,9 @@ package io.plastique.feed
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
+import io.plastique.deviations.DeviationActionsState
 import io.plastique.statuses.ShareUiModel
+import io.plastique.statuses.StatusActionsState
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 
@@ -25,10 +27,7 @@ data class CollectionUpdateItem(
 sealed class DeviationItem : FeedListItem() {
     abstract val deviationId: String
     abstract val title: String
-    abstract val isFavorite: Boolean
-    abstract val allowsComments: Boolean
-    abstract val favoriteCount: Int
-    abstract val commentCount: Int
+    abstract val actionsState: DeviationActionsState
 
     override val id: String get() = deviationId
 }
@@ -38,10 +37,7 @@ data class ImageDeviationItem(
     override val user: User,
     override val deviationId: String,
     override val title: String,
-    override val isFavorite: Boolean,
-    override val allowsComments: Boolean,
-    override val favoriteCount: Int,
-    override val commentCount: Int,
+    override val actionsState: DeviationActionsState,
     val content: Deviation.ImageInfo?,
     val preview: Deviation.ImageInfo
 ) : DeviationItem()
@@ -51,10 +47,7 @@ data class LiteratureDeviationItem(
     override val user: User,
     override val deviationId: String,
     override val title: String,
-    override val isFavorite: Boolean,
-    override val allowsComments: Boolean,
-    override val favoriteCount: Int,
-    override val commentCount: Int,
+    override val actionsState: DeviationActionsState,
     val excerpt: SpannedWrapper
 ) : DeviationItem()
 
@@ -71,8 +64,8 @@ data class StatusUpdateItem(
     override val user: User,
     val statusId: String,
     val text: SpannedWrapper,
-    val commentCount: Int,
-    val share: ShareUiModel
+    val share: ShareUiModel,
+    val actionsState: StatusActionsState
 ) : FeedListItem() {
     override val id: String get() = statusId
 }

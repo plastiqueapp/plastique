@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.technoir42.android.extensions.inflate
@@ -22,6 +20,7 @@ import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.deviations.Deviation
+import io.plastique.deviations.DeviationActionsView
 import io.plastique.deviations.R
 import io.plastique.glide.GlideRequest
 import io.plastique.glide.GlideRequests
@@ -54,10 +53,7 @@ private class ListImageDeviationItemDelegate(
         }
 
         holder.titleView.text = item.title
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.commentsButton.isVisible = item.allowsComments
-        holder.favoriteButton.text = item.favoriteCount.toString()
-        holder.favoriteButton.isChecked = item.isFavorite
+        holder.actionsView.render(item.actionsState)
 
         val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
@@ -89,16 +85,14 @@ private class ListImageDeviationItemDelegate(
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
-        private val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
             imageView.setOnClickListener(this)
             titleView.setOnClickListener(this)
-            commentsButton.setOnClickListener(this)
-            favoriteButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnFavoriteClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -184,10 +178,7 @@ private class ListLiteratureDeviationItemDelegate(
 
         holder.titleView.text = item.title
         holder.excerptView.text = item.excerpt.value
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.commentsButton.isVisible = item.allowsComments
-        holder.favoriteButton.text = item.favoriteCount.toString()
-        holder.favoriteButton.isChecked = item.isFavorite
+        holder.actionsView.render(item.actionsState)
     }
 
     class ViewHolder(
@@ -197,16 +188,14 @@ private class ListLiteratureDeviationItemDelegate(
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
-        private val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
             titleView.setOnClickListener(this)
             excerptView.setOnClickListener(this)
-            commentsButton.setOnClickListener(this)
-            favoriteButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnFavoriteClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -309,15 +298,15 @@ class DeviationsAdapter(
         if (position == RecyclerView.NO_POSITION) return
         val item = items[position] as DeviationItem
         when (view.id) {
-            R.id.button_comments -> {
+            R.id.deviation_actions_comments -> {
                 onCommentsClick(CommentThreadId.Deviation(item.deviationId))
             }
 
-            R.id.button_favorite -> {
-                onFavoriteClick(item.deviationId, !item.isFavorite)
+            R.id.deviation_actions_favorite -> {
+                onFavoriteClick(item.deviationId, !item.actionsState.isFavorite)
             }
 
-            R.id.button_share -> {
+            R.id.deviation_actions_share -> {
                 onShareClick(ShareObjectId.Deviation(item.deviationId))
             }
 

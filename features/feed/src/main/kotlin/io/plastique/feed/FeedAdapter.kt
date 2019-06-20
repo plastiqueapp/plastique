@@ -3,13 +3,11 @@ package io.plastique.feed
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -25,11 +23,13 @@ import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
+import io.plastique.deviations.DeviationActionsView
 import io.plastique.deviations.list.ImageHelper
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
+import io.plastique.statuses.StatusActionsView
 import io.plastique.statuses.isDeleted
 import io.plastique.users.User
 import io.plastique.util.dimensionRatio
@@ -111,10 +111,7 @@ private class ImageDeviationItemDelegate(
         holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.title
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.commentsButton.isVisible = item.allowsComments
-        holder.favoriteButton.text = item.favoriteCount.toString()
-        holder.favoriteButton.isChecked = item.isFavorite
+        holder.actionsView.render(item.actionsState)
 
         val preview = ImageHelper.choosePreview(item.preview, item.content, holder.maxImageWidth)
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
@@ -135,17 +132,15 @@ private class ImageDeviationItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val imageView: ImageView = itemView.findViewById(R.id.deviation_image)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
-        private val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
             headerView.setOnUserClickListener(this)
             imageView.setOnClickListener(this)
             titleView.setOnClickListener(this)
-            commentsButton.setOnClickListener(this)
-            favoriteButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnFavoriteClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -172,27 +167,22 @@ private class LiteratureDeviationItemDelegate(
         holder.headerView.setUser(item.user, glide)
         holder.titleView.text = item.title
         holder.excerptView.text = item.excerpt.value
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.commentsButton.isVisible = item.allowsComments
-        holder.favoriteButton.text = item.favoriteCount.toString()
-        holder.favoriteButton.isChecked = item.isFavorite
+        holder.actionsView.render(item.actionsState)
     }
 
     class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val favoriteButton: CheckedTextView = itemView.findViewById(R.id.button_favorite)
-        private val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
             headerView.setOnUserClickListener(this)
             titleView.setOnClickListener(this)
             excerptView.setOnClickListener(this)
-            commentsButton.setOnClickListener(this)
-            favoriteButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnFavoriteClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -277,8 +267,7 @@ private class StatusItemDelegate(
         holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.user, glide)
         holder.statusTextView.text = item.text.value
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.shareButton.isVisible = !item.share.isDeleted
+        holder.actionsView.render(item.actionsState)
 
         holder.shareView.setShare(item.share, glide, elapsedTimeFormatter)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
@@ -288,14 +277,13 @@ private class StatusItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val statusTextView: RichTextView = itemView.findViewById(R.id.status_text)
         val shareView: ShareView = itemView.findViewById(R.id.status_share)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: StatusActionsView = itemView.findViewById(R.id.status_actions)
 
         init {
             headerView.setOnUserClickListener(this)
             statusTextView.setOnClickListener(this)
-            commentsButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
 
             statusTextView.movementMethod = LinkMovementMethod.getInstance()
         }
@@ -369,33 +357,41 @@ class FeedAdapter(
         if (position == RecyclerView.NO_POSITION) return
         val item = items[position]
         when {
-            view is FeedHeaderView -> onUserClick((item as FeedListItem).user)
-            view.id == R.id.button_comments -> {
-                val threadId = when (item) {
-                    is DeviationItem -> CommentThreadId.Deviation(item.deviationId)
-                    is StatusUpdateItem -> CommentThreadId.Status(item.statusId)
-                    else -> throw IllegalStateException("Unexpected item ${item.javaClass}")
-                }
-                onCommentsClick(threadId)
+            view is FeedHeaderView -> {
+                require(item is FeedListItem)
+                onUserClick(item.user)
             }
-            view.id == R.id.button_favorite -> {
-                val deviationItem = (item as DeviationItem)
-                onFavoriteClick(deviationItem.id, !deviationItem.isFavorite)
+            view.id == R.id.deviation_actions_comments -> {
+                require(item is DeviationItem)
+                onCommentsClick(CommentThreadId.Deviation(item.deviationId))
             }
-            view.id == R.id.button_share -> {
-                val shareObjectId = getObjectToShare(item)
-                onShareClick(shareObjectId)
+            view.id == R.id.deviation_actions_favorite -> {
+                require(item is DeviationItem)
+                onFavoriteClick(item.id, !item.actionsState.isFavorite)
+            }
+            view.id == R.id.deviation_actions_share -> {
+                require(item is DeviationItem)
+                onShareClick(ShareObjectId.Deviation(item.deviationId))
+            }
+            view.id == R.id.status_actions_comments -> {
+                require(item is StatusUpdateItem)
+                onCommentsClick(CommentThreadId.Status(item.statusId))
+            }
+            view.id == R.id.status_actions_share -> {
+                require(item is StatusUpdateItem)
+                onShareClick(item.shareObjectId)
             }
             view.id == R.id.deviation_image || view.id == R.id.deviation_title || view.id == R.id.deviation_excerpt -> {
-                val deviationItem = (item as DeviationItem)
-                onDeviationClick(deviationItem.deviationId)
+                require(item is DeviationItem)
+                onDeviationClick(item.deviationId)
             }
             view.id == R.id.status_text -> {
                 val statusId = (item as StatusUpdateItem).statusId
                 onStatusClick(statusId)
             }
             view.id == R.id.status_share -> {
-                when (val share = (item as StatusUpdateItem).share) {
+                require(item is StatusUpdateItem)
+                when (val share = item.share) {
                     is ShareUiModel.ImageDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.LiteratureDeviation -> onDeviationClick(share.deviationId)
                     is ShareUiModel.Status -> onStatusClick(share.statusId)
@@ -403,23 +399,20 @@ class FeedAdapter(
                 }
             }
             view.id == R.id.folder_name -> {
-                val collectionUpdateItem = item as CollectionUpdateItem
-                onCollectionFolderClick(collectionUpdateItem.user.name, collectionUpdateItem.folderId, collectionUpdateItem.folderName)
+                require(item is CollectionUpdateItem)
+                onCollectionFolderClick(item.user.name, item.folderId, item.folderName)
             }
         }
     }
 
-    private fun getObjectToShare(item: ListItem): ShareObjectId = when (item) {
-        is StatusUpdateItem -> when (item.share) {
-            is ShareUiModel.None -> ShareObjectId.Status(item.statusId)
-            is ShareUiModel.ImageDeviation -> ShareObjectId.Deviation(item.share.deviationId, item.statusId)
-            is ShareUiModel.LiteratureDeviation -> ShareObjectId.Deviation(item.share.deviationId, item.statusId)
-            is ShareUiModel.Status -> ShareObjectId.Status(item.share.statusId, item.statusId)
+    private val StatusUpdateItem.shareObjectId: ShareObjectId
+        get() = when (share) {
+            is ShareUiModel.None -> ShareObjectId.Status(statusId)
+            is ShareUiModel.ImageDeviation -> ShareObjectId.Deviation(share.deviationId, statusId)
+            is ShareUiModel.LiteratureDeviation -> ShareObjectId.Deviation(share.deviationId, statusId)
+            is ShareUiModel.Status -> ShareObjectId.Status(share.statusId, statusId)
             else -> throw IllegalStateException("Nothing to share")
         }
-        is DeviationItem -> ShareObjectId.Deviation(item.deviationId)
-        else -> throw IllegalStateException("Unexpected item ${item.javaClass}")
-    }
 }
 
 typealias OnCollectionFolderClickListener = (username: String?, folderId: String, folderName: String) -> Unit

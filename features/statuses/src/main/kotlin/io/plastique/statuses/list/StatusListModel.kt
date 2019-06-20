@@ -5,8 +5,10 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.statuses.Status
+import io.plastique.statuses.StatusActionsState
 import io.plastique.statuses.StatusListLoadParams
 import io.plastique.statuses.StatusRepositoryImpl
+import io.plastique.statuses.isDeleted
 import io.plastique.statuses.toShareUiModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -41,11 +43,16 @@ class StatusListModel @Inject constructor(
             .ignoreElement()
     }
 
-    private fun createStatusItem(status: Status, matureContent: Boolean): StatusItem = StatusItem(
-        statusId = status.id,
-        author = status.author,
-        date = status.date,
-        statusText = SpannedWrapper(richTextFormatter.format(status.body)),
-        commentCount = status.commentCount,
-        share = status.share.toShareUiModel(richTextFormatter, matureContent))
+    private fun createStatusItem(status: Status, matureContent: Boolean): StatusItem {
+        val share = status.share.toShareUiModel(richTextFormatter, matureContent)
+        return StatusItem(
+            statusId = status.id,
+            author = status.author,
+            date = status.date,
+            statusText = SpannedWrapper(richTextFormatter.format(status.body)),
+            share = share,
+            actionsState = StatusActionsState(
+                commentCount = status.commentCount,
+                isShareEnabled = !share.isDeleted))
+    }
 }

@@ -14,8 +14,8 @@
         android:id="@+id/deviation_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textAppearance="?textAppearanceHeadline6"
         tools:text="@tools:sample/lorem" />
 
@@ -26,61 +26,18 @@
         android:breakStrategy="balanced"
         android:ellipsize="none"
         android:fadingEdgeLength="60dp"
-        android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
         android:requiresFadingEdge="vertical"
         android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp"
         tools:targetApi="m"
         tools:text="@tools:sample/lorem/random" />
 
-    <LinearLayout
+    <io.plastique.deviations.DeviationActionsView
+        android:id="@+id/deviation_actions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <CheckedTextView
-            android:id="@+id/button_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="?selectableItemBackground"
-            android:drawablePadding="@dimen/common_button_drawable_padding"
-            android:drawableStart="@drawable/ic_favorite_24dp"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:minWidth="96dp"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            tools:text="30" />
-
-        <TextView
-            android:id="@+id/button_comments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="?selectableItemBackground"
-            android:drawablePadding="@dimen/common_button_drawable_padding"
-            android:drawableStart="@drawable/ic_common_comment_24dp"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:minWidth="96dp"
-            android:paddingEnd="8dp"
-            android:paddingStart="8dp"
-            tools:text="15" />
-
-        <ImageView
-            android:id="@+id/button_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="?selectableItemBackground"
-            android:contentDescription="@string/common_button_share"
-            android:minHeight="40dp"
-            android:minWidth="40dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_common_share_24dp" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -3,8 +3,6 @@ package io.plastique.statuses.list
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
@@ -20,6 +18,7 @@ import io.plastique.statuses.R
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
+import io.plastique.statuses.StatusActionsView
 import io.plastique.statuses.isDeleted
 
 class StatusItemDelegate(
@@ -39,8 +38,7 @@ class StatusItemDelegate(
         holder.headerView.time = elapsedTimeFormatter.format(item.date)
         holder.headerView.setUser(item.author, glide)
         holder.textView.text = item.statusText.value
-        holder.commentsButton.text = item.commentCount.toString()
-        holder.shareButton.isVisible = !item.share.isDeleted
+        holder.actionsView.render(item.actionsState)
 
         holder.shareView.setShare(item.share, glide, elapsedTimeFormatter)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
@@ -50,14 +48,13 @@ class StatusItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val textView: RichTextView = itemView.findViewById(R.id.status_text)
         val shareView: ShareView = itemView.findViewById(R.id.status_share)
-        val commentsButton: TextView = itemView.findViewById(R.id.button_comments)
-        val shareButton: View = itemView.findViewById(R.id.button_share)
+        val actionsView: StatusActionsView = itemView.findViewById(R.id.status_actions)
 
         init {
             textView.setOnClickListener(this)
             textView.movementMethod = LinkMovementMethod.getInstance()
-            commentsButton.setOnClickListener(this)
-            shareButton.setOnClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -85,8 +82,8 @@ class StatusListAdapter(
         if (position == RecyclerView.NO_POSITION) return
         val item = items[position] as StatusItem
         when (view.id) {
-            R.id.button_comments -> onCommentsClick(item.statusId)
-            R.id.button_share -> onShareClick(getObjectToShare(item))
+            R.id.status_actions_comments -> onCommentsClick(item.statusId)
+            R.id.status_actions_share -> onShareClick(getObjectToShare(item))
             R.id.status_share -> {
                 when (item.share) {
                     is ShareUiModel.ImageDeviation -> onDeviationClick(item.share.deviationId)
