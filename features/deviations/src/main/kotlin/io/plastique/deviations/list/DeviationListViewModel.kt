@@ -244,7 +244,7 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             is ConnectionStateChangedEvent -> {
-                if (event.connectionState === NetworkConnectionState.Connected &&
+                if (event.connectionState == NetworkConnectionState.Connected &&
                     state.contentState is ContentState.Empty &&
                     state.contentState.error is NoNetworkConnectionException) {
                     next(state.copy(

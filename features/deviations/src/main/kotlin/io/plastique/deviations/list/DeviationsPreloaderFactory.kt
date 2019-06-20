@@ -15,7 +15,7 @@ class DeviationsPreloaderFactory(
     private val adapter: ListDelegationAdapter<List<ListItem>>
 ) {
     fun createPreloader(layoutMode: LayoutMode, gridParams: GridParams): ListPreloader {
-        return if (layoutMode === LayoutMode.Grid) {
+        return if (layoutMode == LayoutMode.Grid) {
             createGridPreloader(gridParams)
         } else {
             createListPreloader()

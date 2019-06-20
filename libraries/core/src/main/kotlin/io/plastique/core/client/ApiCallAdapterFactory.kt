@@ -19,10 +19,10 @@ class ApiCallAdapterFactory @Inject constructor(
 
     override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
         val rawType = getRawType(returnType)
-        if (rawType == Completable::class.java) {
+        if (rawType === Completable::class.java) {
             return RxJava2CallAdapter<Any, Completable>(Void::class.java, callExecutor) { it.ignoreElement() }
         }
-        if (rawType != Single::class.java && rawType != Maybe::class.java) {
+        if (rawType !== Single::class.java && rawType !== Maybe::class.java) {
             return null
         }
         require(returnType is ParameterizedType) { "${rawType.simpleName} must be parametrized" }

@@ -22,7 +22,7 @@ data class GalleryViewState(
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     val showMenu: Boolean
-        get() = params.username == null && contentState == ContentState.Content
+        get() = params.username == null && contentState === ContentState.Content
 
     override fun toString(): String {
         return "GalleryViewState(" +
