@@ -302,7 +302,8 @@ private fun VideoDto.toVideoEntity(deviationId: String): DeviationVideoEntity = 
     deviationId = deviationId,
     quality = quality,
     url = url,
-    duration = duration,
+    duration = Duration.ofSeconds(duration.toLong()),
     fileSize = fileSize)
 
-private fun DeviationVideoEntity.toVideoInfo(): Deviation.VideoInfo = Deviation.VideoInfo(quality = quality, url = url)
+private fun DeviationVideoEntity.toVideoInfo(): Deviation.VideoInfo =
+    Deviation.VideoInfo(duration = duration, quality = quality, url = url)

@@ -10,6 +10,7 @@ import io.plastique.comments.CommentEntity
 import io.plastique.comments.CommentLinkage
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryDao
+import io.plastique.core.converters.DurationConverter
 import io.plastique.core.converters.InstantConverter
 import io.plastique.core.converters.SizeConverter
 import io.plastique.core.converters.ZonedDateTimeConverter
@@ -87,7 +88,12 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
     ],
     version = BuildConfig.DB_VERSION,
     exportSchema = false)
-@TypeConverters(InstantConverter::class, SizeConverter::class, ZonedDateTimeConverter::class)
+@TypeConverters(
+    DurationConverter::class,
+    InstantConverter::class,
+    SizeConverter::class,
+    ZonedDateTimeConverter::class
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cacheEntryDao(): CacheEntryDao
 

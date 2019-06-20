@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import org.threeten.bp.Duration
 
 @Entity(
     tableName = "deviation_videos",
@@ -25,7 +26,7 @@ data class DeviationVideoEntity(
     val url: String,
 
     @ColumnInfo(name = "duration")
-    val duration: Int,
+    val duration: Duration,
 
     @ColumnInfo(name = "file_size")
     val fileSize: Int

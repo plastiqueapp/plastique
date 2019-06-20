@@ -2,6 +2,7 @@ package io.plastique.deviations
 
 import io.plastique.users.User
 import io.plastique.util.Size
+import org.threeten.bp.Duration
 import org.threeten.bp.ZonedDateTime
 
 data class Deviation(
@@ -59,6 +60,7 @@ data class Deviation(
     )
 
     data class VideoInfo(
+        val duration: Duration,
         val quality: String,
         val url: String
     )
