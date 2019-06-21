@@ -13,22 +13,11 @@
         tools:ignore="UnusedAttribute"
         tools:src="#fff" />
 
-    <TextView
-        android:id="@+id/deviation_video_duration"
+    <include
+        layout="@layout/inc_deviations_video_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/deviations_video_duration_background"
-        android:drawableStart="@drawable/ic_deviations_video"
-        android:drawablePadding="4dp"
-        android:gravity="center_vertical"
-        android:includeFontPadding="false"
-        android:minHeight="16dp"
-        android:paddingStart="6dp"
-        android:paddingEnd="6dp"
-        android:textAppearance="?textAppearanceCaption"
-        android:textColor="#ffffff"
-        tools:text="3:45" />
+        android:layout_marginBottom="8dp" />
 </FrameLayout>

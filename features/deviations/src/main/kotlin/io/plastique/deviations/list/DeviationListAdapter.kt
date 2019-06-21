@@ -303,6 +303,63 @@ private class ListLiteratureDeviationItemDelegate(
         }
     }
 }
+
+private class ListVideoDeviationItemDelegate(
+    private val glide: GlideRequests,
+    private val layoutModeProvider: LayoutModeProvider,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<VideoDeviationItem, ListItem, ListVideoDeviationItemDelegate.ViewHolder>() {
+
+    override fun isForViewType(item: ListItem): Boolean =
+        item is VideoDeviationItem && layoutModeProvider() == LayoutMode.List
+
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        val view = parent.inflate(R.layout.item_deviation_video_list)
+        return ViewHolder(view, onViewHolderClickListener)
+    }
+
+    override fun onBindViewHolder(item: VideoDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        (holder.itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
+            topMargin = if (position > 0) spacing else 0
+        }
+
+        holder.titleView.text = item.title
+        holder.actionsView.render(item.actionsState)
+        holder.durationView.text = item.duration.print()
+
+        val preview = item.preview
+        (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = preview.size.dimensionRatio
+
+        glide.load(preview.url)
+            .override(preview.size.width, preview.size.height)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.imageView)
+    }
+
+    class ViewHolder(
+        itemView: View,
+        private val onClickListener: OnViewHolderClickListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        val titleView: TextView = itemView.findViewById(R.id.deviation_title)
+        val imageView: ImageView = itemView.findViewById(R.id.deviation_preview)
+        val durationView: TextView = itemView.findViewById(R.id.deviation_video_duration)
+        val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
+
+        init {
+            imageView.setOnClickListener(this)
+            titleView.setOnClickListener(this)
+            actionsView.setOnFavoriteClickListener(this)
+            actionsView.setOnCommentsClickListener(this)
+            actionsView.setOnShareClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            onClickListener.onViewHolderClick(this, view)
+        }
+    }
+}
 // endregion
 
 private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateItemDelegate.ViewHolder>() {
@@ -343,6 +400,7 @@ class DeviationsAdapter(
 
         delegatesManager.addDelegate(ListImageDeviationItemDelegate(glide, layoutModeProvider, this))
         delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(layoutModeProvider, this))
+        delegatesManager.addDelegate(ListVideoDeviationItemDelegate(glide, layoutModeProvider, this))
 
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(DateItemDelegate())
