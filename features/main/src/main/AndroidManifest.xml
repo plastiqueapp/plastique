@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.plastique.main">
 
-    <application>
+    <application android:theme="@style/Theme.App.DayNight">
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.App.Main">

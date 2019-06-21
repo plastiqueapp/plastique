@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.plastique.watch">
 
-    <application>
+    <application android:theme="@style/Theme.App.DayNight">
         <activity
             android:name=".WatcherListActivity"
             android:label="@string/watch_watchers_title" />

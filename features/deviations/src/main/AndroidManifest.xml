@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.plastique.deviations">
 
-    <application>
+    <application android:theme="@style/Theme.App.DayNight">
         <activity
             android:name=".categories.list.CategoryListActivity"
             android:label="@string/deviations_categories_title" />

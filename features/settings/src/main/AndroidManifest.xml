@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.plastique.settings">
 
-    <application>
+    <application android:theme="@style/Theme.App.DayNight">
         <activity
             android:name=".licenses.LicensesActivity"
             android:label="@string/licenses_title"

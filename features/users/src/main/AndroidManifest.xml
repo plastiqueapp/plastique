@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.plastique.users">
 
-    <application>
+    <application android:theme="@style/Theme.App.DayNight">
         <activity android:name=".profile.UserProfileActivity">
             <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />

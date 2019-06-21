@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="io.plastique.feed" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.plastique.feed">
+
+    <application android:theme="@style/Theme.App.DayNight" />
+</manifest>
