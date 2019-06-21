@@ -5,6 +5,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationActionsState
+import org.threeten.bp.Duration
 
 sealed class DeviationItem : ListItem, IndexedItem {
     abstract val deviationId: String
@@ -30,4 +31,14 @@ data class LiteratureDeviationItem(
     override val actionsState: DeviationActionsState,
     override val index: Int,
     val excerpt: SpannedWrapper
+) : DeviationItem()
+
+data class VideoDeviationItem(
+    override val deviationId: String,
+    override val title: String,
+    override val actionsState: DeviationActionsState,
+    override val index: Int,
+    val preview: Deviation.ImageInfo,
+    val thumbnails: List<Deviation.ImageInfo>,
+    val duration: Duration
 ) : DeviationItem()

@@ -9,6 +9,7 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
+import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.glide.GlideRequests
 
@@ -22,6 +23,7 @@ class DeviationsAdapter(
         val layoutModeProvider = { LayoutMode.Grid }
         delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
     }
 
     fun update(items: List<ListItem>) {

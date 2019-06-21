@@ -17,6 +17,7 @@ import io.plastique.core.lists.OnViewHolderLongClickListener
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
+import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.glide.GlideRequests
 
@@ -108,6 +109,7 @@ class GalleryAdapter(
         delegatesManager.addDelegate(HeaderItemDelegate())
         delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

@@ -18,6 +18,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
+import io.plastique.core.time.print
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationActionsView
 import io.plastique.deviations.R
@@ -119,6 +120,61 @@ class GridLiteratureDeviationItemDelegate(
     ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         val title: TextView = itemView.findViewById(R.id.deviation_title)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            onClickListener.onViewHolderClick(this, view)
+        }
+    }
+}
+
+class GridVideoDeviationItemDelegate(
+    private val glide: GlideRequests,
+    private val layoutModeProvider: LayoutModeProvider,
+    private val itemSizeCallback: ItemSizeCallback,
+    private val onViewHolderClickListener: OnViewHolderClickListener
+) : BaseAdapterDelegate<VideoDeviationItem, ListItem, GridVideoDeviationItemDelegate.ViewHolder>() {
+
+    override fun isForViewType(item: ListItem): Boolean =
+        item is VideoDeviationItem && layoutModeProvider() == LayoutMode.Grid
+
+    override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
+        val view = parent.inflate(R.layout.item_deviation_video_grid)
+        return ViewHolder(view, onViewHolderClickListener)
+    }
+
+    override fun onBindViewHolder(item: VideoDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        val itemSize = itemSizeCallback.getItemSize(item)
+        val columnCount = itemSizeCallback.getColumnCount(item)
+
+        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
+            width = itemSize.width
+            height = itemSize.height
+
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
+            leftMargin = if (item.index % columnCount != 0) spacing else 0
+            topMargin = if (item.index >= columnCount) spacing else 0
+        }
+
+        holder.thumbnail.contentDescription = item.title
+        holder.durationView.text = item.duration.print()
+
+        val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
+        glide.load(thumbnail.url)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.thumbnail)
+    }
+
+    class ViewHolder(
+        itemView: View,
+        private val onClickListener: OnViewHolderClickListener
+    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        val thumbnail: ImageView = itemView.findViewById(R.id.deviation_thumbnail)
+        val durationView: TextView = itemView.findViewById(R.id.deviation_video_duration)
 
         init {
             itemView.setOnClickListener(this)
@@ -283,6 +339,7 @@ class DeviationsAdapter(
     init {
         delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
 
         delegatesManager.addDelegate(ListImageDeviationItemDelegate(glide, layoutModeProvider, this))
         delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(layoutModeProvider, this))

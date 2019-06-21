@@ -35,7 +35,15 @@ class DeviationItemFactory @Inject constructor(
                     excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)),
                     index = index)
 
-            is Deviation.Data.Video -> TODO()
+            is Deviation.Data.Video ->
+                VideoDeviationItem(
+                    deviationId = deviation.id,
+                    title = deviation.title,
+                    actionsState = actionsState,
+                    index = index,
+                    preview = data.preview,
+                    thumbnails = data.thumbnails,
+                    duration = data.videos.first().duration)
         }
     }
 }
