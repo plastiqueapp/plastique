@@ -1,6 +1,5 @@
 package io.plastique.deviations.list
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
@@ -32,14 +31,11 @@ import java.util.Locale
 
 // region Grid
 class GridImageDeviationItemDelegate(
-    context: Context,
     private val glide: GlideRequests,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
         item is ImageDeviationItem && layoutModeProvider() == LayoutMode.Grid
@@ -56,6 +52,8 @@ class GridImageDeviationItemDelegate(
         (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
             width = itemSize.width
             height = itemSize.height
+
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
             leftMargin = if (item.index % columnCount != 0) spacing else 0
             topMargin = if (item.index >= columnCount) spacing else 0
         }
@@ -86,13 +84,10 @@ class GridImageDeviationItemDelegate(
 }
 
 class GridLiteratureDeviationItemDelegate(
-    context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
         item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.Grid
@@ -109,6 +104,8 @@ class GridLiteratureDeviationItemDelegate(
         (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
             width = itemSize.width
             height = itemSize.height
+
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing)
             leftMargin = if (item.index % columnCount != 0) spacing else 0
             topMargin = if (item.index >= columnCount) spacing else 0
         }
@@ -136,13 +133,10 @@ class GridLiteratureDeviationItemDelegate(
 
 // region List
 private class ListImageDeviationItemDelegate(
-    context: Context,
     private val glide: GlideRequests,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
         item is ImageDeviationItem && layoutModeProvider() == LayoutMode.List
@@ -154,6 +148,7 @@ private class ListImageDeviationItemDelegate(
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         (holder.itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
             topMargin = if (position > 0) spacing else 0
         }
 
@@ -207,12 +202,9 @@ private class ListImageDeviationItemDelegate(
 }
 
 private class ListLiteratureDeviationItemDelegate(
-    context: Context,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, ListLiteratureDeviationItemDelegate.ViewHolder>() {
-
-    private val spacing = context.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
 
     override fun isForViewType(item: ListItem): Boolean =
         item is LiteratureDeviationItem && layoutModeProvider() == LayoutMode.List
@@ -224,6 +216,7 @@ private class ListLiteratureDeviationItemDelegate(
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         (holder.itemView.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_list_spacing)
             topMargin = if (position > 0) spacing else 0
         }
 
@@ -278,7 +271,6 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
 }
 
 class DeviationsAdapter(
-    context: Context,
     glide: GlideRequests,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,
@@ -289,11 +281,11 @@ class DeviationsAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
 
-        delegatesManager.addDelegate(ListImageDeviationItemDelegate(context, glide, layoutModeProvider, this))
-        delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(context, layoutModeProvider, this))
+        delegatesManager.addDelegate(ListImageDeviationItemDelegate(glide, layoutModeProvider, this))
+        delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(layoutModeProvider, this))
 
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(DateItemDelegate())

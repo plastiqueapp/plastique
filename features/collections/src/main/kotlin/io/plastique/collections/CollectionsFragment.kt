@@ -103,7 +103,6 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
 
         val glide = GlideApp.with(this)
         adapter = CollectionsAdapter(
-            context = requireContext(),
             glide = glide,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },

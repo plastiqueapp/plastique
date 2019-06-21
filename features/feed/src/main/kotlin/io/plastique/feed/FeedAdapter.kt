@@ -76,7 +76,7 @@ private class CollectionUpdateItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val folderNameView: TextView = itemView.findViewById(R.id.folder_name)
         val folderItemsView: RecyclerView = itemView.findViewById(R.id.thumbnails)
-        val folderItemsAdapter: DeviationsAdapter = DeviationsAdapter(folderItemsView.context, glide, itemSizeCallback, onDeviationClick)
+        val folderItemsAdapter: DeviationsAdapter = DeviationsAdapter(glide, itemSizeCallback, onDeviationClick)
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(folderItemsView.context)
 
         init {
@@ -235,7 +235,7 @@ private class MultipleDeviationsItemDelegate(
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
         val deviationsView: RecyclerView = itemView.findViewById(R.id.deviations)
-        val adapter: DeviationsAdapter = DeviationsAdapter(itemView.context, glide, gridItemSizeCallback, onDeviationClick)
+        val adapter: DeviationsAdapter = DeviationsAdapter(glide, gridItemSizeCallback, onDeviationClick)
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(deviationsView.context)
 
         init {

@@ -103,7 +103,6 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
 
         val glide = GlideApp.with(this)
         adapter = GalleryAdapter(
-            context = requireContext(),
             glide = glide,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item ->

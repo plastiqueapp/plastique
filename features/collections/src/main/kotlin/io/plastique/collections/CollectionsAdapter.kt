@@ -1,6 +1,5 @@
 package io.plastique.collections
 
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -96,7 +95,6 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
 }
 
 class CollectionsAdapter(
-    context: Context,
     glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onFolderClick: OnFolderClickListener,
@@ -108,8 +106,8 @@ class CollectionsAdapter(
         val layoutModeProvider = { LayoutMode.Grid }
         delegatesManager.addDelegate(FolderItemDelegate(glide, itemSizeCallback, this, this))
         delegatesManager.addDelegate(HeaderItemDelegate())
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(context, glide, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(context, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

@@ -119,7 +119,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
 
         val glide = GlideApp.with(this)
         adapter = DeviationsAdapter(
-            context = requireContext(),
             glide = glide,
             layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
             itemSizeCallback = DeviationsItemSizeCallback(gridParams),
