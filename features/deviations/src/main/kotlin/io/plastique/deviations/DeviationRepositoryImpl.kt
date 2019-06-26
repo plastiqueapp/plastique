@@ -196,13 +196,13 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
     publishTime = publishTime,
     authorId = author.id,
     excerpt = excerpt,
-    properties = DeviationPropertiesEntity(
+    properties = DeviationEntity.Properties(
         isDownloadable = isDownloadable,
         isFavorite = isFavorite,
         isMature = isMature,
         allowsComments = allowsComments,
         downloadFileSize = downloadFileSize),
-    stats = DeviationStatsEntity(comments = stats.comments, favorites = stats.favorites),
+    stats = DeviationEntity.Stats(comments = stats.comments, favorites = stats.favorites),
     dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
 
 private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
@@ -273,19 +273,19 @@ fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
         dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
 }
 
-private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
-    require(giverId == giver.id) { "Expected user with id $giverId but got ${giver.id}" }
-    return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
-}
-
-private fun DeviationPropertiesEntity.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
+private fun DeviationEntity.Properties.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
     isDownloadable = isDownloadable,
     isFavorite = isFavorite,
     isMature = isMature,
     allowsComments = allowsComments,
     downloadFileSize = downloadFileSize)
 
-private fun DeviationStatsEntity.toDeviationStats(): Deviation.Stats = Deviation.Stats(comments = comments, favorites = favorites)
+private fun DeviationEntity.Stats.toDeviationStats(): Deviation.Stats = Deviation.Stats(comments = comments, favorites = favorites)
+
+private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
+    require(giverId == giver.id) { "Expected user with id $giverId but got ${giver.id}" }
+    return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
+}
 
 private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
 

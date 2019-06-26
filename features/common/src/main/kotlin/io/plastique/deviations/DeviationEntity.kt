@@ -44,16 +44,40 @@ data class DeviationEntity(
     val authorId: String,
 
     @Embedded(prefix = "properties_")
-    val properties: DeviationPropertiesEntity,
+    val properties: Properties,
 
     @Embedded(prefix = "stats_")
-    val stats: DeviationStatsEntity,
+    val stats: Stats,
 
     @Embedded(prefix = "daily_deviation_")
     val dailyDeviation: DailyDeviationEntity?
-)
+) {
+    data class Properties(
+        @ColumnInfo(name = "is_downloadable")
+        val isDownloadable: Boolean,
 
-// TODO: Convert to nested once https://issuetracker.google.com/issues/119838407 is fixed
+        @ColumnInfo(name = "is_favorite")
+        val isFavorite: Boolean,
+
+        @ColumnInfo(name = "is_mature")
+        val isMature: Boolean,
+
+        @ColumnInfo(name = "allows_comments")
+        val allowsComments: Boolean,
+
+        @ColumnInfo(name = "download_size")
+        val downloadFileSize: Long
+    )
+
+    data class Stats(
+        @ColumnInfo(name = "comments")
+        val comments: Int,
+
+        @ColumnInfo(name = "favorites")
+        val favorites: Int
+    )
+}
+
 data class DailyDeviationEntity(
     @ColumnInfo(name = "body")
     val body: String,
@@ -63,29 +87,4 @@ data class DailyDeviationEntity(
 
     @ColumnInfo(name = "giver_id")
     val giverId: String
-)
-
-data class DeviationPropertiesEntity(
-    @ColumnInfo(name = "is_downloadable")
-    val isDownloadable: Boolean,
-
-    @ColumnInfo(name = "is_favorite")
-    val isFavorite: Boolean,
-
-    @ColumnInfo(name = "is_mature")
-    val isMature: Boolean,
-
-    @ColumnInfo(name = "allows_comments")
-    val allowsComments: Boolean,
-
-    @ColumnInfo(name = "download_size")
-    val downloadFileSize: Long
-)
-
-data class DeviationStatsEntity(
-    @ColumnInfo(name = "comments")
-    val comments: Int,
-
-    @ColumnInfo(name = "favorites")
-    val favorites: Int
 )

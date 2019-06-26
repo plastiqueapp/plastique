@@ -30,16 +30,16 @@ data class UserProfileEntity(
     val isWatching: Boolean,
 
     @Embedded(prefix = "stats_")
-    val stats: UserProfileStatsEntity
-)
+    val stats: Stats
+) {
+    data class Stats(
+        @ColumnInfo(name = "user_deviations")
+        val userDeviations: Int,
 
-data class UserProfileStatsEntity(
-    @ColumnInfo(name = "user_deviations")
-    val userDeviations: Int,
+        @ColumnInfo(name = "user_favorites")
+        val userFavorites: Int,
 
-    @ColumnInfo(name = "user_favorites")
-    val userFavorites: Int,
-
-    @ColumnInfo(name = "watchers")
-    val watchers: Int
-)
+        @ColumnInfo(name = "watchers")
+        val watchers: Int
+    )
+}

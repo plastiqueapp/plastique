@@ -59,16 +59,16 @@ data class MessageEntity(
     val collectionFolderId: String?,
 
     @Embedded(prefix = "subject_")
-    val subject: MessageSubjectEntity?
-)
+    val subject: Subject?
+) {
+    data class Subject(
+        @ColumnInfo(name = "deviation_id")
+        val deviationId: String?,
 
-data class MessageSubjectEntity(
-    @ColumnInfo(name = "deviation_id")
-    val deviationId: String?,
+        @ColumnInfo(name = "comment_id")
+        val commentId: String?,
 
-    @ColumnInfo(name = "comment_id")
-    val commentId: String?,
-
-    @ColumnInfo(name = "collection_folder_id")
-    val collectionFolderId: String?
-)
+        @ColumnInfo(name = "collection_folder_id")
+        val collectionFolderId: String?
+    )
+}
