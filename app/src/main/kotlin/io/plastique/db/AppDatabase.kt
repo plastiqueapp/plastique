@@ -14,6 +14,7 @@ import io.plastique.core.converters.DurationConverter
 import io.plastique.core.converters.InstantConverter
 import io.plastique.core.converters.SizeConverter
 import io.plastique.core.converters.ZonedDateTimeConverter
+import io.plastique.deviations.DailyDeviationEntity
 import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationEntity
 import io.plastique.deviations.DeviationImageEntity
@@ -61,6 +62,7 @@ import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
         CommentLinkage::class,
 
         DeviationEntity::class,
+        DailyDeviationEntity::class,
         DeviationImageEntity::class,
         DeviationVideoEntity::class,
         DeviationLinkage::class,

@@ -17,7 +17,6 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.time.TimeProvider
-import io.plastique.users.UserEntity
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.RxRoom
@@ -62,12 +61,12 @@ class DeviationRepositoryImpl @Inject constructor(
             return
         }
 
-        val users = deviations.asSequence()
-            .flatMap { sequenceOf(it.author, it.dailyDeviation?.giver) }
-            .filterNotNull()
-            .distinctBy { user -> user.id }
-            .toList()
-        val deviationEntities = deviations.map { deviation -> deviation.toDeviationEntity() }
+        val deviationEntities = deviations.map { it.toDeviationEntity() }
+        val dailyDeviationEntities = deviations.mapNotNull { it.dailyDeviation?.toDailyDeviationEntity(it.id) }
+        val deviationsWithoutDailyIds = deviations.asSequence()
+            .filter { it.dailyDeviation == null }
+            .map { it.id }
+            .toSet()
 
         val imageEntities = mutableListOf<DeviationImageEntity>()
         val videoEntities = mutableListOf<DeviationVideoEntity>()
@@ -82,9 +81,23 @@ class DeviationRepositoryImpl @Inject constructor(
             videoEntities += deviation.videos.asSequence().map { it.toVideoEntity(deviation.id) }
         }
 
+        val users = deviations.asSequence()
+            .flatMap { sequenceOf(it.author, it.dailyDeviation?.giver) }
+            .filterNotNull()
+            .distinctBy { user -> user.id }
+            .toList()
+
         database.runInTransaction {
             userRepository.put(users)
             deviationDao.insertOrUpdate(deviationEntities)
+
+            if (deviationsWithoutDailyIds.isNotEmpty()) {
+                deviationDao.deleteDailyDeviations(deviationsWithoutDailyIds)
+            }
+            if (dailyDeviationEntities.isNotEmpty()) {
+                deviationDao.insertOrUpdateDailyDeviations(dailyDeviationEntities)
+            }
+
             deviationDao.replaceImages(imageEntities)
             deviationDao.replaceVideos(videoEntities)
         }
@@ -106,7 +119,7 @@ class DeviationRepositoryImpl @Inject constructor(
         params: FetchParams,
         metadataSerializer: DeviationCacheMetadataSerializer
     ): Observable<PagedData<List<Deviation>, Cursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviation_videos", "deviations", "deviation_linkage")) {
+        return RxRoom.createObservable(database, TABLE_NAMES) {
             val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
             val deviations = combineAndFilter(deviationsWithRelations, params)
             val nextCursor = getNextCursor(key, metadataSerializer)
@@ -185,6 +198,7 @@ class DeviationRepositoryImpl @Inject constructor(
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)
+        private val TABLE_NAMES = arrayOf("users", "daily_deviations", "deviation_images", "deviation_videos", "deviations", "deviation_linkage")
     }
 }
 
@@ -202,11 +216,10 @@ private fun DeviationDto.toDeviationEntity(): DeviationEntity = DeviationEntity(
         isMature = isMature,
         allowsComments = allowsComments,
         downloadFileSize = downloadFileSize),
-    stats = DeviationEntity.Stats(comments = stats.comments, favorites = stats.favorites),
-    dailyDeviation = dailyDeviation?.toDailyDeviationEntity())
+    stats = DeviationEntity.Stats(comments = stats.comments, favorites = stats.favorites))
 
-private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(): DailyDeviationEntity =
-    DailyDeviationEntity(body = body, date = date, giverId = giver.id)
+private fun DeviationDto.DailyDeviation.toDailyDeviationEntity(deviationId: String): DailyDeviationEntity =
+    DailyDeviationEntity(deviationId = deviationId, body = body, date = date, giverId = giver.id)
 
 fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
     val data = when {
@@ -270,7 +283,7 @@ fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
         data = data,
         properties = deviation.properties.toDeviationProperties(),
         stats = deviation.stats.toDeviationStats(),
-        dailyDeviation = deviation.dailyDeviation?.toDailyDeviation(dailyDeviationGiver.first()))
+        dailyDeviation = dailyDeviation.firstOrNull()?.toDailyDeviation())
 }
 
 private fun DeviationEntity.Properties.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
@@ -282,10 +295,10 @@ private fun DeviationEntity.Properties.toDeviationProperties(): Deviation.Proper
 
 private fun DeviationEntity.Stats.toDeviationStats(): Deviation.Stats = Deviation.Stats(comments = comments, favorites = favorites)
 
-private fun DailyDeviationEntity.toDailyDeviation(giver: UserEntity): Deviation.DailyDeviation {
-    require(giverId == giver.id) { "Expected user with id $giverId but got ${giver.id}" }
-    return Deviation.DailyDeviation(body = body, date = date, giver = giver.toUser())
-}
+private fun DailyDeviationEntityWithRelations.toDailyDeviation(): Deviation.DailyDeviation = Deviation.DailyDeviation(
+    body = dailyDeviation.body,
+    date = dailyDeviation.date,
+    giver = giver.first().toUser())
 
 private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
 

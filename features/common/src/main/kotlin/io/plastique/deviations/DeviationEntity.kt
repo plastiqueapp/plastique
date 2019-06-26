@@ -8,17 +8,14 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.plastique.users.UserEntity
 import org.threeten.bp.Instant
-import org.threeten.bp.ZonedDateTime
 
 @Entity(
     tableName = "deviations",
     foreignKeys = [
-        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"]),
-        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["daily_deviation_giver_id"])
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["author_id"])
     ],
     indices = [
-        Index("author_id"),
-        Index("daily_deviation_giver_id")
+        Index("author_id")
     ])
 data class DeviationEntity(
     @PrimaryKey
@@ -47,10 +44,7 @@ data class DeviationEntity(
     val properties: Properties,
 
     @Embedded(prefix = "stats_")
-    val stats: Stats,
-
-    @Embedded(prefix = "daily_deviation_")
-    val dailyDeviation: DailyDeviationEntity?
+    val stats: Stats
 ) {
     data class Properties(
         @ColumnInfo(name = "is_downloadable")
@@ -77,14 +71,3 @@ data class DeviationEntity(
         val favorites: Int
     )
 }
-
-data class DailyDeviationEntity(
-    @ColumnInfo(name = "body")
-    val body: String,
-
-    @ColumnInfo(name = "date")
-    val date: ZonedDateTime,
-
-    @ColumnInfo(name = "giver_id")
-    val giverId: String
-)

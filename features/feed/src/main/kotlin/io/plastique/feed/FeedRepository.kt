@@ -66,7 +66,7 @@ class FeedRepository @Inject constructor(
     }
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
-        return RxRoom.createObservable(database, DATA_TABLES) {
+        return RxRoom.createObservable(database, TABLE_NAMES) {
             val feedElements = feedDao.getFeed().map { it.toFeedElement(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
@@ -162,7 +162,7 @@ class FeedRepository @Inject constructor(
     companion object {
         const val CACHE_KEY = "feed"
         private val CACHE_DURATION = Duration.ofHours(1)
-        private val DATA_TABLES = arrayOf(
+        private val TABLE_NAMES = arrayOf(
             "deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses", "feed", "users")
     }
 }

@@ -66,6 +66,21 @@ ORDER BY deviation_linkage.`order`""")
     fun getMaxOrder(key: String): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertDailyDeviations(dailyDeviations: Collection<DailyDeviationEntity>)
+
+    @Update
+    fun updateDailyDeviations(dailyDeviations: Collection<DailyDeviationEntity>)
+
+    @Transaction
+    fun insertOrUpdateDailyDeviations(dailyDeviations: Collection<DailyDeviationEntity>) {
+        updateDailyDeviations(dailyDeviations)
+        insertDailyDeviations(dailyDeviations)
+    }
+
+    @Query("DELETE FROM daily_deviations WHERE deviation_id IN (:deviationIds)")
+    fun deleteDailyDeviations(deviationIds: Collection<String>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertImages(images: Collection<DeviationImageEntity>)
 
     @Update
