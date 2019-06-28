@@ -1,6 +1,7 @@
 package io.plastique.util
 
 import kotlin.math.ln
+import kotlin.math.pow
 
 @Suppress("MagicNumber")
 object ByteCountFormatter {
@@ -9,6 +10,6 @@ object ByteCountFormatter {
         if (bytes < unit) return "$bytes B"
         val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
-        return String.format("%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
+        return String.format("%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 }
