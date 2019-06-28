@@ -50,7 +50,7 @@ class DeviationViewerModel @Inject constructor(
 
             is Deviation.Data.Video ->
                 DeviationContent.Video(
-                    thumbnailUrls = data.thumbnails.map { it.url } + data.preview.url,
+                    previewUrl = data.preview.url,
                     videos = data.videos)
         }
     }

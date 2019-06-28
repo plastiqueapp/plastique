@@ -183,7 +183,9 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
                 }
 
                 is DeviationContent.Video -> {
-                    // TODO
+                    glide.load(state.content.previewUrl)
+                        .skipMemoryCache(true)
+                        .into(imageView)
                 }
             }
         }

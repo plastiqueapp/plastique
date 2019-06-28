@@ -16,7 +16,7 @@ sealed class DeviationContent {
     ) : DeviationContent()
 
     data class Video(
-        val thumbnailUrls: List<String>,
+        val previewUrl: String,
         val videos: List<Deviation.VideoInfo>
     ) : DeviationContent()
 }
