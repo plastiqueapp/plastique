@@ -14,8 +14,8 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/deviation_image"
+        <ViewStub
+            android:id="@+id/deviation_content_stub"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -43,8 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/common_empty_view_horizontal_margin"
         android:layout_marginStart="@dimen/common_empty_view_horizontal_margin"
+        android:layout_marginEnd="@dimen/common_empty_view_horizontal_margin"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
         android:visibility="gone" />
 

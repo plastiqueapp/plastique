@@ -3,19 +3,16 @@ package io.plastique.deviations.viewer
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.graphics.Matrix
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.bumptech.glide.request.target.ImageViewTarget
-import com.github.chrisbanes.photoview.PhotoView
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
@@ -37,7 +34,6 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequest
 import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
@@ -58,7 +54,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
 
     private lateinit var rootView: View
     private lateinit var appBar: AppBarLayout
-    private lateinit var imageView: PhotoView
     private lateinit var infoPanelView: InfoPanelView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
@@ -66,6 +61,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     private lateinit var snackbarController: SnackbarController
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private val systemUiController = SystemUiController(this)
+    private var contentView: DeviationContentView? = null
     private lateinit var lastState: DeviationViewerViewState
 
     private val deviationId: String
@@ -92,9 +88,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
                 Animations.fadeOut(infoPanelView, Animations.DURATION_SHORT)
             }
         }
-
-        imageView = findViewById(R.id.deviation_image)
-        imageView.setOnPhotoTapListener { _, _, _ -> systemUiController.toggleVisibility() }
 
         infoPanelView = findViewById(R.id.info_panel)
         infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
@@ -172,22 +165,8 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
             emptyView.state = state.contentState.emptyState
         }
 
-        if (state.content != prevState?.content) {
-            when (state.content) {
-                is DeviationContent.Image -> {
-                    loadImage(state.content.url, state.content.thumbnailUrls)
-                }
-
-                is DeviationContent.Literature -> {
-                    // TODO
-                }
-
-                is DeviationContent.Video -> {
-                    glide.load(state.content.previewUrl)
-                        .skipMemoryCache(true)
-                        .into(imageView)
-                }
-            }
+        if (state.content != null && state.content != prevState?.content) {
+            renderContent(state.content)
         }
 
         if (state.infoViewState != null && state.infoViewState != prevState?.infoViewState) {
@@ -208,35 +187,15 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         }
     }
 
-    private fun loadImage(url: String, thumbnailUrls: List<String>) {
-        // Build a chain of thumbnail requests with higher resolution thumbnails having a higher priority
-        val thumbnailRequest = thumbnailUrls.asSequence()
-            .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
-                val current = glide.load(thumbnailUrl).onlyRetrieveFromCache(true)
-                if (previous != null) {
-                    current.thumbnail(previous)
-                } else {
-                    current
-                }
+    private fun renderContent(content: DeviationContent) {
+        val contentView = contentView ?: run {
+            val contentStub = findViewById<ViewStub>(R.id.deviation_content_stub)
+            createContentView(glide, contentStub, content).apply {
+                contentView = this
+                onTapListener = { systemUiController.toggleVisibility() }
             }
-
-        glide.load(url)
-            .thumbnail(thumbnailRequest!!)
-            .into(object : ImageViewTarget<Drawable>(imageView) {
-                override fun setResource(resource: Drawable?) {
-                    if (resource != null) {
-                        require(view is PhotoView)
-
-                        // Preserve current transformation matrix in case full resolution image was loaded after a thumbnail
-                        val matrix = Matrix()
-                        view.getSuppMatrix(matrix)
-                        view.setImageDrawable(resource)
-                        view.setSuppMatrix(matrix)
-                    } else {
-                        view.setImageDrawable(resource)
-                    }
-                }
-            })
+        }
+        contentView.render(content)
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
