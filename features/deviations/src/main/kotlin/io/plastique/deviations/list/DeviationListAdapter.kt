@@ -63,6 +63,7 @@ class GridImageDeviationItemDelegate(
 
         val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
         glide.load(thumbnail.url)
+            .placeholder(R.drawable.deviations_placeholder_background)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.thumbnail)
     }
@@ -164,6 +165,7 @@ class GridVideoDeviationItemDelegate(
 
         val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
         glide.load(thumbnail.url)
+            .placeholder(R.drawable.deviations_placeholder_background)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.thumbnail)
     }
@@ -229,6 +231,7 @@ private class ListImageDeviationItemDelegate(
             .thumbnail(thumbnailRequest)
             .override(previewSize.width, previewSize.height)
             .centerCrop()
+            .placeholder(R.drawable.deviations_placeholder_background)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.previewView)
     }
@@ -333,6 +336,7 @@ private class ListVideoDeviationItemDelegate(
 
         glide.load(preview.url)
             .override(preview.size.width, preview.size.height)
+            .placeholder(R.drawable.deviations_placeholder_background)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.imageView)
     }
