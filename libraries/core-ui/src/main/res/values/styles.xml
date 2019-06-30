@@ -10,6 +10,10 @@
 
     <style name="ThemeOverlay.App.DayNight" parent="ThemeOverlay.MaterialComponents.Light" />
 
+    <style name="ThemeOverlay.App.Dialog.Alert" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:windowTitleStyle">@style/RtlOverlay.DialogWindowTitle.App</item>
+    </style>
+
     <style name="Widget.App.BottomSheetDialog.Title" parent="TextAppearance.App.Headline6">
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">56dp</item>
@@ -68,6 +72,10 @@
     <style name="App.PreferenceFragment" parent="PreferenceFragment.Material">
         <item name="android:divider">@drawable/preference_list_divider</item>
         <item name="allowDividerAfterLastItem">false</item>
+    </style>
+
+    <style name="RtlOverlay.DialogWindowTitle.App" parent="RtlOverlay.DialogWindowTitle.AppCompat">
+        <item name="android:textAppearance">@style/TextAppearance.App.Title</item>
     </style>
 
 </resources>

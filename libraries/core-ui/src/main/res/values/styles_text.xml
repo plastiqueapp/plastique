@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="TextAppearance.App" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Small" parent="TextAppearance.AppCompat.Small">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Small.Inverse" parent="TextAppearance.AppCompat.Small.Inverse">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Medium.Inverse" parent="TextAppearance.AppCompat.Medium.Inverse">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.Subhead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
     <style name="TextAppearance.App.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="fontFamily">@font/roboto_light</item>
         <item name="android:fontFamily">@font/roboto_light</item>

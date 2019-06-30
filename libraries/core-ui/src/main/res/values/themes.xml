@@ -17,11 +17,25 @@
         <item name="android:windowBackground">?android:colorBackground</item>
         <item name="android:listDivider">@drawable/list_divider</item>
 
+        <item name="alertDialogTheme">@style/ThemeOverlay.App.Dialog.Alert</item>
         <item name="appBarLayoutStyle">@style/Widget.MaterialComponents.AppBarLayout.Surface</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
         <item name="preferenceTheme">@style/App.PreferenceThemeOverlay</item>
         <item name="tabStyle">@style/Widget.App.TabLayout</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+
+        <item name="android:textAppearance">@style/TextAppearance.App</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.App.Small</item>
+        <item name="android:textAppearanceSmallInverse">@style/TextAppearance.App.Small.Inverse</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.App.Medium</item>
+        <item name="android:textAppearanceMediumInverse">@style/TextAppearance.App.Medium.Inverse</item>
+        <item name="android:textAppearanceLarge">@style/TextAppearance.App.Large</item>
+        <item name="textAppearanceListItem">@style/TextAppearance.App.Subhead</item>
+        <item name="android:textAppearanceListItem">@style/TextAppearance.App.Subhead</item>
+        <item name="textAppearanceListItemSmall">@style/TextAppearance.App.Subhead</item>
+        <item name="android:textAppearanceListItemSmall">@style/TextAppearance.App.Subhead</item>
+        <item name="textAppearanceListItemSecondary">@style/TextAppearance.App.Body2</item>
+        <item name="android:textAppearanceListItemSecondary">@style/TextAppearance.App.Body2</item>
 
         <item name="textAppearanceHeadline1">@style/TextAppearance.App.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.App.Headline2</item>
