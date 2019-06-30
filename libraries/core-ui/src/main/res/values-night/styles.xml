@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Base.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog" />
+
     <style name="ThemeOverlay.App.DayNight" parent="ThemeOverlay.MaterialComponents.Dark" />
 
 </resources>

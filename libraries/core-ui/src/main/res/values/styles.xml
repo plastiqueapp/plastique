@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Base.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog" />
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="Base.ThemeOverlay.App.BottomSheetDialog">
+        <item name="bottomSheetDialogTitleStyle">@style/Widget.App.BottomSheetDialog.Title</item>
+        <item name="bottomSheetDialogListItemStyle">@style/Widget.App.BottomSheetDialog.ListItem</item>
+    </style>
+
     <style name="ThemeOverlay.App.DayNight" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="Widget.App.BottomSheetDialog.Title" parent="TextAppearance.App.Headline6">

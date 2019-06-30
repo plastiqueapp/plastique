@@ -45,11 +45,4 @@
 
     <style name="Theme.App.DayNight" parent="Base.Theme.App.DayNight" />
 
-    <style name="Base.ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Light.BottomSheetDialog" />
-
-    <style name="ThemeOverlay.App.BottomSheetDialog" parent="Base.ThemeOverlay.App.BottomSheetDialog">
-        <item name="bottomSheetDialogTitleStyle">@style/Widget.App.BottomSheetDialog.Title</item>
-        <item name="bottomSheetDialogListItemStyle">@style/Widget.App.BottomSheetDialog.ListItem</item>
-    </style>
-
 </resources>
