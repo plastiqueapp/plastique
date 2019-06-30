@@ -12,12 +12,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import io.plastique.core.lists.ListDiffCallback
 import io.plastique.deviations.R
 
-class TagsView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet?,
-    defStyleAttr: Int = R.attr.tagsViewStyle
-) : RecyclerView(context, attrs, defStyleAttr), TagManager {
-
+class TagsView(context: Context, attrs: AttributeSet?) : RecyclerView(context, attrs), TagManager {
     private val adapter: TagsAdapter
     private val tags = mutableListOf<Tag>()
 
@@ -30,7 +25,7 @@ class TagsView @JvmOverloads constructor(
     init {
         overScrollMode = OVER_SCROLL_NEVER
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.TagsView, defStyleAttr, 0)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.TagsView, 0, 0)
         val tagBackgroundResId = a.getResourceId(R.styleable.TagsView_tagBackground, 0)
         val tagTextAppearance = a.getResourceId(R.styleable.TagsView_tagTextAppearance, 0)
         val tagMargin = a.getDimensionPixelOffset(R.styleable.TagsView_tagMargin, 0)

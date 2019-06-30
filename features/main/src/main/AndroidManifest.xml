@@ -3,9 +3,7 @@
     package="io.plastique.main">
 
     <application android:theme="@style/Theme.App.DayNight">
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/Theme.App.Main">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

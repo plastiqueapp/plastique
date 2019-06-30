@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <attr name="tagsViewStyle" format="reference" />
-
     <declare-styleable name="TagsView">
         <attr name="tagBackground" format="reference" />
         <attr name="tagTextAppearance" format="reference" />

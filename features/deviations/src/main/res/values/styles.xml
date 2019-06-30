@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.App.DeviationTag" parent="TextAppearance.App.Body2">
+        <item name="android:textColor">?colorOnSecondary</item>
+    </style>
+
+</resources>
