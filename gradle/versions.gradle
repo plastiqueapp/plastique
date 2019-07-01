@@ -71,9 +71,9 @@ ext.versions = [
 
     junit                : [
         four    : "4.12",
-        jupiter : "5.4.2",
-        vintage : "5.4.2",
-        platform: "1.4.2",
+        jupiter : "5.5.0",
+        vintage : "5.5.0",
+        platform: "1.5.0",
     ],
 
     mockito              : "2.28.2",
