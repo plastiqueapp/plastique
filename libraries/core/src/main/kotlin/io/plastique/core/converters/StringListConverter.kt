@@ -5,7 +5,9 @@ import androidx.room.TypeConverter
 class StringListConverter {
     @TypeConverter
     fun toString(list: List<String>): String {
-        list.forEach { if (it.contains(DELIMITER)) throw IllegalArgumentException("$it must not contain delimiter $DELIMITER") }
+        list.forEach { item ->
+            require(DELIMITER !in item) { "$item must not contain delimiter $DELIMITER" }
+        }
         return list.joinToString(DELIMITER)
     }
 

@@ -11,7 +11,6 @@ complexity:
 
 empty-blocks:
   EmptyFunctionBlock:
-    # Remove after https://github.com/arturbosch/detekt/issues/1684 is fixed
     ignoreOverriddenFunctions: true
 
 formatting:
@@ -48,4 +47,6 @@ style:
   UnusedImports:
     active: true
   VarCouldBeVal:
+    active: true
+  UseRequire:
     active: true

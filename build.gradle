@@ -10,7 +10,7 @@ plugins {
     id "com.github.ben-manes.versions" version "0.21.0"
     id "com.gradle.build-scan" version "2.3"
     id "io.fabric" version "1.29.0" apply false
-    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC15"
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC16"
 }
 
 ext.ci = System.getenv("CI") != null
@@ -93,7 +93,7 @@ buildScan {
 }
 
 detekt {
-    toolVersion = "1.0.0-RC15"
+    toolVersion = "1.0.0-RC16"
     buildUponDefaultConfig = true
     config = files("config/detekt.yml")
     input = files(rootDir)
