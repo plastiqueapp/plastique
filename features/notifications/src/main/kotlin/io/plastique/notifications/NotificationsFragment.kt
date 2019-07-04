@@ -111,7 +111,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
 
         listUpdateData.applyTo(adapter)
 
-        onScrollListener.isEnabled = state.pagingEnabled
+        onScrollListener.isEnabled = state.isPagingEnabled
         refreshLayout.isRefreshing = state.isRefreshing
 
         if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {

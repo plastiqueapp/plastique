@@ -174,7 +174,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
 
         listUpdateData.applyTo(adapter)
 
-        onScrollListener.isEnabled = state.pagingEnabled
+        onScrollListener.isEnabled = state.isPagingEnabled
         refreshLayout.isRefreshing = state.isRefreshing
         horizontalProgressViewController.isVisible = state.isApplyingSettings
         progressDialogController.isShown = state.showProgressDialog

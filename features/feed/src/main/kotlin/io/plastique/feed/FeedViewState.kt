@@ -19,7 +19,7 @@ data class FeedViewState(
     val isApplyingSettings: Boolean = false,
     val showProgressDialog: Boolean = false
 ) {
-    val pagingEnabled: Boolean
+    val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
 
     override fun toString(): String {

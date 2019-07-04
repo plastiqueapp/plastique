@@ -80,12 +80,12 @@ class CategoryListStateReducer @Inject constructor(
 
     override fun reduce(state: CategoryListViewState, event: CategoryListEvent): StateWithEffects<CategoryListViewState, CategoryListEffect> = when (event) {
         is ItemClickEvent -> {
-            if (event.item.parent || !event.item.category.hasChildren) {
+            if (event.item.isParent || !event.item.category.hasChildren) {
                 next(state.copy(selectedCategory = event.item.category))
             } else if (!state.isExpanding) {
                 val items = state.items.replaceIf(
                     { item -> item.category == event.item.category },
-                    { item -> item.copy(loading = true, startLoadingTimestamp = SystemClock.elapsedRealtime()) })
+                    { item -> item.copy(isLoading = true, startLoadingTimestamp = SystemClock.elapsedRealtime()) })
                 next(state.copy(isExpanding = true, items = items), LoadCategoryEffect(event.item.category))
             } else {
                 next(state)
@@ -121,7 +121,7 @@ class CategoryListStateReducer @Inject constructor(
             } else {
                 val items = state.items.replaceIf(
                     { item -> item.category == event.category },
-                    { item -> item.copy(loading = false, startLoadingTimestamp = 0) })
+                    { item -> item.copy(isLoading = false, startLoadingTimestamp = 0) })
                 next(state.copy(items = items,
                     isExpanding = false,
                     snackbarState = SnackbarState.Message(R.string.deviations_categories_load_error)))
@@ -139,7 +139,7 @@ class CategoryListStateReducer @Inject constructor(
 }
 
 private fun createItems(parentCategory: Category, categories: List<Category>): List<CategoryItem> {
-    val items = mutableListOf(CategoryItem(category = parentCategory, parent = true))
+    val items = mutableListOf(CategoryItem(category = parentCategory, isParent = true))
     for (category in categories) {
         items.add(CategoryItem(category = category))
     }

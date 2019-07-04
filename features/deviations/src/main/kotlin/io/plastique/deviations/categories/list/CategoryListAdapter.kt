@@ -25,12 +25,12 @@ class CategoryListAdapter(
     override fun onBindViewHolder(item: CategoryItem, holder: ViewHolder, position: Int) {
         holder.textView.text = getItemText(holder.itemView.resources, item)
         holder.progressSwitcher.removeCallbacks(holder.showProgressCallback)
-        if (!item.parent && item.category.hasChildren) {
+        if (!item.isParent && item.category.hasChildren) {
             // Show progress bar after a small delay
             val remainingTime = max(0, PROGRESS_BAR_SHOW_DELAY - SystemClock.elapsedRealtime() + item.startLoadingTimestamp)
-            holder.progressSwitcher.displayedChild = if (item.loading && remainingTime == 0L) 1 else 0
+            holder.progressSwitcher.displayedChild = if (item.isLoading && remainingTime == 0L) 1 else 0
             holder.progressSwitcher.visibility = View.VISIBLE
-            if (item.loading && remainingTime > 0) {
+            if (item.isLoading && remainingTime > 0) {
                 holder.progressSwitcher.postDelayed(holder.showProgressCallback, remainingTime)
             }
         } else {
@@ -46,7 +46,7 @@ class CategoryListAdapter(
     }
 
     private fun getItemText(resources: Resources, item: CategoryItem): String {
-        return if (item.parent) {
+        return if (item.isParent) {
             resources.getString(R.string.deviations_categories_see_all_in, item.category.title)
         } else {
             item.category.title

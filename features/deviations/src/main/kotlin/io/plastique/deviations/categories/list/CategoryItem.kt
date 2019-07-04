@@ -5,10 +5,10 @@ import io.plastique.deviations.categories.Category
 
 data class CategoryItem(
     val category: Category,
-    val parent: Boolean = false,
-    val loading: Boolean = false,
+    val isParent: Boolean = false,
+    val isLoading: Boolean = false,
     val startLoadingTimestamp: Long = 0
 ) : ListItem {
 
-    override val id: String = category.path + parent
+    override val id: String = category.path + isParent
 }
