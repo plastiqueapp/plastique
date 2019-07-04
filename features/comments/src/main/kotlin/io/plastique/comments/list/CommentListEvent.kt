@@ -14,6 +14,7 @@ sealed class CommentListEvent : Event() {
     object RetryClickEvent : CommentListEvent()
 
     object LoadMoreEvent : CommentListEvent()
+    object LoadMoreStartedEvent : CommentListEvent()
     object LoadMoreFinishedEvent : CommentListEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : CommentListEvent()
 

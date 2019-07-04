@@ -1,5 +1,6 @@
 package io.plastique.deviations.list
 
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -37,6 +38,7 @@ import io.plastique.deviations.list.DeviationListEvent.LoadErrorEvent
 import io.plastique.deviations.list.DeviationListEvent.LoadMoreErrorEvent
 import io.plastique.deviations.list.DeviationListEvent.LoadMoreEvent
 import io.plastique.deviations.list.DeviationListEvent.LoadMoreFinishedEvent
+import io.plastique.deviations.list.DeviationListEvent.LoadMoreStartedEvent
 import io.plastique.deviations.list.DeviationListEvent.ParamsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshErrorEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
@@ -112,6 +114,7 @@ class DeviationListViewModel @Inject constructor(
 
 @AutoFactory
 class DeviationListEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val deviationListModel: DeviationListModel,
     @Provided private val favoritesModel: FavoritesModel,
     private val screenVisible: Observable<Boolean>
@@ -129,9 +132,11 @@ class DeviationListEffectHandler(
 
         // TODO: Cancel on new LoadDeviationsEffect
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .switchMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 deviationListModel.loadMore()
-                    .toSingleDefault<DeviationListEvent>(LoadMoreFinishedEvent)
+                    .toObservable<DeviationListEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -157,7 +162,6 @@ class DeviationListEffectHandler(
 }
 
 class DeviationListStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider,
     private val tagFactory: TagFactory
 ) : StateReducer<DeviationListEvent, DeviationListViewState, DeviationListEffect> {
@@ -191,11 +195,15 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             LoadMoreEvent -> {
-                if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                    next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem), LoadMoreEffect)
+                if (!state.isLoadingMore) {
+                    next(state, LoadMoreEffect)
                 } else {
                     next(state)
                 }
+            }
+
+            LoadMoreStartedEvent -> {
+                next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem))
             }
 
             LoadMoreFinishedEvent -> {

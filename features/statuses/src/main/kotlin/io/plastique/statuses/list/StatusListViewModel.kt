@@ -1,6 +1,7 @@
 package io.plastique.statuses.list
 
 import androidx.core.text.htmlEncode
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -29,6 +30,7 @@ import io.plastique.statuses.list.StatusListEvent.LoadErrorEvent
 import io.plastique.statuses.list.StatusListEvent.LoadMoreErrorEvent
 import io.plastique.statuses.list.StatusListEvent.LoadMoreEvent
 import io.plastique.statuses.list.StatusListEvent.LoadMoreFinishedEvent
+import io.plastique.statuses.list.StatusListEvent.LoadMoreStartedEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshErrorEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshFinishedEvent
@@ -87,6 +89,7 @@ class StatusListViewModel @Inject constructor(
 
 @AutoFactory
 class StatusListEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val statusListModel: StatusListModel,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<StatusListEffect, StatusListEvent> {
@@ -102,9 +105,11 @@ class StatusListEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .switchMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 statusListModel.loadMore()
-                    .toSingleDefault<StatusListEvent>(LoadMoreFinishedEvent)
+                    .toObservable<StatusListEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -122,7 +127,6 @@ class StatusListEffectHandler(
 }
 
 class StatusListStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<StatusListEvent, StatusListViewState, StatusListEffect> {
 
@@ -149,11 +153,15 @@ class StatusListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.statusItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore) {
+                next(state, LoadMoreEffect)
             } else {
                 next(state)
             }
+        }
+
+        LoadMoreStartedEvent -> {
+            next(state.copy(isLoadingMore = true, items = state.statusItems + LoadingIndicatorItem))
         }
 
         LoadMoreFinishedEvent -> {

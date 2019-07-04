@@ -16,6 +16,7 @@ sealed class DeviationListEvent : Event() {
     object SnackbarShownEvent : DeviationListEvent()
 
     object LoadMoreEvent : DeviationListEvent()
+    object LoadMoreStartedEvent : DeviationListEvent()
     object LoadMoreFinishedEvent : DeviationListEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : DeviationListEvent()
 

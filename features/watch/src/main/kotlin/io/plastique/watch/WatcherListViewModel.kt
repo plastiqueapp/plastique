@@ -1,6 +1,7 @@
 package io.plastique.watch
 
 import androidx.core.text.htmlEncode
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -31,6 +32,7 @@ import io.plastique.watch.WatcherListEvent.LoadErrorEvent
 import io.plastique.watch.WatcherListEvent.LoadMoreErrorEvent
 import io.plastique.watch.WatcherListEvent.LoadMoreEvent
 import io.plastique.watch.WatcherListEvent.LoadMoreFinishedEvent
+import io.plastique.watch.WatcherListEvent.LoadMoreStartedEvent
 import io.plastique.watch.WatcherListEvent.RefreshErrorEvent
 import io.plastique.watch.WatcherListEvent.RefreshEvent
 import io.plastique.watch.WatcherListEvent.RefreshFinishedEvent
@@ -99,6 +101,7 @@ class WatcherListViewModel @Inject constructor(
 
 @AutoFactory
 class WatcherListEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val dataSource: WatcherDataSource,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<WatcherListEffect, WatcherListEvent> {
@@ -117,11 +120,12 @@ class WatcherListEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
+            .filter { connectivityChecker.isConnectedToNetwork }
             .switchMap {
                 dataSource.loadMore()
-                    .toSingleDefault<WatcherListEvent>(LoadMoreFinishedEvent)
+                    .toObservable<WatcherListEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
-                    .toObservable()
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
 
@@ -139,7 +143,6 @@ class WatcherListEffectHandler(
 }
 
 class WatcherListStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<WatcherListEvent, WatcherListViewState, WatcherListEffect> {
 
@@ -175,11 +178,15 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.watcherItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore) {
+                next(state, LoadMoreEffect)
             } else {
                 next(state)
             }
+        }
+
+        LoadMoreStartedEvent -> {
+            next(state.copy(isLoadingMore = true, items = state.watcherItems + LoadingIndicatorItem))
         }
 
         LoadMoreFinishedEvent -> {

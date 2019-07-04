@@ -13,6 +13,7 @@ sealed class WatcherListEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : WatcherListEvent()
 
     object LoadMoreEvent : WatcherListEvent()
+    object LoadMoreStartedEvent : WatcherListEvent()
     object LoadMoreFinishedEvent : WatcherListEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : WatcherListEvent()
 

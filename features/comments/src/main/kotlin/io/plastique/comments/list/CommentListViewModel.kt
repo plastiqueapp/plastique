@@ -1,5 +1,6 @@
 package io.plastique.comments.list
 
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -27,6 +28,7 @@ import io.plastique.comments.list.CommentListEvent.LoadErrorEvent
 import io.plastique.comments.list.CommentListEvent.LoadMoreErrorEvent
 import io.plastique.comments.list.CommentListEvent.LoadMoreEvent
 import io.plastique.comments.list.CommentListEvent.LoadMoreFinishedEvent
+import io.plastique.comments.list.CommentListEvent.LoadMoreStartedEvent
 import io.plastique.comments.list.CommentListEvent.PostCommentErrorEvent
 import io.plastique.comments.list.CommentListEvent.PostCommentEvent
 import io.plastique.comments.list.CommentListEvent.RefreshErrorEvent
@@ -107,6 +109,7 @@ class CommentListViewModel @Inject constructor(
 class CommentListEffectHandler(
     @Provided private val commentDataSource: CommentDataSource,
     @Provided private val commentSender: CommentSender,
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val deviationRepository: DeviationRepository,
     @Provided private val richTextFormatter: RichTextFormatter,
     private val screenVisible: Observable<Boolean>
@@ -125,9 +128,11 @@ class CommentListEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .flatMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 commentDataSource.loadMore()
-                    .toSingleDefault<CommentListEvent>(LoadMoreFinishedEvent)
+                    .toObservable<CommentListEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -187,7 +192,6 @@ class CommentListEffectHandler(
 }
 
 class CommentListStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<CommentListEvent, CommentListViewState, CommentListEffect> {
 
@@ -221,11 +225,15 @@ class CommentListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = mergeItems(state.commentItems, true)), LoadMoreEffect)
+            if (!state.isLoadingMore) {
+                next(state, LoadMoreEffect)
             } else {
                 next(state)
             }
+        }
+
+        LoadMoreStartedEvent -> {
+            next(state.copy(isLoadingMore = true, items = mergeItems(state.commentItems, true)))
         }
 
         LoadMoreFinishedEvent -> {

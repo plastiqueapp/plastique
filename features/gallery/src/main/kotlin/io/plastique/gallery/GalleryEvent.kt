@@ -13,6 +13,7 @@ sealed class GalleryEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : GalleryEvent()
 
     object LoadMoreEvent : GalleryEvent()
+    object LoadMoreStartedEvent : GalleryEvent()
     object LoadMoreFinishedEvent : GalleryEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : GalleryEvent()
 

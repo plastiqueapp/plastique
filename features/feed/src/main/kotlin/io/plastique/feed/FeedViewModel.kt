@@ -1,5 +1,6 @@
 package io.plastique.feed
 
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -30,6 +31,7 @@ import io.plastique.feed.FeedEvent.LoadErrorEvent
 import io.plastique.feed.FeedEvent.LoadMoreErrorEvent
 import io.plastique.feed.FeedEvent.LoadMoreEvent
 import io.plastique.feed.FeedEvent.LoadMoreFinishedEvent
+import io.plastique.feed.FeedEvent.LoadMoreStartedEvent
 import io.plastique.feed.FeedEvent.RefreshErrorEvent
 import io.plastique.feed.FeedEvent.RefreshEvent
 import io.plastique.feed.FeedEvent.RefreshFinishedEvent
@@ -103,6 +105,7 @@ class FeedViewModel @Inject constructor(
 
 @AutoFactory
 class FeedEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val feedModel: FeedModel,
     @Provided private val feedSettingsManager: FeedSettingsManager,
     @Provided private val favoritesModel: FavoritesModel,
@@ -122,9 +125,11 @@ class FeedEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .switchMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 feedModel.loadMore()
-                    .toSingleDefault<FeedEvent>(LoadMoreFinishedEvent)
+                    .toObservable<FeedEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -158,7 +163,6 @@ class FeedEffectHandler(
 }
 
 class FeedStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<FeedEvent, FeedViewState, FeedEffect> {
 
@@ -185,11 +189,15 @@ class FeedStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.feedItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore) {
+                next(state, LoadMoreEffect)
             } else {
                 next(state)
             }
+        }
+
+        LoadMoreStartedEvent -> {
+            next(state.copy(isLoadingMore = true, items = state.feedItems + LoadingIndicatorItem))
         }
 
         LoadMoreFinishedEvent -> {

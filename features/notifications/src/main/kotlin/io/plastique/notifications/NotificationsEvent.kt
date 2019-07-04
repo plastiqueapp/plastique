@@ -14,6 +14,7 @@ sealed class NotificationsEvent : Event() {
     object RetryClickEvent : NotificationsEvent()
 
     object LoadMoreEvent : NotificationsEvent()
+    object LoadMoreStartedEvent : NotificationsEvent()
     object LoadMoreFinishedEvent : NotificationsEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : NotificationsEvent()
 

@@ -1,6 +1,7 @@
 package io.plastique.collections
 
 import androidx.core.text.htmlEncode
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -26,6 +27,7 @@ import io.plastique.collections.CollectionsEvent.LoadErrorEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreErrorEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreEvent
 import io.plastique.collections.CollectionsEvent.LoadMoreFinishedEvent
+import io.plastique.collections.CollectionsEvent.LoadMoreStartedEvent
 import io.plastique.collections.CollectionsEvent.RefreshErrorEvent
 import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RefreshFinishedEvent
@@ -107,6 +109,7 @@ class CollectionsViewModel @Inject constructor(
 
 @AutoFactory
 class CollectionsEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val dataSource: FoldersWithDeviationsDataSource,
     @Provided private val collectionsModel: CollectionsModel,
     private val screenVisible: Observable<Boolean>
@@ -123,9 +126,11 @@ class CollectionsEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .switchMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 dataSource.loadMore()
-                    .toSingleDefault<CollectionsEvent>(LoadMoreFinishedEvent)
+                    .toObservable<CollectionsEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -161,7 +166,6 @@ class CollectionsEffectHandler(
 }
 
 class CollectionsStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<CollectionsEvent, CollectionsViewState, CollectionsEffect> {
 
@@ -193,11 +197,15 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                next(state.copy(isLoadingMore = true, items = state.collectionItems + LoadingIndicatorItem), LoadMoreEffect)
+            if (!state.isLoadingMore) {
+                next(state, LoadMoreEffect)
             } else {
                 next(state)
             }
+        }
+
+        LoadMoreStartedEvent -> {
+            next(state.copy(isLoadingMore = true, items = state.collectionItems + LoadingIndicatorItem))
         }
 
         LoadMoreFinishedEvent -> {

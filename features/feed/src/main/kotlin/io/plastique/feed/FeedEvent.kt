@@ -14,6 +14,7 @@ sealed class FeedEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : FeedEvent()
 
     object LoadMoreEvent : FeedEvent()
+    object LoadMoreStartedEvent : FeedEvent()
     object LoadMoreFinishedEvent : FeedEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : FeedEvent()
 

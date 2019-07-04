@@ -13,6 +13,7 @@ sealed class StatusListEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : StatusListEvent()
 
     object LoadMoreEvent : StatusListEvent()
+    object LoadMoreStartedEvent : StatusListEvent()
     object LoadMoreFinishedEvent : StatusListEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : StatusListEvent()
 

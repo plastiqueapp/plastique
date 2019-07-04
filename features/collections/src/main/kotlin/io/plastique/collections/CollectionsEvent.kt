@@ -13,6 +13,7 @@ sealed class CollectionsEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : CollectionsEvent()
 
     object LoadMoreEvent : CollectionsEvent()
+    object LoadMoreStartedEvent : CollectionsEvent()
     object LoadMoreFinishedEvent : CollectionsEvent()
     data class LoadMoreErrorEvent(val error: Throwable) : CollectionsEvent()
 

@@ -1,5 +1,6 @@
 package io.plastique.notifications
 
+import com.github.technoir42.rxjava2.extensions.surroundWith
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.google.auto.factory.AutoFactory
 import com.google.auto.factory.Provided
@@ -29,6 +30,7 @@ import io.plastique.notifications.NotificationsEvent.LoadErrorEvent
 import io.plastique.notifications.NotificationsEvent.LoadMoreErrorEvent
 import io.plastique.notifications.NotificationsEvent.LoadMoreEvent
 import io.plastique.notifications.NotificationsEvent.LoadMoreFinishedEvent
+import io.plastique.notifications.NotificationsEvent.LoadMoreStartedEvent
 import io.plastique.notifications.NotificationsEvent.RefreshErrorEvent
 import io.plastique.notifications.NotificationsEvent.RefreshEvent
 import io.plastique.notifications.NotificationsEvent.RefreshFinishedEvent
@@ -91,6 +93,7 @@ class NotificationsViewModel @Inject constructor(
 
 @AutoFactory
 class NotificationsEffectHandler(
+    @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val notificationsModel: NotificationsModel,
     @Provided private val sessionManager: SessionManager,
     private val screenVisible: Observable<Boolean>
@@ -108,9 +111,11 @@ class NotificationsEffectHandler(
             }
 
         val loadMoreEvents = effects.ofType<LoadMoreEffect>()
-            .switchMapSingle {
+            .filter { connectivityChecker.isConnectedToNetwork }
+            .switchMap {
                 notificationsModel.loadMore()
-                    .toSingleDefault<NotificationsEvent>(LoadMoreFinishedEvent)
+                    .toObservable<NotificationsEvent>()
+                    .surroundWith(LoadMoreStartedEvent, LoadMoreFinishedEvent)
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadMoreErrorEvent(error) }
             }
@@ -134,7 +139,6 @@ class NotificationsEffectHandler(
 }
 
 class NotificationsStateReducer @Inject constructor(
-    private val connectivityChecker: NetworkConnectivityChecker,
     private val errorMessageProvider: ErrorMessageProvider
 ) : StateReducer<NotificationsEvent, NotificationsViewState, NotificationsEffect> {
 
@@ -166,11 +170,15 @@ class NotificationsStateReducer @Inject constructor(
             }
 
             LoadMoreEvent -> {
-                if (!state.isLoadingMore && connectivityChecker.isConnectedToNetwork) {
-                    next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem), LoadMoreEffect)
+                if (!state.isLoadingMore) {
+                    next(state, LoadMoreEffect)
                 } else {
                     next(state)
                 }
+            }
+
+            LoadMoreStartedEvent -> {
+                next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem))
             }
 
             LoadMoreFinishedEvent -> {
