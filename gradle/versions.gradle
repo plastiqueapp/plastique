@@ -1,17 +1,17 @@
 ext.versions = [
     androidx             : [
-        activity        : "1.0.0-beta01",
+        activity        : "1.0.0-rc01",
         annotation      : "1.1.0",
-        appcompat       : "1.1.0-beta01",
+        appcompat       : "1.1.0-rc01",
         browser         : "1.0.0",
         constraintLayout: "2.0.0-beta2",
-        core            : "1.1.0-rc01",
-        fragment        : "1.1.0-beta01",
-        lifecycle       : "2.1.0-beta01",
-        preference      : "1.1.0-beta01",
-        recyclerView    : "1.1.0-alpha06",
+        core            : "1.1.0-rc02",
+        fragment        : "1.1.0-rc01",
+        lifecycle       : "2.1.0-rc01",
+        preference      : "1.1.0-rc01",
+        recyclerView    : "1.1.0-beta01",
         room            : "2.1.0",
-        viewpager2      : "1.0.0-alpha05",
+        viewpager2      : "1.0.0-alpha06",
         work            : "2.1.0-rc01",
         test            : [
             core    : "1.2.0",
@@ -66,8 +66,8 @@ ext.versions = [
     threetenbp           : "1.4.0",
     threetenabp          : "1.2.1",
     timber               : "4.7.1",
-    flipper              : "0.21.1",
-    soloader             : "0.6.0",
+    flipper              : "0.23.0",
+    soloader             : "0.6.1",
 
     junit                : [
         four    : "4.12",
