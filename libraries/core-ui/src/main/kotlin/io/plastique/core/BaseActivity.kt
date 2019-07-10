@@ -10,14 +10,16 @@ import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.BaseAppComponent
 import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder, BaseFragmentComponent.Factory {
+abstract class BaseActivity :
+    AppCompatActivity(),
+    BaseActivityComponent.Holder,
+    BaseFragmentComponent.Factory,
+    DisposableContainer by DisposableContainerImpl() {
+
     @Inject protected lateinit var appConfig: AppConfig
 
-    private val disposables = CompositeDisposable()
     private var hasMenu: Boolean = true
     protected var optionsMenu: Menu? = null
 
@@ -35,7 +37,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder,
 
     override fun onDestroy() {
         super.onDestroy()
-        disposables.dispose()
+        disposeAll()
     }
 
     final override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -64,11 +66,6 @@ abstract class BaseActivity : AppCompatActivity(), BaseActivityComponent.Holder,
             this.hasMenu = hasMenu
             invalidateOptionsMenu()
         }
-    }
-
-    protected fun <T : Disposable> T.disposeOnDestroy(): T {
-        disposables.add(this)
-        return this
     }
 
     override val activityComponent: BaseActivityComponent by lazy(LazyThreadSafetyMode.NONE) {

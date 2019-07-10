@@ -2,14 +2,16 @@ package io.plastique.settings
 
 import android.content.Context
 import androidx.preference.PreferenceFragmentCompat
+import io.plastique.core.DisposableContainer
+import io.plastique.core.DisposableContainerImpl
 import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 
-abstract class BasePreferenceFragment : PreferenceFragmentCompat(), BaseFragmentComponent.Holder {
-    private val disposables = CompositeDisposable()
+abstract class BasePreferenceFragment :
+    PreferenceFragmentCompat(),
+    BaseFragmentComponent.Holder,
+    DisposableContainer by DisposableContainerImpl() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -18,12 +20,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), BaseFragment
 
     override fun onDestroyView() {
         super.onDestroyView()
-        disposables.dispose()
-    }
-
-    protected fun <T : Disposable> T.disposeOnDestroy(): T {
-        disposables.add(this)
-        return this
+        disposeAll()
     }
 
     protected abstract fun injectDependencies()

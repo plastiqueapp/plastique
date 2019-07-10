@@ -13,6 +13,8 @@ import com.github.technoir42.android.extensions.getCallback
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.plastique.core.DisposableContainer
+import io.plastique.core.DisposableContainerImpl
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -25,10 +27,12 @@ import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
 
-class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.Holder {
+class FeedSettingsFragment :
+    BottomSheetDialogFragment(),
+    BaseFragmentComponent.Holder,
+    DisposableContainer by DisposableContainerImpl() {
+
     private val viewModel: FeedSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProviders.of(this, fragmentComponent.viewModelFactory()).get(FeedSettingsViewModel::class.java)
     }
@@ -39,7 +43,6 @@ class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.
     private lateinit var contentStateController: ContentStateController
 
     private lateinit var state: FeedSettingsViewState
-    private val disposables = CompositeDisposable()
     private var listener: OnFeedSettingsChangedListener? = null
 
     override fun onAttach(context: Context) {
@@ -77,16 +80,17 @@ class FeedSettingsFragment : BottomSheetDialogFragment(), BaseFragmentComponent.
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        disposables += viewModel.state
+        viewModel.state
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.items, it.first.items) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it.first, it.third) }
+            .disposeOnDestroy()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        disposables.dispose()
+        disposeAll()
     }
 
     override fun onDetach() {
