@@ -136,4 +136,4 @@ data class WatchersCacheMetadata(
 )
 
 private fun WatcherEntityWithRelations.toWatcher(): Watcher =
-    Watcher(user = users.first().toUser())
+    Watcher(user = user.toUser())

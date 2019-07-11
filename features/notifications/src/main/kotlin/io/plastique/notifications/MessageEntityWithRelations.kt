@@ -12,14 +12,14 @@ data class MessageEntityWithRelations(
     val message: MessageEntity,
 
     @Relation(parentColumn = "originator_id", entityColumn = "id")
-    val originator: List<UserEntity>,
+    val originator: UserEntity,
 
     @Relation(entity = DeviationEntity::class, parentColumn = "deviation_id", entityColumn = "id")
-    val deviation: List<DeviationEntityWithRelations>,
+    val deviation: DeviationEntityWithRelations?,
 
     @Relation(parentColumn = "collection_folder_id", entityColumn = "id")
-    val collectionFolder: List<FolderEntity>,
+    val collectionFolder: FolderEntity?,
 
     @Relation(entity = DeviationEntity::class, parentColumn = "subject_deviation_id", entityColumn = "id")
-    val subjectDeviation: List<DeviationEntityWithRelations>
+    val subjectDeviation: DeviationEntityWithRelations?
 )

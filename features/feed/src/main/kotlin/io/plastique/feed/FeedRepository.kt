@@ -177,12 +177,12 @@ data class FeedCacheMetadata(
 )
 
 private fun FeedElementEntityWithRelations.toFeedElement(timeZone: ZoneId): FeedElement {
-    val user = users.first().toUser()
+    val user = user.toUser()
     return when (feedElement.type) {
         FeedElementTypes.COLLECTION_UPDATE -> FeedElement.CollectionUpdate(
             timestamp = feedElement.timestamp,
             user = user,
-            folder = collectionFolders.first().toFolder(),
+            folder = collectionFolder!!.toFolder(),
             addedCount = feedElement.addedCount)
 
         FeedElementTypes.DEVIATION_SUBMITTED -> if (deviations.size > 1) {
@@ -206,7 +206,7 @@ private fun FeedElementEntityWithRelations.toFeedElement(timeZone: ZoneId): Feed
         FeedElementTypes.STATUS_UPDATE -> FeedElement.StatusUpdate(
             timestamp = feedElement.timestamp,
             user = user,
-            status = statuses.first().toStatus(timeZone))
+            status = status!!.toStatus(timeZone))
 
         FeedElementTypes.USERNAME_CHANGE -> FeedElement.UsernameChange(
             timestamp = feedElement.timestamp,

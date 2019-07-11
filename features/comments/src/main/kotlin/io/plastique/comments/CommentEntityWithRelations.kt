@@ -9,5 +9,5 @@ data class CommentEntityWithRelations(
     val comment: CommentEntity,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val users: List<UserEntity>
+    val author: UserEntity
 )

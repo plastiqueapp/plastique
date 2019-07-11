@@ -213,15 +213,15 @@ private fun MessageEntityWithRelations.toMessage(timeZone: ZoneId): Message? {
                 text = message.html!!)
 
         MessageTypes.COLLECT -> {
-            val deviation = subjectDeviation.first().toDeviation(timeZone)
+            val deviation = subjectDeviation!!.toDeviation(timeZone)
             Message.Data.AddToCollection(
                 deviationId = deviation.id,
                 deviationTitle = deviation.title,
-                folder = collectionFolder.first().toFolder())
+                folder = collectionFolder!!.toFolder())
         }
 
         MessageTypes.FAVORITE -> {
-            val deviation = subjectDeviation.first().toDeviation(timeZone)
+            val deviation = subjectDeviation!!.toDeviation(timeZone)
             Message.Data.Favorite(
                 deviationId = deviation.id,
                 deviationTitle = deviation.title)
@@ -234,6 +234,6 @@ private fun MessageEntityWithRelations.toMessage(timeZone: ZoneId): Message? {
     return Message(
         id = message.id,
         time = message.time,
-        user = originator.first().toUser(),
+        user = originator.toUser(),
         data = data)
 }

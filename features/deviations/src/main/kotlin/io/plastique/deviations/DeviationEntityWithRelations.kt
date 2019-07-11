@@ -9,10 +9,10 @@ data class DeviationEntityWithRelations(
     val deviation: DeviationEntity,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val author: List<UserEntity>,
+    val author: UserEntity,
 
     @Relation(entity = DailyDeviationEntity::class, parentColumn = "id", entityColumn = "deviation_id")
-    val dailyDeviation: List<DailyDeviationEntityWithRelations>,
+    val dailyDeviation: DailyDeviationEntityWithRelations?,
 
     @Relation(parentColumn = "id", entityColumn = "deviation_id")
     val images: List<DeviationImageEntity>,

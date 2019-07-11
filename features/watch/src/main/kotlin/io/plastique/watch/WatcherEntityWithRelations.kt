@@ -9,5 +9,5 @@ data class WatcherEntityWithRelations(
     val watcher: WatcherEntity,
 
     @Relation(parentColumn = "user_id", entityColumn = "id")
-    val users: List<UserEntity>
+    val user: UserEntity
 )

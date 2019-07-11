@@ -99,7 +99,7 @@ private fun UserProfileDto.toUserProfileEntity(): UserProfileEntity = UserProfil
         watchers = user.stats!!.watchers))
 
 private fun UserProfileEntityWithRelations.toUserProfile(): UserProfile = UserProfile(
-    user = users.first().toUser(),
+    user = user.toUser(),
     url = userProfile.url,
     realName = userProfile.realName,
     bio = userProfile.bio,

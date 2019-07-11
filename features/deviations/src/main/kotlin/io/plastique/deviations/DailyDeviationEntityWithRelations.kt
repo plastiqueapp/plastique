@@ -9,5 +9,5 @@ data class DailyDeviationEntityWithRelations(
     val dailyDeviation: DailyDeviationEntity,
 
     @Relation(parentColumn = "giver_id", entityColumn = "id")
-    val giver: List<UserEntity>
+    val giver: UserEntity
 )

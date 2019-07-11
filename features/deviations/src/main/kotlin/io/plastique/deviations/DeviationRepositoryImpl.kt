@@ -279,11 +279,11 @@ fun DeviationEntityWithRelations.toDeviation(timeZone: ZoneId): Deviation {
         url = deviation.url,
         categoryPath = deviation.categoryPath,
         publishTime = deviation.publishTime.atZone(timeZone),
-        author = author.first().toUser(),
+        author = author.toUser(),
         data = data,
         properties = deviation.properties.toDeviationProperties(),
         stats = deviation.stats.toDeviationStats(),
-        dailyDeviation = dailyDeviation.firstOrNull()?.toDailyDeviation())
+        dailyDeviation = dailyDeviation?.toDailyDeviation())
 }
 
 private fun DeviationEntity.Properties.toDeviationProperties(): Deviation.Properties = Deviation.Properties(
@@ -298,7 +298,7 @@ private fun DeviationEntity.Stats.toDeviationStats(): Deviation.Stats = Deviatio
 private fun DailyDeviationEntityWithRelations.toDailyDeviation(): Deviation.DailyDeviation = Deviation.DailyDeviation(
     body = dailyDeviation.body,
     date = dailyDeviation.date,
-    giver = giver.first().toUser())
+    giver = giver.toUser())
 
 private fun DeviationImageEntity.toImageInfo(): Deviation.ImageInfo = Deviation.ImageInfo(size = size, url = url)
 

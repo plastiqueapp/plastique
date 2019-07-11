@@ -192,6 +192,6 @@ private fun CommentDto.toCommentEntity(): CommentEntity = CommentEntity(
 private fun CommentEntityWithRelations.toComment(): Comment = Comment(
     id = comment.id,
     parentId = comment.parentId,
-    author = users.first().toUser(),
+    author = author.toUser(),
     datePosted = comment.datePosted,
     text = comment.text)

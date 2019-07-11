@@ -143,6 +143,7 @@ dependencies {
 kapt {
     arguments {
         arg("dagger.gradle.incremental", "true")
+        arg("room.incremental", "true")
         arg("room.schemaLocation", "$projectDir/schemas")
     }
 }

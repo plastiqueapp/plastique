@@ -14,13 +14,13 @@ data class StatusEntityWithRelations(
     val status: StatusEntity,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val users: List<UserEntity>,
+    val author: UserEntity,
 
     @Relation(entity = DeviationEntity::class, parentColumn = "shared_deviation_id", entityColumn = "id")
-    val deviations: List<DeviationEntityWithRelations>,
+    val sharedDeviation: DeviationEntityWithRelations?,
 
     @Relation(entity = StatusEntity::class, parentColumn = "shared_status_id", entityColumn = "id")
-    val statuses: List<StatusEntityWithUsers>
+    val sharedStatus: StatusEntityWithUsers?
 )
 
 data class StatusEntityWithUsers(
@@ -28,20 +28,20 @@ data class StatusEntityWithUsers(
     val status: StatusEntity,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val users: List<UserEntity>
+    val author: UserEntity
 )
 
 fun StatusEntityWithRelations.toStatus(timeZone: ZoneId): Status {
     val share = when (status.shareType) {
         ShareType.None -> Status.Share.None
-        ShareType.Deviation -> Status.Share.DeviationShare(deviation = deviations.firstOrNull()?.toDeviation(timeZone))
-        ShareType.Status -> Status.Share.StatusShare(status = statuses.firstOrNull()?.toStatus())
+        ShareType.Deviation -> Status.Share.DeviationShare(deviation = sharedDeviation?.toDeviation(timeZone))
+        ShareType.Status -> Status.Share.StatusShare(status = sharedStatus?.toStatus())
     }
     return Status(
         id = status.id,
         date = status.timestamp,
         body = status.body,
-        author = users.first().toUser(),
+        author = author.toUser(),
         commentCount = status.commentCount,
         share = share)
 }
@@ -50,6 +50,6 @@ private fun StatusEntityWithUsers.toStatus(): Status = Status(
     id = status.id,
     date = status.timestamp,
     body = status.body,
-    author = users.first().toUser(),
+    author = author.toUser(),
     commentCount = status.commentCount,
     share = Status.Share.None)

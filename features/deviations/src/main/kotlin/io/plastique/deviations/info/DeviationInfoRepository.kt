@@ -76,7 +76,7 @@ class DeviationInfoRepository @Inject constructor(
 
 private fun DeviationInfoEntity.toDeviationInfo(timeZone: ZoneId): DeviationInfo = DeviationInfo(
     title = title,
-    author = users.first().toUser(),
+    author = author.toUser(),
     publishTime = publishTime.atZone(timeZone),
     description = description,
     tags = tags)

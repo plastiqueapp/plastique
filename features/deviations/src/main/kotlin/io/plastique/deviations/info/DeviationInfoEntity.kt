@@ -22,5 +22,5 @@ data class DeviationInfoEntity(
     val tags: List<String>,
 
     @Relation(parentColumn = "author_id", entityColumn = "id")
-    val users: List<UserEntity>
+    val author: UserEntity
 )

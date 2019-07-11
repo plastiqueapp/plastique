@@ -9,5 +9,5 @@ data class UserProfileEntityWithRelations(
     val userProfile: UserProfileEntity,
 
     @Relation(parentColumn = "user_id", entityColumn = "id")
-    val users: List<UserEntity>
+    val user: UserEntity
 )
