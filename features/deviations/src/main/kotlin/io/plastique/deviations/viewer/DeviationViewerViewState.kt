@@ -47,6 +47,6 @@ data class DeviationViewerViewState(
     val content: DeviationContent? = null,
     val infoViewState: InfoViewState? = null,
     val menuState: MenuState? = null,
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
     val showProgressDialog: Boolean = false
 )

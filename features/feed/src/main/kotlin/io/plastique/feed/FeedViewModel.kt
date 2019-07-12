@@ -228,7 +228,7 @@ class FeedStateReducer @Inject constructor(
         }
 
         SnackbarShownEvent -> {
-            next(state.copy(snackbarState = SnackbarState.None))
+            next(state.copy(snackbarState = null))
         }
 
         is SessionChangedEvent -> {

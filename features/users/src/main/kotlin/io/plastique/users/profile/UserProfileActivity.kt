@@ -26,7 +26,6 @@ import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.core.snackbar.SnackbarState
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
@@ -169,7 +168,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
         watchButton.isVisible = state.contentState === ContentState.Content && !state.isCurrentUser
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }

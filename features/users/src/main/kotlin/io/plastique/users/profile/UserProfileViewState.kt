@@ -9,7 +9,7 @@ data class UserProfileViewState(
     val currentUserId: String?,
     val title: String = "",
     val userProfile: UserProfile? = null,
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
     val showProgressDialog: Boolean = false
 ) {
     val isSignedIn: Boolean

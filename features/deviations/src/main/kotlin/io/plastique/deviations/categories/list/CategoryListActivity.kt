@@ -17,7 +17,6 @@ import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.R
 import io.plastique.deviations.categories.Category
@@ -96,7 +95,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListVie
             finish()
         }
 
-        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }

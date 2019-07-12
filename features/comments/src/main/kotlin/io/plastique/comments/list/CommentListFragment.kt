@@ -37,7 +37,6 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.core.snackbar.SnackbarState
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
@@ -136,7 +135,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
             composeView.draft = state.commentDraft
         }
 
-        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }

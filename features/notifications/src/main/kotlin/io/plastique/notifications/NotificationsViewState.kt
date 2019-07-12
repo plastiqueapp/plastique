@@ -14,7 +14,7 @@ data class NotificationsViewState(
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,
     val isRefreshing: Boolean = false,
-    val snackbarState: SnackbarState = SnackbarState.None
+    val snackbarState: SnackbarState? = null
 ) {
     val isPagingEnabled: Boolean
         get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing

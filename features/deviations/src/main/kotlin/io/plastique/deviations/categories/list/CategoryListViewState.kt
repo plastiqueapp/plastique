@@ -11,7 +11,7 @@ data class CategoryListViewState(
     val items: List<CategoryItem> = emptyList(),
     val breadcrumbs: List<Breadcrumb> = emptyList(),
     val isExpanding: Boolean = false,
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
     val selectedCategory: Category? = null
 ) {
     override fun toString(): String {

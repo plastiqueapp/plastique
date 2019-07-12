@@ -42,7 +42,6 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.list.DeviationItem
 import io.plastique.deviations.list.ImageDeviationItem
 import io.plastique.deviations.list.ImageHelper
@@ -206,7 +205,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         refreshLayout.isRefreshing = state.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }

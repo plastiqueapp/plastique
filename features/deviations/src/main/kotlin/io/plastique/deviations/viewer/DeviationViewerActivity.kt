@@ -25,7 +25,6 @@ import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
@@ -181,7 +180,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
 
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState !== SnackbarState.None && state.snackbarState != prevState?.snackbarState) {
+        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
             snackbarController.showSnackbar(state.snackbarState)
             viewModel.dispatch(SnackbarShownEvent)
         }

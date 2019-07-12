@@ -12,7 +12,7 @@ data class CollectionsViewState(
 
     val collectionItems: List<ListItem> = emptyList(),
     val items: List<ListItem> = emptyList(),
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,

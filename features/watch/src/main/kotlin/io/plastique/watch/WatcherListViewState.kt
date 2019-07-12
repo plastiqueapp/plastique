@@ -11,7 +11,7 @@ data class WatcherListViewState(
     val items: List<ListItem> = emptyList(),
     val watcherItems: List<ListItem> = emptyList(),
     val signInNeeded: Boolean,
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,

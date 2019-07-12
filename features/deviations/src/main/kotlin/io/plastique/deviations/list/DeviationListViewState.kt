@@ -13,7 +13,7 @@ data class DeviationListViewState(
     val items: List<ListItem> = emptyList(),
     val deviationItems: List<ListItem> = emptyList(),
     val tags: List<Tag> = emptyList(),
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
     val layoutMode: LayoutMode,
 
     val hasMore: Boolean = false,

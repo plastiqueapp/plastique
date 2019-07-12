@@ -11,7 +11,7 @@ data class StatusListViewState(
     val contentState: ContentState,
     val items: List<ListItem> = emptyList(),
     val statusItems: List<ListItem> = emptyList(),
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,

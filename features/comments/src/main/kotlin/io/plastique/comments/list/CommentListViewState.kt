@@ -15,7 +15,7 @@ data class CommentListViewState(
     val commentItems: List<ListItem> = emptyList(),
     val replyComment: CommentUiModel? = null,
     val commentDraft: String = "",
-    val snackbarState: SnackbarState = SnackbarState.None,
+    val snackbarState: SnackbarState? = null,
 
     val hasMore: Boolean = false,
     val isLoadingMore: Boolean = false,
