@@ -109,210 +109,210 @@ class ObservablePreferencesTest {
     fun `getBoolean emits current value on subscribe if preference exists`() {
         preferences.edit { putBoolean("bool", true) }
 
-        val ts = preferences.observable().getBoolean("bool", false).test()
-        ts.assertValues(true)
-        ts.dispose()
+        val observer = preferences.observable().getBoolean("bool", false).test()
+        observer.assertValues(true)
+        observer.dispose()
     }
 
     @Test
     fun `getBoolean emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().getBoolean("bool", true).test()
-        ts.assertValues(true)
-        ts.dispose()
+        val observer = preferences.observable().getBoolean("bool", true).test()
+        observer.assertValues(true)
+        observer.dispose()
     }
 
     @Test
     fun `getBoolean emits new value after preference was changed`() {
-        val ts = preferences.observable().getBoolean("bool", false).test()
+        val observer = preferences.observable().getBoolean("bool", false).test()
         preferences.edit { putBoolean("bool", true) }
-        ts.assertValues(false, true)
-        ts.dispose()
+        observer.assertValues(false, true)
+        observer.dispose()
     }
 
     @Test
     fun `getBoolean emits default value after preference was removed`() {
         preferences.edit { putBoolean("bool", true) }
 
-        val ts = preferences.observable().getBoolean("bool", false).test()
+        val observer = preferences.observable().getBoolean("bool", false).test()
         preferences.edit { remove("bool") }
-        ts.assertValues(true, false)
-        ts.dispose()
+        observer.assertValues(true, false)
+        observer.dispose()
     }
 
     @Test
     fun `getBoolean doesn't emit after preference was changed if value equals to previous`() {
-        val ts = preferences.observable().getBoolean("bool", false).test()
+        val observer = preferences.observable().getBoolean("bool", false).test()
         preferences.edit { putBoolean("bool", false) }
-        ts.assertValues(false)
-        ts.dispose()
+        observer.assertValues(false)
+        observer.dispose()
     }
 
     @Test
     fun `getInt emits current value on subscribe if preference exists`() {
         preferences.edit { putInt("int", 42) }
 
-        val ts = preferences.observable().getInt("int", 1).test()
-        ts.assertValues(42)
-        ts.dispose()
+        val observer = preferences.observable().getInt("int", 1).test()
+        observer.assertValues(42)
+        observer.dispose()
     }
 
     @Test
     fun `getInt emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().getInt("int", 1).test()
-        ts.assertValues(1)
-        ts.dispose()
+        val observer = preferences.observable().getInt("int", 1).test()
+        observer.assertValues(1)
+        observer.dispose()
     }
 
     @Test
     fun `getInt emits new value after preference was changed`() {
-        val ts = preferences.observable().getInt("int", 1).test()
+        val observer = preferences.observable().getInt("int", 1).test()
         preferences.edit { putInt("int", 2) }
-        ts.assertValues(1, 2)
-        ts.dispose()
+        observer.assertValues(1, 2)
+        observer.dispose()
     }
 
     @Test
     fun `getInt emits default value after preference was removed`() {
         preferences.edit { putInt("int", 1) }
 
-        val ts = preferences.observable().getInt("int", 2).test()
+        val observer = preferences.observable().getInt("int", 2).test()
         preferences.edit { remove("int") }
-        ts.assertValues(1, 2)
-        ts.dispose()
+        observer.assertValues(1, 2)
+        observer.dispose()
     }
 
     @Test
     fun `getInt doesn't emit after preference was changed if value equals to previous`() {
-        val ts = preferences.observable().getInt("int", 1).test()
+        val observer = preferences.observable().getInt("int", 1).test()
         preferences.edit { putInt("int", 1) }
-        ts.assertValues(1)
-        ts.dispose()
+        observer.assertValues(1)
+        observer.dispose()
     }
 
     @Test
     fun `getLong emits current value on subscribe if preference exists`() {
         preferences.edit { putLong("long", 42) }
 
-        val ts = preferences.observable().getLong("long", 1).test()
-        ts.assertValues(42L)
-        ts.dispose()
+        val observer = preferences.observable().getLong("long", 1).test()
+        observer.assertValues(42L)
+        observer.dispose()
     }
 
     @Test
     fun `getLong emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().getLong("long", 1).test()
-        ts.assertValues(1L)
-        ts.dispose()
+        val observer = preferences.observable().getLong("long", 1).test()
+        observer.assertValues(1L)
+        observer.dispose()
     }
 
     @Test
     fun `getLong emits new value after preference was changed`() {
-        val ts = preferences.observable().getLong("long", 1).test()
+        val observer = preferences.observable().getLong("long", 1).test()
         preferences.edit { putLong("long", 2) }
-        ts.assertValues(1L, 2L)
-        ts.dispose()
+        observer.assertValues(1L, 2L)
+        observer.dispose()
     }
 
     @Test
     fun `getLong emits default value after preference was removed`() {
         preferences.edit { putLong("long", 1) }
 
-        val ts = preferences.observable().getLong("long", 2).test()
+        val observer = preferences.observable().getLong("long", 2).test()
         preferences.edit { remove("long") }
-        ts.assertValues(1L, 2L)
-        ts.dispose()
+        observer.assertValues(1L, 2L)
+        observer.dispose()
     }
 
     @Test
     fun `getLong doesn't emit after preference was changed if value equals to previous`() {
-        val ts = preferences.observable().getLong("long", 1).test()
+        val observer = preferences.observable().getLong("long", 1).test()
         preferences.edit { putLong("long", 1) }
-        ts.assertValues(1L)
-        ts.dispose()
+        observer.assertValues(1L)
+        observer.dispose()
     }
 
     @Test
     fun `getFloat emits current value on subscribe if preference exists`() {
         preferences.edit { putFloat("float", 42.0f) }
 
-        val ts = preferences.observable().getFloat("float", 1.0f).test()
-        ts.assertValues(42.0f)
-        ts.dispose()
+        val observer = preferences.observable().getFloat("float", 1.0f).test()
+        observer.assertValues(42.0f)
+        observer.dispose()
     }
 
     @Test
     fun `getFloat emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().getFloat("float", 1.0f).test()
-        ts.assertValues(1.0f)
-        ts.dispose()
+        val tobserver = preferences.observable().getFloat("float", 1.0f).test()
+        tobserver.assertValues(1.0f)
+        tobserver.dispose()
     }
 
     @Test
     fun `getFloat emits new value after preference was changed`() {
-        val ts = preferences.observable().getFloat("float", 1.0f).test()
+        val observer = preferences.observable().getFloat("float", 1.0f).test()
         preferences.edit { putFloat("float", 2.0f) }
-        ts.assertValues(1.0f, 2.0f)
-        ts.dispose()
+        observer.assertValues(1.0f, 2.0f)
+        observer.dispose()
     }
 
     @Test
     fun `getFloat emits default value after preference was removed`() {
         preferences.edit { putFloat("float", 1.0f) }
 
-        val ts = preferences.observable().getFloat("float", 2.0f).test()
+        val observer = preferences.observable().getFloat("float", 2.0f).test()
         preferences.edit { remove("float") }
-        ts.assertValues(1.0f, 2.0f)
-        ts.dispose()
+        observer.assertValues(1.0f, 2.0f)
+        observer.dispose()
     }
 
     @Test
     fun `getFloat doesn't emit after preference was changed if value equals to previous`() {
-        val ts = preferences.observable().getFloat("float", 1.0f).test()
+        val observer = preferences.observable().getFloat("float", 1.0f).test()
         preferences.edit { putFloat("float", 1.0f) }
-        ts.assertValues(1.0f)
-        ts.dispose()
+        observer.assertValues(1.0f)
+        observer.dispose()
     }
 
     @Test
     fun `getString emits current value on subscribe if preference exists`() {
         preferences.edit { putString("string", "bar") }
 
-        val ts = preferences.observable().getString("string", "foo").test()
-        ts.assertValues("bar")
-        ts.dispose()
+        val observer = preferences.observable().getString("string", "foo").test()
+        observer.assertValues("bar")
+        observer.dispose()
     }
 
     @Test
     fun `getString emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().getString("string", "foo").test()
-        ts.assertValues("foo")
-        ts.dispose()
+        val observer = preferences.observable().getString("string", "foo").test()
+        observer.assertValues("foo")
+        observer.dispose()
     }
 
     @Test
     fun `getString emits new value after preference was changed`() {
-        val ts = preferences.observable().getString("string", "foo").test()
+        val observer = preferences.observable().getString("string", "foo").test()
         preferences.edit { putString("string", "bar") }
-        ts.assertValues("foo", "bar")
-        ts.dispose()
+        observer.assertValues("foo", "bar")
+        observer.dispose()
     }
 
     @Test
     fun `getString emits default value after preference was removed`() {
         preferences.edit { putString("string", "bar") }
 
-        val ts = preferences.observable().getString("string", "foo").test()
+        val observer = preferences.observable().getString("string", "foo").test()
         preferences.edit { remove("string") }
-        ts.assertValues("bar", "foo")
-        ts.dispose()
+        observer.assertValues("bar", "foo")
+        observer.dispose()
     }
 
     @Test
     fun `getString doesn't emit after preference was changed if value equals to previous`() {
-        val ts = preferences.observable().getString("string", "foo").test()
+        val observer = preferences.observable().getString("string", "foo").test()
         preferences.edit { putString("string", "foo") }
-        ts.assertValues("foo")
-        ts.dispose()
+        observer.assertValues("foo")
+        observer.dispose()
     }
 
     @Test
@@ -327,42 +327,42 @@ class ObservablePreferencesTest {
     fun `get emits current value on subscribe if preference exists`() {
         preferences.edit { put("custom", B) }
 
-        val ts = preferences.observable().get("custom", A).test()
-        ts.assertValues(B)
-        ts.dispose()
+        val observer = preferences.observable().get("custom", A).test()
+        observer.assertValues(B)
+        observer.dispose()
     }
 
     @Test
     fun `get emits default value on subscribe if preference doesn't exist`() {
-        val ts = preferences.observable().get("custom", A).test()
-        ts.assertValues(A)
-        ts.dispose()
+        val observer = preferences.observable().get("custom", A).test()
+        observer.assertValues(A)
+        observer.dispose()
     }
 
     @Test
     fun `get emits new value after preference was changed`() {
-        val ts = preferences.observable().get("custom", A).test()
+        val observer = preferences.observable().get("custom", A).test()
         preferences.edit { put("custom", B) }
-        ts.assertValues(A, B)
-        ts.dispose()
+        observer.assertValues(A, B)
+        observer.dispose()
     }
 
     @Test
     fun `get emits default value after preference was removed`() {
         preferences.edit { put("custom", B) }
 
-        val ts = preferences.observable().get("custom", A).test()
+        val observer = preferences.observable().get("custom", A).test()
         preferences.edit { remove("custom") }
-        ts.assertValues(B, A)
-        ts.dispose()
+        observer.assertValues(B, A)
+        observer.dispose()
     }
 
     @Test
     fun `get doesn't emit after preference was changed if value is equal to previous`() {
-        val ts = preferences.observable().get("custom", A).test()
+        val observer = preferences.observable().get("custom", A).test()
         preferences.edit { put("custom", A) }
-        ts.assertValues(A)
-        ts.dispose()
+        observer.assertValues(A)
+        observer.dispose()
     }
 }
 

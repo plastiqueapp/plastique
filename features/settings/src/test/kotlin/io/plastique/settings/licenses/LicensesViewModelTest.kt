@@ -43,11 +43,11 @@ class LicensesViewModelTest {
     fun `Emits last state to each new observer`() {
         whenever(licenseRepository.getLicenses()).thenReturn(Single.just(listOf(LICENSE)))
 
-        val ts = viewModel.state.test()
-        ts.cancel()
+        val observer = viewModel.state.test()
+        observer.cancel()
 
         viewModel.state.test()
-            .assertValuesOnly(ts.values().last())
+            .assertValuesOnly(observer.values().last())
     }
 
     @Test
@@ -55,13 +55,13 @@ class LicensesViewModelTest {
         whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()), Single.just(listOf(LICENSE)))
         whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(ERROR_STATE)
 
-        val ts = viewModel.state
+        val observer = viewModel.state
             .skip(2)
             .test()
 
         viewModel.dispatch(RetryClickEvent)
 
-        ts.assertValuesOnly(
+        observer.assertValuesOnly(
             LicensesViewState.Loading,
             LicensesViewState.Content(items = listOf(HeaderItem, LicenseItem(LICENSE))))
     }
