@@ -71,6 +71,11 @@ class LicensesAdapter(
         delegatesManager.addDelegate(TYPE_LICENSE, LicenseItemDelegate(this))
     }
 
+    fun update(items: List<ListItem>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
+
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
         val position = holder.adapterPosition
         if (position != RecyclerView.NO_POSITION) {

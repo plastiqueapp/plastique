@@ -5,8 +5,8 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
+import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,20 +24,19 @@ class LicensesViewModelTest {
 
         viewModel.state.test()
             .assertValuesOnly(
-                LicensesViewState(contentState = ContentState.Loading),
-                LicensesViewState(contentState = ContentState.Content, items = listOf(HeaderItem, LicenseItem(LICENSE))))
+                LicensesViewState.Loading,
+                LicensesViewState.Content(items = listOf(HeaderItem, LicenseItem(LICENSE))))
     }
 
     @Test
     fun `Load error`() {
-        val errorState = EmptyState.MessageWithButton(messageResId = 0, buttonTextId = 0)
         whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()))
-        whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(errorState)
+        whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(ERROR_STATE)
 
         viewModel.state.test()
             .assertValuesOnly(
-                LicensesViewState(contentState = ContentState.Loading),
-                LicensesViewState(contentState = ContentState.Empty(isError = true, emptyState = errorState)))
+                LicensesViewState.Loading,
+                LicensesViewState.Empty(emptyState = ERROR_STATE))
     }
 
     @Test
@@ -50,9 +49,29 @@ class LicensesViewModelTest {
         viewModel.state.test()
             .assertValuesOnly(ts.values().last())
     }
-}
 
-private val LICENSE = License(
-    libraryName = "My Library",
-    license = "Apache License 2.0",
-    url = "https://acme.org")
+    @Test
+    fun retry() {
+        whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()), Single.just(listOf(LICENSE)))
+        whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(ERROR_STATE)
+
+        val ts = viewModel.state
+            .skip(2)
+            .test()
+
+        viewModel.dispatch(RetryClickEvent)
+
+        ts.assertValuesOnly(
+            LicensesViewState.Loading,
+            LicensesViewState.Content(items = listOf(HeaderItem, LicenseItem(LICENSE))))
+    }
+
+    companion object {
+        private val LICENSE = License(
+            libraryName = "My Library",
+            license = "Apache License 2.0",
+            url = "https://acme.org")
+
+        private val ERROR_STATE = EmptyState.MessageWithButton(messageResId = 0, buttonTextId = 0)
+    }
+}

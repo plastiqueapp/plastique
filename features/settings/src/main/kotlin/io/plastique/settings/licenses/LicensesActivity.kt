@@ -6,24 +6,23 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
-import com.github.technoir42.kotlin.extensions.plus
-import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.browser.BrowserLauncher
+import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
+import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.DividerItemDecoration
-import io.plastique.core.lists.ListItem
-import io.plastique.core.lists.ListUpdateData
-import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
+import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::class.java) {
     @Inject lateinit var browserLauncher: BrowserLauncher
 
+    private lateinit var emptyView: EmptyView
     private lateinit var adapter: LicensesAdapter
     private lateinit var contentStateController: ContentStateController
 
@@ -45,19 +44,33 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::clas
             .viewTypes(LicensesAdapter.TYPE_LICENSE)
             .build())
 
-        contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress)
+        emptyView = findViewById(android.R.id.empty)
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+
+        contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress, android.R.id.empty)
 
         viewModel.state
-            .pairwiseWithPrevious()
-            .map { it + calculateDiff(it.second?.items, it.first.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.third) }
+            .subscribe { renderState(it) }
             .disposeOnDestroy()
     }
 
-    private fun renderState(state: LicensesViewState, listUpdateData: ListUpdateData<ListItem>) {
-        contentStateController.state = state.contentState
-        listUpdateData.applyTo(adapter)
+    private fun renderState(state: LicensesViewState) {
+        when (state) {
+            LicensesViewState.Loading -> {
+                contentStateController.state = ContentState.Loading
+            }
+
+            is LicensesViewState.Content -> {
+                contentStateController.state = ContentState.Content
+                adapter.update(state.items)
+            }
+
+            is LicensesViewState.Empty -> {
+                contentStateController.state = ContentState.Empty(state.emptyState)
+                emptyView.state = state.emptyState
+            }
+        }
     }
 
     override fun injectDependencies() {

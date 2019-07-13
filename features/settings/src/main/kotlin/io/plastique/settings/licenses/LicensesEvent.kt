@@ -9,4 +9,5 @@ sealed class LicensesEvent : Event() {
     }
 
     data class LoadErrorEvent(val error: Throwable) : LicensesEvent()
+    object RetryClickEvent : LicensesEvent()
 }

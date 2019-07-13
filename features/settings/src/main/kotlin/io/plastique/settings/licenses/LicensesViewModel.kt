@@ -7,12 +7,12 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.content.ContentState
 import io.plastique.core.lists.ListItem
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
 import io.plastique.settings.licenses.LicensesEvent.LoadErrorEvent
 import io.plastique.settings.licenses.LicensesEvent.LoadFinishedEvent
+import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions
@@ -31,7 +31,11 @@ class LicensesViewModel @Inject constructor(
         listener = TimberLogger(LOG_TAG))
 
     val state: Observable<LicensesViewState> by lazy(LazyThreadSafetyMode.NONE) {
-        loop.loop(LicensesViewState(contentState = ContentState.Loading), LoadLicensesEffect).disposeOnDestroy()
+        loop.loop(LicensesViewState.Loading, LoadLicensesEffect).disposeOnDestroy()
+    }
+
+    fun dispatch(event: LicensesEvent) {
+        loop.dispatch(event)
     }
 
     companion object {
@@ -68,11 +72,15 @@ class LicensesStateReducer @Inject constructor(
 
     override fun reduce(state: LicensesViewState, event: LicensesEvent): StateWithEffects<LicensesViewState, LicensesEffect> = when (event) {
         is LoadFinishedEvent -> {
-            next(state.copy(contentState = ContentState.Content, items = event.items))
+            next(LicensesViewState.Content(items = event.items))
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
+            next(LicensesViewState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)))
+        }
+
+        RetryClickEvent -> {
+            next(LicensesViewState.Loading, LoadLicensesEffect)
         }
     }
 }
