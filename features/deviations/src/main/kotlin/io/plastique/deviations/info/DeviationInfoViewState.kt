@@ -11,7 +11,9 @@ sealed class DeviationInfoViewState {
 
     data class Loading(
         override val deviationId: String
-    ) : DeviationInfoViewState()
+    ) : DeviationInfoViewState() {
+        override fun toString(): String = "DeviationInfoViewState.Loading(deviationId=$deviationId)"
+    }
 
     data class Content(
         override val deviationId: String,
@@ -24,7 +26,7 @@ sealed class DeviationInfoViewState {
 
         @Suppress("MagicNumber")
         override fun toString(): String {
-            return "Content(" +
+            return "DeviationInfoViewState.Content(" +
                     "deviationId=$deviationId, " +
                     "title=$title, " +
                     "author=$author, " +
@@ -38,5 +40,7 @@ sealed class DeviationInfoViewState {
     data class Error(
         override val deviationId: String,
         val emptyViewState: EmptyState
-    ) : DeviationInfoViewState()
+    ) : DeviationInfoViewState() {
+        override fun toString(): String = "DeviationInfoViewState.Error(deviationId=$deviationId, emptyViewState=$emptyViewState)"
+    }
 }

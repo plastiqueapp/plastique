@@ -14,7 +14,7 @@ sealed class AboutViewState {
 
         @Suppress("MagicNumber")
         override fun toString(): String {
-            return "Content(" +
+            return "AboutViewState.Content(" +
                     "username=$username, " +
                     "bio=${bio.toString().truncate(20)}" +
                     ")"
@@ -23,10 +23,14 @@ sealed class AboutViewState {
 
     data class Loading(
         override val username: String
-    ) : AboutViewState()
+    ) : AboutViewState() {
+        override fun toString(): String = "AboutViewState.Loading(username=$username)"
+    }
 
     data class Error(
         override val username: String,
         val emptyState: EmptyState
-    ) : AboutViewState()
+    ) : AboutViewState() {
+        override fun toString(): String = "AboutViewState.Error(username=$username, emptyState=$emptyState)"
+    }
 }
