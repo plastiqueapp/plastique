@@ -152,7 +152,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()
-            .map { it + calculateDiff(it.second?.items, it.first.items) }
+            .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it.first, it.second, it.third) }
             .disposeOnDestroy()
@@ -198,8 +198,8 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
 
         listUpdateData.applyTo(adapter)
 
-        onScrollListener.isEnabled = state.isPagingEnabled
-        refreshLayout.isRefreshing = state.isRefreshing
+        onScrollListener.isEnabled = state.listState.isPagingEnabled
+        refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {

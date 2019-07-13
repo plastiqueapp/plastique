@@ -44,6 +44,7 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.lists.PagedListState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
@@ -206,18 +207,17 @@ class CommentListStateReducer @Inject constructor(
             next(state.copy(
                 contentState = contentState,
                 comments = event.comments,
-                hasMore = event.hasMore,
-                commentItems = commentItems,
-                items = mergeItems(commentItems, state.isLoadingMore)))
+                listState = state.listState.copy(
+                    items = if (state.listState.isLoadingMore) commentItems + LoadingIndicatorItem else commentItems,
+                    contentItems = commentItems,
+                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             val errorState = errorMessageProvider.getErrorState(event.error, R.string.comments_message_load_error)
             next(state.copy(
                 contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
-                items = emptyList(),
-                commentItems = emptyList(),
-                hasMore = false))
+                listState = PagedListState.Empty))
         }
 
         RetryClickEvent -> {
@@ -225,7 +225,7 @@ class CommentListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore) {
+            if (!state.listState.isLoadingMore) {
                 next(state, LoadMoreEffect)
             } else {
                 next(state)
@@ -233,31 +233,30 @@ class CommentListStateReducer @Inject constructor(
         }
 
         LoadMoreStartedEvent -> {
-            next(state.copy(isLoadingMore = true, items = mergeItems(state.commentItems, true)))
+            next(state.copy(listState = state.listState.copy(isLoadingMore = true, items = state.listState.contentItems + LoadingIndicatorItem)))
         }
 
         LoadMoreFinishedEvent -> {
-            next(state.copy(isLoadingMore = false))
+            next(state.copy(listState = state.listState.copy(isLoadingMore = false)))
         }
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                isLoadingMore = false,
-                items = state.commentItems,
+                listState = state.listState.copy(isLoadingMore = false, items = state.listState.contentItems),
                 snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.comments_message_load_error))))
         }
 
         RefreshEvent -> {
-            next(state.copy(isRefreshing = true), RefreshEffect)
+            next(state.copy(listState = state.listState.copy(isRefreshing = true)), RefreshEffect)
         }
 
         RefreshFinishedEvent -> {
-            next(state.copy(isRefreshing = false))
+            next(state.copy(listState = state.listState.copy(isRefreshing = false)))
         }
 
         is RefreshErrorEvent -> {
             next(state.copy(
-                isRefreshing = false,
+                listState = state.listState.copy(isRefreshing = false),
                 snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.comments_message_load_error))))
         }
 
@@ -307,8 +306,9 @@ class CommentListStateReducer @Inject constructor(
                 val items = createItems(state.comments, isSignedIn)
                 next(state.copy(
                     isSignedIn = isSignedIn,
-                    commentItems = items,
-                    items = mergeItems(items, state.isLoadingMore),
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) items + LoadingIndicatorItem else items,
+                        contentItems = items),
                     replyComment = null))
             } else {
                 next(state)
@@ -322,9 +322,5 @@ class CommentListStateReducer @Inject constructor(
 
     private fun createItems(comments: List<CommentUiModel>, showReplyButton: Boolean): List<ListItem> {
         return comments.map { CommentItem(it, showReplyButton) }
-    }
-
-    private fun mergeItems(commentItems: List<ListItem>, isLoadingMore: Boolean): List<ListItem> {
-        return if (isLoadingMore) commentItems + LoadingIndicatorItem else commentItems
     }
 }

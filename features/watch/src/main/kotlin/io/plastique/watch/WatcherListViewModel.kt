@@ -15,6 +15,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.lists.PagedListState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
@@ -160,17 +161,16 @@ class WatcherListStateReducer @Inject constructor(
             }
             next(state.copy(
                 contentState = contentState,
-                items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                watcherItems = event.items,
-                hasMore = event.hasMore))
+                listState = state.listState.copy(
+                    items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                    contentItems = event.items,
+                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
                 contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorMessageProvider.getErrorState(event.error)),
-                items = emptyList(),
-                watcherItems = emptyList(),
-                hasMore = false))
+                listState = PagedListState.Empty))
         }
 
         RetryClickEvent -> {
@@ -178,7 +178,7 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         LoadMoreEvent -> {
-            if (!state.isLoadingMore) {
+            if (!state.listState.isLoadingMore) {
                 next(state, LoadMoreEffect)
             } else {
                 next(state)
@@ -186,30 +186,31 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         LoadMoreStartedEvent -> {
-            next(state.copy(isLoadingMore = true, items = state.watcherItems + LoadingIndicatorItem))
+            next(state.copy(listState = state.listState.copy(isLoadingMore = true, items = state.listState.contentItems + LoadingIndicatorItem)))
         }
 
         LoadMoreFinishedEvent -> {
-            next(state.copy(isLoadingMore = false))
+            next(state.copy(listState = state.listState.copy(isLoadingMore = false)))
         }
 
         is LoadMoreErrorEvent -> {
             next(state.copy(
-                isLoadingMore = false,
-                items = state.watcherItems,
+                listState = state.listState.copy(isLoadingMore = false, items = state.listState.contentItems),
                 snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         RefreshEvent -> {
-            next(state.copy(isRefreshing = true), RefreshEffect)
+            next(state.copy(listState = state.listState.copy(isRefreshing = true)), RefreshEffect)
         }
 
         RefreshFinishedEvent -> {
-            next(state.copy(isRefreshing = false))
+            next(state.copy(listState = state.listState.copy(isRefreshing = false)))
         }
 
         is RefreshErrorEvent -> {
-            next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
+            next(state.copy(
+                listState = state.listState.copy(isRefreshing = false),
+                snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
         SnackbarShownEvent -> {
@@ -235,9 +236,7 @@ class WatcherListStateReducer @Inject constructor(
                             messageResId = R.string.watch_message_sign_in,
                             buttonTextId = R.string.common_button_sign_in)),
                         signInNeeded = signInNeeded,
-                        items = emptyList(),
-                        watcherItems = emptyList(),
-                        hasMore = false))
+                        listState = PagedListState.Empty))
                 } else {
                     next(state.copy(
                         contentState = ContentState.Loading,

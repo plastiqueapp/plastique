@@ -2,7 +2,7 @@ package io.plastique.comments.list
 
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.content.ContentState
-import io.plastique.core.lists.ListItem
+import io.plastique.core.lists.PagedListState
 import io.plastique.core.snackbar.SnackbarState
 
 data class CommentListViewState(
@@ -11,21 +11,13 @@ data class CommentListViewState(
     val title: String = "",
     val contentState: ContentState,
     val comments: List<CommentUiModel> = emptyList(),
-    val items: List<ListItem> = emptyList(),
-    val commentItems: List<ListItem> = emptyList(),
     val replyComment: CommentUiModel? = null,
     val commentDraft: String = "",
+    val listState: PagedListState = PagedListState.Empty,
     val snackbarState: SnackbarState? = null,
-
-    val hasMore: Boolean = false,
-    val isLoadingMore: Boolean = false,
-    val isRefreshing: Boolean = false,
     val isSignedIn: Boolean = false,
     val isPostingComment: Boolean = false
 ) {
-    val isPagingEnabled: Boolean
-        get() = contentState === ContentState.Content && hasMore && !isLoadingMore && !isRefreshing
-
     val showCompose: Boolean
         get() = contentState === ContentState.Content || contentState is ContentState.Empty && !contentState.isError
 
@@ -35,14 +27,10 @@ data class CommentListViewState(
                 "title=$title, " +
                 "contentState=$contentState, " +
                 "comments=${comments.size}, " +
-                "items=${items.size}, " +
-                "commentItems=${commentItems.size}, " +
                 "replyComment=$replyComment, " +
                 "commentDraft=$commentDraft, " +
+                "listState=$listState, " +
                 "snackbarState=$snackbarState, " +
-                "hasMore=$hasMore, " +
-                "isLoadingMore=$isLoadingMore, " +
-                "isRefreshing=$isRefreshing, " +
                 "isSignedIn=$isSignedIn, " +
                 "isPostingComment=$isPostingComment" +
                 ")"

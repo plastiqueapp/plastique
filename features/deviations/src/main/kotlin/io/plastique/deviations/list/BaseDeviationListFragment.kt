@@ -138,7 +138,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         viewModel.init(params)
         viewModel.state
             .pairwiseWithPrevious()
-            .map { it + calculateDiff(it.second?.items, it.first.items) }
+            .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { renderState(it.first, it.second, it.third) }
             .disposeOnDestroy()
@@ -172,14 +172,14 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
                 deviationsView.scrollToPosition(0)
             }
 
-            adapter.items = state.items
+            adapter.items = state.listState.items
             adapter.notifyDataSetChanged()
         } else {
             listUpdateData.applyTo(adapter)
         }
 
-        onScrollListener.isEnabled = state.isPagingEnabled
-        refreshLayout.isRefreshing = state.isRefreshing
+        onScrollListener.isEnabled = state.listState.isPagingEnabled
+        refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
         if (state.tags != prevState?.tags && isResumed) {

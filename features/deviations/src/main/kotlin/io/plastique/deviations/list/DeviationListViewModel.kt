@@ -15,6 +15,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.lists.PagedListState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectionState
 import io.plastique.core.network.NetworkConnectivityChecker
@@ -176,18 +177,17 @@ class DeviationListStateReducer @Inject constructor(
                 }
                 next(state.copy(
                     contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    hasMore = event.hasMore,
-                    deviationItems = event.items))
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore)))
             }
 
             is LoadErrorEvent -> {
                 val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
                 next(state.copy(
                     contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
-                    items = emptyList(),
-                    deviationItems = emptyList(),
-                    hasMore = false))
+                    listState = PagedListState.Empty))
             }
 
             RetryClickEvent -> {
@@ -195,7 +195,7 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             LoadMoreEvent -> {
-                if (!state.isLoadingMore) {
+                if (!state.listState.isLoadingMore) {
                     next(state, LoadMoreEffect)
                 } else {
                     next(state)
@@ -203,31 +203,30 @@ class DeviationListStateReducer @Inject constructor(
             }
 
             LoadMoreStartedEvent -> {
-                next(state.copy(isLoadingMore = true, items = state.deviationItems + LoadingIndicatorItem))
+                next(state.copy(listState = state.listState.copy(isLoadingMore = true, items = state.listState.contentItems + LoadingIndicatorItem)))
             }
 
             LoadMoreFinishedEvent -> {
-                next(state.copy(isLoadingMore = false))
+                next(state.copy(listState = state.listState.copy(isLoadingMore = false)))
             }
 
             is LoadMoreErrorEvent -> {
                 next(state.copy(
-                    isLoadingMore = false,
-                    items = state.deviationItems,
+                    listState = state.listState.copy(isLoadingMore = false, items = state.listState.contentItems),
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.deviations_message_load_error))))
             }
 
             RefreshEvent -> {
-                next(state.copy(isRefreshing = true), RefreshEffect)
+                next(state.copy(listState = state.listState.copy(isRefreshing = true)), RefreshEffect)
             }
 
             RefreshFinishedEvent -> {
-                next(state.copy(isRefreshing = false))
+                next(state.copy(listState = state.listState.copy(isRefreshing = false)))
             }
 
             is RefreshErrorEvent -> {
                 next(state.copy(
-                    isRefreshing = false,
+                    listState = state.listState.copy(isRefreshing = false),
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error, R.string.deviations_message_load_error))))
             }
 
@@ -281,8 +280,7 @@ class DeviationListStateReducer @Inject constructor(
             next(state.copy(
                 params = params,
                 contentState = ContentState.Loading,
-                items = emptyList(),
-                deviationItems = emptyList(),
+                listState = PagedListState.Empty,
                 tags = createTags(tagFactory, params)),
                 LoadDeviationsEffect(params))
         } else {

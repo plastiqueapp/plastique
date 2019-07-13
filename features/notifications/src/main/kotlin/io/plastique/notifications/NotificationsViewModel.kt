@@ -14,6 +14,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
+import io.plastique.core.lists.PagedListState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
@@ -152,17 +153,16 @@ class NotificationsStateReducer @Inject constructor(
                 }
                 next(state.copy(
                     contentState = contentState,
-                    items = if (state.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    contentItems = event.items,
-                    hasMore = event.hasMore))
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore)))
             }
 
             is LoadErrorEvent -> {
                 next(state.copy(
                     contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
-                    items = emptyList(),
-                    contentItems = emptyList(),
-                    hasMore = false))
+                    listState = PagedListState.Empty))
             }
 
             RetryClickEvent -> {
@@ -170,7 +170,7 @@ class NotificationsStateReducer @Inject constructor(
             }
 
             LoadMoreEvent -> {
-                if (!state.isLoadingMore) {
+                if (!state.listState.isLoadingMore) {
                     next(state, LoadMoreEffect)
                 } else {
                     next(state)
@@ -178,30 +178,31 @@ class NotificationsStateReducer @Inject constructor(
             }
 
             LoadMoreStartedEvent -> {
-                next(state.copy(isLoadingMore = true, items = state.contentItems + LoadingIndicatorItem))
+                next(state.copy(listState = state.listState.copy(isLoadingMore = true, items = state.listState.contentItems + LoadingIndicatorItem)))
             }
 
             LoadMoreFinishedEvent -> {
-                next(state.copy(isLoadingMore = false))
+                next(state.copy(listState = state.listState.copy(isLoadingMore = false)))
             }
 
             is LoadMoreErrorEvent -> {
                 next(state.copy(
-                    isLoadingMore = false,
-                    items = state.contentItems,
+                    listState = state.listState.copy(isLoadingMore = false, items = state.listState.contentItems),
                     snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
 
             RefreshEvent -> {
-                next(state.copy(isRefreshing = true), RefreshEffect)
+                next(state.copy(listState = state.listState.copy(isRefreshing = true)), RefreshEffect)
             }
 
             RefreshFinishedEvent -> {
-                next(state.copy(isRefreshing = false))
+                next(state.copy(listState = state.listState.copy(isRefreshing = false)))
             }
 
             is RefreshErrorEvent -> {
-                next(state.copy(isRefreshing = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
+                next(state.copy(
+                    listState = state.listState.copy(isRefreshing = false),
+                    snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
             }
 
             SnackbarShownEvent -> {
@@ -219,9 +220,7 @@ class NotificationsStateReducer @Inject constructor(
                                 messageResId = R.string.notifications_message_sign_in_required,
                                 buttonTextId = R.string.common_button_sign_in)),
                             isSignedIn = signedIn,
-                            items = emptyList(),
-                            contentItems = emptyList(),
-                            hasMore = false))
+                            listState = PagedListState.Empty))
                     }
                 } else {
                     next(state)
