@@ -9,7 +9,6 @@ import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.ResourceProvider
-import io.plastique.core.content.ContentState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEffect.LoadFeedSettingsEffect
@@ -33,7 +32,7 @@ class FeedSettingsViewModel @Inject constructor(
         listener = TimberLogger(LOG_TAG))
 
     val state: Observable<FeedSettingsViewState> by lazy(LazyThreadSafetyMode.NONE) {
-        loop.loop(FeedSettingsViewState(contentState = ContentState.Loading), LoadFeedSettingsEffect).disposeOnDestroy()
+        loop.loop(FeedSettingsViewState.Loading, LoadFeedSettingsEffect).disposeOnDestroy()
     }
 
     fun dispatch(event: FeedSettingsEvent) {
@@ -79,19 +78,23 @@ class FeedSettingsStateReducer @Inject constructor(
 
     override fun reduce(state: FeedSettingsViewState, event: FeedSettingsEvent): StateWithEffects<FeedSettingsViewState, FeedSettingsEffect> = when (event) {
         is FeedSettingsLoadedEvent -> {
-            next(state.copy(contentState = ContentState.Content, settings = event.settings, items = event.items))
+            next(FeedSettingsViewState.Content(settings = event.settings, items = event.items))
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
+            next(FeedSettingsViewState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadFeedSettingsEffect)
+            next(FeedSettingsViewState.Loading, LoadFeedSettingsEffect)
         }
 
         is SetEnabledEvent -> {
-            next(state.copy(items = state.items.replaceIf({ item -> item.key == event.optionKey }, { item -> item.copy(isChecked = event.isEnabled) })))
+            if (state is FeedSettingsViewState.Content) {
+                next(state.copy(items = state.items.replaceIf({ item -> item.key == event.optionKey }) { item -> item.copy(isChecked = event.isEnabled) }))
+            } else {
+                next(state)
+            }
         }
     }
 }

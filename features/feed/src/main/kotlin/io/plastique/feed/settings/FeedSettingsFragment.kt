@@ -101,28 +101,35 @@ class FeedSettingsFragment :
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
 
-        val state = this.state
-        if (state.settings != null) {
-            val include = state.items.asSequence()
-                .filter { item -> item.isChecked != state.settings.include[item.key] }
-                .associateBy({ item -> item.key }, { item -> item.isChecked })
+        when (val state = this.state) {
+            is FeedSettingsViewState.Content -> {
+                val include = state.items.asSequence()
+                    .filter { item -> item.isChecked != state.settings.include[item.key] }
+                    .associateBy({ item -> item.key }, { item -> item.isChecked })
 
-            if (include.isNotEmpty()) {
-                listener?.onFeedSettingsChanged(FeedSettings(include))
+                if (include.isNotEmpty()) {
+                    listener?.onFeedSettingsChanged(FeedSettings(include))
+                }
             }
         }
     }
 
     private fun renderState(state: FeedSettingsViewState, listUpdateData: ListUpdateData<OptionItem>) {
         this.state = state
-        contentStateController.state = state.contentState
 
-        when (state.contentState) {
-            ContentState.Content ->
+        when (state) {
+            FeedSettingsViewState.Loading -> {
+                contentStateController.state = ContentState.Loading
+            }
+
+            is FeedSettingsViewState.Content -> {
+                contentStateController.state = ContentState.Content
                 listUpdateData.applyTo(optionsAdapter)
+            }
 
-            is ContentState.Empty -> {
-                emptyView.state = state.contentState.emptyState
+            is FeedSettingsViewState.Empty -> {
+                contentStateController.state = ContentState.Empty(state.emptyState)
+                emptyView.state = state.emptyState
             }
         }
     }
@@ -130,6 +137,9 @@ class FeedSettingsFragment :
     override val fragmentComponent: BaseFragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
         requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent()
     }
+
+    private val FeedSettingsViewState.items: List<OptionItem>
+        get() = if (this is FeedSettingsViewState.Content) items else emptyList()
 }
 
 interface OnFeedSettingsChangedListener {
