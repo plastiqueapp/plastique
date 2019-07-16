@@ -4,7 +4,7 @@ import io.plastique.R
 import io.plastique.collections.CollectionsFragment
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.list.CommentListFragment
-import io.plastique.core.FragmentListPagerAdapter.Page
+import io.plastique.core.pager.FragmentListPagerAdapter.Page
 import io.plastique.gallery.GalleryFragment
 import io.plastique.statuses.list.StatusListFragment
 import io.plastique.users.profile.UserProfilePageProvider

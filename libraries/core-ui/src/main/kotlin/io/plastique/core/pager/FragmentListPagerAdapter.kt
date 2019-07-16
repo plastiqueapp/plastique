@@ -1,4 +1,4 @@
-package io.plastique.core
+package io.plastique.core.pager
 
 import android.content.Context
 import android.os.Bundle

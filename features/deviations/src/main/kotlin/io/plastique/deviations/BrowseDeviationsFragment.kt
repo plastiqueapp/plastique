@@ -16,9 +16,9 @@ import androidx.viewpager.widget.ViewPager
 import com.github.technoir42.android.extensions.doOnTabReselected
 import com.google.android.material.tabs.TabLayout
 import io.plastique.core.ExpandableToolbarLayout
-import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.pager.FragmentListPagerAdapter
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.LayoutMode

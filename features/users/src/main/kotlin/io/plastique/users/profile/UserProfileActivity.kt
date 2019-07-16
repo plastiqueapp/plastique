@@ -17,7 +17,6 @@ import com.github.technoir42.android.extensions.doOnTabReselected
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.tabs.TabLayout
-import io.plastique.core.FragmentListPagerAdapter
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
@@ -25,6 +24,7 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
 import io.plastique.core.navigation.navigationContext
+import io.plastique.core.pager.FragmentListPagerAdapter
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests

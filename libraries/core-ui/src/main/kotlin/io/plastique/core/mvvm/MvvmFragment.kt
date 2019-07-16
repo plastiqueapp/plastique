@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import io.plastique.core.BaseFragment
-import io.plastique.core.isInViewPager
+import io.plastique.core.pager.isInViewPager
 
 abstract class MvvmFragment<VM : BaseViewModel>(private val viewModelClass: Class<VM>) : BaseFragment() {
     protected val viewModel: VM by lazy(LazyThreadSafetyMode.NONE) {
