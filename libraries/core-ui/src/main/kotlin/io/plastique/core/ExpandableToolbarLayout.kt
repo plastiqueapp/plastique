@@ -8,6 +8,8 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.customview.view.AbsSavedState
@@ -15,9 +17,9 @@ import com.github.technoir42.android.extensions.getLayoutBehavior
 import com.github.technoir42.android.extensions.invalidateScrollRanges
 import com.google.android.material.appbar.AppBarLayout
 import io.plastique.core.ui.R
-import io.plastique.util.OffsetLimitingBehavior
 import timber.log.Timber
 import kotlin.math.max
+import kotlin.math.min
 
 class ExpandableToolbarLayout @JvmOverloads constructor(
     context: Context,
@@ -306,5 +308,45 @@ class ExpandableToolbarLayout @JvmOverloads constructor(
 
     companion object {
         private const val EXPAND_ANIMATION_DURATION = 200L
+    }
+}
+
+@Keep
+class OffsetLimitingBehavior(context: Context, attrs: AttributeSet) : AppBarLayout.Behavior(context, attrs) {
+    var maxOffset: Int = 0
+
+    override fun onNestedPreScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        target: View,
+        dx: Int,
+        dy: Int,
+        consumed: IntArray,
+        type: Int
+    ) {
+        super.onNestedPreScroll(coordinatorLayout, child, target, dx, clampDy(dy), consumed, type)
+    }
+
+    override fun onNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray
+    ) {
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, clampDy(dyUnconsumed), type, consumed)
+    }
+
+    private fun clampDy(dy: Int): Int {
+        if (dy < 0 && maxOffset != 0) {
+            val currentOffset = topAndBottomOffset
+            val newOffset = min(currentOffset - dy, maxOffset)
+            return min(currentOffset - newOffset, 0)
+        }
+        return dy
     }
 }
