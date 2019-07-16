@@ -2,8 +2,8 @@ package io.plastique.common
 
 import androidx.annotation.StringRes
 import androidx.core.text.htmlEncode
+import io.plastique.core.client.NoNetworkConnectionException
 import io.plastique.core.content.EmptyState
-import io.plastique.core.network.NoNetworkConnectionException
 import io.plastique.core.session.AuthenticationExpiredException
 import io.plastique.deviations.DeviationNotFoundException
 import io.plastique.users.UserNotFoundException

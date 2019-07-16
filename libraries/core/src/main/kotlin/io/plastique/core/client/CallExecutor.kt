@@ -1,8 +1,6 @@
 package io.plastique.core.client
 
-import io.plastique.core.exceptions.HttpTransportException
 import io.plastique.core.network.NetworkConnectivityChecker
-import io.plastique.core.network.NoNetworkConnectionException
 import retrofit2.Call
 import retrofit2.Response
 import java.io.IOException

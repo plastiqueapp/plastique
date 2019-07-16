@@ -4,9 +4,9 @@ import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import io.plastique.api.common.ErrorData
 import io.plastique.core.client.ErrorResponseParser
+import io.plastique.core.client.HttpException
 import io.plastique.core.client.HttpResponseCodes
-import io.plastique.core.exceptions.HttpException
-import io.plastique.core.exceptions.RateLimitExceededException
+import io.plastique.core.client.RateLimitExceededException
 import io.plastique.core.json.adapter
 import retrofit2.Response
 import timber.log.Timber
