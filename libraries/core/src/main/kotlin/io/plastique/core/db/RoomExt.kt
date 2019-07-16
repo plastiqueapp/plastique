@@ -7,7 +7,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
 fun <T : Any> RoomDatabase.createObservable(vararg tableNames: String, callable: () -> T): Observable<T> {
-    val scheduler = Schedulers.from(queryExecutor)
+    val scheduler = Schedulers.from(transactionExecutor)
     val maybe = Maybe.fromCallable { runInTransaction(callable) }
     return RxRoom.createObservable(this, *tableNames)
         .subscribeOn(scheduler)
