@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentFactory
 import com.github.technoir42.android.extensions.instantiate
 import io.plastique.R
 import io.plastique.collections.CollectionsFragment
-import io.plastique.deviations.BrowseDeviationsFragment
+import io.plastique.deviations.browse.BrowseDeviationsFragment
 import io.plastique.feed.FeedFragment
 import io.plastique.gallery.GalleryFragment
 import io.plastique.notifications.NotificationsFragment

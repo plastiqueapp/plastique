@@ -10,7 +10,7 @@ import io.plastique.auth.LoginViewModel
 import io.plastique.collections.CollectionsViewModel
 import io.plastique.comments.list.CommentListViewModel
 import io.plastique.core.mvvm.DaggerViewModelFactory
-import io.plastique.deviations.BrowseDeviationsViewModel
+import io.plastique.deviations.browse.BrowseDeviationsViewModel
 import io.plastique.deviations.categories.list.CategoryListViewModel
 import io.plastique.deviations.info.DeviationInfoViewModel
 import io.plastique.deviations.list.DeviationListViewModel

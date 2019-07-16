@@ -1,5 +1,6 @@
 package io.plastique.deviations
 
+import io.plastique.deviations.browse.BrowseDeviationsFragment
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.PopularDeviationsFragment

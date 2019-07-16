@@ -1,4 +1,4 @@
-package io.plastique.deviations
+package io.plastique.deviations.browse
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -19,6 +19,8 @@ import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.pager.FragmentListPagerAdapter
+import io.plastique.deviations.DeviationsFragmentComponent
+import io.plastique.deviations.R
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.LayoutMode
