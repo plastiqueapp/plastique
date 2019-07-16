@@ -7,6 +7,8 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import io.plastique.core.work.CommonWorkTags
 import io.plastique.core.work.setInitialDelay
+import io.plastique.gallery.folders.DeleteFoldersWorker
+import io.plastique.gallery.folders.GalleryFolderRepository
 import io.reactivex.Completable
 import org.threeten.bp.Duration
 import javax.inject.Inject

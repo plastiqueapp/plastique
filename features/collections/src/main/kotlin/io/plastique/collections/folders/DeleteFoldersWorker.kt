@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.collections.folders
 
 import android.content.Context
 import androidx.work.WorkerParameters

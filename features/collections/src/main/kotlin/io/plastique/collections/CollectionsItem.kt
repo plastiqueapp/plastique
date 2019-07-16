@@ -1,5 +1,6 @@
 package io.plastique.collections
 
+import io.plastique.collections.folders.Folder
 import io.plastique.core.lists.IndexedItem
 import io.plastique.core.lists.ListItem
 

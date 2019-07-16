@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.collections.deviations
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,9 @@ import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
+import io.plastique.collections.CollectionsActivityComponent
+import io.plastique.collections.R
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.BaseActivity
 import io.plastique.inject.getComponent
 
@@ -16,9 +19,9 @@ class FolderDeviationListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery_folder_deviations)
+        setContentView(R.layout.activity_collection_folder_deviations)
 
-        val folderId = intent.getParcelableExtra<GalleryFolderId>(EXTRA_FOLDER_ID)!!
+        val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
 
         initToolbar(folderId.username, folderName)
@@ -46,14 +49,14 @@ class FolderDeviationListActivity : BaseActivity() {
     }
 
     override fun injectDependencies() {
-        getComponent<GalleryActivityComponent>().inject(this)
+        getComponent<CollectionsActivityComponent>().inject(this)
     }
 
     companion object {
         private const val EXTRA_FOLDER_ID = "folder_id"
         private const val EXTRA_FOLDER_NAME = "folder_name"
 
-        fun createIntent(context: Context, folderId: GalleryFolderId, folderName: String): Intent {
+        fun createIntent(context: Context, folderId: CollectionFolderId, folderName: String): Intent {
             return Intent(context, FolderDeviationListActivity::class.java).apply {
                 putExtra(EXTRA_FOLDER_ID, folderId)
                 putExtra(EXTRA_FOLDER_NAME, folderName)

@@ -3,6 +3,7 @@ package io.plastique.gallery
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.PagedListState
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.gallery.folders.FolderLoadParams
 
 data class GalleryViewState(
     val params: FolderLoadParams,

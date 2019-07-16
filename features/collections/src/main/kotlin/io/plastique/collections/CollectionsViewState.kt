@@ -1,5 +1,6 @@
 package io.plastique.collections
 
+import io.plastique.collections.folders.FolderLoadParams
 import io.plastique.core.content.ContentState
 import io.plastique.core.lists.PagedListState
 import io.plastique.core.snackbar.SnackbarState

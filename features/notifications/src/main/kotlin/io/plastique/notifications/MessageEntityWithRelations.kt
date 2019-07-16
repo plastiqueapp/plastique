@@ -2,7 +2,7 @@ package io.plastique.notifications
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import io.plastique.collections.FolderEntity
+import io.plastique.collections.folders.FolderEntity
 import io.plastique.deviations.DeviationEntity
 import io.plastique.deviations.DeviationEntityWithRelations
 import io.plastique.users.UserEntity

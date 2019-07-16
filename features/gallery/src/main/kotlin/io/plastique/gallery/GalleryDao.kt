@@ -6,6 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import io.plastique.gallery.folders.DeletedFolderEntity
+import io.plastique.gallery.folders.FolderEntity
+import io.plastique.gallery.folders.FolderLinkage
 import io.reactivex.Completable
 import io.reactivex.Single
 

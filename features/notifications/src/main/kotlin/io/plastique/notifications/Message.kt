@@ -1,6 +1,6 @@
 package io.plastique.notifications
 
-import io.plastique.collections.Folder
+import io.plastique.collections.folders.Folder
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 

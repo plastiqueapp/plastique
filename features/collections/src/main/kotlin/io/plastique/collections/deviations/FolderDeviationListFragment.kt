@@ -1,6 +1,8 @@
-package io.plastique.collections
+package io.plastique.collections.deviations
 
 import android.os.Bundle
+import io.plastique.collections.CollectionsFragmentComponent
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.deviations.list.BaseDeviationListFragment
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.inject.getComponent

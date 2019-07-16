@@ -3,6 +3,6 @@
     package="io.plastique.gallery">
 
     <application android:theme="@style/Theme.App.DayNight">
-        <activity android:name=".FolderDeviationListActivity" />
+        <activity android:name=".deviations.FolderDeviationListActivity" />
     </application>
 </manifest>

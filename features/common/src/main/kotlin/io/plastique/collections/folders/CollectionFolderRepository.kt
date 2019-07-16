@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.collections.folders
 
 import io.plastique.api.collections.FolderDto
 import io.plastique.core.cache.CleanableRepository

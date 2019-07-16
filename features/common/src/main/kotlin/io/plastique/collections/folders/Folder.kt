@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.collections.folders
 
 data class Folder(
     val id: String,

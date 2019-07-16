@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.gallery.folders
 
 import android.content.Context
 import androidx.work.WorkerParameters

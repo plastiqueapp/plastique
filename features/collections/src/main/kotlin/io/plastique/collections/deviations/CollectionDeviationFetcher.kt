@@ -1,9 +1,10 @@
-package io.plastique.collections
+package io.plastique.collections.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.CollectionService
 import io.plastique.api.nextCursor
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher

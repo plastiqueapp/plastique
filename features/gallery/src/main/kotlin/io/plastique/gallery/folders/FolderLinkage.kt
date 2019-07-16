@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.gallery.folders
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

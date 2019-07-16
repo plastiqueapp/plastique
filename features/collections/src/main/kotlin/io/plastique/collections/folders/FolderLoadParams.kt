@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.collections.folders
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

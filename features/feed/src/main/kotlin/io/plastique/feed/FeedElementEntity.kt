@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import io.plastique.collections.FolderEntity
+import io.plastique.collections.folders.FolderEntity
 import io.plastique.statuses.StatusEntity
 import io.plastique.users.UserEntity
 import org.threeten.bp.ZonedDateTime

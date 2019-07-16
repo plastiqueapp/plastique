@@ -1,6 +1,6 @@
 package io.plastique.feed
 
-import io.plastique.collections.Folder
+import io.plastique.collections.folders.Folder
 import io.plastique.deviations.Deviation
 import io.plastique.statuses.Status
 import io.plastique.users.User

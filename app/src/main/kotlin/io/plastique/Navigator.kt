@@ -1,8 +1,8 @@
 package io.plastique
 
 import io.plastique.auth.LoginActivity
-import io.plastique.collections.CollectionFolderId
 import io.plastique.collections.CollectionsNavigator
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.list.CommentListActivity
@@ -12,8 +12,8 @@ import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.info.DeviationInfoActivity
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.feed.FeedNavigator
-import io.plastique.gallery.GalleryFolderId
 import io.plastique.gallery.GalleryNavigator
+import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.main.MainNavigator
 import io.plastique.notifications.NotificationsNavigator
 import io.plastique.profile.ProfileNavigator
@@ -30,8 +30,8 @@ import io.plastique.watch.WatchNavigator
 import io.plastique.watch.WatcherListActivity
 import javax.inject.Inject
 import javax.inject.Singleton
-import io.plastique.collections.FolderDeviationListActivity as CollectionFolderDeviationListActivity
-import io.plastique.gallery.FolderDeviationListActivity as GalleryFolderDeviationListActivity
+import io.plastique.collections.deviations.FolderDeviationListActivity as CollectionFolderDeviationListActivity
+import io.plastique.gallery.deviations.FolderDeviationListActivity as GalleryFolderDeviationListActivity
 
 @Singleton
 class Navigator @Inject constructor(private val browserLauncher: BrowserLauncher) :

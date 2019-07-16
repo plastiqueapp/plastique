@@ -47,6 +47,7 @@ import io.plastique.gallery.GalleryEvent.SessionChangedEvent
 import io.plastique.gallery.GalleryEvent.ShowMatureChangedEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
+import io.plastique.gallery.folders.FolderLoadParams
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber

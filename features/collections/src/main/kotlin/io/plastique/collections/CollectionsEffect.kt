@@ -1,6 +1,7 @@
 package io.plastique.collections
 
 import com.sch.neon.Effect
+import io.plastique.collections.folders.FolderLoadParams
 
 sealed class CollectionsEffect : Effect() {
     data class LoadCollectionsEffect(val params: FolderLoadParams) : CollectionsEffect()

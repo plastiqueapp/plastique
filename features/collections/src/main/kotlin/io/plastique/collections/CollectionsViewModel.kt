@@ -36,6 +36,7 @@ import io.plastique.collections.CollectionsEvent.SessionChangedEvent
 import io.plastique.collections.CollectionsEvent.ShowMatureChangedEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
+import io.plastique.collections.folders.FolderLoadParams
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState

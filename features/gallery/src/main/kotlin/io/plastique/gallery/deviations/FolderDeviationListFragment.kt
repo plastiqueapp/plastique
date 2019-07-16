@@ -1,8 +1,10 @@
-package io.plastique.gallery
+package io.plastique.gallery.deviations
 
 import android.os.Bundle
 import io.plastique.deviations.list.BaseDeviationListFragment
 import io.plastique.deviations.list.LayoutMode
+import io.plastique.gallery.GalleryFragmentComponent
+import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.inject.getComponent
 
 class FolderDeviationListFragment : BaseDeviationListFragment<GalleryDeviationParams>() {

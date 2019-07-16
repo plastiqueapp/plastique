@@ -3,12 +3,12 @@ package io.plastique.inject.modules
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
-import io.plastique.collections.CollectionFolderRepository
+import io.plastique.collections.folders.CollectionFolderRepository
 import io.plastique.core.cache.CacheCleaner
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.feed.FeedRepository
-import io.plastique.gallery.GalleryFolderRepository
+import io.plastique.gallery.folders.GalleryFolderRepository
 import io.plastique.notifications.MessageRepository
 
 @Module

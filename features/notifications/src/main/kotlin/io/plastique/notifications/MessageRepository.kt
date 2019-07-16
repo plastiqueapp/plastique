@@ -9,8 +9,8 @@ import io.plastique.api.ApiException
 import io.plastique.api.messages.MessageDto
 import io.plastique.api.messages.MessageService
 import io.plastique.api.messages.MessageTypes
-import io.plastique.collections.CollectionFolderRepository
-import io.plastique.collections.toFolder
+import io.plastique.collections.folders.CollectionFolderRepository
+import io.plastique.collections.folders.toFolder
 import io.plastique.comments.CommentRepository
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository

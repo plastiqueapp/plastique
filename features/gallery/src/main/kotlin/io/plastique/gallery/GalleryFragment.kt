@@ -52,6 +52,8 @@ import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
+import io.plastique.gallery.folders.Folder
+import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.glide.GlideApp
 import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent

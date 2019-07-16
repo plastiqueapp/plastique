@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.gallery.deviations
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,9 @@ import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
 import io.plastique.core.BaseActivity
+import io.plastique.gallery.GalleryActivityComponent
+import io.plastique.gallery.R
+import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.inject.getComponent
 
 class FolderDeviationListActivity : BaseActivity() {
@@ -16,9 +19,9 @@ class FolderDeviationListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_collection_folder_deviations)
+        setContentView(R.layout.activity_gallery_folder_deviations)
 
-        val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
+        val folderId = intent.getParcelableExtra<GalleryFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
 
         initToolbar(folderId.username, folderName)
@@ -46,14 +49,14 @@ class FolderDeviationListActivity : BaseActivity() {
     }
 
     override fun injectDependencies() {
-        getComponent<CollectionsActivityComponent>().inject(this)
+        getComponent<GalleryActivityComponent>().inject(this)
     }
 
     companion object {
         private const val EXTRA_FOLDER_ID = "folder_id"
         private const val EXTRA_FOLDER_NAME = "folder_name"
 
-        fun createIntent(context: Context, folderId: CollectionFolderId, folderName: String): Intent {
+        fun createIntent(context: Context, folderId: GalleryFolderId, folderName: String): Intent {
             return Intent(context, FolderDeviationListActivity::class.java).apply {
                 putExtra(EXTRA_FOLDER_ID, folderId)
                 putExtra(EXTRA_FOLDER_NAME, folderName)

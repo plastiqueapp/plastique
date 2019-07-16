@@ -42,12 +42,12 @@ import io.plastique.users.UserEntity
 import io.plastique.users.profile.UserProfileEntity
 import io.plastique.watch.WatchDao
 import io.plastique.watch.WatcherEntity
-import io.plastique.collections.DeletedFolderEntity as DeletedCollectionFolderEntity
-import io.plastique.collections.FolderEntity as CollectionFolderEntity
-import io.plastique.collections.FolderLinkage as CollectionFolderLinkage
-import io.plastique.gallery.DeletedFolderEntity as DeletedGalleryFolderEntity
-import io.plastique.gallery.FolderEntity as GalleryFolderEntity
-import io.plastique.gallery.FolderLinkage as GalleryFolderLinkage
+import io.plastique.collections.folders.DeletedFolderEntity as DeletedCollectionFolderEntity
+import io.plastique.collections.folders.FolderEntity as CollectionFolderEntity
+import io.plastique.collections.folders.FolderLinkage as CollectionFolderLinkage
+import io.plastique.gallery.folders.DeletedFolderEntity as DeletedGalleryFolderEntity
+import io.plastique.gallery.folders.FolderEntity as GalleryFolderEntity
+import io.plastique.gallery.folders.FolderLinkage as GalleryFolderLinkage
 
 @Database(
     entities = [

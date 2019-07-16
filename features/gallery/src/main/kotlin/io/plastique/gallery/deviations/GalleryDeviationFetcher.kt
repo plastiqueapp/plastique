@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.gallery.deviations
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -10,6 +10,7 @@ import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.FetchResult
+import io.plastique.gallery.folders.GalleryFolderId
 import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject

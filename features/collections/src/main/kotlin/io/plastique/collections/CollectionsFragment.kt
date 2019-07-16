@@ -28,6 +28,7 @@ import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
+import io.plastique.collections.folders.Folder
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState

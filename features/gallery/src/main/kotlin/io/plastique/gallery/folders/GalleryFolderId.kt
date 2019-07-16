@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.gallery.folders
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

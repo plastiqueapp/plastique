@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
-import io.plastique.collections.CollectionDeviationFetcher
-import io.plastique.collections.CollectionDeviationParams
+import io.plastique.collections.deviations.CollectionDeviationFetcher
+import io.plastique.collections.deviations.CollectionDeviationParams
 import io.plastique.core.paging.Cursor
 import io.plastique.deviations.DailyDeviationFetcher
 import io.plastique.deviations.DailyParams
@@ -19,8 +19,8 @@ import io.plastique.deviations.UndiscoveredDeviationFetcher
 import io.plastique.deviations.UndiscoveredParams
 import io.plastique.feed.BucketDeviationFetcher
 import io.plastique.feed.BucketDeviationParams
-import io.plastique.gallery.GalleryDeviationFetcher
-import io.plastique.gallery.GalleryDeviationParams
+import io.plastique.gallery.deviations.GalleryDeviationFetcher
+import io.plastique.gallery.deviations.GalleryDeviationParams
 
 @Module
 interface DeviationsModule {

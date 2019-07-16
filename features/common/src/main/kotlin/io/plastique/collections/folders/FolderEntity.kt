@@ -1,4 +1,4 @@
-package io.plastique.collections
+package io.plastique.collections.folders
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

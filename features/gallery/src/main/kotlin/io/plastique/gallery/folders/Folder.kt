@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.gallery.folders
 
 data class Folder(
     val id: String,

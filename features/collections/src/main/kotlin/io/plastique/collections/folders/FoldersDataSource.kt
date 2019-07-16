@@ -1,4 +1,4 @@
-package io.plastique.gallery
+package io.plastique.collections.folders
 
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class FoldersDataSource @Inject constructor(
-    private val folderRepository: GalleryFolderRepository
+    private val folderRepository: CollectionFolderRepositoryImpl
 ) : PagedDataSource<List<Folder>, FolderLoadParams> {
     private val params = AtomicReference<FolderLoadParams>()
     private val nextCursor = AtomicReference<OffsetCursor>()

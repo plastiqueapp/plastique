@@ -5,6 +5,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import io.plastique.collections.folders.CollectionFolderRepository
+import io.plastique.collections.folders.DeleteFoldersWorker
 import io.plastique.core.work.CommonWorkTags
 import io.plastique.core.work.setInitialDelay
 import io.reactivex.Completable

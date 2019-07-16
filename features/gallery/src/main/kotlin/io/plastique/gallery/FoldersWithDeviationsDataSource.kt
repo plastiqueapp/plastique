@@ -8,6 +8,11 @@ import io.plastique.core.lists.ListItem
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationDataSource
 import io.plastique.deviations.list.DeviationItemFactory
+import io.plastique.gallery.deviations.GalleryDeviationParams
+import io.plastique.gallery.folders.Folder
+import io.plastique.gallery.folders.FolderLoadParams
+import io.plastique.gallery.folders.FoldersDataSource
+import io.plastique.gallery.folders.GalleryFolderId
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject

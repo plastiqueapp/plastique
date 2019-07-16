@@ -2,7 +2,7 @@ package io.plastique.feed
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import io.plastique.collections.FolderEntity
+import io.plastique.collections.folders.FolderEntity
 import io.plastique.statuses.StatusEntity
 import io.plastique.statuses.StatusEntityWithRelations
 import io.plastique.users.UserEntity

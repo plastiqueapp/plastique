@@ -2,8 +2,8 @@ package io.plastique.inject.modules
 
 import dagger.Binds
 import dagger.Module
-import io.plastique.collections.CollectionFolderRepository
-import io.plastique.collections.CollectionFolderRepositoryImpl
+import io.plastique.collections.folders.CollectionFolderRepository
+import io.plastique.collections.folders.CollectionFolderRepositoryImpl
 import io.plastique.comments.CommentRepository
 import io.plastique.comments.CommentRepositoryImpl
 import io.plastique.deviations.DeviationRepository

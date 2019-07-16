@@ -10,10 +10,10 @@ import io.plastique.core.work.AppWorkerFactory
 import io.plastique.core.work.ListenableWorkerFactory
 import io.plastique.notifications.DeleteMessagesWorker
 import io.plastique.notifications.DeleteMessagesWorkerFactory
-import io.plastique.collections.DeleteFoldersWorker as DeleteCollectionFoldersWorker
-import io.plastique.collections.DeleteFoldersWorkerFactory as DeleteCollectionFoldersWorkerFactory
-import io.plastique.gallery.DeleteFoldersWorker as DeleteGalleryFoldersWorker
-import io.plastique.gallery.DeleteFoldersWorkerFactory as DeleteGalleryFoldersWorkerFactory
+import io.plastique.collections.folders.DeleteFoldersWorker as DeleteCollectionFoldersWorker
+import io.plastique.collections.folders.DeleteFoldersWorkerFactory as DeleteCollectionFoldersWorkerFactory
+import io.plastique.gallery.folders.DeleteFoldersWorker as DeleteGalleryFoldersWorker
+import io.plastique.gallery.folders.DeleteFoldersWorkerFactory as DeleteGalleryFoldersWorkerFactory
 
 @Module
 interface WorkerModule {
