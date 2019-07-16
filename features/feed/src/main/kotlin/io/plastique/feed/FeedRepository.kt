@@ -22,6 +22,7 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.time.TimeProvider
@@ -31,7 +32,6 @@ import io.plastique.statuses.StatusRepository
 import io.plastique.statuses.toStatus
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.RxRoom
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -66,7 +66,8 @@ class FeedRepository @Inject constructor(
     }
 
     private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
-        return RxRoom.createObservable(database, TABLE_NAMES) {
+        return database.createObservable("deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses",
+            "feed", "users") {
             val feedElements = feedDao.getFeed().map { it.toFeedElement(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
@@ -162,8 +163,6 @@ class FeedRepository @Inject constructor(
     companion object {
         const val CACHE_KEY = "feed"
         private val CACHE_DURATION = Duration.ofHours(1)
-        private val TABLE_NAMES = arrayOf(
-            "deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses", "feed", "users")
     }
 }
 

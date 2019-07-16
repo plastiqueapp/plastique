@@ -17,13 +17,13 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.RxRoom
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -67,7 +67,7 @@ class CommentRepositoryImpl @Inject constructor(
     }
 
     private fun getCommentsFromDb(key: String): Observable<PagedData<List<Comment>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "comments", "comment_linkage")) {
+        return database.createObservable("users", "comments", "comment_linkage") {
             val commentsWithRelations = commentDao.getCommentsByKey(key)
             val comments = combineAndFilter(commentsWithRelations)
             val nextCursor = getNextCursor(key)

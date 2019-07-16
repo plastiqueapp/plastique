@@ -14,12 +14,12 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.RxRoom
 import io.plastique.util.Size
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -119,7 +119,7 @@ class DeviationRepositoryImpl @Inject constructor(
         params: FetchParams,
         metadataSerializer: DeviationCacheMetadataSerializer
     ): Observable<PagedData<List<Deviation>, Cursor>> {
-        return RxRoom.createObservable(database, TABLE_NAMES) {
+        return database.createObservable("users", "daily_deviations", "deviation_images", "deviation_videos", "deviations", "deviation_linkage") {
             val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
             val deviations = combineAndFilter(deviationsWithRelations, params)
             val nextCursor = getNextCursor(key, metadataSerializer)
@@ -198,7 +198,6 @@ class DeviationRepositoryImpl @Inject constructor(
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)
-        private val TABLE_NAMES = arrayOf("users", "daily_deviations", "deviation_images", "deviation_videos", "deviations", "deviation_linkage")
     }
 }
 

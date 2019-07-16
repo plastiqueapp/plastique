@@ -17,6 +17,7 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.Session
@@ -24,7 +25,6 @@ import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
 import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
-import io.plastique.util.RxRoom
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -96,7 +96,7 @@ class GalleryFolderRepository @Inject constructor(
     }
 
     private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("gallery_folders", "user_gallery_folders", "deleted_gallery_folders")) {
+        return database.createObservable("gallery_folders", "user_gallery_folders", "deleted_gallery_folders") {
             val folders = galleryDao.getFolders(cacheKey).asSequence()
                 .map { it.toFolder(own) }
                 .filter { own || it.isNotEmpty }

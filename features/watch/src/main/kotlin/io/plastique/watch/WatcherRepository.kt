@@ -16,6 +16,7 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.SessionManager
@@ -24,7 +25,6 @@ import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.RxRoom
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -87,7 +87,7 @@ class WatcherRepository @Inject constructor(
     }
 
     private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "watchers")) {
+        return database.createObservable("users", "watchers") {
             val watchers = watchDao.getWatchersByKey(cacheKey).map { it.toWatcher() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(watchers, nextCursor)

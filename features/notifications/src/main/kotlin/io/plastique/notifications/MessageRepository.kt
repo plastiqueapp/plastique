@@ -18,6 +18,7 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.time.TimeProvider
@@ -26,7 +27,6 @@ import io.plastique.deviations.toDeviation
 import io.plastique.statuses.StatusRepository
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
-import io.plastique.util.RxRoom
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -70,7 +70,7 @@ class MessageRepository @Inject constructor(
     }
 
     private fun getMessagesFromDb(cacheKey: String): Observable<PagedData<List<Message>, StringCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages")) {
+        return database.createObservable("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages") {
             val messages = messageDao.getMessages()
                 .asSequence()
                 .map { it.toMessage(timeProvider.timeZone) }

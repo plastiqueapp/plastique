@@ -18,13 +18,13 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.converters.NullFallbackConverter
+import io.plastique.core.db.createObservable
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationRepository
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
-import io.plastique.util.RxRoom
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.threeten.bp.Duration
@@ -99,7 +99,7 @@ class StatusRepositoryImpl @Inject constructor(
     }
 
     private fun getStatusesFromDb(cacheKey: String): Observable<PagedData<List<Status>, OffsetCursor>> {
-        return RxRoom.createObservable(database, arrayOf("users", "deviation_images", "deviations", "statuses", "user_statuses")) {
+        return database.createObservable("users", "deviation_images", "deviations", "statuses", "user_statuses") {
             val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             cacheEntryRepository.getEntryByKey(cacheKey)
