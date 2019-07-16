@@ -1,7 +1,6 @@
 package io.plastique.core.lists
 
 import androidx.recyclerview.widget.RecyclerView
-import io.plastique.core.extensions.findLastVisibleItemPosition
 
 class EndlessScrollListener(
     var loadMoreThreshold: Int,

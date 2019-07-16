@@ -15,12 +15,12 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.extensions.smartScrollToPosition
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.lists.smartScrollToPosition
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController

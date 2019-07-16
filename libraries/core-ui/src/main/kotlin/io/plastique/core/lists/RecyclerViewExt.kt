@@ -1,4 +1,4 @@
-package io.plastique.core.extensions
+package io.plastique.core.lists
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
