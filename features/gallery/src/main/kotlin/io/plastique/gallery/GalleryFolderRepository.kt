@@ -16,8 +16,8 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
-import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.db.createObservable
+import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.Session
@@ -38,7 +38,7 @@ class GalleryFolderRepository @Inject constructor(
     private val galleryDao: GalleryDao,
     private val galleryService: GalleryService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val metadataConverter: NullFallbackConverter,
+    private val metadataConverter: NullFallbackAdapter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider
 ) : CleanableRepository {

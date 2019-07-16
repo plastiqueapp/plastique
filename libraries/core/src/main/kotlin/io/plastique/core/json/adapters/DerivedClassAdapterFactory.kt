@@ -1,4 +1,4 @@
-package io.plastique.core.json
+package io.plastique.core.json.adapters
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

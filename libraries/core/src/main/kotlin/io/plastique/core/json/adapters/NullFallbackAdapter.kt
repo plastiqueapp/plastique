@@ -1,10 +1,10 @@
-package io.plastique.core.converters
+package io.plastique.core.json.adapters
 
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
 
-class NullFallbackConverter @Inject constructor(private val moshi: Moshi) {
+class NullFallbackAdapter @Inject constructor(private val moshi: Moshi) {
     inline fun <reified T : Any> fromJson(json: String): T? {
         return fromJson(T::class.java, json)
     }

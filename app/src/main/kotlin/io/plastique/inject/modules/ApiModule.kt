@@ -30,10 +30,10 @@ import io.plastique.core.client.AccessTokenProvider
 import io.plastique.core.client.ApiClient
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.client.ErrorResponseParser
-import io.plastique.core.json.InstantAdapter
-import io.plastique.core.json.OffsetCursorAdapter
-import io.plastique.core.json.StringCursorAdapter
-import io.plastique.core.json.ZonedDateTimeAdapter
+import io.plastique.core.json.adapters.InstantAdapter
+import io.plastique.core.json.adapters.OffsetCursorAdapter
+import io.plastique.core.json.adapters.StringCursorAdapter
+import io.plastique.core.json.adapters.ZonedDateTimeAdapter
 import io.plastique.core.session.SessionManager
 import io.plastique.notifications.MessageDtoSubjectJsonAdapterFactory
 import org.threeten.bp.format.DateTimeFormatter

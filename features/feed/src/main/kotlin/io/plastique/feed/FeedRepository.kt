@@ -21,8 +21,8 @@ import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
-import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.db.createObservable
+import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
 import io.plastique.core.time.TimeProvider
@@ -49,7 +49,7 @@ class FeedRepository @Inject constructor(
     private val collectionFolderRepository: CollectionFolderRepository,
     private val statusRepository: StatusRepository,
     private val userRepository: UserRepository,
-    private val metadataConverter: NullFallbackConverter,
+    private val metadataConverter: NullFallbackAdapter,
     private val timeProvider: TimeProvider
 ) : CleanableRepository {
 

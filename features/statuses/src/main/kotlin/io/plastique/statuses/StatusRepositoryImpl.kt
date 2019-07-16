@@ -17,8 +17,8 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
-import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.db.createObservable
+import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.time.TimeProvider
@@ -37,7 +37,7 @@ class StatusRepositoryImpl @Inject constructor(
     private val cacheEntryRepository: CacheEntryRepository,
     private val deviationRepository: DeviationRepository,
     private val userRepository: UserRepository,
-    private val cacheMetadataConverter: NullFallbackConverter,
+    private val cacheMetadataConverter: NullFallbackAdapter,
     private val timeProvider: TimeProvider
 ) : StatusRepository {
 

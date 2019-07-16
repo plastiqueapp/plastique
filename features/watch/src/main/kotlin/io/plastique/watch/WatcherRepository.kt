@@ -15,8 +15,8 @@ import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
-import io.plastique.core.converters.NullFallbackConverter
 import io.plastique.core.db.createObservable
+import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.SessionManager
@@ -34,7 +34,7 @@ class WatcherRepository @Inject constructor(
     private val database: RoomDatabase,
     private val watchService: WatchService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val metadataConverter: NullFallbackConverter,
+    private val metadataConverter: NullFallbackAdapter,
     private val sessionManager: SessionManager,
     private val timeProvider: TimeProvider,
     private val userRepository: UserRepository,

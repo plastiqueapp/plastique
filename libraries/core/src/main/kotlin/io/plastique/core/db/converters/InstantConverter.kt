@@ -1,4 +1,4 @@
-package io.plastique.core.converters
+package io.plastique.core.db.converters
 
 import androidx.room.TypeConverter
 import org.threeten.bp.Instant

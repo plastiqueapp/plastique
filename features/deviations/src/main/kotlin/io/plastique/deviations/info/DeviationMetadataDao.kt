@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.TypeConverters
 import androidx.room.Update
-import io.plastique.core.converters.StringListConverter
+import io.plastique.core.db.converters.StringListConverter
 import io.reactivex.Observable
 
 @Dao

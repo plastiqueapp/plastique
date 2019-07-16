@@ -10,10 +10,10 @@ import io.plastique.comments.CommentEntity
 import io.plastique.comments.CommentLinkage
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryDao
-import io.plastique.core.converters.DurationConverter
-import io.plastique.core.converters.InstantConverter
-import io.plastique.core.converters.SizeConverter
-import io.plastique.core.converters.ZonedDateTimeConverter
+import io.plastique.core.db.converters.DurationConverter
+import io.plastique.core.db.converters.InstantConverter
+import io.plastique.core.db.converters.SizeConverter
+import io.plastique.core.db.converters.ZonedDateTimeConverter
 import io.plastique.deviations.DailyDeviationEntity
 import io.plastique.deviations.DeviationDao
 import io.plastique.deviations.DeviationEntity

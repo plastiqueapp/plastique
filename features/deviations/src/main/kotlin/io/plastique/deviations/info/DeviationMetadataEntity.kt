@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import io.plastique.core.converters.StringListConverter
+import io.plastique.core.db.converters.StringListConverter
 import io.plastique.deviations.DeviationEntity
 
 @Entity(

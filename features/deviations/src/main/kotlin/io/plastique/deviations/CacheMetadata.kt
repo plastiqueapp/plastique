@@ -5,10 +5,10 @@ import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
-import io.plastique.core.json.DateCursorAdapter
-import io.plastique.core.json.DerivedClassAdapterFactory
-import io.plastique.core.json.OffsetCursorAdapter
 import io.plastique.core.json.adapter
+import io.plastique.core.json.adapters.DateCursorAdapter
+import io.plastique.core.json.adapters.DerivedClassAdapterFactory
+import io.plastique.core.json.adapters.OffsetCursorAdapter
 import io.plastique.core.paging.Cursor
 
 @JsonClass(generateAdapter = true)
