@@ -1,4 +1,4 @@
-package io.plastique.core.network
+package io.plastique.core.client
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
