@@ -1,5 +1,6 @@
 package io.plastique.feed.settings
 
+import android.content.Context
 import com.github.technoir42.kotlin.extensions.replaceIf
 import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
@@ -8,7 +9,6 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.ResourceProvider
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEffect.LoadFeedSettingsEffect
@@ -45,8 +45,8 @@ class FeedSettingsViewModel @Inject constructor(
 }
 
 class FeedSettingsEffectHandler @Inject constructor(
-    private val feedSettingsManager: FeedSettingsManager,
-    private val resourceProvider: ResourceProvider
+    private val context: Context,
+    private val feedSettingsManager: FeedSettingsManager
 ) : EffectHandler<FeedSettingsEffect, FeedSettingsEvent> {
 
     override fun handle(effects: Observable<FeedSettingsEffect>): Observable<FeedSettingsEvent> {
@@ -60,7 +60,7 @@ class FeedSettingsEffectHandler @Inject constructor(
     }
 
     private fun createOptions(feedSettings: FeedSettings): List<OptionItem> {
-        val keysAndTitles = resourceProvider.getStringArray(R.array.feed_settings_options)
+        val keysAndTitles = context.resources.getStringArray(R.array.feed_settings_options)
         val result = ArrayList<OptionItem>(keysAndTitles.size)
         keysAndTitles.forEach {
             val (key, title) = it.split('|')
