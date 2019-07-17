@@ -8,10 +8,10 @@ configurations.all { config ->
     }
 }
 
-afterEvaluate {
-    if (plugins.hasPlugin("com.android.application") ||
-        plugins.hasPlugin("com.android.library") ||
-        plugins.hasPlugin("com.android.dynamic-feature")) {
+plugins.whenPluginAdded { plugin ->
+    if (plugin.class.name in ["com.android.build.gradle.AppPlugin",
+                              "com.android.build.gradle.LibraryPlugin",
+                              "com.android.build.gradle.DynamicFeaturePlugin"]) {
         android {
             compileSdkVersion buildConfig.compileSdk
 
@@ -52,19 +52,19 @@ afterEvaluate {
             }
         }
     }
+}
 
-    if (plugins.hasPlugin("org.jetbrains.kotlin.kapt")) {
-        kapt {
-            correctErrorTypes = true
-            useBuildCache = true
-        }
+plugins.withId("org.jetbrains.kotlin.android.extensions") {
+    androidExtensions {
+        experimental = true
+        features = ["parcelize"]
+        defaultCacheImplementation = "NONE"
     }
+}
 
-    if (plugins.hasPlugin("org.jetbrains.kotlin.android.extensions")) {
-        androidExtensions {
-            experimental = true
-            features = ["parcelize"]
-            defaultCacheImplementation = "NONE"
-        }
+plugins.withId("org.jetbrains.kotlin.kapt") {
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = true
     }
 }
