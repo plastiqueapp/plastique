@@ -65,11 +65,11 @@ plugins.withId("org.jetbrains.kotlin.android.extensions") {
 plugins.withId("org.jetbrains.kotlin.kapt") {
     kapt {
         correctErrorTypes = true
-        useBuildCache = true
-    }
 
-    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-        // Add javax.annotation.processing.Generated annotation to compile classpath
-        dependencies.add("compileOnly", "com.github.pengrad:jdk9-deps:1.0")
+        if (plugins.hasPlugin("org.jetbrains.kotlin.android") && JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+            javacOptions {
+                option("-source", "8")
+            }
+        }
     }
 }
