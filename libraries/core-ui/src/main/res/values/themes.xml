@@ -11,7 +11,7 @@
         <item name="colorSurface">@color/color_surface</item>
         <item name="colorOnSurface">@color/color_on_surface</item>
 
-        <item name="elevationOverlaysEnabled">false</item>
+        <item name="elevationOverlayEnabled">false</item>
         <item name="android:statusBarColor">@color/status_bar_background</item>
         <item name="android:navigationBarColor">@color/navigation_bar_background</item>
         <item name="android:windowBackground">?android:colorBackground</item>
