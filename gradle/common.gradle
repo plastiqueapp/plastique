@@ -67,4 +67,9 @@ plugins.withId("org.jetbrains.kotlin.kapt") {
         correctErrorTypes = true
         useBuildCache = true
     }
+
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        // Add javax.annotation.processing.Generated annotation to compile classpath
+        dependencies.add("compileOnly", "com.github.pengrad:jdk9-deps:1.0")
+    }
 }
