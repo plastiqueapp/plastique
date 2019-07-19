@@ -39,7 +39,7 @@ plugins.whenPluginAdded { plugin ->
                 textOutput "stdout"
                 explainIssues false
 
-                disable "GradleDependency", "GoogleAppIndexingWarning", "InvalidPackage", "ObsoleteLintCustomCheck"
+                disable "GradleDependency", "GoogleAppIndexingWarning", "ObsoleteLintCustomCheck"
                 ignore "ContentDescription"
             }
 
