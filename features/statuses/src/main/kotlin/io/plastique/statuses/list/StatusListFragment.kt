@@ -90,11 +90,11 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.second, it.third) }
+            .subscribe { renderState(it.first, it.third) }
             .disposeOnDestroy()
     }
 
-    private fun renderState(state: StatusListViewState, prevState: StatusListViewState?, listUpdateData: ListUpdateData<ListItem>) {
+    private fun renderState(state: StatusListViewState, listUpdateData: ListUpdateData<ListItem>) {
         contentStateController.state = state.contentState
         if (state.contentState is ContentState.Empty) {
             emptyView.state = state.contentState.emptyState
@@ -105,8 +105,7 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
         onScrollListener.isEnabled = state.listState.isPagingEnabled
         refreshLayout.isRefreshing = state.listState.isRefreshing
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }

@@ -135,8 +135,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
             composeView.draft = state.commentDraft
         }
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }

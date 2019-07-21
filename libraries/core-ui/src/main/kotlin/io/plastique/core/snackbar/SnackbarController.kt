@@ -7,11 +7,11 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 class SnackbarController(private val rootView: View) {
     private val shownSnackbars = mutableSetOf<Snackbar>()
+    private var snackbarState: SnackbarState? = null
     var onActionClickListener: OnSnackbarActionClickListener? = null
 
     constructor(fragment: Fragment, rootView: View) : this(rootView) {
@@ -26,7 +26,12 @@ class SnackbarController(private val rootView: View) {
     }
 
     @SuppressLint("WrongConstant")
-    fun showSnackbar(state: SnackbarState) {
+    fun showSnackbar(state: SnackbarState): Boolean {
+        if (state.id == snackbarState?.id) {
+            return false
+        }
+
+        snackbarState = state
         when (state) {
             is SnackbarState.Message -> {
                 val message = getMessageWithArgs(state.messageResId, state.messageArgs)
@@ -43,6 +48,7 @@ class SnackbarController(private val rootView: View) {
                     .show()
             }
         }
+        return true
     }
 
     private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {
@@ -58,13 +64,14 @@ class SnackbarController(private val rootView: View) {
         shownSnackbars.forEach { it.dismiss() }
     }
 
-    private val snackbarCallback = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+    private val snackbarCallback = object : Snackbar.Callback() {
         override fun onShown(snackbar: Snackbar) {
             shownSnackbars += snackbar
         }
 
         override fun onDismissed(snackbar: Snackbar, event: Int) {
             shownSnackbars -= snackbar
+            snackbarState = null
         }
     }
 

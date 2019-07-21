@@ -96,11 +96,11 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.second, it.third) }
+            .subscribe { renderState(it.first, it.third) }
             .disposeOnDestroy()
     }
 
-    private fun renderState(state: NotificationsViewState, prevState: NotificationsViewState?, listUpdateData: ListUpdateData<ListItem>) {
+    private fun renderState(state: NotificationsViewState, listUpdateData: ListUpdateData<ListItem>) {
         this.state = state
 
         contentStateController.state = state.contentState
@@ -113,8 +113,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
         onScrollListener.isEnabled = state.listState.isPagingEnabled
         refreshLayout.isRefreshing = state.listState.isRefreshing
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }

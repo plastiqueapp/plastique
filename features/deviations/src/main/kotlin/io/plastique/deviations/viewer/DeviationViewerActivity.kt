@@ -180,8 +180,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
 
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }

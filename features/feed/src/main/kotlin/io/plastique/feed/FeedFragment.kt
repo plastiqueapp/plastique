@@ -130,7 +130,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.second, it.third) }
+            .subscribe { renderState(it.first, it.third) }
             .disposeOnDestroy()
     }
 
@@ -157,7 +157,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
     }
 
-    private fun renderState(state: FeedViewState, prevState: FeedViewState?, listUpdateData: ListUpdateData<ListItem>) {
+    private fun renderState(state: FeedViewState, listUpdateData: ListUpdateData<ListItem>) {
         this.state = state
 
         setHasOptionsMenu(state.isSignedIn)
@@ -174,8 +174,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
         horizontalProgressViewController.isVisible = state.isApplyingSettings
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }

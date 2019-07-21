@@ -155,7 +155,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.listState?.items, it.first.listState.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.second, it.third) }
+            .subscribe { renderState(it.first, it.third) }
             .disposeOnDestroy()
     }
 
@@ -188,7 +188,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         }
     }
 
-    private fun renderState(state: CollectionsViewState, prevState: CollectionsViewState?, listUpdateData: ListUpdateData<ListItem>) {
+    private fun renderState(state: CollectionsViewState, listUpdateData: ListUpdateData<ListItem>) {
         this.state = state
         setHasOptionsMenu(state.showMenu)
 
@@ -203,8 +203,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.snackbarState != null && state.snackbarState != prevState?.snackbarState) {
-            snackbarController.showSnackbar(state.snackbarState)
+        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
             viewModel.dispatch(SnackbarShownEvent)
         }
     }
