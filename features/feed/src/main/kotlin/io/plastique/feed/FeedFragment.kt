@@ -23,18 +23,15 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.content.ProgressViewController
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.lists.EndlessScrollListener
-import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
-import io.plastique.core.lists.IndexedItem
-import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.SimpleGridItemSizeCallback
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.deviations.list.DeviationItem
 import io.plastique.feed.FeedEvent.LoadMoreEvent
 import io.plastique.feed.FeedEvent.RefreshEvent
 import io.plastique.feed.FeedEvent.RetryClickEvent
@@ -47,7 +44,6 @@ import io.plastique.feed.settings.OnFeedSettingsChangedListener
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
-import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -91,7 +87,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
         adapter = FeedAdapter(
             glide = GlideApp.with(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            gridItemSizeCallback = DeviationsGridItemSizeCallback(deviationParams),
+            gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
             onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
             onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
@@ -190,18 +186,6 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
 
     override fun injectDependencies() {
         getComponent<FeedFragmentComponent>().inject(this)
-    }
-
-    private class DeviationsGridItemSizeCallback(private val deviationParams: GridParams) : ItemSizeCallback {
-        override fun getColumnCount(item: IndexedItem): Int = when (item) {
-            is DeviationItem -> deviationParams.columnCount
-            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-        }
-
-        override fun getItemSize(item: IndexedItem): Size = when (item) {
-            is DeviationItem -> deviationParams.getItemSize(item.index)
-            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-        }
     }
 
     companion object {

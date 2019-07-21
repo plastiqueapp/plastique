@@ -28,10 +28,9 @@ import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
-import io.plastique.core.lists.IndexedItem
-import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
+import io.plastique.core.lists.SimpleGridItemSizeCallback
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmFragment
 import io.plastique.core.navigation.navigationContext
@@ -50,7 +49,6 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
 import io.plastique.glide.GlideApp
-import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -120,7 +118,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         adapter = DeviationsAdapter(
             glide = glide,
             layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
-            itemSizeCallback = DeviationsItemSizeCallback(gridParams),
+            itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
             onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
             onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
@@ -233,18 +231,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         LayoutMode.Grid,
         LayoutMode.Flex -> gridParams.columnCount * LOAD_MORE_THRESHOLD_GRID_ROWS
         LayoutMode.List -> LOAD_MORE_THRESHOLD_LIST_ITEMS
-    }
-
-    private class DeviationsItemSizeCallback(private val gridParams: GridParams) : ItemSizeCallback {
-        override fun getColumnCount(item: IndexedItem): Int = when (item) {
-            is DeviationItem -> gridParams.columnCount
-            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-        }
-
-        override fun getItemSize(item: IndexedItem): Size = when (item) {
-            is DeviationItem -> gridParams.getItemSize(item.index)
-            else -> throw IllegalArgumentException("Unexpected item ${item.javaClass}")
-        }
     }
 
     companion object {
