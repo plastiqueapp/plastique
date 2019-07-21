@@ -12,7 +12,7 @@ sealed class DeviationViewerEvent : Event() {
     object DownloadOriginalClickEvent : DeviationViewerEvent()
     data class DownloadOriginalErrorEvent(val error: Throwable) : DeviationViewerEvent()
 
-    data class SetFavoriteEvent(val deviationId: String, val favorite: Boolean) : DeviationViewerEvent()
+    data class SetFavoriteEvent(val favorite: Boolean) : DeviationViewerEvent()
     object SetFavoriteFinishedEvent : DeviationViewerEvent()
     data class SetFavoriteErrorEvent(val error: Throwable) : DeviationViewerEvent()
 

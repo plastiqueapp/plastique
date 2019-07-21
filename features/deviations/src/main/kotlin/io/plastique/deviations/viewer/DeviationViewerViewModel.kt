@@ -145,7 +145,7 @@ class DeviationViewerStateReducer @Inject constructor(
             }
 
             is SetFavoriteEvent -> {
-                next(state.copy(showProgressDialog = true), SetFavoriteEffect(event.deviationId, event.favorite))
+                next(state.copy(showProgressDialog = true), SetFavoriteEffect(state.deviationId, event.favorite))
             }
 
             SetFavoriteFinishedEvent -> {

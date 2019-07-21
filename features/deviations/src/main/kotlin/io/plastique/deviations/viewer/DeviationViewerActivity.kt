@@ -92,7 +92,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
         infoPanelView.setOnFavoriteClickListener { _, isChecked ->
             if (lastState.isSignedIn) {
-                viewModel.dispatch(SetFavoriteEvent(deviationId, !isChecked))
+                viewModel.dispatch(SetFavoriteEvent(!isChecked))
             } else {
                 navigator.openLogin(navigationContext)
             }
