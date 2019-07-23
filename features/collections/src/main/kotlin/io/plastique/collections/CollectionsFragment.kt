@@ -121,7 +121,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         collectionsView.layoutManager = FlexboxLayoutManager(context)
         collectionsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
 
-        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
+        onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
         collectionsView.addOnScrollListener(onScrollListener)
 
         createPreloader(glide, adapter, folderGridParams, deviationGridParams)
@@ -315,7 +315,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         private const val DIALOG_CREATE_FOLDER = "dialog.create_folder"
         private const val DIALOG_DELETE_FOLDER = "dialog.delete_folder"
         private const val FOLDER_NAME_MAX_LENGTH = 50
-        private const val LOAD_MORE_THRESHOLD = 4
+        private const val LOAD_MORE_THRESHOLD_ROWS = 4
         private const val MAX_PRELOAD_ROWS = 4
 
         fun newArgs(username: String? = null): Bundle {
