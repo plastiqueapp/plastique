@@ -171,10 +171,10 @@ class DeviationListStateReducer @Inject constructor(
     override fun reduce(state: DeviationListViewState, event: DeviationListEvent): StateWithEffects<DeviationListViewState, DeviationListEffect> =
         when (event) {
             is ItemsChangedEvent -> {
-                val contentState = if (event.items.isEmpty()) {
-                    ContentState.Empty(EmptyState.Message(R.string.deviations_message_empty))
-                } else {
+                val contentState = if (event.items.isNotEmpty()) {
                     ContentState.Content
+                } else {
+                    ContentState.Empty(EmptyState.Message(R.string.deviations_message_empty))
                 }
                 next(state.copy(
                     contentState = contentState,

@@ -200,10 +200,10 @@ class CommentListStateReducer @Inject constructor(
     override fun reduce(state: CommentListViewState, event: CommentListEvent): StateWithEffects<CommentListViewState, CommentListEffect> = when (event) {
         is CommentsChangedEvent -> {
             val commentItems = createItems(event.comments, state.isSignedIn)
-            val contentState = if (commentItems.isEmpty()) {
-                ContentState.Empty(EmptyState.Message(R.string.comments_message_empty))
-            } else {
+            val contentState = if (commentItems.isNotEmpty()) {
                 ContentState.Content
+            } else {
+                ContentState.Empty(EmptyState.Message(R.string.comments_message_empty))
             }
             next(state.copy(
                 contentState = contentState,
