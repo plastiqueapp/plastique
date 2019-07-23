@@ -12,7 +12,8 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.client.NoNetworkConnectionException
+import io.plastique.common.ErrorType
+import io.plastique.common.toErrorType
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -161,6 +162,7 @@ class WatcherListStateReducer @Inject constructor(
             }
             next(state.copy(
                 contentState = contentState,
+                errorType = ErrorType.None,
                 listState = state.listState.copy(
                     items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                     contentItems = event.items,
@@ -169,12 +171,13 @@ class WatcherListStateReducer @Inject constructor(
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorMessageProvider.getErrorState(event.error)),
+                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
+                errorType = event.error.toErrorType(),
                 listState = PagedListState.Empty))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadWatchersEffect(state.username))
+            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadWatchersEffect(state.username))
         }
 
         LoadMoreEvent -> {
@@ -220,8 +223,8 @@ class WatcherListStateReducer @Inject constructor(
         is ConnectionStateChangedEvent -> {
             if (event.connectionState == NetworkConnectionState.Connected &&
                 state.contentState is ContentState.Empty &&
-                state.contentState.error is NoNetworkConnectionException) {
-                next(state.copy(contentState = ContentState.Loading), LoadWatchersEffect(state.username))
+                state.errorType == ErrorType.NoNetworkConnection) {
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadWatchersEffect(state.username))
             } else {
                 next(state)
             }
@@ -235,11 +238,13 @@ class WatcherListStateReducer @Inject constructor(
                         contentState = ContentState.Empty(EmptyState.MessageWithButton(
                             messageResId = R.string.watch_message_sign_in,
                             buttonTextId = R.string.common_button_sign_in)),
+                        errorType = ErrorType.Other,
                         signInNeeded = signInNeeded,
                         listState = PagedListState.Empty))
                 } else {
                     next(state.copy(
                         contentState = ContentState.Loading,
+                        errorType = ErrorType.None,
                         signInNeeded = signInNeeded
                     ), LoadWatchersEffect(state.username))
                 }

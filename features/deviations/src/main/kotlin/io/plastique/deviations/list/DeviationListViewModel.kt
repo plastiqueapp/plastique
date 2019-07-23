@@ -12,7 +12,8 @@ import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.collections.FavoritesModel
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.client.NoNetworkConnectionException
+import io.plastique.common.ErrorType
+import io.plastique.common.toErrorType
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.LoadingIndicatorItem
@@ -177,6 +178,7 @@ class DeviationListStateReducer @Inject constructor(
                 }
                 next(state.copy(
                     contentState = contentState,
+                    errorType = ErrorType.None,
                     listState = state.listState.copy(
                         items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
                         contentItems = event.items,
@@ -186,12 +188,13 @@ class DeviationListStateReducer @Inject constructor(
             is LoadErrorEvent -> {
                 val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
                 next(state.copy(
-                    contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
+                    contentState = ContentState.Empty(emptyState = errorState),
+                    errorType = event.error.toErrorType(),
                     listState = PagedListState.Empty))
             }
 
             RetryClickEvent -> {
-                next(state.copy(contentState = ContentState.Loading), LoadDeviationsEffect(state.params))
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadDeviationsEffect(state.params))
             }
 
             LoadMoreEvent -> {
@@ -253,10 +256,8 @@ class DeviationListStateReducer @Inject constructor(
             is ConnectionStateChangedEvent -> {
                 if (event.connectionState == NetworkConnectionState.Connected &&
                     state.contentState is ContentState.Empty &&
-                    state.contentState.error is NoNetworkConnectionException) {
-                    next(state.copy(
-                        contentState = ContentState.Loading),
-                        LoadDeviationsEffect(state.params))
+                    state.errorType == ErrorType.NoNetworkConnection) {
+                    next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadDeviationsEffect(state.params))
                 } else {
                     next(state)
                 }
@@ -280,6 +281,7 @@ class DeviationListStateReducer @Inject constructor(
             next(state.copy(
                 params = params,
                 contentState = ContentState.Loading,
+                errorType = ErrorType.None,
                 listState = PagedListState.Empty,
                 tags = createTags(tagFactory, params)),
                 LoadDeviationsEffect(params))

@@ -130,7 +130,7 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
+            next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
         }
 
         RetryClickEvent -> {

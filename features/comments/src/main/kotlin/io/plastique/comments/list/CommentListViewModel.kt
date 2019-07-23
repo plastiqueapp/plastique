@@ -40,7 +40,8 @@ import io.plastique.comments.list.CommentListEvent.SessionChangedEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.comments.list.CommentListEvent.TitleLoadedEvent
 import io.plastique.common.ErrorMessageProvider
-import io.plastique.core.client.NoNetworkConnectionException
+import io.plastique.common.ErrorType
+import io.plastique.common.toErrorType
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.ListItem
@@ -206,6 +207,7 @@ class CommentListStateReducer @Inject constructor(
             }
             next(state.copy(
                 contentState = contentState,
+                errorType = ErrorType.None,
                 comments = event.comments,
                 listState = state.listState.copy(
                     items = if (state.listState.isLoadingMore) commentItems + LoadingIndicatorItem else commentItems,
@@ -216,12 +218,13 @@ class CommentListStateReducer @Inject constructor(
         is LoadErrorEvent -> {
             val errorState = errorMessageProvider.getErrorState(event.error, R.string.comments_message_load_error)
             next(state.copy(
-                contentState = ContentState.Empty(isError = true, error = event.error, emptyState = errorState),
+                contentState = ContentState.Empty(errorState),
+                errorType = event.error.toErrorType(),
                 listState = PagedListState.Empty))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadCommentsEffect(state.threadId))
+            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadCommentsEffect(state.threadId))
         }
 
         LoadMoreEvent -> {
@@ -291,10 +294,8 @@ class CommentListStateReducer @Inject constructor(
         is ConnectionStateChangedEvent -> {
             if (event.connectionState == NetworkConnectionState.Connected &&
                 state.contentState is ContentState.Empty &&
-                state.contentState.error is NoNetworkConnectionException) {
-                next(state.copy(
-                    contentState = ContentState.Loading),
-                    LoadCommentsEffect(state.threadId))
+                state.errorType == ErrorType.NoNetworkConnection) {
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadCommentsEffect(state.threadId))
             } else {
                 next(state)
             }

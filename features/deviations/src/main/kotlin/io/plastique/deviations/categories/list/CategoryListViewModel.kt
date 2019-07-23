@@ -117,7 +117,7 @@ class CategoryListStateReducer @Inject constructor(
 
         is LoadCategoryErrorEvent -> {
             if (state.contentState === ContentState.Loading) {
-                next(state.copy(contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error))))
+                next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
             } else {
                 val items = state.items.replaceIf(
                     { item -> item.category == event.category },

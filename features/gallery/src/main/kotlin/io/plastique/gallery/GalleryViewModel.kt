@@ -193,7 +193,7 @@ class GalleryStateReducer @Inject constructor(
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(isError = true, emptyState = errorMessageProvider.getErrorState(event.error)),
+                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
                 listState = PagedListState.Empty))
         }
 
