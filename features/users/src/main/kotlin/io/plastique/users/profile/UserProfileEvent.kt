@@ -1,7 +1,6 @@
 package io.plastique.users.profile
 
 import com.sch.neon.Event
-import io.plastique.core.session.Session
 
 sealed class UserProfileEvent : Event() {
     data class UserProfileChangedEvent(val userProfile: UserProfile) : UserProfileEvent()
@@ -12,7 +11,7 @@ sealed class UserProfileEvent : Event() {
     object SetWatchingFinishedEvent : UserProfileEvent()
     data class SetWatchingErrorEvent(val error: Throwable) : UserProfileEvent()
 
-    data class SessionChangedEvent(val session: Session) : UserProfileEvent()
+    data class UserChangedEvent(val userId: String?) : UserProfileEvent()
     object CopyProfileLinkClickEvent : UserProfileEvent()
     object SnackbarShownEvent : UserProfileEvent()
     object SignOutEvent : UserProfileEvent()

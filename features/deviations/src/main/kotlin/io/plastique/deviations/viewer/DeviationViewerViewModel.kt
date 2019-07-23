@@ -14,6 +14,7 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
@@ -25,11 +26,11 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClick
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.LoadErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
-import io.plastique.deviations.viewer.DeviationViewerEvent.SessionChangedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteErrorEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
+import io.plastique.deviations.viewer.DeviationViewerEvent.UserChangedEvent
 import io.plastique.util.FileDownloader
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
@@ -65,9 +66,10 @@ class DeviationViewerViewModel @Inject constructor(
     }
 
     private fun externalEvents(): Observable<DeviationViewerEvent> {
-        return sessionManager.sessionChanges
+        return sessionManager.userIdChanges
+            .skip(1)
             .valveLatest(screenVisible)
-            .map { session -> SessionChangedEvent(session) }
+            .map { userId -> UserChangedEvent(userId.toNullable()) }
     }
 
     companion object {
@@ -162,8 +164,8 @@ class DeviationViewerStateReducer @Inject constructor(
                 next(state.copy(snackbarState = null))
             }
 
-            is SessionChangedEvent -> {
-                next(state.copy(isSignedIn = event.session is Session.User))
+            is UserChangedEvent -> {
+                next(state.copy(isSignedIn = event.userId != null))
             }
         }
 }

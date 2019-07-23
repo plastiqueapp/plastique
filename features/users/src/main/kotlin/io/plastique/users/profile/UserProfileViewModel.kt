@@ -13,6 +13,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.session.userId
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.users.R
@@ -23,12 +24,12 @@ import io.plastique.users.profile.UserProfileEffect.SignOutEffect
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.LoadErrorEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
-import io.plastique.users.profile.UserProfileEvent.SessionChangedEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingErrorEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingFinishedEvent
 import io.plastique.users.profile.UserProfileEvent.SignOutEvent
 import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
+import io.plastique.users.profile.UserProfileEvent.UserChangedEvent
 import io.plastique.users.profile.UserProfileEvent.UserProfileChangedEvent
 import io.plastique.util.Clipboard
 import io.plastique.watch.WatchManager
@@ -67,9 +68,10 @@ class UserProfileViewModel @Inject constructor(
     }
 
     private fun externalEvents(): Observable<UserProfileEvent> {
-        return sessionManager.sessionChanges
+        return sessionManager.userIdChanges
+            .skip(1)
             .valveLatest(screenVisible)
-            .map { session -> SessionChangedEvent(session) }
+            .map { userId -> UserChangedEvent(userId.toNullable()) }
     }
 
     companion object {
@@ -158,9 +160,9 @@ class UserProfileStateReducer @Inject constructor(
             next(state.copy(showProgressDialog = false, snackbarState = SnackbarState.Message(errorMessageProvider.getErrorMessageId(event.error))))
         }
 
-        is SessionChangedEvent -> {
-            if (state.currentUserId != event.session.userId) {
-                next(state.copy(currentUserId = event.session.userId), LoadUserProfileEffect(state.username))
+        is UserChangedEvent -> {
+            if (state.currentUserId != event.userId) {
+                next(state.copy(currentUserId = event.userId), LoadUserProfileEffect(state.username))
             } else {
                 next(state)
             }

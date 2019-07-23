@@ -1,7 +1,9 @@
 package io.plastique.deviations
 
+import com.gojuno.koptional.Some
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.util.Preferences
 import io.reactivex.Observable
@@ -23,7 +25,7 @@ class ContentSettings @Inject constructor(
     val showMatureChanges: Observable<Boolean>
         get() = Observable.combineLatest(
             preferences.observable().getBoolean(PREF_SHOW_MATURE_CONTENT, false),
-            sessionManager.sessionChanges) { showMatureContent, session -> showMatureContent && session is Session.User }
+            sessionManager.userIdChanges) { showMatureContent, userId -> showMatureContent && userId is Some }
 
     var layoutMode: LayoutMode
         get() = preferences.get(PREF_LAYOUT_MODE, LayoutMode.DEFAULT)

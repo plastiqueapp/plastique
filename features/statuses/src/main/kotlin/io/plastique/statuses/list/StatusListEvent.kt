@@ -2,7 +2,6 @@ package io.plastique.statuses.list
 
 import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
-import io.plastique.core.session.Session
 
 sealed class StatusListEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : StatusListEvent() {
@@ -24,6 +23,6 @@ sealed class StatusListEvent : Event() {
     object RetryClickEvent : StatusListEvent()
     object SnackbarShownEvent : StatusListEvent()
 
-    data class SessionChangedEvent(val session: Session) : StatusListEvent()
     data class ShowMatureChangedEvent(val showMature: Boolean) : StatusListEvent()
+    data class UserChangedEvent(val userId: String?) : StatusListEvent()
 }

@@ -2,6 +2,7 @@ package io.plastique.main
 
 import com.github.technoir42.rxjava2.extensions.valveLatest
 import com.gojuno.koptional.None
+import com.gojuno.koptional.Some
 import com.gojuno.koptional.toOptional
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
@@ -9,8 +10,8 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.core.mvvm.BaseViewModel
-import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.main.MainEvent.UserChangedEvent
 import io.plastique.users.UserRepository
 import io.reactivex.Observable
@@ -37,18 +38,16 @@ class MainViewModel @Inject constructor(
     }
 
     private fun events(): Observable<MainEvent> {
-        return sessionManager.sessionChanges
+        return sessionManager.userIdChanges
             .valveLatest(screenVisible)
-            .distinctUntilChanged { session -> if (session is Session.User) session.userId else null }
-            .switchMap { session ->
-                if (session is Session.User) {
-                    userRepository.getCurrentUser(session.userId)
+            .switchMap { userId ->
+                when (userId) {
+                    is Some -> userRepository.getCurrentUser(userId.value)
                         .subscribeOn(Schedulers.io())
-                        .map { it.toOptional() }
+                        .map { user -> user.toOptional() }
                         .doOnError(Timber::e)
                         .onErrorReturnItem(None)
-                } else {
-                    Observable.just(None)
+                    None -> Observable.just(None)
                 }
             }
             .map { user -> UserChangedEvent(user.toNullable()) }

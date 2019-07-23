@@ -24,6 +24,7 @@ import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.watch.WatcherListEffect.LoadMoreEffect
 import io.plastique.watch.WatcherListEffect.LoadWatchersEffect
@@ -39,8 +40,8 @@ import io.plastique.watch.WatcherListEvent.RefreshErrorEvent
 import io.plastique.watch.WatcherListEvent.RefreshEvent
 import io.plastique.watch.WatcherListEvent.RefreshFinishedEvent
 import io.plastique.watch.WatcherListEvent.RetryClickEvent
-import io.plastique.watch.WatcherListEvent.SessionChangedEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
+import io.plastique.watch.WatcherListEvent.UserChangedEvent
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -91,9 +92,10 @@ class WatcherListViewModel @Inject constructor(
             connectivityMonitor.connectionState
                 .valveLatest(screenVisible)
                 .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-            sessionManager.sessionChanges
+            sessionManager.userIdChanges
+                .skip(1)
                 .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) })
+                .map { userId -> UserChangedEvent(userId.toNullable()) })
     }
 
     private companion object {
@@ -230,8 +232,8 @@ class WatcherListStateReducer @Inject constructor(
             }
         }
 
-        is SessionChangedEvent -> {
-            val signInNeeded = state.username == null && event.session !is Session.User
+        is UserChangedEvent -> {
+            val signInNeeded = state.username == null && event.userId == null
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(

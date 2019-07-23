@@ -36,6 +36,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
     api "com.github.technoir42:android-extensions:$versions.androidExtensions"
     api "com.github.technoir42:kotlin-extensions:$versions.kotlinExtensions"
+    api "com.gojuno.koptional:koptional:$versions.koptional"
 
     api "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
     api "io.reactivex.rxjava2:rxjava:$versions.rxjava"

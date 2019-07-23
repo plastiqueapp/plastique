@@ -19,6 +19,7 @@ import io.plastique.core.lists.PagedListState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.statuses.R
@@ -36,9 +37,9 @@ import io.plastique.statuses.list.StatusListEvent.RefreshErrorEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshFinishedEvent
 import io.plastique.statuses.list.StatusListEvent.RetryClickEvent
-import io.plastique.statuses.list.StatusListEvent.SessionChangedEvent
 import io.plastique.statuses.list.StatusListEvent.ShowMatureChangedEvent
 import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
+import io.plastique.statuses.list.StatusListEvent.UserChangedEvent
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -75,12 +76,13 @@ class StatusListViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<StatusListEvent> {
         return Observable.merge(
-            sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) },
             contentSettings.showMatureChanges
                 .valveLatest(screenVisible)
-                .map { showMature -> ShowMatureChangedEvent(showMature) })
+                .map { showMature -> ShowMatureChangedEvent(showMature) },
+            sessionManager.userIdChanges
+                .skip(1)
+                .valveLatest(screenVisible)
+                .map { userId -> UserChangedEvent(userId.toNullable()) })
     }
 
     companion object {
@@ -196,7 +198,7 @@ class StatusListStateReducer @Inject constructor(
             next(state.copy(snackbarState = null))
         }
 
-        is SessionChangedEvent -> {
+        is UserChangedEvent -> {
             // TODO
             next(state)
         }

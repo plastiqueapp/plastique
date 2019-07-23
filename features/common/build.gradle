@@ -11,7 +11,6 @@ dependencies {
 
     api "com.github.Commit451.ForegroundViews:foregroundviews:$versions.foregroundViews"
     api "com.github.Commit451.ForegroundViews:foregroundviews-constraintlayout:$versions.foregroundViews"
-    api "com.gojuno.koptional:koptional:$versions.koptional"
     api "com.sch.neon:neon:$versions.neon"
     api "com.sch.neon:neon-timber:$versions.neon"
 

@@ -3,7 +3,6 @@ package io.plastique.watch
 import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
 import io.plastique.core.network.NetworkConnectionState
-import io.plastique.core.session.Session
 
 sealed class WatcherListEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : WatcherListEvent() {
@@ -25,5 +24,5 @@ sealed class WatcherListEvent : Event() {
     object SnackbarShownEvent : WatcherListEvent()
 
     data class ConnectionStateChangedEvent(val connectionState: NetworkConnectionState) : WatcherListEvent()
-    data class SessionChangedEvent(val session: Session) : WatcherListEvent()
+    data class UserChangedEvent(val userId: String?) : WatcherListEvent()
 }

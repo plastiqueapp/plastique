@@ -19,6 +19,7 @@ import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.notifications.NotificationsEffect.DeleteMessageEffect
 import io.plastique.notifications.NotificationsEffect.LoadMoreEffect
@@ -36,9 +37,9 @@ import io.plastique.notifications.NotificationsEvent.RefreshErrorEvent
 import io.plastique.notifications.NotificationsEvent.RefreshEvent
 import io.plastique.notifications.NotificationsEvent.RefreshFinishedEvent
 import io.plastique.notifications.NotificationsEvent.RetryClickEvent
-import io.plastique.notifications.NotificationsEvent.SessionChangedEvent
 import io.plastique.notifications.NotificationsEvent.SnackbarShownEvent
 import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
+import io.plastique.notifications.NotificationsEvent.UserChangedEvent
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
 import timber.log.Timber
@@ -82,9 +83,10 @@ class NotificationsViewModel @Inject constructor(
     }
 
     private fun externalEvents(): Observable<NotificationsEvent> {
-        return sessionManager.sessionChanges
+        return sessionManager.userIdChanges
+            .skip(1)
             .valveLatest(screenVisible)
-            .map { session -> SessionChangedEvent(session) }
+            .map { userId -> UserChangedEvent(userId.toNullable()) }
     }
 
     companion object {
@@ -209,8 +211,8 @@ class NotificationsStateReducer @Inject constructor(
                 next(state.copy(snackbarState = null))
             }
 
-            is SessionChangedEvent -> {
-                val signedIn = event.session is Session.User
+            is UserChangedEvent -> {
+                val signedIn = event.userId != null
                 if (signedIn != state.isSignedIn) {
                     if (signedIn) {
                         next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn), LoadNotificationsEffect)

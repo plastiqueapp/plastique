@@ -36,9 +36,9 @@ import io.plastique.comments.list.CommentListEvent.RefreshEvent
 import io.plastique.comments.list.CommentListEvent.RefreshFinishedEvent
 import io.plastique.comments.list.CommentListEvent.ReplyClickEvent
 import io.plastique.comments.list.CommentListEvent.RetryClickEvent
-import io.plastique.comments.list.CommentListEvent.SessionChangedEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.comments.list.CommentListEvent.TitleLoadedEvent
+import io.plastique.comments.list.CommentListEvent.UserChangedEvent
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.common.ErrorType
 import io.plastique.common.toErrorType
@@ -53,6 +53,7 @@ import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
@@ -97,9 +98,10 @@ class CommentListViewModel @Inject constructor(
             connectivityMonitor.connectionState
                 .valveLatest(screenVisible)
                 .map { connectionState -> ConnectionStateChangedEvent(connectionState) },
-            sessionManager.sessionChanges
+            sessionManager.userIdChanges
+                .skip(1)
                 .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) })
+                .map { userId -> UserChangedEvent(userId.toNullable()) })
     }
 
     companion object {
@@ -301,8 +303,8 @@ class CommentListStateReducer @Inject constructor(
             }
         }
 
-        is SessionChangedEvent -> {
-            val isSignedIn = event.session is Session.User
+        is UserChangedEvent -> {
+            val isSignedIn = event.userId != null
             if (state.isSignedIn != isSignedIn) {
                 val items = createItems(state.comments, isSignedIn)
                 next(state.copy(

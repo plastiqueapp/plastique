@@ -1,7 +1,7 @@
 package io.plastique.deviations.viewer
 
 import io.plastique.core.session.SessionManager
-import io.plastique.core.session.userId
+import io.plastique.core.session.userIdChanges
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationRepository
 import io.reactivex.Observable
@@ -14,9 +14,7 @@ class DeviationViewerModel @Inject constructor(
     fun getDeviationById(deviationId: String): Observable<DeviationLoadResult> {
         return Observable.combineLatest(
             deviationRepository.getDeviationById(deviationId),
-            sessionManager.sessionChanges
-                .map { it.userId ?: "" }
-                .distinctUntilChanged()
+            sessionManager.userIdChanges
         ) { deviation, userId ->
             val content = deviation.toDeviationContent()
 
@@ -25,7 +23,7 @@ class DeviationViewerModel @Inject constructor(
                 author = deviation.author,
                 favoriteCount = deviation.stats.favorites,
                 isFavoriteChecked = deviation.properties.isFavorite,
-                isFavoriteEnabled = deviation.author.id != userId,
+                isFavoriteEnabled = deviation.author.id != userId.toNullable(),
                 commentCount = deviation.stats.comments,
                 isCommentsEnabled = deviation.properties.allowsComments)
 

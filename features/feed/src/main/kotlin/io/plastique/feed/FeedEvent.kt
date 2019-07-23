@@ -2,7 +2,6 @@ package io.plastique.feed
 
 import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
-import io.plastique.core.session.Session
 import io.plastique.feed.settings.FeedSettings
 
 sealed class FeedEvent : Event() {
@@ -22,8 +21,8 @@ sealed class FeedEvent : Event() {
     object RefreshFinishedEvent : FeedEvent()
     data class RefreshErrorEvent(val error: Throwable) : FeedEvent()
 
-    data class SessionChangedEvent(val session: Session) : FeedEvent()
     data class ShowMatureChangedEvent(val showMatureContent: Boolean) : FeedEvent()
+    data class UserChangedEvent(val userId: String?) : FeedEvent()
     object RetryClickEvent : FeedEvent()
     object SnackbarShownEvent : FeedEvent()
 

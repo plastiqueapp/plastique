@@ -20,6 +20,7 @@ import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.feed.FeedEffect.LoadFeedEffect
@@ -37,7 +38,6 @@ import io.plastique.feed.FeedEvent.RefreshErrorEvent
 import io.plastique.feed.FeedEvent.RefreshEvent
 import io.plastique.feed.FeedEvent.RefreshFinishedEvent
 import io.plastique.feed.FeedEvent.RetryClickEvent
-import io.plastique.feed.FeedEvent.SessionChangedEvent
 import io.plastique.feed.FeedEvent.SetFavoriteErrorEvent
 import io.plastique.feed.FeedEvent.SetFavoriteEvent
 import io.plastique.feed.FeedEvent.SetFavoriteFinishedEvent
@@ -46,6 +46,7 @@ import io.plastique.feed.FeedEvent.SettingsChangeErrorEvent
 import io.plastique.feed.FeedEvent.SettingsChangedEvent
 import io.plastique.feed.FeedEvent.ShowMatureChangedEvent
 import io.plastique.feed.FeedEvent.SnackbarShownEvent
+import io.plastique.feed.FeedEvent.UserChangedEvent
 import io.plastique.feed.settings.FeedSettingsManager
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
@@ -91,12 +92,13 @@ class FeedViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<FeedEvent> {
         return Observable.merge(
-            sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) },
             contentSettings.showMatureChanges
                 .valveLatest(screenVisible)
-                .map { showMature -> ShowMatureChangedEvent(showMature) })
+                .map { showMature -> ShowMatureChangedEvent(showMature) },
+            sessionManager.userIdChanges
+                .skip(1)
+                .valveLatest(screenVisible)
+                .map { userId -> UserChangedEvent(userId.toNullable()) })
     }
 
     private companion object {
@@ -232,8 +234,8 @@ class FeedStateReducer @Inject constructor(
             next(state.copy(snackbarState = null))
         }
 
-        is SessionChangedEvent -> {
-            val signedIn = event.session is Session.User
+        is UserChangedEvent -> {
+            val signedIn = event.userId != null
             if (signedIn != state.isSignedIn) {
                 if (signedIn) {
                     next(state.copy(

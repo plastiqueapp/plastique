@@ -32,10 +32,10 @@ import io.plastique.collections.CollectionsEvent.RefreshErrorEvent
 import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RefreshFinishedEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
-import io.plastique.collections.CollectionsEvent.SessionChangedEvent
 import io.plastique.collections.CollectionsEvent.ShowMatureChangedEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
+import io.plastique.collections.CollectionsEvent.UserChangedEvent
 import io.plastique.collections.folders.FolderLoadParams
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
@@ -46,6 +46,7 @@ import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.reactivex.Observable
@@ -96,12 +97,13 @@ class CollectionsViewModel @Inject constructor(
 
     private fun externalEvents(): Observable<CollectionsEvent> {
         return Observable.merge(
-            sessionManager.sessionChanges
-                .valveLatest(screenVisible)
-                .map { session -> SessionChangedEvent(session) },
             contentSettings.showMatureChanges
                 .valveLatest(screenVisible)
-                .map { showMature -> ShowMatureChangedEvent(showMature) })
+                .map { showMature -> ShowMatureChangedEvent(showMature) },
+            sessionManager.userIdChanges
+                .skip(1)
+                .valveLatest(screenVisible)
+                .map { userId -> UserChangedEvent(userId.toNullable()) })
     }
 
     companion object {
@@ -241,8 +243,8 @@ class CollectionsStateReducer @Inject constructor(
             next(state.copy(snackbarState = null))
         }
 
-        is SessionChangedEvent -> {
-            val signInNeeded = state.params.username == null && event.session !is Session.User
+        is UserChangedEvent -> {
+            val signInNeeded = state.params.username == null && event.userId == null
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(

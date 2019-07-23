@@ -7,9 +7,9 @@ import com.sch.neon.StateWithEffects
 import com.sch.neon.next
 import com.sch.neon.timber.TimberLogger
 import io.plastique.core.mvvm.BaseViewModel
-import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
-import io.plastique.profile.ProfileEvent.SessionChangedEvent
+import io.plastique.core.session.userIdChanges
+import io.plastique.profile.ProfileEvent.UserChangedEvent
 import io.reactivex.Observable
 import javax.inject.Inject
 
@@ -28,9 +28,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun externalEvents(): Observable<ProfileEvent> {
-        return sessionManager.sessionChanges
+        return sessionManager.userIdChanges
+            .skip(1)
             .valveLatest(screenVisible)
-            .map { session -> SessionChangedEvent(session) }
+            .map { userId -> UserChangedEvent(userId.toNullable()) }
     }
 
     companion object {
@@ -40,8 +41,8 @@ class ProfileViewModel @Inject constructor(
 
 class ProfileStateReducer @Inject constructor() : StateReducer<ProfileEvent, ProfileViewState, ProfileEffect> {
     override fun reduce(state: ProfileViewState, event: ProfileEvent): StateWithEffects<ProfileViewState, ProfileEffect> = when (event) {
-        is SessionChangedEvent -> {
-            next(state.copy(showSignInButton = event.session !is Session.User))
+        is UserChangedEvent -> {
+            next(state.copy(showSignInButton = event.userId == null))
         }
     }
 }

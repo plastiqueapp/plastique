@@ -2,7 +2,6 @@ package io.plastique.comments.list
 
 import com.sch.neon.Event
 import io.plastique.core.network.NetworkConnectionState
-import io.plastique.core.session.Session
 
 sealed class CommentListEvent : Event() {
     data class CommentsChangedEvent(val comments: List<CommentUiModel>, val hasMore: Boolean) : CommentListEvent() {
@@ -31,6 +30,6 @@ sealed class CommentListEvent : Event() {
 
     data class TitleLoadedEvent(val title: String) : CommentListEvent()
     data class ConnectionStateChangedEvent(val connectionState: NetworkConnectionState) : CommentListEvent()
-    data class SessionChangedEvent(val session: Session) : CommentListEvent()
+    data class UserChangedEvent(val userId: String?) : CommentListEvent()
     object SnackbarShownEvent : CommentListEvent()
 }

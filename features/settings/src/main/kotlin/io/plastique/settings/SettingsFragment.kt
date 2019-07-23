@@ -11,9 +11,10 @@ import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreferenceCompat
+import com.gojuno.koptional.Some
 import io.plastique.core.navigation.navigationContext
-import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
+import io.plastique.core.session.userIdChanges
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -30,9 +31,9 @@ class SettingsFragment : BasePreferenceFragment() {
             if (preference.isEnabled) "" else getMatureContentSummary()
         }
 
-        sessionManager.sessionChanges
+        sessionManager.userIdChanges
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { session -> matureContentPreference.isEnabled = session is Session.User }
+            .subscribe { userId -> matureContentPreference.isEnabled = userId is Some }
             .disposeOnDestroy()
     }
 

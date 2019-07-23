@@ -2,7 +2,6 @@ package io.plastique.collections
 
 import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
-import io.plastique.core.session.Session
 
 sealed class CollectionsEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : CollectionsEvent() {
@@ -24,8 +23,8 @@ sealed class CollectionsEvent : Event() {
     object RetryClickEvent : CollectionsEvent()
     object SnackbarShownEvent : CollectionsEvent()
 
-    data class SessionChangedEvent(val session: Session) : CollectionsEvent()
     data class ShowMatureChangedEvent(val showMature: Boolean) : CollectionsEvent()
+    data class UserChangedEvent(val userId: String?) : CollectionsEvent()
 
     data class CreateFolderEvent(val folderName: String) : CollectionsEvent()
     object FolderCreatedEvent : CollectionsEvent()

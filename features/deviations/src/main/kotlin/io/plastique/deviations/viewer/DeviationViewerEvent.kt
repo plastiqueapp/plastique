@@ -1,7 +1,6 @@
 package io.plastique.deviations.viewer
 
 import com.sch.neon.Event
-import io.plastique.core.session.Session
 
 sealed class DeviationViewerEvent : Event() {
     data class DeviationLoadedEvent(val result: DeviationLoadResult) : DeviationViewerEvent()
@@ -18,5 +17,5 @@ sealed class DeviationViewerEvent : Event() {
 
     object SnackbarShownEvent : DeviationViewerEvent()
 
-    data class SessionChangedEvent(val session: Session) : DeviationViewerEvent()
+    data class UserChangedEvent(val userId: String?) : DeviationViewerEvent()
 }

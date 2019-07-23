@@ -2,7 +2,6 @@ package io.plastique.notifications
 
 import com.sch.neon.Event
 import io.plastique.core.lists.ListItem
-import io.plastique.core.session.Session
 
 sealed class NotificationsEvent : Event() {
     data class ItemsChangedEvent(val items: List<ListItem>, val hasMore: Boolean) : NotificationsEvent() {
@@ -23,7 +22,7 @@ sealed class NotificationsEvent : Event() {
     data class RefreshErrorEvent(val error: Throwable) : NotificationsEvent()
 
     object SnackbarShownEvent : NotificationsEvent()
-    data class SessionChangedEvent(val session: Session) : NotificationsEvent()
+    data class UserChangedEvent(val userId: String?) : NotificationsEvent()
 
     data class DeleteMessageEvent(val messageId: String) : NotificationsEvent()
     data class UndoDeleteMessageEvent(val messageId: String) : NotificationsEvent()
