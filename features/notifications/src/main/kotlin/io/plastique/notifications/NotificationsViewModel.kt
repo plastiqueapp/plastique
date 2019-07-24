@@ -69,10 +69,11 @@ class NotificationsViewModel @Inject constructor(
                 LoadNotificationsEffect)
         } else {
             next(NotificationsViewState(
-                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                contentState = ContentState.Empty,
+                isSignedIn = signedIn,
+                emptyState = EmptyState.MessageWithButton(
                     messageResId = R.string.notifications_message_sign_in_required,
-                    buttonTextId = R.string.common_button_sign_in)),
-                isSignedIn = signedIn))
+                    buttonTextId = R.string.common_button_sign_in)))
         }
 
         state = loop.loop(stateAndEffects).disposeOnDestroy()
@@ -148,27 +149,31 @@ class NotificationsStateReducer @Inject constructor(
     override fun reduce(state: NotificationsViewState, event: NotificationsEvent): StateWithEffects<NotificationsViewState, NotificationsEffect> =
         when (event) {
             is ItemsChangedEvent -> {
-                val contentState = if (event.items.isNotEmpty()) {
-                    ContentState.Content
+                if (event.items.isNotEmpty()) {
+                    next(state.copy(
+                        contentState = ContentState.Content,
+                        listState = state.listState.copy(
+                            items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                            contentItems = event.items,
+                            hasMore = event.hasMore),
+                        emptyState = null))
                 } else {
-                    ContentState.Empty(EmptyState.Message(R.string.notifications_message_empty))
+                    next(state.copy(
+                        contentState = ContentState.Empty,
+                        listState = PagedListState.Empty,
+                        emptyState = EmptyState.Message(R.string.notifications_message_empty)))
                 }
-                next(state.copy(
-                    contentState = contentState,
-                    listState = state.listState.copy(
-                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                        contentItems = event.items,
-                        hasMore = event.hasMore)))
             }
 
             is LoadErrorEvent -> {
                 next(state.copy(
-                    contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
-                    listState = PagedListState.Empty))
+                    contentState = ContentState.Empty,
+                    listState = PagedListState.Empty,
+                    emptyState = errorMessageProvider.getErrorState(event.error)))
             }
 
             RetryClickEvent -> {
-                next(state.copy(contentState = ContentState.Loading), LoadNotificationsEffect)
+                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadNotificationsEffect)
             }
 
             LoadMoreEvent -> {
@@ -215,14 +220,15 @@ class NotificationsStateReducer @Inject constructor(
                 val signedIn = event.userId != null
                 if (signedIn != state.isSignedIn) {
                     if (signedIn) {
-                        next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn), LoadNotificationsEffect)
+                        next(state.copy(contentState = ContentState.Loading, isSignedIn = signedIn, emptyState = null), LoadNotificationsEffect)
                     } else {
                         next(state.copy(
-                            contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                                messageResId = R.string.notifications_message_sign_in_required,
-                                buttonTextId = R.string.common_button_sign_in)),
+                            contentState = ContentState.Empty,
                             isSignedIn = signedIn,
-                            listState = PagedListState.Empty))
+                            listState = PagedListState.Empty,
+                            emptyState = EmptyState.MessageWithButton(
+                                messageResId = R.string.notifications_message_sign_in_required,
+                                buttonTextId = R.string.common_button_sign_in)))
                     }
                 } else {
                     next(state)

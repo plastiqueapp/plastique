@@ -126,15 +126,16 @@ class DeviationViewerStateReducer @Inject constructor(
                     contentState = ContentState.Content,
                     content = event.result.deviationContent,
                     infoViewState = event.result.infoViewState,
-                    menuState = event.result.menuState))
+                    menuState = event.result.menuState,
+                    emptyState = null))
             }
 
             is LoadErrorEvent -> {
-                next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
+                next(state.copy(contentState = ContentState.Empty, emptyState = errorMessageProvider.getErrorState(event.error)))
             }
 
             RetryClickEvent -> {
-                next(state.copy(contentState = ContentState.Loading), LoadDeviationEffect(state.deviationId))
+                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadDeviationEffect(state.deviationId))
             }
 
             DownloadOriginalClickEvent -> {

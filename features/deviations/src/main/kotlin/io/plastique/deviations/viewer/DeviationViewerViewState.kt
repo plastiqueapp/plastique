@@ -1,6 +1,7 @@
 package io.plastique.deviations.viewer
 
 import io.plastique.core.content.ContentState
+import io.plastique.core.content.EmptyState
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.Deviation
 import io.plastique.users.User
@@ -47,6 +48,7 @@ data class DeviationViewerViewState(
     val content: DeviationContent? = null,
     val infoViewState: InfoViewState? = null,
     val menuState: MenuState? = null,
+    val showProgressDialog: Boolean = false,
     val snackbarState: SnackbarState? = null,
-    val showProgressDialog: Boolean = false
+    val emptyState: EmptyState? = null
 )

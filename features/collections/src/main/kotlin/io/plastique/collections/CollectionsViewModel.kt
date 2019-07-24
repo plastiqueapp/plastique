@@ -76,10 +76,11 @@ class CollectionsViewModel @Inject constructor(
         val stateAndEffects = if (signInNeeded) {
             next(CollectionsViewState(
                 params = params,
-                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                contentState = ContentState.Empty,
+                signInNeeded = signInNeeded,
+                emptyState = EmptyState.MessageWithButton(
                     messageResId = R.string.collections_message_sign_in,
-                    buttonTextId = R.string.common_button_sign_in)),
-                signInNeeded = signInNeeded))
+                    buttonTextId = R.string.common_button_sign_in)))
         } else {
             next(CollectionsViewState(
                 params = params,
@@ -175,28 +176,32 @@ class CollectionsStateReducer @Inject constructor(
 
     override fun reduce(state: CollectionsViewState, event: CollectionsEvent): StateWithEffects<CollectionsViewState, CollectionsEffect> = when (event) {
         is ItemsChangedEvent -> {
-            val contentState = if (event.items.isNotEmpty()) {
-                ContentState.Content
+            if (event.items.isNotEmpty()) {
+                next(state.copy(
+                    contentState = ContentState.Content,
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore),
+                    emptyState = null))
             } else {
                 val emptyState = if (state.params.username != null) {
                     EmptyState.Message(R.string.collections_message_empty_user_collection, listOf(state.params.username.htmlEncode()))
                 } else {
                     EmptyState.Message(R.string.collections_message_empty_collection)
                 }
-                ContentState.Empty(emptyState)
+                next(state.copy(
+                    contentState = ContentState.Empty,
+                    listState = PagedListState.Empty,
+                    emptyState = emptyState))
             }
-            next(state.copy(
-                contentState = contentState,
-                listState = state.listState.copy(
-                    items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    contentItems = event.items,
-                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
-                listState = PagedListState.Empty))
+                contentState = ContentState.Empty,
+                listState = PagedListState.Empty,
+                emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         LoadMoreEvent -> {
@@ -236,7 +241,7 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadCollectionsEffect(state.params))
+            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadCollectionsEffect(state.params))
         }
 
         SnackbarShownEvent -> {
@@ -248,16 +253,19 @@ class CollectionsStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            messageResId = R.string.collections_message_sign_in,
-                            buttonTextId = R.string.common_button_sign_in)),
+                        contentState = ContentState.Empty,
                         signInNeeded = signInNeeded,
-                        listState = PagedListState.Empty))
+                        listState = PagedListState.Empty,
+                        emptyState = EmptyState.MessageWithButton(
+                            messageResId = R.string.collections_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)))
                 } else {
                     next(state.copy(
                         contentState = ContentState.Loading,
-                        signInNeeded = signInNeeded
-                    ), LoadCollectionsEffect(state.params))
+                        signInNeeded = signInNeeded,
+                        listState = PagedListState.Empty,
+                        emptyState = null),
+                        LoadCollectionsEffect(state.params))
                 }
             } else {
                 next(state)
@@ -270,7 +278,8 @@ class CollectionsStateReducer @Inject constructor(
                 next(state.copy(
                     params = params,
                     contentState = ContentState.Loading,
-                    listState = PagedListState.Empty),
+                    listState = PagedListState.Empty,
+                    emptyState = null),
                     LoadCollectionsEffect(params))
             } else {
                 next(state)

@@ -201,32 +201,37 @@ class CommentListStateReducer @Inject constructor(
 
     override fun reduce(state: CommentListViewState, event: CommentListEvent): StateWithEffects<CommentListViewState, CommentListEffect> = when (event) {
         is CommentsChangedEvent -> {
-            val commentItems = createItems(event.comments, state.isSignedIn)
-            val contentState = if (commentItems.isNotEmpty()) {
-                ContentState.Content
+            if (event.comments.isNotEmpty()) {
+                val commentItems = createItems(event.comments, state.isSignedIn)
+                next(state.copy(
+                    contentState = ContentState.Content,
+                    errorType = ErrorType.None,
+                    comments = event.comments,
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) commentItems + LoadingIndicatorItem else commentItems,
+                        contentItems = commentItems,
+                        hasMore = event.hasMore),
+                    emptyState = null))
             } else {
-                ContentState.Empty(EmptyState.Message(R.string.comments_message_empty))
+                next(state.copy(
+                    contentState = ContentState.Empty,
+                    errorType = ErrorType.None,
+                    comments = emptyList(),
+                    listState = PagedListState.Empty,
+                    emptyState = EmptyState.Message(R.string.comments_message_empty)))
             }
-            next(state.copy(
-                contentState = contentState,
-                errorType = ErrorType.None,
-                comments = event.comments,
-                listState = state.listState.copy(
-                    items = if (state.listState.isLoadingMore) commentItems + LoadingIndicatorItem else commentItems,
-                    contentItems = commentItems,
-                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
-            val errorState = errorMessageProvider.getErrorState(event.error, R.string.comments_message_load_error)
             next(state.copy(
-                contentState = ContentState.Empty(errorState),
+                contentState = ContentState.Empty,
                 errorType = event.error.toErrorType(),
-                listState = PagedListState.Empty))
+                listState = PagedListState.Empty,
+                emptyState = errorMessageProvider.getErrorState(event.error, R.string.comments_message_load_error)))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadCommentsEffect(state.threadId))
+            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadCommentsEffect(state.threadId))
         }
 
         LoadMoreEvent -> {
@@ -295,9 +300,9 @@ class CommentListStateReducer @Inject constructor(
 
         is ConnectionStateChangedEvent -> {
             if (event.connectionState == NetworkConnectionState.Connected &&
-                state.contentState is ContentState.Empty &&
+                state.contentState == ContentState.Empty &&
                 state.errorType == ErrorType.NoNetworkConnection) {
-                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadCommentsEffect(state.threadId))
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadCommentsEffect(state.threadId))
             } else {
                 next(state)
             }

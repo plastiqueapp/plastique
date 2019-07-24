@@ -10,7 +10,6 @@ import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.breadcrumbs.BreadcrumbsView
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.ListUpdateData
@@ -79,9 +78,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListVie
 
     private fun renderState(state: CategoryListViewState, prevState: CategoryListViewState?, listUpdateData: ListUpdateData<CategoryItem>) {
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         listUpdateData.applyTo(adapter)
 

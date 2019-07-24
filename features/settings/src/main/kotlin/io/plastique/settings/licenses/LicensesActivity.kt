@@ -67,7 +67,7 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::clas
             }
 
             is LicensesViewState.Empty -> {
-                contentStateController.state = ContentState.Empty(state.emptyState)
+                contentStateController.state = ContentState.Empty
                 emptyView.state = state.emptyState
             }
         }

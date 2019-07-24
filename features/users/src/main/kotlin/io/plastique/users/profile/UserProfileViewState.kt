@@ -1,6 +1,7 @@
 package io.plastique.users.profile
 
 import io.plastique.core.content.ContentState
+import io.plastique.core.content.EmptyState
 import io.plastique.core.snackbar.SnackbarState
 
 data class UserProfileViewState(
@@ -9,8 +10,9 @@ data class UserProfileViewState(
     val currentUserId: String?,
     val title: String = "",
     val userProfile: UserProfile? = null,
+    val showProgressDialog: Boolean = false,
     val snackbarState: SnackbarState? = null,
-    val showProgressDialog: Boolean = false
+    val emptyState: EmptyState? = null
 ) {
     val isSignedIn: Boolean
         get() = currentUserId != null

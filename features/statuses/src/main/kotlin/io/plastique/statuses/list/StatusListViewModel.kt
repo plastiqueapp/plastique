@@ -135,23 +135,27 @@ class StatusListStateReducer @Inject constructor(
 
     override fun reduce(state: StatusListViewState, event: StatusListEvent): StateWithEffects<StatusListViewState, StatusListEffect> = when (event) {
         is ItemsChangedEvent -> {
-            val contentState = if (event.items.isNotEmpty()) {
-                ContentState.Content
+            if (event.items.isNotEmpty()) {
+                next(state.copy(
+                    contentState = ContentState.Content,
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore),
+                    emptyState = null))
             } else {
-                ContentState.Empty(EmptyState.Message(R.string.statuses_message_empty, listOf(state.params.username.htmlEncode())))
+                next(state.copy(
+                    contentState = ContentState.Empty,
+                    listState = PagedListState.Empty,
+                    emptyState = EmptyState.Message(R.string.statuses_message_empty, listOf(state.params.username.htmlEncode()))))
             }
-            next(state.copy(
-                contentState = contentState,
-                listState = state.listState.copy(
-                    items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    contentItems = event.items,
-                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
-                listState = PagedListState.Empty))
+                contentState = ContentState.Empty,
+                listState = PagedListState.Empty,
+                emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         LoadMoreEvent -> {
@@ -191,7 +195,7 @@ class StatusListStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadStatusesEffect(state.params))
+            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadStatusesEffect(state.params))
         }
 
         SnackbarShownEvent -> {
@@ -209,7 +213,8 @@ class StatusListStateReducer @Inject constructor(
                 next(state.copy(
                     params = params,
                     contentState = ContentState.Loading,
-                    listState = PagedListState.Empty),
+                    listState = PagedListState.Empty,
+                    emptyState = null),
                     LoadStatusesEffect(params))
             } else {
                 next(state)

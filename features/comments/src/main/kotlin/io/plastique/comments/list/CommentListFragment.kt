@@ -26,7 +26,6 @@ import io.plastique.comments.list.CommentListEvent.ReplyClickEvent
 import io.plastique.comments.list.CommentListEvent.RetryClickEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.EndlessScrollListener
@@ -117,9 +116,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
         }
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         listUpdateData.applyTo(adapter)
 

@@ -76,11 +76,12 @@ class FeedViewModel @Inject constructor(
                 showMatureContent = showMatureContent),
                 LoadFeedEffect(showMatureContent))
         } else {
-            next(FeedViewState(contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                messageResId = R.string.feed_message_sign_in,
-                buttonTextId = R.string.common_button_sign_in)),
+            next(FeedViewState(contentState = ContentState.Empty,
                 isSignedIn = signedIn,
-                showMatureContent = showMatureContent))
+                showMatureContent = showMatureContent,
+                emptyState = EmptyState.MessageWithButton(
+                    messageResId = R.string.feed_message_sign_in,
+                    buttonTextId = R.string.common_button_sign_in)))
         }
 
         loop.loop(stateAndEffects).disposeOnDestroy()
@@ -171,23 +172,27 @@ class FeedStateReducer @Inject constructor(
 
     override fun reduce(state: FeedViewState, event: FeedEvent): StateWithEffects<FeedViewState, FeedEffect> = when (event) {
         is ItemsChangedEvent -> {
-            val contentState = if (event.items.isNotEmpty()) {
-                ContentState.Content
+            if (event.items.isNotEmpty()) {
+                next(state.copy(
+                    contentState = ContentState.Content,
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore),
+                    emptyState = null))
             } else {
-                ContentState.Empty(EmptyState.Message(R.string.feed_message_empty))
+                next(state.copy(
+                    contentState = ContentState.Empty,
+                    listState = PagedListState.Empty,
+                    emptyState = EmptyState.Message(R.string.feed_message_empty)))
             }
-            next(state.copy(
-                contentState = contentState,
-                listState = state.listState.copy(
-                    items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    contentItems = event.items,
-                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
-                listState = PagedListState.Empty))
+                contentState = ContentState.Empty,
+                listState = PagedListState.Empty,
+                emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         LoadMoreEvent -> {
@@ -227,7 +232,7 @@ class FeedStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadFeedEffect(state.showMatureContent))
+            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadFeedEffect(state.showMatureContent))
         }
 
         SnackbarShownEvent -> {
@@ -240,15 +245,17 @@ class FeedStateReducer @Inject constructor(
                 if (signedIn) {
                     next(state.copy(
                         contentState = ContentState.Loading,
-                        isSignedIn = signedIn),
+                        isSignedIn = signedIn,
+                        emptyState = null),
                         LoadFeedEffect(state.showMatureContent))
                 } else {
                     next(state.copy(
-                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            messageResId = R.string.feed_message_sign_in,
-                            buttonTextId = R.string.common_button_sign_in)),
+                        contentState = ContentState.Empty,
                         isSignedIn = signedIn,
-                        listState = PagedListState.Empty))
+                        listState = PagedListState.Empty,
+                        emptyState = EmptyState.MessageWithButton(
+                            messageResId = R.string.feed_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)))
                 }
             } else {
                 next(state)
@@ -260,7 +267,8 @@ class FeedStateReducer @Inject constructor(
                 next(state.copy(
                     contentState = ContentState.Loading,
                     listState = PagedListState.Empty,
-                    showMatureContent = event.showMatureContent),
+                    showMatureContent = event.showMatureContent,
+                    emptyState = null),
                     LoadFeedEffect(event.showMatureContent))
             } else {
                 next(state)
@@ -275,7 +283,8 @@ class FeedStateReducer @Inject constructor(
             next(state.copy(
                 isApplyingSettings = false,
                 contentState = ContentState.Loading,
-                listState = PagedListState.Empty),
+                listState = PagedListState.Empty,
+                emptyState = null),
                 LoadFeedEffect(state.showMatureContent))
         }
 

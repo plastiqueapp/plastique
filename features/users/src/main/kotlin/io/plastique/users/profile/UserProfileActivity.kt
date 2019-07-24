@@ -146,9 +146,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
         setHasOptionsMenu(state.userProfile != null)
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         if (state.userProfile != prevState?.userProfile) {
             realNameView.text = state.userProfile!!.realName
@@ -165,7 +163,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
                 .into(avatarView)
         }
 
-        watchButton.isVisible = state.contentState === ContentState.Content && !state.isCurrentUser
+        watchButton.isVisible = state.contentState == ContentState.Content && !state.isCurrentUser
         progressDialogController.isShown = state.showProgressDialog
 
         if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {

@@ -80,6 +80,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
             is DeviationInfoViewState.Loading -> {
                 contentStateController.state = ContentState.Loading
             }
+
             is DeviationInfoViewState.Content -> {
                 contentStateController.state = ContentState.Content
                 titleView.text = state.title
@@ -97,8 +98,9 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
                 tagListAdapter.notifyDataSetChanged()
                 tagsView.isVisible = state.tags.isNotEmpty()
             }
+
             is DeviationInfoViewState.Error -> {
-                contentStateController.state = ContentState.Empty(state.emptyViewState)
+                contentStateController.state = ContentState.Empty
                 emptyView.state = state.emptyViewState
             }
         }

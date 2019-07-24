@@ -13,7 +13,6 @@ import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.EndlessScrollListener
@@ -104,9 +103,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
         this.state = state
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         listUpdateData.applyTo(adapter)
 

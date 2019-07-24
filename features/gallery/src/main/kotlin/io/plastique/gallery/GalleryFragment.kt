@@ -23,7 +23,6 @@ import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ConfirmationDialogFragment
@@ -197,9 +196,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         listUpdateData.applyTo(adapter)
 

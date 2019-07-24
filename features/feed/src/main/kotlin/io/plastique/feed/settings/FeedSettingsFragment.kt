@@ -128,7 +128,7 @@ class FeedSettingsFragment :
             }
 
             is FeedSettingsViewState.Empty -> {
-                contentStateController.state = ContentState.Empty(state.emptyState)
+                contentStateController.state = ContentState.Empty
                 emptyView.state = state.emptyState
             }
         }

@@ -69,7 +69,7 @@ class AboutFragment : MvvmFragment<AboutViewModel>(AboutViewModel::class.java), 
             }
 
             is AboutViewState.Error -> {
-                contentStateController.state = ContentState.Empty(state.emptyState)
+                contentStateController.state = ContentState.Empty
                 emptyView.state = state.emptyState
             }
         }

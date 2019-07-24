@@ -116,8 +116,8 @@ class CategoryListStateReducer @Inject constructor(
         }
 
         is LoadCategoryErrorEvent -> {
-            if (state.contentState === ContentState.Loading) {
-                next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
+            if (state.contentState == ContentState.Loading) {
+                next(state.copy(contentState = ContentState.Empty, emptyState = errorMessageProvider.getErrorState(event.error)))
             } else {
                 val items = state.items.replaceIf(
                     { item -> item.category == event.category },
@@ -129,7 +129,7 @@ class CategoryListStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadCategoryEffect(state.parent))
+            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadCategoryEffect(state.parent))
         }
 
         SnackbarShownEvent -> {

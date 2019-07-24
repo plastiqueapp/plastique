@@ -68,10 +68,11 @@ class WatcherListViewModel @Inject constructor(
         val stateAndEffects = if (signInNeeded) {
             next(WatcherListViewState(
                 username = username,
-                contentState = ContentState.Empty(EmptyState.MessageWithButton(
+                contentState = ContentState.Empty,
+                signInNeeded = signInNeeded,
+                emptyState = EmptyState.MessageWithButton(
                     messageResId = R.string.watch_message_sign_in,
-                    buttonTextId = R.string.common_button_sign_in)),
-                signInNeeded = signInNeeded))
+                    buttonTextId = R.string.common_button_sign_in)))
         } else {
             next(WatcherListViewState(
                 username = username,
@@ -152,34 +153,40 @@ class WatcherListStateReducer @Inject constructor(
 
     override fun reduce(state: WatcherListViewState, event: WatcherListEvent): StateWithEffects<WatcherListViewState, WatcherListEffect> = when (event) {
         is ItemsChangedEvent -> {
-            val contentState = if (event.items.isNotEmpty()) {
-                ContentState.Content
+            if (event.items.isNotEmpty()) {
+                next(state.copy(
+                    contentState = ContentState.Content,
+                    errorType = ErrorType.None,
+                    listState = state.listState.copy(
+                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                        contentItems = event.items,
+                        hasMore = event.hasMore),
+                    emptyState = null))
             } else {
                 val emptyState = if (state.username != null) {
                     EmptyState.Message(R.string.watch_message_empty, listOf(state.username.htmlEncode()))
                 } else {
                     EmptyState.Message(R.string.watch_message_empty_current_user)
                 }
-                ContentState.Empty(emptyState)
+
+                next(state.copy(
+                    contentState = ContentState.Empty,
+                    errorType = ErrorType.None,
+                    listState = PagedListState.Empty,
+                    emptyState = emptyState))
             }
-            next(state.copy(
-                contentState = contentState,
-                errorType = ErrorType.None,
-                listState = state.listState.copy(
-                    items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                    contentItems = event.items,
-                    hasMore = event.hasMore)))
         }
 
         is LoadErrorEvent -> {
             next(state.copy(
-                contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error)),
+                contentState = ContentState.Empty,
                 errorType = event.error.toErrorType(),
-                listState = PagedListState.Empty))
+                listState = PagedListState.Empty,
+                emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadWatchersEffect(state.username))
+            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadWatchersEffect(state.username))
         }
 
         LoadMoreEvent -> {
@@ -224,9 +231,9 @@ class WatcherListStateReducer @Inject constructor(
 
         is ConnectionStateChangedEvent -> {
             if (event.connectionState == NetworkConnectionState.Connected &&
-                state.contentState is ContentState.Empty &&
+                state.contentState == ContentState.Empty &&
                 state.errorType == ErrorType.NoNetworkConnection) {
-                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadWatchersEffect(state.username))
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadWatchersEffect(state.username))
             } else {
                 next(state)
             }
@@ -237,18 +244,20 @@ class WatcherListStateReducer @Inject constructor(
             if (signInNeeded != state.signInNeeded) {
                 if (signInNeeded) {
                     next(state.copy(
-                        contentState = ContentState.Empty(EmptyState.MessageWithButton(
-                            messageResId = R.string.watch_message_sign_in,
-                            buttonTextId = R.string.common_button_sign_in)),
+                        contentState = ContentState.Empty,
                         errorType = ErrorType.Other,
                         signInNeeded = signInNeeded,
-                        listState = PagedListState.Empty))
+                        listState = PagedListState.Empty,
+                        emptyState = EmptyState.MessageWithButton(
+                            messageResId = R.string.watch_message_sign_in,
+                            buttonTextId = R.string.common_button_sign_in)))
                 } else {
                     next(state.copy(
                         contentState = ContentState.Loading,
                         errorType = ErrorType.None,
-                        signInNeeded = signInNeeded
-                    ), LoadWatchersEffect(state.username))
+                        signInNeeded = signInNeeded,
+                        emptyState = null),
+                        LoadWatchersEffect(state.username))
                 }
             } else {
                 next(state)

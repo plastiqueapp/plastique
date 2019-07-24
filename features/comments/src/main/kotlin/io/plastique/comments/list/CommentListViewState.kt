@@ -3,6 +3,7 @@ package io.plastique.comments.list
 import io.plastique.comments.CommentThreadId
 import io.plastique.common.ErrorType
 import io.plastique.core.content.ContentState
+import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.PagedListState
 import io.plastique.core.snackbar.SnackbarState
 
@@ -16,12 +17,13 @@ data class CommentListViewState(
     val replyComment: CommentUiModel? = null,
     val commentDraft: String = "",
     val listState: PagedListState = PagedListState.Empty,
-    val snackbarState: SnackbarState? = null,
     val isSignedIn: Boolean = false,
-    val isPostingComment: Boolean = false
+    val isPostingComment: Boolean = false,
+    val snackbarState: SnackbarState? = null,
+    val emptyState: EmptyState? = null
 ) {
     val showCompose: Boolean
-        get() = contentState === ContentState.Content || contentState is ContentState.Empty && errorType == ErrorType.None
+        get() = contentState == ContentState.Content || contentState == ContentState.Empty && errorType == ErrorType.None
 
     override fun toString(): String {
         return "CommentListViewState(" +
@@ -33,9 +35,10 @@ data class CommentListViewState(
                 "replyComment=$replyComment, " +
                 "commentDraft=$commentDraft, " +
                 "listState=$listState, " +
-                "snackbarState=$snackbarState, " +
                 "isSignedIn=$isSignedIn, " +
-                "isPostingComment=$isPostingComment" +
+                "isPostingComment=$isPostingComment, " +
+                "snackbarState=$snackbarState, " +
+                "emptyState=$emptyState" +
                 ")"
     }
 }

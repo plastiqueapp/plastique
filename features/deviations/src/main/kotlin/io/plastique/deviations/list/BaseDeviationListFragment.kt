@@ -21,7 +21,6 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
@@ -159,9 +158,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         tags = state.tags
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         if (fixedLayoutMode == null && state.layoutMode != prevState?.layoutMode) {
             initLayoutMode(state.layoutMode)

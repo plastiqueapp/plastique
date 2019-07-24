@@ -13,8 +13,8 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.ContentState
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.session.SessionManager
-import io.plastique.core.session.userIdChanges
 import io.plastique.core.session.userId
+import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.users.R
 import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
@@ -128,15 +128,16 @@ class UserProfileStateReducer @Inject constructor(
             next(state.copy(
                 contentState = ContentState.Content,
                 userProfile = event.userProfile,
-                title = event.userProfile.user.name))
+                title = event.userProfile.user.name,
+                emptyState = null))
         }
 
         is LoadErrorEvent -> {
-            next(state.copy(contentState = ContentState.Empty(emptyState = errorMessageProvider.getErrorState(event.error))))
+            next(state.copy(contentState = ContentState.Empty, emptyState = errorMessageProvider.getErrorState(event.error)))
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading), LoadUserProfileEffect(state.username))
+            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadUserProfileEffect(state.username))
         }
 
         CopyProfileLinkClickEvent -> {

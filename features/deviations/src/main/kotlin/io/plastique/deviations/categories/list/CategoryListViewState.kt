@@ -2,6 +2,7 @@ package io.plastique.deviations.categories.list
 
 import io.plastique.core.breadcrumbs.Breadcrumb
 import io.plastique.core.content.ContentState
+import io.plastique.core.content.EmptyState
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.categories.Category
 
@@ -12,6 +13,7 @@ data class CategoryListViewState(
     val breadcrumbs: List<Breadcrumb> = emptyList(),
     val isExpanding: Boolean = false,
     val snackbarState: SnackbarState? = null,
+    val emptyState: EmptyState? = null,
     val selectedCategory: Category? = null
 ) {
     override fun toString(): String {
@@ -22,6 +24,7 @@ data class CategoryListViewState(
                 "breadcrumbs=${breadcrumbs.size}, " +
                 "isExpanding=$isExpanding, " +
                 "snackbarState=$snackbarState, " +
+                "emptyState=$emptyState, " +
                 "selectedCategory=$selectedCategory" +
                 ")"
     }

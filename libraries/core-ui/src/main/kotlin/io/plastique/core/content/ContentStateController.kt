@@ -20,7 +20,7 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
 
     var state: ContentState = ContentState.None
         set(value) {
-            if (field != value && !(field is ContentState.Empty && value is ContentState.Empty)) {
+            if (field != value) {
                 field = value
                 switchState(value)
             }
@@ -51,10 +51,10 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
         mainThreadHandler.removeCallbacks(switchStateRunnable)
 
         var delay = 0L
-        if (displayedState === ContentState.Loading) {
+        if (displayedState == ContentState.Loading) {
             val elapsedTime = SystemClock.elapsedRealtime() - lastSwitchTime
             delay = max(0L, minProgressShowDuration - elapsedTime)
-        } else if (state === ContentState.Loading) {
+        } else if (state == ContentState.Loading) {
             delay = progressShowDelay
         }
 
@@ -110,9 +110,9 @@ private class ContentStateApplier(
     }
 
     override fun onSwitchState(state: ContentState, animated: Boolean) {
-        contentView.setVisible(state === ContentState.Content, animated)
-        progressView?.setVisible(state === ContentState.Loading, animated)
-        emptyView?.setVisible(state is ContentState.Empty, animated)
+        contentView.setVisible(state == ContentState.Content, animated)
+        progressView?.setVisible(state == ContentState.Loading, animated)
+        emptyView?.setVisible(state == ContentState.Empty, animated)
     }
 
     private fun View.setVisible(visible: Boolean, animated: Boolean) {

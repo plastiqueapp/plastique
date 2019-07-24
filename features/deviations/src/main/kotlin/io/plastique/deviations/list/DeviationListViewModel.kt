@@ -171,30 +171,34 @@ class DeviationListStateReducer @Inject constructor(
     override fun reduce(state: DeviationListViewState, event: DeviationListEvent): StateWithEffects<DeviationListViewState, DeviationListEffect> =
         when (event) {
             is ItemsChangedEvent -> {
-                val contentState = if (event.items.isNotEmpty()) {
-                    ContentState.Content
+                if (event.items.isNotEmpty()) {
+                    next(state.copy(
+                        contentState = ContentState.Content,
+                        errorType = ErrorType.None,
+                        listState = state.listState.copy(
+                            items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
+                            contentItems = event.items,
+                            hasMore = event.hasMore),
+                        emptyState = null))
                 } else {
-                    ContentState.Empty(EmptyState.Message(R.string.deviations_message_empty))
+                    next(state.copy(
+                        contentState = ContentState.Empty,
+                        errorType = ErrorType.None,
+                        listState = PagedListState.Empty,
+                        emptyState = EmptyState.Message(R.string.deviations_message_empty)))
                 }
-                next(state.copy(
-                    contentState = contentState,
-                    errorType = ErrorType.None,
-                    listState = state.listState.copy(
-                        items = if (state.listState.isLoadingMore) event.items + LoadingIndicatorItem else event.items,
-                        contentItems = event.items,
-                        hasMore = event.hasMore)))
             }
 
             is LoadErrorEvent -> {
-                val errorState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error)
                 next(state.copy(
-                    contentState = ContentState.Empty(emptyState = errorState),
+                    contentState = ContentState.Empty,
                     errorType = event.error.toErrorType(),
+                    emptyState = errorMessageProvider.getErrorState(event.error, R.string.deviations_message_load_error),
                     listState = PagedListState.Empty))
             }
 
             RetryClickEvent -> {
-                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadDeviationsEffect(state.params))
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadDeviationsEffect(state.params))
             }
 
             LoadMoreEvent -> {
@@ -255,9 +259,9 @@ class DeviationListStateReducer @Inject constructor(
 
             is ConnectionStateChangedEvent -> {
                 if (event.connectionState == NetworkConnectionState.Connected &&
-                    state.contentState is ContentState.Empty &&
+                    state.contentState == ContentState.Empty &&
                     state.errorType == ErrorType.NoNetworkConnection) {
-                    next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None), LoadDeviationsEffect(state.params))
+                    next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadDeviationsEffect(state.params))
                 } else {
                     next(state)
                 }
@@ -283,7 +287,8 @@ class DeviationListStateReducer @Inject constructor(
                 contentState = ContentState.Loading,
                 errorType = ErrorType.None,
                 listState = PagedListState.Empty,
-                tags = createTags(tagFactory, params)),
+                tags = createTags(tagFactory, params),
+                emptyState = null),
                 LoadDeviationsEffect(params))
         } else {
             next(state)

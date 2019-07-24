@@ -31,7 +31,6 @@ import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
 import io.plastique.collections.folders.Folder
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ConfirmationDialogFragment
@@ -193,9 +192,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         listUpdateData.applyTo(adapter)
 

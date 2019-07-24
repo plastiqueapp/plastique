@@ -18,7 +18,6 @@ import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
@@ -160,9 +159,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         lastState = state
 
         contentStateController.state = state.contentState
-        if (state.contentState is ContentState.Empty) {
-            emptyView.state = state.contentState.emptyState
-        }
+        emptyView.state = state.emptyState
 
         if (state.content != null && state.content != prevState?.content) {
             renderContent(state.content)

@@ -2,6 +2,7 @@ package io.plastique.deviations.list
 
 import io.plastique.common.ErrorType
 import io.plastique.core.content.ContentState
+import io.plastique.core.content.EmptyState
 import io.plastique.core.lists.PagedListState
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.FetchParams
@@ -16,5 +17,6 @@ data class DeviationListViewState(
     val listState: PagedListState = PagedListState.Empty,
     val snackbarState: SnackbarState? = null,
     val showProgressDialog: Boolean = false,
-    val tags: List<Tag> = emptyList()
+    val tags: List<Tag> = emptyList(),
+    val emptyState: EmptyState? = null
 )
