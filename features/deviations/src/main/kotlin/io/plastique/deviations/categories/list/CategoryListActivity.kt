@@ -64,7 +64,7 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListVie
             .pairwiseWithPrevious()
             .map { it + calculateDiff(it.second?.items, it.first.items) }
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { renderState(it.first, it.second, it.third) }
+            .subscribe { renderState(it.first, it.third) }
             .disposeOnDestroy()
     }
 
@@ -76,16 +76,12 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListVie
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun renderState(state: CategoryListViewState, prevState: CategoryListViewState?, listUpdateData: ListUpdateData<CategoryItem>) {
+    private fun renderState(state: CategoryListViewState, listUpdateData: ListUpdateData<CategoryItem>) {
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
+        breadcrumbsView.breadcrumbs = state.breadcrumbs
 
         listUpdateData.applyTo(adapter)
-
-        if (state.breadcrumbs != prevState?.breadcrumbs) {
-            breadcrumbsView.setBreadcrumbs(state.breadcrumbs)
-            breadcrumbsView.scrollToPosition(breadcrumbsView.adapter!!.itemCount - 1)
-        }
 
         if (state.selectedCategory != null) {
             setResult(RESULT_OK, Intent().putExtra(RESULT_SELECTED_CATEGORY, state.selectedCategory))

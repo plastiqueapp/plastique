@@ -22,7 +22,18 @@ class BreadcrumbsView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private val adapter: BreadcrumbsAdapter
-    private var breadcrumbs: List<Breadcrumb> = emptyList()
+
+    var breadcrumbs: List<Breadcrumb> = emptyList()
+        set(value) {
+            if (field == value) return
+            val scrollToEnd = field.size < value.size
+            field = value.toList()
+            val items = createItems(field)
+            adapter.update(items)
+            if (scrollToEnd) {
+                scrollToPosition(items.size - 1)
+            }
+        }
 
     init {
         overScrollMode = View.OVER_SCROLL_NEVER
@@ -37,11 +48,6 @@ class BreadcrumbsView @JvmOverloads constructor(
         adapter = BreadcrumbsAdapter(breadcrumbLayoutId, separatorDrawableResId)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         setAdapter(adapter)
-    }
-
-    fun setBreadcrumbs(breadcrumbs: List<Breadcrumb>) {
-        this.breadcrumbs = breadcrumbs.toList()
-        adapter.update(createItems(breadcrumbs))
     }
 
     fun setOnBreadcrumbClickListener(listener: OnBreadcrumbClickListener) {
@@ -63,11 +69,12 @@ class BreadcrumbsView @JvmOverloads constructor(
 
     private fun createItems(breadcrumbs: List<Breadcrumb>): List<ListItem> {
         val items = ArrayList<ListItem>(breadcrumbs.size * 2 - 1)
-        for ((index, breadcrumb) in breadcrumbs.withIndex()) {
-            items.add(BreadcrumbItem(index.toString(), breadcrumb))
+        breadcrumbs.forEachIndexed { index, breadcrumb ->
+            val id = index.toString()
+            items += BreadcrumbItem(id, breadcrumb)
 
             if (index < breadcrumbs.size - 1) {
-                items.add(SeparatorItem(index.toString()))
+                items += SeparatorItem(id)
             }
         }
         return items
