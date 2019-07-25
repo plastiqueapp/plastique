@@ -155,7 +155,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         this.state = state
         @Suppress("UNCHECKED_CAST")
         params = state.params as ParamsType
-        tags = state.tags
 
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
@@ -177,8 +176,9 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
-        if (state.tags != prevState?.tags && isResumed) {
-            tagManager?.setTags(tags, true)
+        tags = state.tags
+        if (isResumed) {
+            tagManager?.setTags(state.tags, true)
         }
 
         if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {

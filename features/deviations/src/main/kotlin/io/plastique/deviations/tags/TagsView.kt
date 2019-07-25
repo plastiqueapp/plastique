@@ -38,12 +38,14 @@ class TagsView(context: Context, attrs: AttributeSet?) : RecyclerView(context, a
     }
 
     override fun setTags(tags: List<Tag>, animated: Boolean) {
+        if (this.tags == tags) return
+
         if (animated) {
             val diffResult = DiffUtil.calculateDiff(ListDiffCallback(this.tags, tags, TagDiffCallback(this.tags, tags)))
             this.tags.clear()
             this.tags.addAll(tags)
             diffResult.dispatchUpdatesTo(adapter)
-        } else if (this.tags != tags) {
+        } else {
             this.tags.clear()
             this.tags.addAll(tags)
             adapter.notifyDataSetChanged()
