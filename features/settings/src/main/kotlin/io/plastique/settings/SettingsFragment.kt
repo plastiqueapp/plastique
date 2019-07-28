@@ -45,7 +45,7 @@ class SettingsFragment : BasePreferenceFragment() {
     private fun getMatureContentSummary(): CharSequence {
         val signInText = getString(R.string.common_button_sign_in)
         return SpannableString.valueOf(getString(R.string.settings_content_show_mature_summary, signInText)).apply {
-            val linkSpan = ClickableLinkSpan { navigator.openLogin() }
+            val linkSpan = ClickableLinkSpan { navigator.openSignIn() }
             val signInStart = indexOf(signInText)
             setSpan(linkSpan, signInStart, signInStart + signInText.length, 0)
         }

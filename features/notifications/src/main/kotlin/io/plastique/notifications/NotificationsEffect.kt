@@ -6,6 +6,7 @@ sealed class NotificationsEffect : Effect() {
     object LoadNotificationsEffect : NotificationsEffect()
     object LoadMoreEffect : NotificationsEffect()
     object RefreshEffect : NotificationsEffect()
+    object OpenSignInEffect : NotificationsEffect()
 
     data class DeleteMessageEffect(val messageId: String) : NotificationsEffect()
     data class UndoDeleteMessageEffect(val messageId: String) : NotificationsEffect()

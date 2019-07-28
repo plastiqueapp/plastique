@@ -27,6 +27,7 @@ import io.plastique.gallery.GalleryEffect.CreateFolderEffect
 import io.plastique.gallery.GalleryEffect.DeleteFolderEffect
 import io.plastique.gallery.GalleryEffect.LoadGalleryEffect
 import io.plastique.gallery.GalleryEffect.LoadMoreEffect
+import io.plastique.gallery.GalleryEffect.OpenSignInEffect
 import io.plastique.gallery.GalleryEffect.RefreshEffect
 import io.plastique.gallery.GalleryEffect.UndoDeleteFolderEffect
 import io.plastique.gallery.GalleryEvent.CreateFolderErrorEvent
@@ -57,6 +58,7 @@ import javax.inject.Inject
 class GalleryViewModel @Inject constructor(
     stateReducer: GalleryStateReducer,
     effectHandlerFactory: GalleryEffectHandlerFactory,
+    val navigator: GalleryNavigator,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {
@@ -64,7 +66,7 @@ class GalleryViewModel @Inject constructor(
     lateinit var state: Observable<GalleryViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -117,6 +119,7 @@ class GalleryEffectHandler(
     @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val dataSource: FoldersWithDeviationsDataSource,
     @Provided private val galleryModel: GalleryModel,
+    private val navigator: GalleryNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<GalleryEffect, GalleryEvent> {
 
@@ -166,7 +169,13 @@ class GalleryEffectHandler(
             .flatMapCompletable { effect -> galleryModel.undoDeleteFolderById(effect.folderId) }
             .toObservable<GalleryEvent>()
 
-        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, createFolderEvents, deleteFolderEvents, undoDeleteFolderEvents)
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<GalleryEvent>()
+
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, createFolderEvents, deleteFolderEvents, undoDeleteFolderEvents,
+            navigationEvents)
     }
 }
 
@@ -242,7 +251,11 @@ class GalleryStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadGalleryEffect(state.params))
+            if (!state.signInNeeded) {
+                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadGalleryEffect(state.params))
+            } else {
+                next(state, OpenSignInEffect)
+            }
         }
 
         SnackbarShownEvent -> {

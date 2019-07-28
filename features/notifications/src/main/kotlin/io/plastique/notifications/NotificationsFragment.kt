@@ -43,7 +43,8 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
     ScrollableToTop {
 
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
-    @Inject lateinit var navigator: NotificationsNavigator
+
+    private val navigator: NotificationsNavigator get() = viewModel.navigator
 
     private lateinit var notificationsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -52,8 +53,6 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
-
-    private lateinit var state: NotificationsViewState
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,13 +75,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener {
-            if (!state.isSignedIn) {
-                navigator.openLogin()
-            } else {
-                viewModel.dispatch(RetryClickEvent)
-            }
-        }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, refreshLayout)
@@ -106,8 +99,6 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
     }
 
     private fun renderState(state: NotificationsViewState, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
-
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
 

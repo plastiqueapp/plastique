@@ -60,7 +60,6 @@ import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.java),
     MainPage,
@@ -68,7 +67,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
     OnConfirmListener,
     OnInputDialogResultListener {
 
-    @Inject lateinit var navigator: GalleryNavigator
+    private val navigator: GalleryNavigator get() = viewModel.navigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -140,13 +139,8 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener {
-            if (state.signInNeeded) {
-                navigator.openLogin()
-            } else {
-                viewModel.dispatch(RetryClickEvent)
-            }
-        }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)

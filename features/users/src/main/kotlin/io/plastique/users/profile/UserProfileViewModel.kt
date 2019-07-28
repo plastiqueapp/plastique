@@ -17,8 +17,10 @@ import io.plastique.core.session.userId
 import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.users.R
+import io.plastique.users.UsersNavigator
 import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
+import io.plastique.users.profile.UserProfileEffect.OpenSignInEffect
 import io.plastique.users.profile.UserProfileEffect.SetWatchingEffect
 import io.plastique.users.profile.UserProfileEffect.SignOutEffect
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
@@ -41,13 +43,14 @@ import javax.inject.Inject
 class UserProfileViewModel @Inject constructor(
     stateReducer: UserProfileStateReducer,
     effectHandlerFactory: UserProfileEffectHandlerFactory,
+    val navigator: UsersNavigator,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<UserProfileViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -85,6 +88,7 @@ class UserProfileEffectHandler(
     @Provided private val sessionManager: SessionManager,
     @Provided private val userProfileRepository: UserProfileRepository,
     @Provided private val watchManager: WatchManager,
+    private val navigator: UsersNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<UserProfileEffect, UserProfileEvent> {
 
@@ -114,8 +118,14 @@ class UserProfileEffectHandler(
         val signOutEvents = effects.ofType<SignOutEffect>()
             .doOnNext { sessionManager.logout() }
             .ignoreElements()
+            .toObservable<UserProfileEvent>()
 
-        return Observable.merge(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents.toObservable())
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<UserProfileEvent>()
+
+        return Observable.mergeArray(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents, navigationEvents)
     }
 }
 
@@ -150,7 +160,11 @@ class UserProfileStateReducer @Inject constructor(
         }
 
         is SetWatchingEvent -> {
-            next(state.copy(showProgressDialog = true), SetWatchingEffect(state.username, event.watching))
+            if (state.currentUserId != null) {
+                next(state.copy(showProgressDialog = true), SetWatchingEffect(state.username, event.watching))
+            } else {
+                next(state, OpenSignInEffect)
+            }
         }
 
         SetWatchingFinishedEvent -> {

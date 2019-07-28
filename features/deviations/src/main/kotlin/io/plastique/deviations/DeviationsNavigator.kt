@@ -15,9 +15,9 @@ interface DeviationsNavigator : Navigator {
 
     fun openDeviationInfo(deviationId: String)
 
-    fun openLogin()
-
     fun openPostStatus(shareObjectId: ShareObjectId?)
+
+    fun openSignIn()
 
     fun openTag(tag: String)
 

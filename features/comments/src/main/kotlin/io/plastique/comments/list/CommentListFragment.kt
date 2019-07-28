@@ -89,7 +89,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
 
         composeView = view.findViewById(R.id.compose)
         composeView.onPostCommentListener = { text -> viewModel.dispatch(PostCommentEvent(text)) }
-        composeView.onSignInClickListener = { navigator.openLogin() }
+        composeView.onSignInClickListener = { navigator.openSignIn() }
         composeView.onCancelReplyClickListener = { viewModel.dispatch(CancelReplyClickEvent) }
 
         refreshLayout = view.findViewById(R.id.refresh)

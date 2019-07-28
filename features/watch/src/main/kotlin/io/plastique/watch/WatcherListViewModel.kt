@@ -28,6 +28,7 @@ import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.watch.WatcherListEffect.LoadMoreEffect
 import io.plastique.watch.WatcherListEffect.LoadWatchersEffect
+import io.plastique.watch.WatcherListEffect.OpenSignInEffect
 import io.plastique.watch.WatcherListEffect.RefreshEffect
 import io.plastique.watch.WatcherListEvent.ConnectionStateChangedEvent
 import io.plastique.watch.WatcherListEvent.ItemsChangedEvent
@@ -50,6 +51,7 @@ import javax.inject.Inject
 class WatcherListViewModel @Inject constructor(
     stateReducer: WatcherListStateReducer,
     effectHandlerFactory: WatcherListEffectHandlerFactory,
+    val navigator: WatchNavigator,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
@@ -57,7 +59,7 @@ class WatcherListViewModel @Inject constructor(
     lateinit var state: Observable<WatcherListViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -108,6 +110,7 @@ class WatcherListViewModel @Inject constructor(
 class WatcherListEffectHandler(
     @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val dataSource: WatcherDataSource,
+    private val navigator: WatchNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<WatcherListEffect, WatcherListEvent> {
 
@@ -143,7 +146,12 @@ class WatcherListEffectHandler(
                     .onErrorReturn { error -> RefreshErrorEvent(error) }
             }
 
-        return Observable.merge(loadWatchersEvents, loadMoreEvents, refreshEvents)
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<WatcherListEvent>()
+
+        return Observable.merge(loadWatchersEvents, loadMoreEvents, refreshEvents, navigationEvents)
     }
 }
 
@@ -186,7 +194,11 @@ class WatcherListStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadWatchersEffect(state.username))
+            if (!state.signInNeeded) {
+                next(state.copy(contentState = ContentState.Loading, errorType = ErrorType.None, emptyState = null), LoadWatchersEffect(state.username))
+            } else {
+                next(state, OpenSignInEffect)
+            }
         }
 
         LoadMoreEvent -> {

@@ -31,10 +31,9 @@ import io.plastique.watch.WatcherListEvent.RefreshEvent
 import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewModel::class.java) {
-    @Inject lateinit var navigator: WatchNavigator
+    private val navigator: WatchNavigator get() = viewModel.navigator
 
     private lateinit var watchersView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
@@ -43,8 +42,6 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
     private lateinit var snackbarController: SnackbarController
     private lateinit var adapter: WatcherListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
-
-    private lateinit var state: WatcherListViewState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,13 +68,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener {
-            if (state.signInNeeded) {
-                navigator.openLogin()
-            } else {
-                viewModel.dispatch(RetryClickEvent)
-            }
-        }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
@@ -92,8 +83,6 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
     }
 
     private fun renderState(state: WatcherListViewState, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
-
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
 

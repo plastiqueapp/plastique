@@ -3,7 +3,7 @@ package io.plastique.users
 import io.plastique.core.navigation.Navigator
 
 interface UsersNavigator : Navigator {
-    fun openLogin()
+    fun openSignIn()
 
     fun openUrl(url: String)
 

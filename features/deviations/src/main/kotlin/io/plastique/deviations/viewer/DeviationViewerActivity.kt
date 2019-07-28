@@ -48,8 +48,9 @@ import javax.inject.Inject
 @RuntimePermissions
 class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(DeviationViewerViewModel::class.java) {
     @Inject lateinit var clipboard: Clipboard
-    @Inject lateinit var navigator: DeviationsNavigator
     @Inject lateinit var instantAppHelper: InstantAppHelper
+
+    private val navigator: DeviationsNavigator get() = viewModel.navigator
 
     private lateinit var rootView: View
     private lateinit var appBar: AppBarLayout
@@ -91,13 +92,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
 
         infoPanelView = findViewById(R.id.info_panel)
         infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(author) }
-        infoPanelView.setOnFavoriteClickListener { _, isChecked ->
-            if (lastState.isSignedIn) {
-                viewModel.dispatch(SetFavoriteEvent(!isChecked))
-            } else {
-                navigator.openLogin()
-            }
-        }
+        infoPanelView.setOnFavoriteClickListener { _, isChecked -> viewModel.dispatch(SetFavoriteEvent(!isChecked)) }
         infoPanelView.setOnCommentsClickListener { navigator.openComments(CommentThreadId.Deviation(deviationId)) }
         infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(deviationId) }
 

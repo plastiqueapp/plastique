@@ -3,7 +3,7 @@ package io.plastique.profile
 import io.plastique.core.navigation.Navigator
 
 interface ProfileNavigator : Navigator {
-    fun openLogin()
+    fun openSignIn()
 
     fun openWatchers(username: String?)
 }

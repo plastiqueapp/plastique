@@ -15,6 +15,7 @@ import io.plastique.collections.CollectionsEffect.CreateFolderEffect
 import io.plastique.collections.CollectionsEffect.DeleteFolderEffect
 import io.plastique.collections.CollectionsEffect.LoadCollectionsEffect
 import io.plastique.collections.CollectionsEffect.LoadMoreEffect
+import io.plastique.collections.CollectionsEffect.OpenSignInEffect
 import io.plastique.collections.CollectionsEffect.RefreshEffect
 import io.plastique.collections.CollectionsEffect.UndoDeleteFolderEffect
 import io.plastique.collections.CollectionsEvent.CreateFolderErrorEvent
@@ -57,6 +58,7 @@ import javax.inject.Inject
 class CollectionsViewModel @Inject constructor(
     stateReducer: CollectionsStateReducer,
     effectHandlerFactory: CollectionsEffectHandlerFactory,
+    val navigator: CollectionsNavigator,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {
@@ -64,7 +66,7 @@ class CollectionsViewModel @Inject constructor(
     lateinit var state: Observable<CollectionsViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -117,6 +119,7 @@ class CollectionsEffectHandler(
     @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val dataSource: FoldersWithDeviationsDataSource,
     @Provided private val collectionsModel: CollectionsModel,
+    private val navigator: CollectionsNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<CollectionsEffect, CollectionsEvent> {
 
@@ -166,7 +169,13 @@ class CollectionsEffectHandler(
             .flatMapCompletable { effect -> collectionsModel.undoDeleteFolderById(effect.folderId) }
             .toObservable<CollectionsEvent>()
 
-        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, createFolderEvents, deleteFolderEvents, undoDeleteFolderEvents)
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<CollectionsEvent>()
+
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, createFolderEvents, deleteFolderEvents, undoDeleteFolderEvents,
+            navigationEvents)
     }
 }
 
@@ -241,7 +250,11 @@ class CollectionsStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadCollectionsEffect(state.params))
+            if (!state.signInNeeded) {
+                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadCollectionsEffect(state.params))
+            } else {
+                next(state, OpenSignInEffect)
+            }
         }
 
         SnackbarShownEvent -> {

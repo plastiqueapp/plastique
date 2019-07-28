@@ -12,7 +12,7 @@ interface FeedNavigator : Navigator {
 
     fun openDeviation(deviationId: String)
 
-    fun openLogin()
+    fun openSignIn()
 
     fun openStatus(statusId: String)
 

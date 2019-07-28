@@ -7,6 +7,7 @@ sealed class CollectionsEffect : Effect() {
     data class LoadCollectionsEffect(val params: FolderLoadParams) : CollectionsEffect()
     object LoadMoreEffect : CollectionsEffect()
     object RefreshEffect : CollectionsEffect()
+    object OpenSignInEffect : CollectionsEffect()
 
     data class CreateFolderEffect(val folderName: String) : CollectionsEffect()
 

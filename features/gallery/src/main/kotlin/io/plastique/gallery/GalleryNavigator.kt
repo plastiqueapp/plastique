@@ -8,5 +8,5 @@ interface GalleryNavigator : Navigator {
 
     fun openDeviation(deviationId: String)
 
-    fun openLogin()
+    fun openSignIn()
 }

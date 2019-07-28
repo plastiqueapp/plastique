@@ -59,7 +59,6 @@ import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewModel::class.java),
     MainPage,
@@ -67,7 +66,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
     OnConfirmListener,
     OnInputDialogResultListener {
 
-    @Inject lateinit var navigator: CollectionsNavigator
+    private val navigator: CollectionsNavigator get() = viewModel.navigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var emptyView: EmptyView
@@ -137,13 +136,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener {
-            if (state.signInNeeded) {
-                navigator.openLogin()
-            } else {
-                viewModel.dispatch(RetryClickEvent)
-            }
-        }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)

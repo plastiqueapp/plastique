@@ -7,5 +7,5 @@ interface CollectionsNavigator : Navigator {
 
     fun openDeviation(deviationId: String)
 
-    fun openLogin()
+    fun openSignIn()
 }

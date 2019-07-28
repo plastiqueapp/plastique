@@ -42,8 +42,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewModel::class.java), CompoundButton.OnCheckedChangeListener {
-    @Inject lateinit var navigator: UsersNavigator
     @Inject lateinit var pageProvider: UserProfilePageProvider
+
+    private val navigator: UsersNavigator get() = viewModel.navigator
 
     private lateinit var rootView: View
     private lateinit var avatarView: ImageView

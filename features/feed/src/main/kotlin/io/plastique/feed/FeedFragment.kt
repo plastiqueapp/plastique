@@ -53,7 +53,8 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     OnFeedSettingsChangedListener {
 
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
-    @Inject lateinit var navigator: FeedNavigator
+
+    private val navigator: FeedNavigator get() = viewModel.navigator
 
     private lateinit var feedView: RecyclerView
     private lateinit var emptyView: EmptyView
@@ -64,8 +65,6 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     private lateinit var horizontalProgressViewController: ProgressViewController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-
-    private lateinit var state: FeedViewState
 
     init {
         setHasOptionsMenu(true)
@@ -114,13 +113,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener {
-            if (!state.isSignedIn) {
-                navigator.openLogin()
-            } else {
-                viewModel.dispatch(RetryClickEvent)
-            }
-        }
+        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
         horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)
@@ -163,8 +156,6 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
     }
 
     private fun renderState(state: FeedViewState, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
-
         setHasOptionsMenu(state.isSignedIn)
 
         contentStateController.state = state.contentState

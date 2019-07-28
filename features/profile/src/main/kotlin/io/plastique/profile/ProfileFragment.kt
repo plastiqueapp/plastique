@@ -37,7 +37,7 @@ class ProfileFragment : MvvmFragment<ProfileViewModel>(ProfileViewModel::class.j
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         signInButton = view.findViewById(R.id.button_sign_in)
-        signInButton.setOnClickListener { navigator.openLogin() }
+        signInButton.setOnClickListener { navigator.openSignIn() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -25,6 +25,7 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.feed.FeedEffect.LoadFeedEffect
 import io.plastique.feed.FeedEffect.LoadMoreEffect
+import io.plastique.feed.FeedEffect.OpenSignInEffect
 import io.plastique.feed.FeedEffect.RefreshEffect
 import io.plastique.feed.FeedEffect.SetFavoriteEffect
 import io.plastique.feed.FeedEffect.SetFeedSettingsEffect
@@ -56,13 +57,14 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     stateReducer: FeedStateReducer,
     effectHandlerFactory: FeedEffectHandlerFactory,
+    val navigator: FeedNavigator,
     private val contentSettings: ContentSettings,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -114,6 +116,7 @@ class FeedEffectHandler(
     @Provided private val feedSettingsManager: FeedSettingsManager,
     @Provided private val favoritesModel: FavoritesModel,
     @Provided private val sessionManager: SessionManager,
+    private val navigator: FeedNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<FeedEffect, FeedEvent> {
 
@@ -162,7 +165,12 @@ class FeedEffectHandler(
                     .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
             }
 
-        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, favoriteEvents)
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<FeedEvent>()
+
+        return Observable.mergeArray(loadEvents, loadMoreEvents, refreshEvents, settingsEvents, favoriteEvents, navigationEvents)
     }
 }
 
@@ -232,7 +240,11 @@ class FeedStateReducer @Inject constructor(
         }
 
         RetryClickEvent -> {
-            next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadFeedEffect(state.showMatureContent))
+            if (state.isSignedIn) {
+                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadFeedEffect(state.showMatureContent))
+            } else {
+                next(state, OpenSignInEffect)
+            }
         }
 
         SnackbarShownEvent -> {

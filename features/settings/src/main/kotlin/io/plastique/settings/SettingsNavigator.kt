@@ -5,9 +5,9 @@ import io.plastique.core.navigation.Navigator
 interface SettingsNavigator : Navigator {
     fun openLicenses()
 
-    fun openLogin()
-
     fun openPlayStore(packageName: String)
+
+    fun openSignIn()
 
     fun openUrl(url: String)
 }

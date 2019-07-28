@@ -24,6 +24,7 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.notifications.NotificationsEffect.DeleteMessageEffect
 import io.plastique.notifications.NotificationsEffect.LoadMoreEffect
 import io.plastique.notifications.NotificationsEffect.LoadNotificationsEffect
+import io.plastique.notifications.NotificationsEffect.OpenSignInEffect
 import io.plastique.notifications.NotificationsEffect.RefreshEffect
 import io.plastique.notifications.NotificationsEffect.UndoDeleteMessageEffect
 import io.plastique.notifications.NotificationsEvent.DeleteMessageEvent
@@ -48,13 +49,14 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     stateReducer: NotificationsStateReducer,
     effectHandlerFactory: NotificationsEffectHandlerFactory,
+    val navigator: NotificationsNavigator,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<NotificationsViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandlerFactory.create(screenVisible),
+        effectHandler = effectHandlerFactory.create(navigator, screenVisible),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -100,6 +102,7 @@ class NotificationsEffectHandler(
     @Provided private val connectivityChecker: NetworkConnectivityChecker,
     @Provided private val notificationsModel: NotificationsModel,
     @Provided private val sessionManager: SessionManager,
+    private val navigator: NotificationsNavigator,
     private val screenVisible: Observable<Boolean>
 ) : EffectHandler<NotificationsEffect, NotificationsEvent> {
 
@@ -134,11 +137,18 @@ class NotificationsEffectHandler(
 
         val deleteEvents = effects.ofType<DeleteMessageEffect>()
             .flatMapCompletable { effect -> notificationsModel.deleteMessageById(effect.messageId) }
+            .toObservable<NotificationsEvent>()
 
         val undoDeleteEvents = effects.ofType<UndoDeleteMessageEffect>()
             .flatMapCompletable { effect -> notificationsModel.undoDeleteMessageById(effect.messageId) }
+            .toObservable<NotificationsEvent>()
 
-        return Observable.mergeArray(itemEvents, loadMoreEvents, refreshEvents, deleteEvents.toObservable(), undoDeleteEvents.toObservable())
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<NotificationsEvent>()
+
+        return Observable.mergeArray(itemEvents, loadMoreEvents, refreshEvents, deleteEvents, undoDeleteEvents, navigationEvents)
     }
 }
 
@@ -173,7 +183,11 @@ class NotificationsStateReducer @Inject constructor(
             }
 
             RetryClickEvent -> {
-                next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadNotificationsEffect)
+                if (state.isSignedIn) {
+                    next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadNotificationsEffect)
+                } else {
+                    next(state, OpenSignInEffect)
+                }
             }
 
             LoadMoreEvent -> {

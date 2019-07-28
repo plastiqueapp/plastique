@@ -78,12 +78,12 @@ class AppNavigator @Inject constructor(private val context: Context) : BaseNavig
         navigateTo(LicensesActivity.route(context))
     }
 
-    override fun openLogin() {
-        navigateTo(LoginActivity.route(context))
-    }
-
     override fun openPlayStore(packageName: String) {
         navigateTo(Route.Activity(Intents.openPlayStore(context, packageName)))
+    }
+
+    override fun openSignIn() {
+        navigateTo(LoginActivity.route(context))
     }
 
     override fun openSettings() {

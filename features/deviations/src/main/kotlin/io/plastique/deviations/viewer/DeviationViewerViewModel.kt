@@ -2,6 +2,8 @@ package io.plastique.deviations.viewer
 
 import android.net.Uri
 import com.github.technoir42.rxjava2.extensions.valveLatest
+import com.google.auto.factory.AutoFactory
+import com.google.auto.factory.Provided
 import com.sch.neon.EffectHandler
 import com.sch.neon.MainLoop
 import com.sch.neon.StateReducer
@@ -16,10 +18,12 @@ import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
+import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
 import io.plastique.deviations.viewer.DeviationViewerEffect.DownloadOriginalEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.LoadDeviationEffect
+import io.plastique.deviations.viewer.DeviationViewerEffect.OpenSignInEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.SetFavoriteEffect
 import io.plastique.deviations.viewer.DeviationViewerEvent.DeviationLoadedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
@@ -39,14 +43,15 @@ import javax.inject.Inject
 
 class DeviationViewerViewModel @Inject constructor(
     stateReducer: DeviationViewerStateReducer,
-    effectHandler: DeviationViewerEffectHandler,
+    effectHandlerFactory: DeviationViewerEffectHandlerFactory,
+    val navigator: DeviationsNavigator,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationViewerViewState>
     private val loop = MainLoop(
         reducer = stateReducer,
-        effectHandler = effectHandler,
+        effectHandler = effectHandlerFactory.create(navigator),
         externalEvents = externalEvents(),
         listener = TimberLogger(LOG_TAG))
 
@@ -77,11 +82,13 @@ class DeviationViewerViewModel @Inject constructor(
     }
 }
 
+@AutoFactory
 class DeviationViewerEffectHandler @Inject constructor(
-    private val deviationViewerModel: DeviationViewerModel,
-    private val downloadInfoRepository: DownloadInfoRepository,
-    private val downloader: FileDownloader,
-    private val favoritesModel: FavoritesModel
+    @Provided private val deviationViewerModel: DeviationViewerModel,
+    @Provided private val downloadInfoRepository: DownloadInfoRepository,
+    @Provided private val downloader: FileDownloader,
+    @Provided private val favoritesModel: FavoritesModel,
+    private val navigator: DeviationsNavigator
 ) : EffectHandler<DeviationViewerEffect, DeviationViewerEvent> {
 
     override fun handle(effects: Observable<DeviationViewerEffect>): Observable<DeviationViewerEvent> {
@@ -111,7 +118,12 @@ class DeviationViewerEffectHandler @Inject constructor(
                     .onErrorReturn { error -> SetFavoriteErrorEvent(error) }
             }
 
-        return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents)
+        val navigationEvents = effects.ofType<OpenSignInEffect>()
+            .doOnNext { navigator.openSignIn() }
+            .ignoreElements()
+            .toObservable<DeviationViewerEvent>()
+
+        return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents, navigationEvents)
     }
 }
 
@@ -148,7 +160,11 @@ class DeviationViewerStateReducer @Inject constructor(
             }
 
             is SetFavoriteEvent -> {
-                next(state.copy(showProgressDialog = true), SetFavoriteEffect(state.deviationId, event.favorite))
+                if (state.isSignedIn) {
+                    next(state.copy(showProgressDialog = true), SetFavoriteEffect(state.deviationId, event.favorite))
+                } else {
+                    next(state, OpenSignInEffect)
+                }
             }
 
             SetFavoriteFinishedEvent -> {
