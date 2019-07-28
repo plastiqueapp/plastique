@@ -12,7 +12,9 @@ sealed class UserProfileEvent : Event() {
     data class SetWatchingErrorEvent(val error: Throwable) : UserProfileEvent()
 
     data class UserChangedEvent(val userId: String?) : UserProfileEvent()
+
     object CopyProfileLinkClickEvent : UserProfileEvent()
+    object OpenInBrowserEvent : UserProfileEvent()
     object SnackbarShownEvent : UserProfileEvent()
     object SignOutEvent : UserProfileEvent()
 }

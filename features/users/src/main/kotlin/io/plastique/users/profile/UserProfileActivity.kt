@@ -34,6 +34,7 @@ import io.plastique.users.R
 import io.plastique.users.UsersActivityComponent
 import io.plastique.users.UsersNavigator
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
+import io.plastique.users.profile.UserProfileEvent.OpenInBrowserEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
 import io.plastique.users.profile.UserProfileEvent.SignOutEvent
@@ -118,7 +119,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
             true
         }
         R.id.users_profile_action_open_in_browser -> {
-            navigator.openUrl(state.userProfile!!.url)
+            viewModel.dispatch(OpenInBrowserEvent)
             true
         }
         R.id.users_profile_action_sign_out -> {

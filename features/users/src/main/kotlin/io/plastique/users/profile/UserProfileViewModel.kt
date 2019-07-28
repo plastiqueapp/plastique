@@ -20,11 +20,14 @@ import io.plastique.users.R
 import io.plastique.users.UsersNavigator
 import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
 import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
-import io.plastique.users.profile.UserProfileEffect.OpenSignInEffect
+import io.plastique.users.profile.UserProfileEffect.NavigationEffect
+import io.plastique.users.profile.UserProfileEffect.NavigationEffect.OpenBrowserEffect
+import io.plastique.users.profile.UserProfileEffect.NavigationEffect.OpenSignInEffect
 import io.plastique.users.profile.UserProfileEffect.SetWatchingEffect
 import io.plastique.users.profile.UserProfileEffect.SignOutEffect
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.LoadErrorEvent
+import io.plastique.users.profile.UserProfileEvent.OpenInBrowserEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingErrorEvent
 import io.plastique.users.profile.UserProfileEvent.SetWatchingEvent
@@ -120,8 +123,13 @@ class UserProfileEffectHandler(
             .ignoreElements()
             .toObservable<UserProfileEvent>()
 
-        val navigationEvents = effects.ofType<OpenSignInEffect>()
-            .doOnNext { navigator.openSignIn() }
+        val navigationEvents = effects.ofType<NavigationEffect>()
+            .doOnNext { effect ->
+                when (effect) {
+                    is OpenBrowserEffect -> navigator.openUrl(effect.url)
+                    OpenSignInEffect -> navigator.openSignIn()
+                }
+            }
             .ignoreElements()
             .toObservable<UserProfileEvent>()
 
@@ -153,6 +161,10 @@ class UserProfileStateReducer @Inject constructor(
         CopyProfileLinkClickEvent -> {
             next(state.copy(snackbarState = SnackbarState.Message(R.string.common_message_link_copied)),
                 CopyProfileLinkEffect(state.userProfile!!.url))
+        }
+
+        OpenInBrowserEvent -> {
+            next(state, OpenBrowserEffect(state.userProfile!!.url))
         }
 
         SnackbarShownEvent -> {
