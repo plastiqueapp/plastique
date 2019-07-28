@@ -8,6 +8,7 @@ sealed class DeviationViewerEvent : Event() {
     data class LoadErrorEvent(val error: Throwable) : DeviationViewerEvent()
     object RetryClickEvent : DeviationViewerEvent()
 
+    object CopyLinkClickEvent : DeviationViewerEvent()
     object DownloadOriginalClickEvent : DeviationViewerEvent()
     data class DownloadOriginalErrorEvent(val error: Throwable) : DeviationViewerEvent()
 

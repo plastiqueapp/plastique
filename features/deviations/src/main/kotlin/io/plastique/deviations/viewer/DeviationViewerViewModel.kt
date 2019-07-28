@@ -21,10 +21,12 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.download.DownloadInfoRepository
+import io.plastique.deviations.viewer.DeviationViewerEffect.CopyToClipboardEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.DownloadOriginalEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.LoadDeviationEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.OpenSignInEffect
 import io.plastique.deviations.viewer.DeviationViewerEffect.SetFavoriteEffect
+import io.plastique.deviations.viewer.DeviationViewerEvent.CopyLinkClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DeviationLoadedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalErrorEvent
@@ -35,6 +37,7 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteFinishedEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.UserChangedEvent
+import io.plastique.util.Clipboard
 import io.plastique.util.FileDownloader
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
@@ -84,6 +87,7 @@ class DeviationViewerViewModel @Inject constructor(
 
 @AutoFactory
 class DeviationViewerEffectHandler @Inject constructor(
+    @Provided private val clipboard: Clipboard,
     @Provided private val deviationViewerModel: DeviationViewerModel,
     @Provided private val downloadInfoRepository: DownloadInfoRepository,
     @Provided private val downloader: FileDownloader,
@@ -99,6 +103,11 @@ class DeviationViewerEffectHandler @Inject constructor(
                     .doOnError(Timber::e)
                     .onErrorReturn { error -> LoadErrorEvent(error) }
             }
+
+        val copyToClipboardEvents = effects.ofType<CopyToClipboardEffect>()
+            .map { effect -> clipboard.setText(effect.text) }
+            .ignoreElements()
+            .toObservable<DeviationViewerEvent>()
 
         val downloadOriginalEvents = effects.ofType<DownloadOriginalEffect>()
             .switchMapMaybe { effect ->
@@ -123,7 +132,7 @@ class DeviationViewerEffectHandler @Inject constructor(
             .ignoreElements()
             .toObservable<DeviationViewerEvent>()
 
-        return Observable.merge(loadEvents, downloadOriginalEvents, setFavoriteEvents, navigationEvents)
+        return Observable.mergeArray(loadEvents, copyToClipboardEvents, downloadOriginalEvents, setFavoriteEvents, navigationEvents)
     }
 }
 
@@ -148,6 +157,11 @@ class DeviationViewerStateReducer @Inject constructor(
 
             RetryClickEvent -> {
                 next(state.copy(contentState = ContentState.Loading, emptyState = null), LoadDeviationEffect(state.deviationId))
+            }
+
+            CopyLinkClickEvent -> {
+                next(state.copy(snackbarState = SnackbarState.Message(R.string.common_message_link_copied)),
+                    CopyToClipboardEffect(state.menuState!!.deviationUrl))
             }
 
             DownloadOriginalClickEvent -> {

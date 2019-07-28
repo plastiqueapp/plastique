@@ -15,7 +15,6 @@ import androidx.core.view.updateLayoutParams
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.snackbar.Snackbar
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -28,6 +27,7 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
+import io.plastique.deviations.viewer.DeviationViewerEvent.CopyLinkClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
@@ -37,7 +37,6 @@ import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.ByteCountFormatter
-import io.plastique.util.Clipboard
 import io.plastique.util.InstantAppHelper
 import io.plastique.util.SystemUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,7 +46,6 @@ import javax.inject.Inject
 
 @RuntimePermissions
 class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(DeviationViewerViewModel::class.java) {
-    @Inject lateinit var clipboard: Clipboard
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private val navigator: DeviationsNavigator get() = viewModel.navigator
@@ -62,7 +60,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private val systemUiController = SystemUiController(this)
     private var contentView: DeviationContentView? = null
-    private lateinit var lastState: DeviationViewerViewState
+    private var menuState: MenuState? = null
 
     private val deviationId: String
         get() = intent.getStringExtra(EXTRA_DEVIATION_ID)
@@ -121,7 +119,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_deviation_viewer, menu)
-        lastState.menuState?.let { menu.update(it) }
+        menuState?.let { menu.update(it) }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -130,22 +128,21 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val deviationUrl = lastState.menuState!!.deviationUrl
         return when (item.itemId) {
             R.id.deviations_viewer_action_download -> {
                 downloadOriginalWithPermissionCheck()
                 true
             }
             R.id.deviations_viewer_action_copy_link -> {
-                copyLinkToClipboard(deviationUrl)
+                viewModel.dispatch(CopyLinkClickEvent)
                 true
             }
             R.id.deviations_viewer_action_send_link -> {
-                sendLink(deviationUrl)
+                sendLink(menuState!!.deviationUrl)
                 true
             }
             R.id.deviations_viewer_action_open_in_browser -> {
-                navigator.openUrl(deviationUrl)
+                navigator.openUrl(menuState!!.deviationUrl)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -153,7 +150,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     }
 
     private fun renderState(state: DeviationViewerViewState, prevState: DeviationViewerViewState?) {
-        lastState = state
+        menuState = state.menuState
 
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
@@ -193,11 +190,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadOriginal() {
         viewModel.dispatch(DownloadOriginalClickEvent)
-    }
-
-    private fun copyLinkToClipboard(deviationUrl: String) {
-        clipboard.setText(deviationUrl)
-        Snackbar.make(rootView, R.string.common_message_link_copied, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun sendLink(deviationUrl: String) {

@@ -18,7 +18,7 @@ import io.plastique.core.session.userIdChanges
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.users.R
 import io.plastique.users.UsersNavigator
-import io.plastique.users.profile.UserProfileEffect.CopyProfileLinkEffect
+import io.plastique.users.profile.UserProfileEffect.CopyToClipboardEffect
 import io.plastique.users.profile.UserProfileEffect.LoadUserProfileEffect
 import io.plastique.users.profile.UserProfileEffect.NavigationEffect
 import io.plastique.users.profile.UserProfileEffect.NavigationEffect.OpenBrowserEffect
@@ -105,8 +105,8 @@ class UserProfileEffectHandler(
                     .onErrorReturn { error -> LoadErrorEvent(error) }
             }
 
-        val copyProfileLinkEvents = effects.ofType<CopyProfileLinkEffect>()
-            .map { effect -> clipboard.setText(effect.profileUrl) }
+        val copyToClipboardEvents = effects.ofType<CopyToClipboardEffect>()
+            .map { effect -> clipboard.setText(effect.text) }
             .ignoreElements()
             .toObservable<UserProfileEvent>()
 
@@ -133,7 +133,7 @@ class UserProfileEffectHandler(
             .ignoreElements()
             .toObservable<UserProfileEvent>()
 
-        return Observable.mergeArray(loadEvents, copyProfileLinkEvents, watchEvents, signOutEvents, navigationEvents)
+        return Observable.mergeArray(loadEvents, copyToClipboardEvents, watchEvents, signOutEvents, navigationEvents)
     }
 }
 
@@ -160,7 +160,7 @@ class UserProfileStateReducer @Inject constructor(
 
         CopyProfileLinkClickEvent -> {
             next(state.copy(snackbarState = SnackbarState.Message(R.string.common_message_link_copied)),
-                CopyProfileLinkEffect(state.userProfile!!.url))
+                CopyToClipboardEffect(state.userProfile!!.url))
         }
 
         OpenInBrowserEvent -> {
