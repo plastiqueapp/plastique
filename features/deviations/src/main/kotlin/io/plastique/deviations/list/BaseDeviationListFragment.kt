@@ -73,7 +73,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     private var tags: List<Tag> = emptyList()
     private val tagManager: TagManager? get() = (parentFragment as? TagManagerProvider)?.tagManager
     private lateinit var gridParams: GridParams
-    private lateinit var state: DeviationListViewState
+    private lateinit var layoutMode: LayoutMode
 
     private lateinit var preloaderFactory: DeviationsPreloaderFactory
     private var preloader: ListPreloader? = null
@@ -121,7 +121,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
         val glide = GlideApp.with(this)
         adapter = DeviationsAdapter(
             glide = glide,
-            layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
+            layoutModeProvider = { fixedLayoutMode ?: layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
             onCommentsClick = { threadId -> navigator.openComments(threadId) },
@@ -157,9 +157,9 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
     }
 
     private fun renderState(state: DeviationListViewState, prevState: DeviationListViewState?, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
         @Suppress("UNCHECKED_CAST")
         params = state.params as ParamsType
+        layoutMode = state.layoutMode
 
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
