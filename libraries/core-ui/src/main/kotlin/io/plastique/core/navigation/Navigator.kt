@@ -47,8 +47,13 @@ abstract class BaseNavigator : Navigator {
             Timber.tag(LOG_TAG).d("Navigating to $route")
             context.navigateTo(route)
         } else {
-            queue += route
+            enqueue(route)
         }
+    }
+
+    private fun enqueue(route: Route) {
+        check(queue.size < MAX_QUEUE_SIZE) { "Navigation queue is full" }
+        queue += route
     }
 
     private fun processPendingRoutes(navigationContext: NavigationContext) {
@@ -58,5 +63,6 @@ abstract class BaseNavigator : Navigator {
 
     companion object {
         private const val LOG_TAG = "Navigation"
+        private const val MAX_QUEUE_SIZE = 5
     }
 }
