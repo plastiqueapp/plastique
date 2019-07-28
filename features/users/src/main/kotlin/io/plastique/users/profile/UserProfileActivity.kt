@@ -1,7 +1,6 @@
 package io.plastique.users.profile
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -23,6 +22,8 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.pager.FragmentListPagerAdapter
 import io.plastique.core.snackbar.SnackbarController
@@ -74,13 +75,14 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
             setDisplayHomeAsUpEnabled(true)
         }
         initTabs()
+        navigator.attach(navigationContext)
 
         rootView = findViewById(android.R.id.content)
         avatarView = findViewById(R.id.user_avatar)
         realNameView = findViewById(R.id.user_real_name)
 
         statisticsView = findViewById(R.id.statistics)
-        statisticsView.setOnWatchersClickListener(View.OnClickListener { navigator.openWatchers(navigationContext, username) })
+        statisticsView.setOnWatchersClickListener(View.OnClickListener { navigator.openWatchers(username) })
 
         watchButton = findViewById(R.id.button_watch)
         watchButton.setOnCheckedChangeListener(this)
@@ -115,7 +117,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
             true
         }
         R.id.users_profile_action_open_in_browser -> {
-            navigator.openUrl(navigationContext, state.userProfile!!.url)
+            navigator.openUrl(state.userProfile!!.url)
             true
         }
         R.id.users_profile_action_sign_out -> {
@@ -132,11 +134,7 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
             buttonView.isChecked = state.userProfile?.isWatching == true
             buttonView.setOnCheckedChangeListener(this)
 
-            if (state.isSignedIn) {
-                viewModel.dispatch(SetWatchingEvent(isChecked))
-            } else {
-                navigator.openLogin(navigationContext)
-            }
+            viewModel.dispatch(SetWatchingEvent(isChecked))
         }
     }
 
@@ -194,10 +192,8 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
     companion object {
         private const val EXTRA_USERNAME = "username"
 
-        fun createIntent(context: Context, username: String): Intent {
-            return Intent(context, UserProfileActivity::class.java).apply {
-                putExtra(EXTRA_USERNAME, username)
-            }
+        fun route(context: Context, username: String): Route = activityRoute<UserProfileActivity>(context) {
+            putExtra(EXTRA_USERNAME, username)
         }
     }
 }

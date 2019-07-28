@@ -21,8 +21,7 @@ class HotDeviationsFragment : BaseDeviationListFragment<HotParams>() {
     }
 
     override fun onTagClick(tag: Tag) {
-        val intent = CategoryListActivity.createIntent(requireContext(), tag.payload as Category)
-        startActivityForResult(intent, REQUEST_CODE_SELECT_CATEGORY)
+        navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
     }
 
     override fun injectDependencies() {

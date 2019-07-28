@@ -23,6 +23,11 @@ class SettingsFragment : BasePreferenceFragment() {
     @Inject lateinit var navigator: SettingsNavigator
     @Inject lateinit var sessionManager: SessionManager
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_main, rootKey)
 
@@ -40,7 +45,7 @@ class SettingsFragment : BasePreferenceFragment() {
     private fun getMatureContentSummary(): CharSequence {
         val signInText = getString(R.string.common_button_sign_in)
         return SpannableString.valueOf(getString(R.string.settings_content_show_mature_summary, signInText)).apply {
-            val linkSpan = ClickableLinkSpan { navigator.openLogin(navigationContext) }
+            val linkSpan = ClickableLinkSpan { navigator.openLogin() }
             val signInStart = indexOf(signInText)
             setSpan(linkSpan, signInStart, signInStart + signInText.length, 0)
         }

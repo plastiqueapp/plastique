@@ -1,26 +1,27 @@
 package io.plastique.settings.licenses
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
-import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
+import io.plastique.settings.SettingsNavigator
 import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
 class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::class.java) {
-    @Inject lateinit var browserLauncher: BrowserLauncher
+    @Inject lateinit var navigator: SettingsNavigator
 
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: LicensesAdapter
@@ -33,8 +34,7 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::clas
             setDisplayHomeAsUpEnabled(true)
         }
 
-        adapter = LicensesAdapter(
-            onLicenseClick = { license -> browserLauncher.openUrl(this, license.url) })
+        adapter = LicensesAdapter(onLicenseClick = { license -> navigator.openUrl(license.url) })
 
         val licensesView = findViewById<RecyclerView>(R.id.licenses)
         licensesView.adapter = adapter
@@ -78,8 +78,6 @@ class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::clas
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, LicensesActivity::class.java)
-        }
+        fun route(context: Context): Route = activityRoute<LicensesActivity>(context)
     }
 }

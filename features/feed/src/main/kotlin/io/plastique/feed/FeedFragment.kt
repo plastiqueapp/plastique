@@ -1,5 +1,6 @@
 package io.plastique.feed
 
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -70,6 +71,11 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
         setHasOptionsMenu(true)
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed, container, false)
     }
@@ -87,13 +93,13 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
             glide = GlideApp.with(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
-            onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
-            onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
-            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
+            onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },
+            onCommentsClick = { threadId -> navigator.openComments(threadId) },
+            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) },
-            onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
-            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
+            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) },
+            onStatusClick = { statusId -> navigator.openStatus(statusId) },
+            onUserClick = { user -> navigator.openUserProfile(user) })
 
         feedView = view.findViewById(R.id.feed)
         feedView.adapter = adapter
@@ -110,7 +116,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener {
             if (!state.isSignedIn) {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }

@@ -1,16 +1,16 @@
 package io.plastique.notifications
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 import io.plastique.users.User
 
-interface NotificationsNavigator {
-    fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String)
+interface NotificationsNavigator : Navigator {
+    fun openCollectionFolder(username: String?, folderId: String, folderName: String)
 
-    fun openDeviation(navigationContext: NavigationContext, deviationId: String)
+    fun openDeviation(deviationId: String)
 
-    fun openLogin(navigationContext: NavigationContext)
+    fun openLogin()
 
-    fun openStatus(navigationContext: NavigationContext, statusId: String)
+    fun openStatus(statusId: String)
 
-    fun openUserProfile(navigationContext: NavigationContext, user: User)
+    fun openUserProfile(user: User)
 }

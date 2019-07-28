@@ -50,6 +50,8 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        navigator.attach(navigationContext)
+
         val toolbar = setActionBar(R.id.toolbar)
         toolbar.setTitleOnClickListener(View.OnClickListener { scrollToTop() })
 
@@ -85,11 +87,11 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
-            state.user?.let { navigator.openUserProfile(navigationContext, it) }
+            state.user?.let { navigator.openUserProfile(it) }
             true
         }
         R.id.main_action_settings -> {
-            navigator.openSettings(navigationContext)
+            navigator.openSettings()
             true
         }
         R.id.main_action_install_full_version -> {

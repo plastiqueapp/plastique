@@ -1,35 +1,14 @@
 package io.plastique.core.navigation
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import io.plastique.core.browser.BrowserLauncher
 
 interface NavigationContext {
-    val context: Context
-    val fragmentManager: FragmentManager
+    val lifecycle: Lifecycle
 
-    fun startActivity(intent: Intent, options: Bundle? = null)
-}
-
-private class ActivityNavigationContext(private val activity: FragmentActivity) : NavigationContext {
-    override val context: Context get() = activity
-    override val fragmentManager: FragmentManager get() = activity.supportFragmentManager
-
-    override fun startActivity(intent: Intent, options: Bundle?) {
-        activity.startActivity(intent, options)
-    }
-}
-
-private class FragmentNavigationContext(private val fragment: Fragment) : NavigationContext {
-    override val context: Context get() = fragment.requireContext()
-    override val fragmentManager: FragmentManager get() = fragment.childFragmentManager
-
-    override fun startActivity(intent: Intent, options: Bundle?) {
-        fragment.startActivity(intent, options)
-    }
+    fun navigateTo(route: Route)
 }
 
 val FragmentActivity.navigationContext: NavigationContext
@@ -37,3 +16,31 @@ val FragmentActivity.navigationContext: NavigationContext
 
 val Fragment.navigationContext: NavigationContext
     get() = FragmentNavigationContext(this)
+
+private class ActivityNavigationContext(private val activity: FragmentActivity) : NavigationContext {
+    override val lifecycle: Lifecycle get() = activity.lifecycle
+
+    override fun navigateTo(route: Route) {
+        when (route) {
+            is Route.Activity -> activity.startActivity(route.intent)
+            is Route.ActivityWithResult -> activity.startActivityForResult(route.intent, route.requestCode)
+            is Route.Url -> BrowserLauncher().openUrl(activity, route.url)
+        }
+    }
+
+    override fun toString(): String = "ActivityNavigationContext(${activity.javaClass.name})"
+}
+
+private class FragmentNavigationContext(private val fragment: Fragment) : NavigationContext {
+    override val lifecycle: Lifecycle get() = fragment.lifecycle
+
+    override fun navigateTo(route: Route) {
+        when (route) {
+            is Route.Activity -> fragment.startActivity(route.intent)
+            is Route.ActivityWithResult -> fragment.startActivityForResult(route.intent, route.requestCode)
+            is Route.Url -> BrowserLauncher().openUrl(fragment.requireContext(), route.url)
+        }
+    }
+
+    override fun toString(): String = "FragmentNavigationContext(${fragment.javaClass.name})"
+}

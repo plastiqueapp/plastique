@@ -1,7 +1,6 @@
 package io.plastique.deviations.info
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.widget.ImageView
@@ -14,6 +13,8 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.text.RichTextView
 import io.plastique.deviations.DeviationsActivityComponent
@@ -50,6 +51,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
+        navigator.attach(navigationContext)
 
         authorNameView = findViewById(R.id.deviation_author_name)
         authorAvatarView = findViewById(R.id.deviation_author_avatar)
@@ -61,7 +63,7 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        tagListAdapter = TagListAdapter(onTagClick = { tag -> navigator.openTag(navigationContext, tag) })
+        tagListAdapter = TagListAdapter(onTagClick = { tag -> navigator.openTag(tag) })
         tagsView.adapter = tagListAdapter
         tagsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
@@ -114,9 +116,8 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
         private const val EXTRA_DEVIATION_ID = "deviation_id"
         private val PUBLISH_DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.ENGLISH)
 
-        fun createIntent(context: Context, deviationId: String): Intent {
-            return Intent(context, DeviationInfoActivity::class.java)
-                .putExtra(EXTRA_DEVIATION_ID, deviationId)
+        fun route(context: Context, deviationId: String): Route = activityRoute<DeviationInfoActivity>(context) {
+            putExtra(EXTRA_DEVIATION_ID, deviationId)
         }
     }
 }

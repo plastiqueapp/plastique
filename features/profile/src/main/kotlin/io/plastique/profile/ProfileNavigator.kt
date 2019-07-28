@@ -1,9 +1,9 @@
 package io.plastique.profile
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 
-interface ProfileNavigator {
-    fun openLogin(navigationContext: NavigationContext)
+interface ProfileNavigator : Navigator {
+    fun openLogin()
 
-    fun openWatchers(navigationContext: NavigationContext, username: String?)
+    fun openWatchers(username: String?)
 }

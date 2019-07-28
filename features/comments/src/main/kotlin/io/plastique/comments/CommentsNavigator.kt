@@ -1,10 +1,10 @@
 package io.plastique.comments
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 import io.plastique.users.User
 
-interface CommentsNavigator {
-    fun openLogin(navigationContext: NavigationContext)
+interface CommentsNavigator : Navigator {
+    fun openLogin()
 
-    fun openUserProfile(navigationContext: NavigationContext, user: User)
+    fun openUserProfile(user: User)
 }

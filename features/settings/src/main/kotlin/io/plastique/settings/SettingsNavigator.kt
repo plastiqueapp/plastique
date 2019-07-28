@@ -1,9 +1,13 @@
 package io.plastique.settings
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 
-interface SettingsNavigator {
-    fun openLogin(navigationContext: NavigationContext)
+interface SettingsNavigator : Navigator {
+    fun openLicenses()
 
-    fun openPlayStore(navigationContext: NavigationContext, packageName: String)
+    fun openLogin()
+
+    fun openPlayStore(packageName: String)
+
+    fun openUrl(url: String)
 }

@@ -1,7 +1,6 @@
 package io.plastique.settings
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -12,6 +11,8 @@ import androidx.preference.PreferenceFragmentCompat
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.BaseActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
 class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -58,8 +59,6 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
     }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, SettingsActivity::class.java)
-        }
+        fun route(context: Context): Route = activityRoute<SettingsActivity>(context)
     }
 }

@@ -10,11 +10,10 @@ import android.text.style.ForegroundColorSpan
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
-import io.plastique.core.browser.BrowserLauncher
 import io.plastique.core.config.AppConfig
+import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
-import io.plastique.settings.licenses.LicensesActivity
 import io.plastique.util.Intents
 import io.plastique.util.VersionNumberComparator
 import java.util.regex.Pattern
@@ -22,10 +21,14 @@ import javax.inject.Inject
 
 class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickListener {
     @Inject lateinit var appConfig: AppConfig
-    @Inject lateinit var browserLauncher: BrowserLauncher
     @Inject lateinit var navigator: SettingsNavigator
 
     private var newVersionAvailable: Boolean = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_about, rootKey)
@@ -66,27 +69,23 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
             true
         }
         "send_feedback" -> {
-            val intent = Intents.sendEmail(
-                to = arrayOf(appConfig.getString("feedback_email")),
-                subject = appConfig.getString("feedback_subject"),
-                title = getString(R.string.about_send_email_title))
-            startActivity(intent)
+            sendFeedback()
             true
         }
         "privacy_policy" -> {
-            browserLauncher.openUrl(requireContext(), appConfig.getString("privacy_policy_url"))
+            navigator.openUrl(appConfig.getString("privacy_policy_url"))
             true
         }
         "deviantart_privacy_policy" -> {
-            browserLauncher.openUrl(requireContext(), appConfig.getString("deviantart_privacy_policy_url"))
+            navigator.openUrl(appConfig.getString("deviantart_privacy_policy_url"))
             true
         }
         "deviantart_tos" -> {
-            browserLauncher.openUrl(requireContext(), appConfig.getString("deviantart_terms_of_service_url"))
+            navigator.openUrl(appConfig.getString("deviantart_terms_of_service_url"))
             true
         }
         "licenses" -> {
-            startActivity(LicensesActivity.createIntent(requireContext()))
+            navigator.openLicenses()
             true
         }
         "app_version" -> {
@@ -98,15 +97,23 @@ class AboutFragment : BasePreferenceFragment(), Preference.OnPreferenceClickList
         else -> false
     }
 
-    private fun isNewVersionAvailable(currentVersionName: String): Boolean {
-        val currentAppVersionWithoutSuffix = DEV_VERSION_NAME_SUFFIX.matcher(currentVersionName).replaceFirst("")
-        val latestAppVersion = appConfig.getString("app_latest_version")
-        return latestAppVersion.isNotEmpty() && VersionNumberComparator().compare(currentAppVersionWithoutSuffix, latestAppVersion) < 0
+    private fun sendFeedback() {
+        val route = Route.Activity(Intents.sendEmail(
+            to = arrayOf(appConfig.getString("feedback_email")),
+            subject = appConfig.getString("feedback_subject"),
+            title = getString(R.string.about_send_email_title)))
+        navigator.navigateTo(route)
     }
 
     private fun openPlayStore(context: Context) {
         val packageName = DEV_PACKAGE_NAME_SUFFIX.matcher(context.packageName).replaceFirst("")
-        navigator.openPlayStore(navigationContext, packageName)
+        navigator.openPlayStore(packageName)
+    }
+
+    private fun isNewVersionAvailable(currentVersionName: String): Boolean {
+        val currentAppVersionWithoutSuffix = DEV_VERSION_NAME_SUFFIX.matcher(currentVersionName).replaceFirst("")
+        val latestAppVersion = appConfig.getString("app_latest_version")
+        return latestAppVersion.isNotEmpty() && VersionNumberComparator().compare(currentAppVersionWithoutSuffix, latestAppVersion) < 0
     }
 
     override fun injectDependencies() {

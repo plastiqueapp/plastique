@@ -1,11 +1,11 @@
 package io.plastique.users
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 
-interface UsersNavigator {
-    fun openLogin(navigationContext: NavigationContext)
+interface UsersNavigator : Navigator {
+    fun openLogin()
 
-    fun openUrl(navigationContext: NavigationContext, url: String)
+    fun openUrl(url: String)
 
-    fun openWatchers(navigationContext: NavigationContext, username: String?)
+    fun openWatchers(username: String?)
 }

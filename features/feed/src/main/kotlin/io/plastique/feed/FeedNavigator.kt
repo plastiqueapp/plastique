@@ -1,22 +1,22 @@
 package io.plastique.feed
 
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 import io.plastique.statuses.ShareObjectId
 import io.plastique.users.User
 
-interface FeedNavigator {
-    fun openCollectionFolder(navigationContext: NavigationContext, username: String?, folderId: String, folderName: String)
+interface FeedNavigator : Navigator {
+    fun openCollectionFolder(username: String?, folderId: String, folderName: String)
 
-    fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId)
+    fun openComments(threadId: CommentThreadId)
 
-    fun openDeviation(navigationContext: NavigationContext, deviationId: String)
+    fun openDeviation(deviationId: String)
 
-    fun openLogin(navigationContext: NavigationContext)
+    fun openLogin()
 
-    fun openStatus(navigationContext: NavigationContext, statusId: String)
+    fun openStatus(statusId: String)
 
-    fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?)
+    fun openPostStatus(shareObjectId: ShareObjectId?)
 
-    fun openUserProfile(navigationContext: NavigationContext, user: User)
+    fun openUserProfile(user: User)
 }

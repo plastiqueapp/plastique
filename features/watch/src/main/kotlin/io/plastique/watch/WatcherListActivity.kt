@@ -1,7 +1,6 @@
 package io.plastique.watch
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +20,8 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.glide.GlideApp
@@ -48,6 +49,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watcher_list)
+        navigator.attach(navigationContext)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)
         initToolbar(username)
@@ -55,7 +57,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         val glide = GlideApp.with(this)
         adapter = WatcherListAdapter(
             glide = glide,
-            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
+            onUserClick = { user -> navigator.openUserProfile(user) })
 
         watchersView = findViewById(R.id.watchers)
         watchersView.layoutManager = LinearLayoutManager(this)
@@ -71,7 +73,7 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener {
             if (state.signInNeeded) {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }
@@ -145,10 +147,8 @@ class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewMo
         private const val LOAD_MORE_THRESHOLD = 10
         private const val MAX_PRELOAD = 10
 
-        fun createIntent(context: Context, username: String?): Intent {
-            return Intent(context, WatcherListActivity::class.java).apply {
-                putExtra(EXTRA_USERNAME, username)
-            }
+        fun route(context: Context, username: String?): Route = activityRoute<WatcherListActivity>(context) {
+            putExtra(EXTRA_USERNAME, username)
         }
     }
 }

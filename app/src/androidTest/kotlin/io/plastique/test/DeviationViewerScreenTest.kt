@@ -7,6 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.screenshot.Screenshot
+import io.plastique.core.navigation.Route
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.inject.components.AppComponent
 import io.plastique.inject.getComponent
@@ -34,8 +35,8 @@ class DeviationViewerScreenTest {
 
     @Test
     fun screenshot() {
-        val intent = DeviationViewerActivity.createIntent(ApplicationProvider.getApplicationContext(), "63B2F441-CF22-9866-71A0-326888A3241C")
-        ActivityScenario.launch<DeviationViewerActivity>(intent)
+        val route = DeviationViewerActivity.route(ApplicationProvider.getApplicationContext(), "63B2F441-CF22-9866-71A0-326888A3241C") as Route.Activity
+        ActivityScenario.launch<DeviationViewerActivity>(route.intent)
 
         Thread.sleep(4000)
         onIdle()

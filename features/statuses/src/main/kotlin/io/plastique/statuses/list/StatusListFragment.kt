@@ -1,5 +1,6 @@
 package io.plastique.statuses.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,11 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_status_list, container, false)
     }
@@ -56,10 +62,10 @@ class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel
         statusesAdapter = StatusListAdapter(
             glide = GlideApp.with(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
-            onStatusClick = { statusId -> navigator.openStatus(navigationContext, statusId) },
-            onCommentsClick = { statusId -> navigator.openComments(navigationContext, CommentThreadId.Status(statusId)) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
+            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
+            onStatusClick = { statusId -> navigator.openStatus(statusId) },
+            onCommentsClick = { statusId -> navigator.openComments(CommentThreadId.Status(statusId)) },
+            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
         statusesView = view.findViewById(R.id.statuses)
         statusesView.adapter = statusesAdapter

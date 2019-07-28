@@ -3,7 +3,6 @@ package io.plastique.auth
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -20,6 +19,8 @@ import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.Intents
@@ -133,8 +134,6 @@ class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), 
         private const val DIALOG_AUTH_ERROR = "dialog.auth_error"
         private const val MAX_PROGRESS = 100
 
-        fun createIntent(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
-        }
+        fun route(context: Context): Route = activityRoute<LoginActivity>(context)
     }
 }

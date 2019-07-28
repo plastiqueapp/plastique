@@ -1,5 +1,6 @@
 package io.plastique.comments.list
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,11 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_comment_list, container, false)
     }
@@ -67,7 +73,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
             elapsedTimeFormatter = elapsedTimeFormatter,
             onReplyClick = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) },
             onReplyingToClick = { commentId -> scrollToComment(commentId) },
-            onUserClick = { user -> navigator.openUserProfile(navigationContext, user) })
+            onUserClick = { user -> navigator.openUserProfile(user) })
 
         commentsView = view.findViewById(R.id.comments)
         commentsView.adapter = adapter
@@ -83,7 +89,7 @@ class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewMo
 
         composeView = view.findViewById(R.id.compose)
         composeView.onPostCommentListener = { text -> viewModel.dispatch(PostCommentEvent(text)) }
-        composeView.onSignInClickListener = { navigator.openLogin(navigationContext) }
+        composeView.onSignInClickListener = { navigator.openLogin() }
         composeView.onCancelReplyClickListener = { viewModel.dispatch(CancelReplyClickEvent) }
 
         refreshLayout = view.findViewById(R.id.refresh)

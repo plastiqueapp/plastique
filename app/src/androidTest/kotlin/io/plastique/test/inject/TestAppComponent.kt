@@ -11,6 +11,7 @@ import io.plastique.inject.modules.DebugInitializerModule
 import io.plastique.inject.modules.DebugOkHttpInterceptorModule
 import io.plastique.inject.modules.DebuggingModule
 import io.plastique.inject.modules.DeviationsModule
+import io.plastique.inject.modules.NavigationModule
 import io.plastique.inject.modules.NetworkModule
 import io.plastique.inject.modules.ViewModelModule
 import io.plastique.test.inject.modules.TestInitializerModule
@@ -25,6 +26,7 @@ import javax.inject.Singleton
     DebugInitializerModule::class,
     DebugOkHttpInterceptorModule::class,
     DeviationsModule::class,
+    NavigationModule::class,
     NetworkModule::class,
     TestInitializerModule::class,
     ViewModelModule::class

@@ -1,5 +1,6 @@
 package io.plastique.gallery
 
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -80,6 +81,11 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
 
     private lateinit var state: GalleryViewState
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
@@ -106,9 +112,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
             glide = glide,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item ->
-                navigator.openGalleryFolder(navigationContext,
-                    GalleryFolderId(id = item.folder.id, username = state.params.username),
-                    item.folder.name)
+                navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
             },
             onFolderLongClick = { item, itemView ->
                 if (state.showMenu && item.folder.isDeletable) {
@@ -118,7 +122,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
                     false
                 }
             },
-            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
+            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
         galleryView = view.findViewById(R.id.gallery)
         galleryView.adapter = adapter
@@ -138,7 +142,7 @@ class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.j
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener {
             if (state.signInNeeded) {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }

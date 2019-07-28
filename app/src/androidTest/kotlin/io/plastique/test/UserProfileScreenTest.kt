@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.screenshot.Screenshot
+import io.plastique.core.navigation.Route
 import io.plastique.inject.components.AppComponent
 import io.plastique.inject.getComponent
 import io.plastique.test.util.IdlingResourceRule
@@ -36,8 +37,8 @@ class UserProfileScreenTest {
 
     @Test
     fun screenshot() {
-        val intent = UserProfileActivity.createIntent(ApplicationProvider.getApplicationContext(), "rossdraws")
-        ActivityScenario.launch<UserProfileActivity>(intent)
+        val route = UserProfileActivity.route(ApplicationProvider.getApplicationContext(), "rossdraws") as Route.Activity
+        ActivityScenario.launch<UserProfileActivity>(route.intent)
 
         Thread.sleep(2000)
         onView(withText("Gallery")).perform(click())

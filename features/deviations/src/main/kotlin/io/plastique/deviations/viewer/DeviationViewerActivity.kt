@@ -2,7 +2,6 @@ package io.plastique.deviations.viewer
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -22,6 +21,8 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
@@ -72,6 +73,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
+        navigator.attach(navigationContext)
 
         rootView = findViewById(R.id.root)
         appBar = findViewById(R.id.appbar)
@@ -88,16 +90,16 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
         }
 
         infoPanelView = findViewById(R.id.info_panel)
-        infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(navigationContext, author) }
+        infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(author) }
         infoPanelView.setOnFavoriteClickListener { _, isChecked ->
             if (lastState.isSignedIn) {
                 viewModel.dispatch(SetFavoriteEvent(!isChecked))
             } else {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             }
         }
-        infoPanelView.setOnCommentsClickListener { navigator.openComments(navigationContext, CommentThreadId.Deviation(deviationId)) }
-        infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(navigationContext, deviationId) }
+        infoPanelView.setOnCommentsClickListener { navigator.openComments(CommentThreadId.Deviation(deviationId)) }
+        infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(deviationId) }
 
         val contentView = findViewById<ViewGroup>(R.id.content)
         contentView.setOnApplyWindowInsetsListener { _, insets ->
@@ -148,7 +150,7 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
                 true
             }
             R.id.deviations_viewer_action_open_in_browser -> {
-                navigator.openUrl(navigationContext, deviationUrl)
+                navigator.openUrl(deviationUrl)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -224,10 +226,8 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     companion object {
         private const val EXTRA_DEVIATION_ID = "deviation_id"
 
-        fun createIntent(context: Context, deviationId: String): Intent {
-            return Intent(context, DeviationViewerActivity::class.java).apply {
-                putExtra(EXTRA_DEVIATION_ID, deviationId)
-            }
+        fun route(context: Context, deviationId: String): Route = activityRoute<DeviationViewerActivity>(context) {
+            putExtra(EXTRA_DEVIATION_ID, deviationId)
         }
     }
 }

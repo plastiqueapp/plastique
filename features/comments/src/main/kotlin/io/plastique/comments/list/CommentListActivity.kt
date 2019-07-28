@@ -1,7 +1,6 @@
 package io.plastique.comments.list
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.github.technoir42.android.extensions.instantiate
@@ -12,6 +11,8 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.R
 import io.plastique.core.BaseActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
 class CommentListActivity : BaseActivity() {
@@ -50,10 +51,8 @@ class CommentListActivity : BaseActivity() {
     companion object {
         private const val EXTRA_THREAD_ID = "thread_id"
 
-        fun createIntent(context: Context, threadId: CommentThreadId): Intent {
-            return Intent(context, CommentListActivity::class.java).apply {
-                putExtra(EXTRA_THREAD_ID, threadId)
-            }
+        fun route(context: Context, threadId: CommentThreadId): Route = activityRoute<CommentListActivity>(context) {
+            putExtra(EXTRA_THREAD_ID, threadId)
         }
     }
 }

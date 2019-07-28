@@ -1,7 +1,6 @@
 package io.plastique.collections.deviations
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.github.technoir42.android.extensions.instantiate
@@ -12,6 +11,8 @@ import io.plastique.collections.CollectionsActivityComponent
 import io.plastique.collections.R
 import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.BaseActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
 class FolderDeviationListActivity : BaseActivity() {
@@ -56,11 +57,9 @@ class FolderDeviationListActivity : BaseActivity() {
         private const val EXTRA_FOLDER_ID = "folder_id"
         private const val EXTRA_FOLDER_NAME = "folder_name"
 
-        fun createIntent(context: Context, folderId: CollectionFolderId, folderName: String): Intent {
-            return Intent(context, FolderDeviationListActivity::class.java).apply {
-                putExtra(EXTRA_FOLDER_ID, folderId)
-                putExtra(EXTRA_FOLDER_NAME, folderName)
-            }
+        fun route(context: Context, folderId: CollectionFolderId, folderName: String): Route = activityRoute<FolderDeviationListActivity>(context) {
+            putExtra(EXTRA_FOLDER_ID, folderId)
+            putExtra(EXTRA_FOLDER_NAME, folderName)
         }
     }
 }

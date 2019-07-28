@@ -1,5 +1,6 @@
 package io.plastique.collections
 
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -79,6 +80,11 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
 
     private lateinit var state: CollectionsViewState
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_collections, container, false)
     }
@@ -104,7 +110,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         adapter = CollectionsAdapter(
             glide = glide,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { item -> navigator.openCollectionFolder(navigationContext, state.params.username, item.folder.id, item.folder.name) },
+            onFolderClick = { item -> navigator.openCollectionFolder(state.params.username, item.folder.id, item.folder.name) },
             onFolderLongClick = { item, itemView ->
                 if (state.showMenu && item.folder.isDeletable) {
                     showFolderPopupMenu(item.folder, itemView)
@@ -113,7 +119,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
                     false
                 }
             },
-            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) })
+            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
         collectionsView = view.findViewById(R.id.collections)
         collectionsView.adapter = adapter
@@ -133,7 +139,7 @@ class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewMo
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener {
             if (state.signInNeeded) {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }

@@ -83,6 +83,11 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             value?.attach(deviationsView)
         }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_deviations, container, false)
     }
@@ -118,10 +123,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragmen
             glide = glide,
             layoutModeProvider = { fixedLayoutMode ?: state.layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
-            onDeviationClick = { deviationId -> navigator.openDeviation(navigationContext, deviationId) },
-            onCommentsClick = { threadId -> navigator.openComments(navigationContext, threadId) },
+            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
+            onCommentsClick = { threadId -> navigator.openComments(threadId) },
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(navigationContext, shareObjectId) })
+            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
         preloaderFactory = DeviationsPreloaderFactory(glide, deviationsView, adapter)
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }

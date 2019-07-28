@@ -1,14 +1,14 @@
 package io.plastique.statuses
 
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 
-interface StatusesNavigator {
-    fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId)
+interface StatusesNavigator : Navigator {
+    fun openComments(threadId: CommentThreadId)
 
-    fun openDeviation(navigationContext: NavigationContext, deviationId: String)
+    fun openDeviation(deviationId: String)
 
-    fun openStatus(navigationContext: NavigationContext, statusId: String)
+    fun openStatus(statusId: String)
 
-    fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?)
+    fun openPostStatus(shareObjectId: ShareObjectId?)
 }

@@ -1,7 +1,6 @@
 package io.plastique.gallery.deviations
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.github.technoir42.android.extensions.instantiate
@@ -9,6 +8,8 @@ import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
 import io.plastique.core.BaseActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.gallery.GalleryActivityComponent
 import io.plastique.gallery.R
 import io.plastique.gallery.folders.GalleryFolderId
@@ -56,11 +57,9 @@ class FolderDeviationListActivity : BaseActivity() {
         private const val EXTRA_FOLDER_ID = "folder_id"
         private const val EXTRA_FOLDER_NAME = "folder_name"
 
-        fun createIntent(context: Context, folderId: GalleryFolderId, folderName: String): Intent {
-            return Intent(context, FolderDeviationListActivity::class.java).apply {
-                putExtra(EXTRA_FOLDER_ID, folderId)
-                putExtra(EXTRA_FOLDER_NAME, folderName)
-            }
+        fun route(context: Context, folderId: GalleryFolderId, folderName: String): Route = activityRoute<FolderDeviationListActivity>(context) {
+            putExtra(EXTRA_FOLDER_ID, folderId)
+            putExtra(EXTRA_FOLDER_NAME, folderName)
         }
     }
 }

@@ -8,6 +8,7 @@ import io.plastique.inject.modules.AppModule
 import io.plastique.inject.modules.DatabaseModule
 import io.plastique.inject.modules.DeviationsModule
 import io.plastique.inject.modules.InitializerModule
+import io.plastique.inject.modules.NavigationModule
 import io.plastique.inject.modules.NetworkModule
 import io.plastique.inject.modules.OkHttpInterceptorModule
 import io.plastique.inject.modules.ViewModelModule
@@ -20,6 +21,7 @@ import javax.inject.Singleton
     DatabaseModule::class,
     DeviationsModule::class,
     InitializerModule::class,
+    NavigationModule::class,
     NetworkModule::class,
     OkHttpInterceptorModule::class,
     ViewModelModule::class

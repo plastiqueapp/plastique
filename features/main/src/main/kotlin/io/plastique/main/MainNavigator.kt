@@ -1,10 +1,10 @@
 package io.plastique.main
 
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
 import io.plastique.users.User
 
-interface MainNavigator {
-    fun openSettings(navigationContext: NavigationContext)
+interface MainNavigator : Navigator {
+    fun openSettings()
 
-    fun openUserProfile(navigationContext: NavigationContext, user: User)
+    fun openUserProfile(user: User)
 }

@@ -7,13 +7,12 @@ import io.plastique.comments.CommentsActivityComponent
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.gallery.GalleryActivityComponent
 import io.plastique.inject.BaseActivityComponent
-import io.plastique.inject.modules.NavigationModule
 import io.plastique.main.MainActivityComponent
 import io.plastique.settings.SettingsActivityComponent
 import io.plastique.users.UsersActivityComponent
 import io.plastique.watch.WatchActivityComponent
 
-@Subcomponent(modules = [NavigationModule::class])
+@Subcomponent
 interface ActivityComponent :
     BaseActivityComponent,
     AuthActivityComponent,

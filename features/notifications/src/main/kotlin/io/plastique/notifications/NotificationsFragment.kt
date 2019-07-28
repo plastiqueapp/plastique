@@ -1,5 +1,6 @@
 package io.plastique.notifications
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,11 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
 
     private lateinit var state: NotificationsViewState
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        navigator.attach(navigationContext)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notifications, container, false)
     }
@@ -72,7 +78,7 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener {
             if (!state.isSignedIn) {
-                navigator.openLogin(navigationContext)
+                navigator.openLogin()
             } else {
                 viewModel.dispatch(RetryClickEvent)
             }
@@ -119,11 +125,11 @@ class NotificationsFragment : MvvmFragment<NotificationsViewModel>(Notifications
         return NotificationsAdapter(
             glide = GlideApp.with(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(navigationContext, username, folderId, folderName) },
+            onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },
             onOpenComment = { /* TODO */ },
-            onOpenDeviation = { navigator.openDeviation(navigationContext, it) },
-            onOpenStatus = { navigator.openStatus(navigationContext, it) },
-            onOpenUserProfile = { navigator.openUserProfile(navigationContext, it) })
+            onOpenDeviation = { navigator.openDeviation(it) },
+            onOpenStatus = { navigator.openStatus(it) },
+            onOpenUserProfile = { navigator.openUserProfile(it) })
     }
 
     private fun initSwipe() {

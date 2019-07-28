@@ -25,8 +25,7 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
     override fun onTagClick(tag: Tag) {
         when (tag.type) {
             Tag.TYPE_CATEGORY -> {
-                val intent = CategoryListActivity.createIntent(requireContext(), tag.payload as Category)
-                startActivityForResult(intent, REQUEST_CODE_SELECT_CATEGORY)
+                navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
             }
             Tag.TYPE_TIME_RANGE -> {
                 val dialog = childFragmentManager.fragmentFactory.instantiate<TimeRangeDialogFragment>(requireContext())

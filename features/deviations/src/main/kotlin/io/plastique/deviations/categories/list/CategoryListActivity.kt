@@ -15,6 +15,8 @@ import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.activityRoute
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.R
@@ -101,11 +103,10 @@ class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListVie
         private const val EXTRA_PARENT_CATEGORY = "parent_category"
         const val RESULT_SELECTED_CATEGORY = "selected_category"
 
-        fun createIntent(context: Context, selectedCategory: Category): Intent {
-            val parentCategory = if (selectedCategory.hasChildren) selectedCategory else selectedCategory.parent!!
-            return Intent(context, CategoryListActivity::class.java).apply {
+        fun route(context: Context, requestCode: Int, selectedCategory: Category): Route =
+            activityRoute<CategoryListActivity>(context, requestCode = requestCode) {
+                val parentCategory = if (selectedCategory.hasChildren) selectedCategory else selectedCategory.parent!!
                 putExtra(EXTRA_PARENT_CATEGORY, parentCategory)
             }
-        }
     }
 }

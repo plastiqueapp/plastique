@@ -1,24 +1,27 @@
 package io.plastique.deviations
 
 import io.plastique.comments.CommentThreadId
-import io.plastique.core.navigation.NavigationContext
+import io.plastique.core.navigation.Navigator
+import io.plastique.deviations.categories.Category
 import io.plastique.statuses.ShareObjectId
 import io.plastique.users.User
 
-interface DeviationsNavigator {
-    fun openComments(navigationContext: NavigationContext, threadId: CommentThreadId)
+interface DeviationsNavigator : Navigator {
+    fun openCategoryList(selectedCategory: Category, requestCode: Int)
 
-    fun openDeviation(navigationContext: NavigationContext, deviationId: String)
+    fun openComments(threadId: CommentThreadId)
 
-    fun openDeviationInfo(navigationContext: NavigationContext, deviationId: String)
+    fun openDeviation(deviationId: String)
 
-    fun openLogin(navigationContext: NavigationContext)
+    fun openDeviationInfo(deviationId: String)
 
-    fun openPostStatus(navigationContext: NavigationContext, shareObjectId: ShareObjectId?)
+    fun openLogin()
 
-    fun openTag(navigationContext: NavigationContext, tag: String)
+    fun openPostStatus(shareObjectId: ShareObjectId?)
 
-    fun openUserProfile(navigationContext: NavigationContext, user: User)
+    fun openTag(tag: String)
 
-    fun openUrl(navigationContext: NavigationContext, url: String)
+    fun openUserProfile(user: User)
+
+    fun openUrl(url: String)
 }

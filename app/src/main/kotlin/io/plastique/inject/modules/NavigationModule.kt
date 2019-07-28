@@ -2,7 +2,7 @@ package io.plastique.inject.modules
 
 import dagger.Binds
 import dagger.Module
-import io.plastique.Navigator
+import io.plastique.AppNavigator
 import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentsNavigator
 import io.plastique.deviations.DeviationsNavigator
@@ -19,38 +19,38 @@ import io.plastique.watch.WatchNavigator
 @Module
 interface NavigationModule {
     @Binds
-    fun bindCollectionsNavigator(impl: Navigator): CollectionsNavigator
+    fun bindCollectionsNavigator(impl: AppNavigator): CollectionsNavigator
 
     @Binds
-    fun bindCommentsNavigator(impl: Navigator): CommentsNavigator
+    fun bindCommentsNavigator(impl: AppNavigator): CommentsNavigator
 
     @Binds
-    fun bindDeviationsNavigator(impl: Navigator): DeviationsNavigator
+    fun bindDeviationsNavigator(impl: AppNavigator): DeviationsNavigator
 
     @Binds
-    fun bindFeedNavigator(impl: Navigator): FeedNavigator
+    fun bindFeedNavigator(impl: AppNavigator): FeedNavigator
 
     @Binds
-    fun bindGalleryNavigator(impl: Navigator): GalleryNavigator
+    fun bindGalleryNavigator(impl: AppNavigator): GalleryNavigator
 
     @Binds
-    fun bindMainNavigator(impl: Navigator): MainNavigator
+    fun bindMainNavigator(impl: AppNavigator): MainNavigator
 
     @Binds
-    fun bindNotificationsNavigator(impl: Navigator): NotificationsNavigator
+    fun bindNotificationsNavigator(impl: AppNavigator): NotificationsNavigator
 
     @Binds
-    fun bindProfileNavigator(impl: Navigator): ProfileNavigator
+    fun bindProfileNavigator(impl: AppNavigator): ProfileNavigator
 
     @Binds
-    fun bindSettingsNavigator(impl: Navigator): SettingsNavigator
+    fun bindSettingsNavigator(impl: AppNavigator): SettingsNavigator
 
     @Binds
-    fun bindStatusesNavigator(impl: Navigator): StatusesNavigator
+    fun bindStatusesNavigator(impl: AppNavigator): StatusesNavigator
 
     @Binds
-    fun bindUsersNavigator(impl: Navigator): UsersNavigator
+    fun bindUsersNavigator(impl: AppNavigator): UsersNavigator
 
     @Binds
-    fun bindWatchNavigator(impl: Navigator): WatchNavigator
+    fun bindWatchNavigator(impl: AppNavigator): WatchNavigator
 }
