@@ -1,6 +1,6 @@
 package io.plastique.core.mvvm
 
-import android.os.Bundle
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import io.plastique.core.BaseFragment
@@ -16,8 +16,8 @@ abstract class MvvmFragment<VM : BaseViewModel>(private val viewModelClass: Clas
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         viewModel.subscribeToLifecycle(lifecycle)
     }
 }

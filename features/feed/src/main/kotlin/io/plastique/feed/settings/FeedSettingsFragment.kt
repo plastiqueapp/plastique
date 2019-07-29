@@ -49,12 +49,8 @@ class FeedSettingsFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listener = getCallback()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         viewModel.subscribeToLifecycle(lifecycle)
+        listener = getCallback()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
