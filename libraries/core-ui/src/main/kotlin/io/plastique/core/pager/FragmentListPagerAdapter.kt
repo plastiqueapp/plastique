@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.github.technoir42.android.extensions.instantiate
 import java.lang.reflect.Field
 
 class FragmentListPagerAdapter private constructor(
@@ -23,11 +24,10 @@ class FragmentListPagerAdapter private constructor(
 
     override fun getItem(position: Int): Fragment {
         val page = pages[position]
-        return fragmentManager.fragmentFactory.instantiate(context.classLoader, page.fragmentClass.name).apply {
-            arguments = Bundle(page.args).apply {
-                putBoolean(ARG_IN_VIEWPAGER, true)
-            }
+        val args = Bundle(page.args).apply {
+            putBoolean(ARG_IN_VIEWPAGER, true)
         }
+        return fragmentManager.fragmentFactory.instantiate(context, page.fragmentClass, args)
     }
 
     override fun getCount(): Int = pages.size

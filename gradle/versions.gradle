@@ -31,7 +31,7 @@ ext.versions = [
         instantApps: "17.0.0",
     ],
 
-    androidExtensions    : "0.1.1",
+    androidExtensions    : "0.1.2",
     kotlin               : "1.3.41",
     kotlinExtensions     : "0.0.1",
     autoFactory          : "1.0-beta6",
