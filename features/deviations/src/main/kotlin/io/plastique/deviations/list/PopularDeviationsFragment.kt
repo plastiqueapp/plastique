@@ -2,7 +2,6 @@ package io.plastique.deviations.list
 
 import android.app.Activity
 import android.content.Intent
-import com.github.technoir42.android.extensions.instantiate
 import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.deviations.PopularParams
 import io.plastique.deviations.TimeRange
@@ -24,13 +23,8 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
 
     override fun onTagClick(tag: Tag) {
         when (tag.type) {
-            Tag.TYPE_CATEGORY -> {
-                navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
-            }
-            Tag.TYPE_TIME_RANGE -> {
-                val dialog = childFragmentManager.fragmentFactory.instantiate<TimeRangeDialogFragment>(requireContext())
-                dialog.show(childFragmentManager, null)
-            }
+            Tag.TYPE_CATEGORY -> navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
+            Tag.TYPE_TIME_RANGE -> navigator.showTimeRangeDialog(DIALOG_TIME_RANGE)
         }
     }
 
@@ -44,5 +38,6 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
 
     companion object {
         private const val REQUEST_CODE_SELECT_CATEGORY = 0
+        private const val DIALOG_TIME_RANGE = "dialog_time_range"
     }
 }

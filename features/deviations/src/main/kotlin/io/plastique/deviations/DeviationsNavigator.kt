@@ -24,4 +24,6 @@ interface DeviationsNavigator : Navigator {
     fun openUserProfile(user: User)
 
     fun openUrl(url: String)
+
+    fun showTimeRangeDialog(tag: String)
 }

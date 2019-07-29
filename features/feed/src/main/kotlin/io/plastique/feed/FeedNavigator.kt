@@ -19,4 +19,6 @@ interface FeedNavigator : Navigator {
     fun openPostStatus(shareObjectId: ShareObjectId?)
 
     fun openUserProfile(user: User)
+
+    fun showFeedSettingsDialog(tag: String)
 }

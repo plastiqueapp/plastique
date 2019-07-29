@@ -20,6 +20,8 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.dialogRoute
 import io.plastique.feed.R
 import io.plastique.feed.settings.FeedSettingsEvent.RetryClickEvent
 import io.plastique.feed.settings.FeedSettingsEvent.SetEnabledEvent
@@ -140,6 +142,10 @@ class FeedSettingsFragment :
 
     private val FeedSettingsViewState.items: List<OptionItem>
         get() = if (this is FeedSettingsViewState.Content) items else emptyList()
+
+    companion object {
+        fun route(tag: String): Route = dialogRoute<FeedSettingsFragment>(tag)
+    }
 }
 
 interface OnFeedSettingsChangedListener {

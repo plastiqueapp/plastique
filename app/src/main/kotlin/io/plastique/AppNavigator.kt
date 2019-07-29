@@ -13,8 +13,10 @@ import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.categories.Category
 import io.plastique.deviations.categories.list.CategoryListActivity
 import io.plastique.deviations.info.DeviationInfoActivity
+import io.plastique.deviations.list.TimeRangeDialogFragment
 import io.plastique.deviations.viewer.DeviationViewerActivity
 import io.plastique.feed.FeedNavigator
+import io.plastique.feed.settings.FeedSettingsFragment
 import io.plastique.gallery.GalleryNavigator
 import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.main.MainNavigator
@@ -117,5 +119,13 @@ class AppNavigator @Inject constructor(private val context: Context) : BaseNavig
 
     override fun openUrl(url: String) {
         navigateTo(Route.Url(url))
+    }
+
+    override fun showFeedSettingsDialog(tag: String) {
+        navigateTo(FeedSettingsFragment.route(tag))
+    }
+
+    override fun showTimeRangeDialog(tag: String) {
+        navigateTo(TimeRangeDialogFragment.route(tag))
     }
 }

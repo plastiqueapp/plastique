@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import com.github.technoir42.android.extensions.getCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.plastique.core.navigation.Route
+import io.plastique.core.navigation.dialogRoute
 import io.plastique.deviations.R
 import io.plastique.deviations.TimeRange
 
@@ -50,6 +52,10 @@ class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListene
         TimeRange.Week -> R.string.deviations_popular_time_range_1_week
         TimeRange.Month -> R.string.deviations_popular_time_range_1_month
         TimeRange.AllTime -> R.string.deviations_popular_time_range_all_time
+    }
+
+    companion object {
+        fun route(tag: String): Route = dialogRoute<TimeRangeDialogFragment>(tag)
     }
 }
 

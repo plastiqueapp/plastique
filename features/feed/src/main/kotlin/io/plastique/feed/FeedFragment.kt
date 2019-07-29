@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -39,7 +38,6 @@ import io.plastique.feed.FeedEvent.SetFavoriteEvent
 import io.plastique.feed.FeedEvent.SetFeedSettingsEvent
 import io.plastique.feed.FeedEvent.SnackbarShownEvent
 import io.plastique.feed.settings.FeedSettings
-import io.plastique.feed.settings.FeedSettingsFragment
 import io.plastique.feed.settings.OnFeedSettingsChangedListener
 import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
@@ -139,8 +137,7 @@ class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.feed_action_settings -> {
-            val fragment = childFragmentManager.fragmentFactory.instantiate<FeedSettingsFragment>(requireContext())
-            fragment.show(childFragmentManager, DIALOG_FEED_SETTINGS)
+            navigator.showFeedSettingsDialog(DIALOG_FEED_SETTINGS)
             true
         }
         else -> super.onOptionsItemSelected(item)
