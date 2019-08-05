@@ -60,10 +60,9 @@ class FeedSettingsFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        optionsAdapter = OptionsAdapter()
-        optionsAdapter.onOptionCheckedChangedListener = { key, checked ->
+        optionsAdapter = OptionsAdapter(onOptionCheckedChanged = { key, checked ->
             viewModel.dispatch(SetEnabledEvent(key, checked))
-        }
+        })
 
         optionsView = view.findViewById(R.id.options)
         optionsView.adapter = optionsAdapter

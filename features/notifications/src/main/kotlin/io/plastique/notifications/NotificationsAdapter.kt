@@ -217,8 +217,8 @@ internal class NotificationsAdapter(
     }
 }
 
-typealias OnOpenCollectionListener = (username: String, folderId: String, folderName: String) -> Unit
-typealias OnOpenCommentListener = (commentId: String) -> Unit
-typealias OnOpenDeviationListener = (deviationId: String) -> Unit
-typealias OnOpenStatusListener = (statusId: String) -> Unit
-typealias OnOpenUserProfileListener = (user: User) -> Unit
+private typealias OnOpenCollectionListener = (username: String, folderId: String, folderName: String) -> Unit
+private typealias OnOpenCommentListener = (commentId: String) -> Unit
+private typealias OnOpenDeviationListener = (deviationId: String) -> Unit
+private typealias OnOpenStatusListener = (statusId: String) -> Unit
+private typealias OnOpenUserProfileListener = (user: User) -> Unit

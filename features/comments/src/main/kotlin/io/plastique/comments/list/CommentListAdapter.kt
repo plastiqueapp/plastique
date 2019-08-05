@@ -119,6 +119,6 @@ internal class CommentListAdapter(
     }
 }
 
-typealias OnReplyClickListener = (commentId: String) -> Unit
-typealias OnReplyingToClickListener = (commentId: String) -> Unit
-typealias OnUserClickListener = (user: User) -> Unit
+private typealias OnReplyClickListener = (commentId: String) -> Unit
+private typealias OnReplyingToClickListener = (commentId: String) -> Unit
+private typealias OnUserClickListener = (user: User) -> Unit

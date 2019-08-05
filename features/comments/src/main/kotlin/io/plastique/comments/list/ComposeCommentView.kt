@@ -113,6 +113,6 @@ class ComposeCommentView(context: Context, attrs: AttributeSet?) : ConstraintLay
     }
 }
 
-typealias OnCancelReplyClickListener = () -> Unit
-typealias OnPostCommentListener = (commentText: String) -> Unit
-typealias OnSignInClickListener = () -> Unit
+internal typealias OnCancelReplyClickListener = () -> Unit
+internal typealias OnPostCommentListener = (commentText: String) -> Unit
+internal typealias OnSignInClickListener = () -> Unit

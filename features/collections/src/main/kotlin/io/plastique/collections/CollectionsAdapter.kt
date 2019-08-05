@@ -132,6 +132,6 @@ internal class CollectionsAdapter(
     }
 }
 
-typealias OnFolderClickListener = (FolderItem) -> Unit
-typealias OnFolderLongClickListener = (FolderItem, View) -> Boolean
-typealias OnDeviationClickListener = (deviationId: String) -> Unit
+private typealias OnFolderClickListener = (FolderItem) -> Unit
+private typealias OnFolderLongClickListener = (FolderItem, View) -> Boolean
+private typealias OnDeviationClickListener = (deviationId: String) -> Unit

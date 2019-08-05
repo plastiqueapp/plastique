@@ -432,8 +432,8 @@ internal class DeviationsAdapter(
     }
 }
 
-typealias LayoutModeProvider = () -> LayoutMode
-typealias OnDeviationClickListener = (deviationId: String) -> Unit
-typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
-typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
-typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
+private typealias LayoutModeProvider = () -> LayoutMode
+private typealias OnDeviationClickListener = (deviationId: String) -> Unit
+private typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
+private typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
+private typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit

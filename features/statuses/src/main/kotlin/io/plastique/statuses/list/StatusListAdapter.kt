@@ -104,7 +104,7 @@ internal class StatusListAdapter(
     }
 }
 
-typealias OnCommentsClickListener = (statusId: String) -> Unit
-typealias OnDeviationClickListener = (deviationId: String) -> Unit
-typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
-typealias OnStatusClickListener = (statusId: String) -> Unit
+private typealias OnCommentsClickListener = (statusId: String) -> Unit
+private typealias OnDeviationClickListener = (deviationId: String) -> Unit
+private typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
+private typealias OnStatusClickListener = (statusId: String) -> Unit

@@ -9,8 +9,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.feed.R
 
-internal class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(), CompoundButton.OnCheckedChangeListener {
-    var onOptionCheckedChangedListener: OnOptionCheckedChangedListener? = null
+internal class OptionsAdapter(
+    private val onOptionCheckedChanged: OnOptionCheckedChangedListener
+) : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(), CompoundButton.OnCheckedChangeListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.item_feed_settings_option)
@@ -26,7 +27,7 @@ internal class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewH
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        onOptionCheckedChangedListener?.invoke(buttonView.tag as String, isChecked)
+        onOptionCheckedChanged(buttonView.tag as String, isChecked)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,4 +35,4 @@ internal class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewH
     }
 }
 
-typealias OnOptionCheckedChangedListener = (key: String, checked: Boolean) -> Unit
+private typealias OnOptionCheckedChangedListener = (key: String, checked: Boolean) -> Unit

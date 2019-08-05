@@ -72,4 +72,4 @@ internal class WatcherListAdapter(
     }
 }
 
-typealias OnUserClickListener = (user: User) -> Unit
+private typealias OnUserClickListener = (user: User) -> Unit

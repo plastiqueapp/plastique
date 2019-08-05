@@ -24,7 +24,11 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.DeviationActionsView
+import io.plastique.deviations.list.GridImageDeviationItemDelegate
+import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
+import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.ImageHelper
+import io.plastique.deviations.list.LayoutMode
 import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
@@ -33,6 +37,7 @@ import io.plastique.statuses.StatusActionsView
 import io.plastique.statuses.isDeleted
 import io.plastique.users.User
 import io.plastique.util.dimensionRatio
+import io.plastique.deviations.list.DeviationItem as InnerDeviationItem
 
 private class CollectionUpdateItemDelegate(
     private val glide: GlideRequests,
@@ -415,10 +420,39 @@ internal class FeedAdapter(
         }
 }
 
-typealias OnCollectionFolderClickListener = (username: String?, folderId: String, folderName: String) -> Unit
-typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
-typealias OnDeviationClickListener = (deviationId: String) -> Unit
-typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
-typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
-typealias OnStatusClickListener = (statusId: String) -> Unit
-typealias OnUserClickListener = (user: User) -> Unit
+private class DeviationsAdapter(
+    glide: GlideRequests,
+    itemSizeCallback: ItemSizeCallback,
+    private val onDeviationClick: OnDeviationClickListener
+) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+
+    init {
+        val layoutModeProvider = { LayoutMode.Grid }
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+    }
+
+    fun update(items: List<ListItem>) {
+        if (this.items != items) {
+            this.items = items
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
+        val position = holder.adapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            val item = items[position] as InnerDeviationItem
+            onDeviationClick(item.deviationId)
+        }
+    }
+}
+
+private typealias OnCollectionFolderClickListener = (username: String?, folderId: String, folderName: String) -> Unit
+private typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
+private typealias OnDeviationClickListener = (deviationId: String) -> Unit
+private typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
+private typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
+private typealias OnStatusClickListener = (statusId: String) -> Unit
+private typealias OnUserClickListener = (user: User) -> Unit
