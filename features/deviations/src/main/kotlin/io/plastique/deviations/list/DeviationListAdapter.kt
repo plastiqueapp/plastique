@@ -387,7 +387,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     }
 }
 
-class DeviationsAdapter(
+internal class DeviationsAdapter(
     glide: GlideRequests,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,

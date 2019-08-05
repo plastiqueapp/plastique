@@ -187,7 +187,7 @@ private class WatchItemDelegate(
     }
 }
 
-class NotificationsAdapter(
+internal class NotificationsAdapter(
     glide: GlideRequests,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onOpenCollection: OnOpenCollectionListener,

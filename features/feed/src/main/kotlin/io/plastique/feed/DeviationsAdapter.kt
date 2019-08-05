@@ -13,7 +13,7 @@ import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
 import io.plastique.glide.GlideRequests
 
-class DeviationsAdapter(
+internal class DeviationsAdapter(
     glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener

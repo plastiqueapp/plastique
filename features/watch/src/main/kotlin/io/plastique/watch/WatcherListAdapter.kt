@@ -53,7 +53,7 @@ private class WatcherItemDelegate(
     }
 }
 
-class WatcherListAdapter(
+internal class WatcherListAdapter(
     glide: GlideRequests,
     private val onUserClick: OnUserClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {

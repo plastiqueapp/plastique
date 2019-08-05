@@ -13,7 +13,7 @@ import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 import kotlin.math.max
 
-class CategoryListAdapter(
+internal class CategoryListAdapter(
     private val onItemClick: OnItemClickListener
 ) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>(), OnViewHolderClickListener {
 

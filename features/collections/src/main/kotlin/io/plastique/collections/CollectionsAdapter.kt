@@ -95,7 +95,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     }
 }
 
-class CollectionsAdapter(
+internal class CollectionsAdapter(
     glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onFolderClick: OnFolderClickListener,

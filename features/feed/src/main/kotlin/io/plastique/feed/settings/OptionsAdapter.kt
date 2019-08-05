@@ -9,7 +9,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.feed.R
 
-class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(), CompoundButton.OnCheckedChangeListener {
+internal class OptionsAdapter : BaseListAdapter<OptionItem, OptionsAdapter.ViewHolder>(), CompoundButton.OnCheckedChangeListener {
     var onOptionCheckedChangedListener: OnOptionCheckedChangedListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

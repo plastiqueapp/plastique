@@ -63,7 +63,7 @@ class StatusItemDelegate(
     }
 }
 
-class StatusListAdapter(
+internal class StatusListAdapter(
     glide: GlideRequests,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onDeviationClick: OnDeviationClickListener,

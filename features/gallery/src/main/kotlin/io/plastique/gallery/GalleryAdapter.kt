@@ -95,7 +95,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     }
 }
 
-class GalleryAdapter(
+internal class GalleryAdapter(
     glide: GlideRequests,
     itemSizeCallback: ItemSizeCallback,
     private val onFolderClick: OnFolderClickListener,

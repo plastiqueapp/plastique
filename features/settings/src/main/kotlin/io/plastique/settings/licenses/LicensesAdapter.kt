@@ -62,7 +62,7 @@ private class LicenseItemDelegate(
     }
 }
 
-class LicensesAdapter(
+internal class LicensesAdapter(
     private val onLicenseClick: OnLicenseClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 

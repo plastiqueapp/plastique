@@ -65,7 +65,7 @@ private class SeparatorItemDelegate(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
-class BreadcrumbsAdapter(
+internal class BreadcrumbsAdapter(
     layoutId: Int,
     separatorDrawableResId: Int
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {

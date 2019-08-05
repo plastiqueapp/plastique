@@ -79,7 +79,7 @@ private class CommentItemDelegate(
     }
 }
 
-class CommentListAdapter(
+internal class CommentListAdapter(
     glide: GlideRequests,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onReplyClick: OnReplyClickListener,

@@ -9,7 +9,7 @@ import io.plastique.core.lists.BaseListAdapter
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 
-class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapter<String, TagListAdapter.ViewHolder>(), OnViewHolderClickListener {
+internal class TagListAdapter(private val onTagClick: OnTagClickListener) : BaseListAdapter<String, TagListAdapter.ViewHolder>(), OnViewHolderClickListener {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_tag)
         return ViewHolder(view, this)

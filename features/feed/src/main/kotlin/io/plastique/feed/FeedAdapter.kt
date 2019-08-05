@@ -328,7 +328,7 @@ private class UsernameChangeItemDelegate(
     }
 }
 
-class FeedAdapter(
+internal class FeedAdapter(
     glide: GlideRequests,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     gridItemSizeCallback: ItemSizeCallback,
