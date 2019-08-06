@@ -13,8 +13,6 @@ dependencies {
     implementation project(":features:deviations")
     implementation project(":features:statuses")
 
-    implementation "androidx.lifecycle:lifecycle-extensions:$versions.androidx.lifecycle"
-
     compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"
     kapt "com.google.auto.factory:auto-factory:$versions.autoFactory"
 

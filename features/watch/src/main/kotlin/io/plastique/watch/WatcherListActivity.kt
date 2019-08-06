@@ -13,13 +13,14 @@ import com.github.technoir42.android.extensions.setTitleOnClickListener
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
+import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
@@ -32,7 +33,8 @@ import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class WatcherListActivity : MvvmActivity<WatcherListViewModel>(WatcherListViewModel::class.java) {
+class WatcherListActivity : BaseActivity() {
+    private val viewModel: WatcherListViewModel by viewModel()
     private val navigator: WatchNavigator get() = viewModel.navigator
 
     private lateinit var watchersView: RecyclerView

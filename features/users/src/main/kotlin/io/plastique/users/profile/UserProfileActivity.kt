@@ -16,12 +16,13 @@ import com.github.technoir42.android.extensions.doOnTabReselected
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.tabs.TabLayout
+import io.plastique.core.BaseActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
@@ -42,9 +43,11 @@ import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewModel::class.java), CompoundButton.OnCheckedChangeListener {
+class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListener {
     @Inject lateinit var pageProvider: UserProfilePageProvider
 
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val viewModel: UserProfileViewModel by viewModel()
     private val navigator: UsersNavigator get() = viewModel.navigator
 
     private lateinit var rootView: View
@@ -56,8 +59,6 @@ class UserProfileActivity : MvvmActivity<UserProfileViewModel>(UserProfileViewMo
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private lateinit var state: UserProfileViewState
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {

@@ -22,6 +22,7 @@ import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
+import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
@@ -39,7 +40,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.list.DeviationItem
@@ -61,12 +62,8 @@ import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class GalleryFragment : MvvmFragment<GalleryViewModel>(GalleryViewModel::class.java),
-    MainPage,
-    ScrollableToTop,
-    OnConfirmListener,
-    OnInputDialogResultListener {
-
+class GalleryFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirmListener, OnInputDialogResultListener {
+    private val viewModel: GalleryViewModel by viewModel()
     private val navigator: GalleryNavigator get() = viewModel.navigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout

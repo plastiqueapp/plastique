@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.getCallback
@@ -20,6 +19,7 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.dialogRoute
 import io.plastique.feed.R
@@ -35,9 +35,7 @@ class FeedSettingsFragment :
     BaseFragmentComponent.Holder,
     DisposableContainer by DisposableContainerImpl() {
 
-    private val viewModel: FeedSettingsViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(this, fragmentComponent.viewModelFactory()).get(FeedSettingsViewModel::class.java)
-    }
+    private val viewModel: FeedSettingsViewModel by viewModel()
 
     private lateinit var optionsView: RecyclerView
     private lateinit var emptyView: EmptyView
@@ -49,7 +47,6 @@ class FeedSettingsFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel.subscribeToLifecycle(lifecycle)
         listener = getCallback()
     }
 

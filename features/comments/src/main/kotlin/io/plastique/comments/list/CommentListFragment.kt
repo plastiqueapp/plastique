@@ -26,6 +26,7 @@ import io.plastique.comments.list.CommentListEvent.RefreshEvent
 import io.plastique.comments.list.CommentListEvent.ReplyClickEvent
 import io.plastique.comments.list.CommentListEvent.RetryClickEvent
 import io.plastique.comments.list.CommentListEvent.SnackbarShownEvent
+import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -34,7 +35,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.lists.smartScrollToPosition
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
@@ -44,9 +45,11 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CommentListFragment : MvvmFragment<CommentListViewModel>(CommentListViewModel::class.java), ScrollableToTop {
+class CommentListFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: CommentsNavigator
+
+    private val viewModel: CommentListViewModel by viewModel()
 
     private lateinit var commentsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout

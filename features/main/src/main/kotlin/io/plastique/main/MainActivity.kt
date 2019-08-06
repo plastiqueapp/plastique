@@ -14,9 +14,10 @@ import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setTitleOnClickListener
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.plastique.core.BaseActivity
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.glide.CustomDrawableTarget
 import io.plastique.glide.GlideApp
@@ -26,7 +27,7 @@ import io.plastique.util.InstantAppHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
+class MainActivity : BaseActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     BottomNavigationView.OnNavigationItemReselectedListener {
 
@@ -35,8 +36,9 @@ class MainActivity : MvvmActivity<MainViewModel>(MainViewModel::class.java),
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
-    private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
+    private val viewModel: MainViewModel by viewModel()
 
+    private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
     private lateinit var state: MainViewState
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {

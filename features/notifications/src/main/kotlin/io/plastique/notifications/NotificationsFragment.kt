@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
+import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
@@ -22,7 +23,7 @@ import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.lists.smartScrollToPosition
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
@@ -38,12 +39,10 @@ import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class NotificationsFragment : MvvmFragment<NotificationsViewModel>(NotificationsViewModel::class.java),
-    MainPage,
-    ScrollableToTop {
-
+class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
+    private val viewModel: NotificationsViewModel by viewModel()
     private val navigator: NotificationsNavigator get() = viewModel.navigator
 
     private lateinit var notificationsView: RecyclerView

@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
+import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.text.RichTextView
 import io.plastique.inject.getComponent
 import io.plastique.users.R
@@ -20,8 +21,10 @@ import io.plastique.users.profile.about.AboutEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class AboutFragment : MvvmFragment<AboutViewModel>(AboutViewModel::class.java), ScrollableToTop {
+class AboutFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var navigator: UsersNavigator
+
+    private val viewModel: AboutViewModel by viewModel()
 
     private lateinit var contentView: NestedScrollView
     private lateinit var bioHeaderView: View

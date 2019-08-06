@@ -10,14 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.BaseFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class ProfileFragment : MvvmFragment<ProfileViewModel>(ProfileViewModel::class.java) {
+class ProfileFragment : BaseFragment() {
     @Inject lateinit var navigator: ProfileNavigator
+
+    private val viewModel: ProfileViewModel by viewModel()
 
     private lateinit var signInButton: Button
 

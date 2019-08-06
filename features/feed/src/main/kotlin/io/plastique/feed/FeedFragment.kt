@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
+import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
@@ -27,7 +28,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.SimpleGridItemSizeCallback
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
@@ -45,13 +46,10 @@ import io.plastique.main.MainPage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class FeedFragment : MvvmFragment<FeedViewModel>(FeedViewModel::class.java),
-    MainPage,
-    ScrollableToTop,
-    OnFeedSettingsChangedListener {
-
+class FeedFragment : BaseFragment(), MainPage, ScrollableToTop, OnFeedSettingsChangedListener {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
+    private val viewModel: FeedViewModel by viewModel()
     private val navigator: FeedNavigator get() = viewModel.navigator
 
     private lateinit var feedView: RecyclerView

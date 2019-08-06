@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
+import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -21,7 +22,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
 import io.plastique.core.lists.smartScrollToPosition
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
@@ -37,9 +38,11 @@ import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class StatusListFragment : MvvmFragment<StatusListViewModel>(StatusListViewModel::class.java), ScrollableToTop {
+class StatusListFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: StatusesNavigator
+
+    private val viewModel: StatusListViewModel by viewModel()
 
     private lateinit var statusesView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout

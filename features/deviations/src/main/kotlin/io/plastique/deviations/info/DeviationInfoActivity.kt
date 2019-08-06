@@ -9,10 +9,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
+import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
@@ -30,8 +31,11 @@ import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
-class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfoViewModel::class.java) {
+class DeviationInfoActivity : BaseActivity() {
     @Inject lateinit var navigator: DeviationsNavigator
+
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val viewModel: DeviationInfoViewModel by viewModel()
 
     private lateinit var authorNameView: TextView
     private lateinit var authorAvatarView: ImageView
@@ -42,7 +46,6 @@ class DeviationInfoActivity : MvvmActivity<DeviationInfoViewModel>(DeviationInfo
     private lateinit var contentStateController: ContentStateController
     private lateinit var tagsView: RecyclerView
     private lateinit var tagListAdapter: TagListAdapter
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

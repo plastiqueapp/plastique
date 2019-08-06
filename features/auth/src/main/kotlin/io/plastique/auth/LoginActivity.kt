@@ -15,10 +15,11 @@ import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.showAllowingStateLoss
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
+import io.plastique.core.BaseActivity
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
@@ -27,7 +28,9 @@ import io.plastique.util.Intents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
-class LoginActivity : MvvmActivity<LoginViewModel>(LoginViewModel::class.java), OnDismissDialogListener {
+class LoginActivity : BaseActivity(), OnDismissDialogListener {
+    private val viewModel: LoginViewModel by viewModel()
+
     private lateinit var progressBar: ProgressBar
     private lateinit var webView: WebView
     private lateinit var progressDialogController: ProgressDialogController

@@ -30,6 +30,7 @@ import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
 import io.plastique.collections.folders.Folder
+import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
@@ -47,7 +48,7 @@ import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.list.DeviationItem
@@ -60,12 +61,8 @@ import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CollectionsFragment : MvvmFragment<CollectionsViewModel>(CollectionsViewModel::class.java),
-    MainPage,
-    ScrollableToTop,
-    OnConfirmListener,
-    OnInputDialogResultListener {
-
+class CollectionsFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirmListener, OnInputDialogResultListener {
+    private val viewModel: CollectionsViewModel by viewModel()
     private val navigator: CollectionsNavigator get() = viewModel.navigator
 
     private lateinit var refreshLayout: SwipeRefreshLayout

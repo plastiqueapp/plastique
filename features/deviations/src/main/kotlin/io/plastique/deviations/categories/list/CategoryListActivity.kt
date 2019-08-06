@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
+import io.plastique.core.BaseActivity
 import io.plastique.core.breadcrumbs.BreadcrumbsView
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.snackbar.SnackbarController
@@ -28,7 +29,9 @@ import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEv
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CategoryListActivity : MvvmActivity<CategoryListViewModel>(CategoryListViewModel::class.java) {
+class CategoryListActivity : BaseActivity() {
+    private val viewModel: CategoryListViewModel by viewModel()
+
     private lateinit var categoriesView: RecyclerView
     private lateinit var breadcrumbsView: BreadcrumbsView
     private lateinit var emptyView: EmptyView

@@ -5,11 +5,12 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
+import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.DividerItemDecoration
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
@@ -20,8 +21,10 @@ import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class LicensesActivity : MvvmActivity<LicensesViewModel>(LicensesViewModel::class.java) {
+class LicensesActivity : BaseActivity() {
     @Inject lateinit var navigator: SettingsNavigator
+
+    private val viewModel: LicensesViewModel by viewModel()
 
     private lateinit var emptyView: EmptyView
     private lateinit var adapter: LicensesAdapter

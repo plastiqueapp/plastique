@@ -16,10 +16,11 @@ import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
 import io.plastique.comments.CommentThreadId
+import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
-import io.plastique.core.mvvm.MvvmActivity
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
@@ -45,9 +46,11 @@ import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
 @RuntimePermissions
-class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(DeviationViewerViewModel::class.java) {
+class DeviationViewerActivity : BaseActivity() {
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
+    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val viewModel: DeviationViewerViewModel by viewModel()
     private val navigator: DeviationsNavigator get() = viewModel.navigator
 
     private lateinit var rootView: View
@@ -57,7 +60,6 @@ class DeviationViewerActivity : MvvmActivity<DeviationViewerViewModel>(Deviation
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
     private val systemUiController = SystemUiController(this)
     private var contentView: DeviationContentView? = null
     private var menuState: MenuState? = null

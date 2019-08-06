@@ -20,6 +20,7 @@ import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -31,7 +32,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
 import io.plastique.core.lists.SimpleGridItemSizeCallback
 import io.plastique.core.lists.calculateDiff
-import io.plastique.core.mvvm.MvvmFragment
+import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsNavigator
@@ -51,11 +52,10 @@ import io.plastique.glide.GlideApp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-abstract class BaseDeviationListFragment<ParamsType : FetchParams> : MvvmFragment<DeviationListViewModel>(DeviationListViewModel::class.java),
-    OnTagClickListener,
-    ScrollableToTop {
-
+abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(), OnTagClickListener, ScrollableToTop {
     @Inject lateinit var navigator: DeviationsNavigator
+
+    private val viewModel: DeviationListViewModel by viewModel()
 
     private lateinit var deviationsView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
