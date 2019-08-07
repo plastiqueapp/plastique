@@ -14,7 +14,6 @@
             android:id="@+id/gallery"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:scrollbars="vertical"
             tools:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
             tools:listitem="@layout/item_gallery_folder" />

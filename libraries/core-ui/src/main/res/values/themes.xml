@@ -21,6 +21,7 @@
         <item name="appBarLayoutStyle">@style/Widget.MaterialComponents.AppBarLayout.Surface</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
         <item name="preferenceTheme">@style/App.PreferenceThemeOverlay</item>
+        <item name="recyclerViewStyle">@style/Widget.App.RecyclerView</item>
         <item name="tabStyle">@style/Widget.App.TabLayout</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
 
