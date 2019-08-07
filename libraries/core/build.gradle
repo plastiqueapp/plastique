@@ -53,9 +53,7 @@ dependencies {
     debugImplementation "com.facebook.soloader:soloader:$versions.soloader"
     debugImplementation "com.facebook.stetho:stetho:$versions.stetho"
     debugImplementation "com.sch.stetho:stetho-timber:$versions.stethoTimber"
-
-    debugApi "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
-    releaseApi "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary"
 
     androidTestImplementation "junit:junit:$versions.junit.four"
     androidTestImplementation "androidx.test:core:$versions.androidx.test.core"

@@ -46,7 +46,7 @@ ext.versions = [
     okio                 : "2.2.2",
     retrofit             : "2.6.2",
     moshi                : "1.9.0-SNAPSHOT",
-    leakCanary           : "1.6.3",
+    leakCanary           : "2.0",
     koptional            : "1.6.0",
     adapterDelegates     : "4.2.0",
     foregroundViews      : "2.5.0",
