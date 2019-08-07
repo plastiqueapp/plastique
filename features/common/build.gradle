@@ -9,6 +9,7 @@ dependencies {
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
 
+    api "androidx.swiperefreshlayout:swiperefreshlayout:$versions.androidx.swiperefreshlayout"
     api "com.github.Commit451.ForegroundViews:foregroundviews:$versions.foregroundViews"
     api "com.github.Commit451.ForegroundViews:foregroundviews-constraintlayout:$versions.foregroundViews"
     api "com.sch.neon:neon:$versions.neon"
