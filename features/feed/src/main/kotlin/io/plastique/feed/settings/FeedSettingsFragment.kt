@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.getCallback
@@ -128,12 +129,14 @@ class FeedSettingsFragment :
         }
     }
 
+    private val FeedSettingsViewState.items: List<OptionItem>
+        get() = if (this is FeedSettingsViewState.Content) items else emptyList()
+
     override val fragmentComponent: BaseFragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
         requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent()
     }
 
-    private val FeedSettingsViewState.items: List<OptionItem>
-        get() = if (this is FeedSettingsViewState.Content) items else emptyList()
+    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory = fragmentComponent.viewModelFactory()
 
     companion object {
         fun route(tag: String): Route = dialogRoute<FeedSettingsFragment>(tag)

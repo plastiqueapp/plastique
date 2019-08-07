@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import io.plastique.core.config.AppConfig
 import io.plastique.inject.BaseActivityComponent
 import io.plastique.inject.BaseAppComponent
@@ -77,6 +78,8 @@ abstract class BaseActivity :
     override fun createFragmentComponent(): BaseFragmentComponent {
         return activityComponent.createFragmentComponent()
     }
+
+    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory = activityComponent.viewModelFactory()
 
     @Suppress("OverridingDeprecatedMember")
     override fun onRetainCustomNonConfigurationInstance(): Any = activityComponent

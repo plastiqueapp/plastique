@@ -1,6 +1,7 @@
 package io.plastique.settings
 
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceFragmentCompat
 import io.plastique.core.DisposableContainer
 import io.plastique.core.DisposableContainerImpl
@@ -28,4 +29,6 @@ abstract class BasePreferenceFragment :
     override val fragmentComponent: BaseFragmentComponent by lazy(LazyThreadSafetyMode.NONE) {
         requireActivity().getComponent<BaseActivityComponent>().createFragmentComponent()
     }
+
+    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory = fragmentComponent.viewModelFactory()
 }
