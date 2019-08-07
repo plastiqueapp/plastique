@@ -29,8 +29,8 @@ import io.plastique.core.time.SystemTimeProvider
 import io.plastique.core.time.TimeProvider
 import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutModeConverter
-import io.plastique.main.MainFragmentFactory
-import io.plastique.main.MainFragmentFactoryImpl
+import io.plastique.main.MainPageProvider
+import io.plastique.main.MainPageProviderImpl
 import io.plastique.users.UserProfilePageProviderImpl
 import io.plastique.users.profile.UserProfilePageProvider
 import io.plastique.util.AesCryptor
@@ -56,7 +56,7 @@ abstract class AppModule {
     abstract fun bindSessionManager(impl: SessionManagerImpl): SessionManager
 
     @Binds
-    abstract fun bindMainFragmentFactory(impl: MainFragmentFactoryImpl): MainFragmentFactory
+    abstract fun bindMainPageProvider(impl: MainPageProviderImpl): MainPageProvider
 
     @Binds
     abstract fun bindUserProfilePageProvider(impl: UserProfilePageProviderImpl): UserProfilePageProvider

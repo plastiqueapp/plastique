@@ -147,7 +147,7 @@ class GalleryFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirmList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = requireArguments().getString(ARG_USERNAME)
+        val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()

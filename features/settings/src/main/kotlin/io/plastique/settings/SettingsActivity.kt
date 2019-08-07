@@ -6,9 +6,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.add
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.BaseActivity
 import io.plastique.core.navigation.Route
@@ -34,9 +34,8 @@ class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceSt
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         if (savedInstanceState == null) {
-            val fragment = supportFragmentManager.fragmentFactory.instantiate<SettingsFragment>(this)
             supportFragmentManager.beginTransaction()
-                .add(R.id.settings_container, fragment)
+                .add<SettingsFragment>(R.id.settings_container)
                 .commit()
         }
     }

@@ -31,7 +31,7 @@ class MainActivity : BaseActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     BottomNavigationView.OnNavigationItemReselectedListener {
 
-    @Inject lateinit var mainFragmentFactory: MainFragmentFactory
+    @Inject lateinit var mainPageProvider: MainPageProvider
     @Inject lateinit var navigator: MainNavigator
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
@@ -69,7 +69,7 @@ class MainActivity : BaseActivity(),
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, R.id.main_tab_browse))
+                .add(R.id.tab_content, mainPageProvider.getPageFragmentClass(R.id.main_tab_browse), null)
                 .commit()
         }
 
@@ -105,7 +105,7 @@ class MainActivity : BaseActivity(),
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.tab_content, mainFragmentFactory.createFragment(this, supportFragmentManager.fragmentFactory, item.itemId))
+            .replace(R.id.tab_content, mainPageProvider.getPageFragmentClass(item.itemId), null)
             .commit()
         return true
     }

@@ -3,7 +3,7 @@ package io.plastique.gallery.deviations
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.github.technoir42.android.extensions.instantiate
+import androidx.fragment.app.add
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
@@ -28,13 +28,11 @@ class FolderDeviationListActivity : BaseActivity() {
         initToolbar(folderId.username, folderName)
 
         if (savedInstanceState == null) {
-            contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = FolderDeviationListFragment.newArgs(folderId))
             supportFragmentManager.beginTransaction()
-                .add(R.id.deviations_container, contentFragment)
+                .add<FolderDeviationListFragment>(R.id.deviations_container, args = FolderDeviationListFragment.newArgs(folderId))
                 .commit()
-        } else {
-            contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as FolderDeviationListFragment
         }
+        contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as FolderDeviationListFragment
     }
 
     private fun initToolbar(username: String?, folderName: String) {

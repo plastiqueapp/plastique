@@ -144,7 +144,7 @@ class CollectionsFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirm
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val username = requireArguments().getString(ARG_USERNAME)
+        val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)
         viewModel.state
             .pairwiseWithPrevious()
@@ -311,7 +311,7 @@ class CollectionsFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirm
         private const val LOAD_MORE_THRESHOLD_ROWS = 4
         private const val MAX_PRELOAD_ROWS = 4
 
-        fun newArgs(username: String? = null): Bundle {
+        fun newArgs(username: String?): Bundle {
             return Bundle().apply {
                 putString(ARG_USERNAME, username)
             }

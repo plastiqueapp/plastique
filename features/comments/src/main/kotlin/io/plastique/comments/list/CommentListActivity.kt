@@ -3,7 +3,7 @@ package io.plastique.comments.list
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.github.technoir42.android.extensions.instantiate
+import androidx.fragment.app.add
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
@@ -25,13 +25,11 @@ class CommentListActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             val username = intent.getParcelableExtra<CommentThreadId>(EXTRA_THREAD_ID)!!
-            contentFragment = supportFragmentManager.fragmentFactory.instantiate(this, args = CommentListFragment.newArgs(username))
             supportFragmentManager.beginTransaction()
-                .add(R.id.comments_container, contentFragment)
+                .add<CommentListFragment>(R.id.comments_container, args = CommentListFragment.newArgs(username))
                 .commit()
-        } else {
-            contentFragment = supportFragmentManager.findFragmentById(R.id.comments_container) as CommentListFragment
         }
+        contentFragment = supportFragmentManager.findFragmentById(R.id.comments_container) as CommentListFragment
     }
 
     override fun injectDependencies() {
