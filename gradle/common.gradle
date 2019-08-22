@@ -54,6 +54,12 @@ plugins.whenPluginAdded { plugin ->
     }
 }
 
+plugins.withId("com.android.library") {
+    android.libraryVariants.all {
+        it.generateBuildConfigProvider.configure { enabled = false }
+    }
+}
+
 plugins.withId("org.jetbrains.kotlin.android.extensions") {
     androidExtensions {
         experimental = true
