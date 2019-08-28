@@ -20,7 +20,7 @@
             android:layout_height="?actionBarSize" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
