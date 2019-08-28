@@ -3,12 +3,10 @@ package io.plastique.collections
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
@@ -61,7 +59,12 @@ import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CollectionsFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirmListener, OnInputDialogResultListener {
+class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
+    MainPage,
+    ScrollableToTop,
+    OnConfirmListener,
+    OnInputDialogResultListener {
+
     private val viewModel: CollectionsViewModel by viewModel()
     private val navigator: CollectionsNavigator get() = viewModel.navigator
 
@@ -79,10 +82,6 @@ class CollectionsFragment : BaseFragment(), MainPage, ScrollableToTop, OnConfirm
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_collections, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

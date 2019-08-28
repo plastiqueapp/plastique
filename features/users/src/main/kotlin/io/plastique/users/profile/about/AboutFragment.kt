@@ -2,9 +2,7 @@ package io.plastique.users.profile.about
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
@@ -21,7 +19,7 @@ import io.plastique.users.profile.about.AboutEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class AboutFragment : BaseFragment(), ScrollableToTop {
+class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToTop {
     @Inject lateinit var navigator: UsersNavigator
 
     private val viewModel: AboutViewModel by viewModel()
@@ -31,10 +29,6 @@ class AboutFragment : BaseFragment(), ScrollableToTop {
     private lateinit var bioView: RichTextView
     private lateinit var emptyView: EmptyView
     private lateinit var contentStateController: ContentStateController
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_users_about, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

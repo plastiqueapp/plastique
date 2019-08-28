@@ -3,12 +3,10 @@ package io.plastique.feed
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -46,7 +44,11 @@ import io.plastique.main.MainPage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class FeedFragment : BaseFragment(), MainPage, ScrollableToTop, OnFeedSettingsChangedListener {
+class FeedFragment : BaseFragment(R.layout.fragment_feed),
+    MainPage,
+    ScrollableToTop,
+    OnFeedSettingsChangedListener {
+
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
     private val viewModel: FeedViewModel by viewModel()
@@ -69,10 +71,6 @@ class FeedFragment : BaseFragment(), MainPage, ScrollableToTop, OnFeedSettingsCh
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feed, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

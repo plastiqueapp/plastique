@@ -2,9 +2,7 @@ package io.plastique.notifications
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +37,7 @@ import io.plastique.notifications.NotificationsEvent.UndoDeleteMessageEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
+class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), MainPage, ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
     private val viewModel: NotificationsViewModel by viewModel()
@@ -56,10 +54,6 @@ class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_notifications, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

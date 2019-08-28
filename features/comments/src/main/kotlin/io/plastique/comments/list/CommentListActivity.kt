@@ -15,12 +15,11 @@ import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
-class CommentListActivity : BaseActivity() {
+class CommentListActivity : BaseActivity(R.layout.activity_comment_list) {
     private lateinit var contentFragment: CommentListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_comment_list)
         initToolbar()
 
         if (savedInstanceState == null) {

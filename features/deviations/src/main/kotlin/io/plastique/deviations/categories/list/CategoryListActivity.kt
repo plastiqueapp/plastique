@@ -29,7 +29,7 @@ import io.plastique.deviations.categories.list.CategoryListEvent.SnackbarShownEv
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CategoryListActivity : BaseActivity() {
+class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
     private val viewModel: CategoryListViewModel by viewModel()
 
     private lateinit var categoriesView: RecyclerView
@@ -44,7 +44,6 @@ class CategoryListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_category_list)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }

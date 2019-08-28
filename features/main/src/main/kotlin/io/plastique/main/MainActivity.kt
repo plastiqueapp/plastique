@@ -27,7 +27,7 @@ import io.plastique.util.InstantAppHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(),
+class MainActivity : BaseActivity(R.layout.activity_main),
     BottomNavigationView.OnNavigationItemSelectedListener,
     BottomNavigationView.OnNavigationItemReselectedListener {
 
@@ -51,7 +51,6 @@ class MainActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         navigator.attach(navigationContext)
 
         val toolbar = setActionBar(R.id.toolbar)

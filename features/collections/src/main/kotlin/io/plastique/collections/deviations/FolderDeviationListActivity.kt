@@ -15,12 +15,11 @@ import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
-class FolderDeviationListActivity : BaseActivity() {
+class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_folder_deviations) {
     private lateinit var contentFragment: FolderDeviationListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_collection_folder_deviations)
 
         val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!

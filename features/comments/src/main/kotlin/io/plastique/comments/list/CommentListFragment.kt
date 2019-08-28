@@ -2,9 +2,7 @@ package io.plastique.comments.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -45,7 +43,7 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class CommentListFragment : BaseFragment(), ScrollableToTop {
+class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: CommentsNavigator
 
@@ -63,10 +61,6 @@ class CommentListFragment : BaseFragment(), ScrollableToTop {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_comment_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

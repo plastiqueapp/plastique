@@ -46,7 +46,7 @@ import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
 @RuntimePermissions
-class DeviationViewerActivity : BaseActivity() {
+class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer) {
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
@@ -69,7 +69,6 @@ class DeviationViewerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_deviation_viewer)
         setHasOptionsMenu(false)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)

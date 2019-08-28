@@ -28,7 +28,7 @@ import io.plastique.util.Intents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
-class LoginActivity : BaseActivity(), OnDismissDialogListener {
+class LoginActivity : BaseActivity(R.layout.activity_login), OnDismissDialogListener {
     private val viewModel: LoginViewModel by viewModel()
 
     private lateinit var progressBar: ProgressBar
@@ -38,7 +38,6 @@ class LoginActivity : BaseActivity(), OnDismissDialogListener {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }

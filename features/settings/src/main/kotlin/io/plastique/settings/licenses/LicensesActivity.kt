@@ -21,7 +21,7 @@ import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class LicensesActivity : BaseActivity() {
+class LicensesActivity : BaseActivity(R.layout.activity_licenses) {
     @Inject lateinit var navigator: SettingsNavigator
 
     private val viewModel: LicensesViewModel by viewModel()
@@ -32,7 +32,6 @@ class LicensesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_licenses)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }

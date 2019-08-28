@@ -2,12 +2,10 @@ package io.plastique.profile
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
 import io.plastique.core.BaseFragment
@@ -17,7 +15,7 @@ import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     @Inject lateinit var navigator: ProfileNavigator
 
     private val viewModel: ProfileViewModel by viewModel()
@@ -32,10 +30,6 @@ class ProfileFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

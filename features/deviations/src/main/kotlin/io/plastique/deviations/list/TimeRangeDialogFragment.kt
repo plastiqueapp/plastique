@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.github.technoir42.android.extensions.getCallback
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.plastique.core.BaseBottomSheetDialogFragment
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.dialogRoute
 import io.plastique.deviations.R
 import io.plastique.deviations.TimeRange
 
-class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListener {
+class TimeRangeDialogFragment : BaseBottomSheetDialogFragment(R.layout.dialog_time_range), View.OnClickListener {
     private var onTimeRangeSelectedListener: OnTimeRangeSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -27,8 +27,10 @@ class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListene
         onTimeRangeSelectedListener = null
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_time_range, container, false) as ViewGroup
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        require(view is ViewGroup)
+        val inflater = LayoutInflater.from(view.context)
         for (timeRange in TimeRange.values()) {
             val textView = inflater.inflate(R.layout.item_time_range, view, false) as TextView
             textView.setText(getTimeRangeResId(timeRange))
@@ -36,7 +38,6 @@ class TimeRangeDialogFragment : BottomSheetDialogFragment(), View.OnClickListene
             textView.setOnClickListener(this)
             view.addView(textView)
         }
-        return view
     }
 
     override fun onClick(view: View) {

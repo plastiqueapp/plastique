@@ -2,9 +2,7 @@ package io.plastique.statuses.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +36,7 @@ import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class StatusListFragment : BaseFragment(), ScrollableToTop {
+class StatusListFragment : BaseFragment(R.layout.fragment_status_list), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: StatusesNavigator
 
@@ -55,10 +53,6 @@ class StatusListFragment : BaseFragment(), ScrollableToTop {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_status_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

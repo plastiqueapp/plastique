@@ -31,7 +31,7 @@ import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
-class DeviationInfoActivity : BaseActivity() {
+class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
     @Inject lateinit var navigator: DeviationsNavigator
 
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
@@ -49,7 +49,6 @@ class DeviationInfoActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_deviation_info)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)

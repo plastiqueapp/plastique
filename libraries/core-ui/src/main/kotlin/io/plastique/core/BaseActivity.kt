@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import io.plastique.core.config.AppConfig
@@ -13,8 +14,7 @@ import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import javax.inject.Inject
 
-abstract class BaseActivity :
-    AppCompatActivity(),
+abstract class BaseActivity(@LayoutRes contentLayoutId: Int) : AppCompatActivity(contentLayoutId),
     BaseActivityComponent.Holder,
     BaseFragmentComponent.Factory,
     DisposableContainer by DisposableContainerImpl() {

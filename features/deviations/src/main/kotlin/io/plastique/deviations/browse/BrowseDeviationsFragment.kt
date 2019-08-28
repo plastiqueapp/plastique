@@ -3,12 +3,10 @@ package io.plastique.deviations.browse
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -33,7 +31,11 @@ import io.plastique.deviations.tags.TagsView
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 
-class BrowseDeviationsFragment : BaseFragment(), MainPage, ScrollableToTop, TagManagerProvider {
+class BrowseDeviationsFragment : BaseFragment(R.layout.fragment_browse_deviations),
+    MainPage,
+    ScrollableToTop,
+    TagManagerProvider {
+
     private val viewModel: BrowseDeviationsViewModel by viewModel()
 
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
@@ -46,10 +48,6 @@ class BrowseDeviationsFragment : BaseFragment(), MainPage, ScrollableToTop, TagM
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_browse_deviations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

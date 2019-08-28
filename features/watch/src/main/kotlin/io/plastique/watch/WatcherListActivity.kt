@@ -33,7 +33,7 @@ import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class WatcherListActivity : BaseActivity() {
+class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
     private val viewModel: WatcherListViewModel by viewModel()
     private val navigator: WatchNavigator get() = viewModel.navigator
 
@@ -47,7 +47,6 @@ class WatcherListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_watcher_list)
         navigator.attach(navigationContext)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)

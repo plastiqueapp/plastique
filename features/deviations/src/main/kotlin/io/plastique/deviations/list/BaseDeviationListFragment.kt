@@ -3,9 +3,7 @@ package io.plastique.deviations.list
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -52,7 +50,10 @@ import io.plastique.glide.GlideApp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(), OnTagClickListener, ScrollableToTop {
+abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(R.layout.fragment_deviations),
+    OnTagClickListener,
+    ScrollableToTop {
+
     @Inject lateinit var navigator: DeviationsNavigator
 
     private val viewModel: DeviationListViewModel by viewModel()
@@ -86,10 +87,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_deviations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -43,7 +43,7 @@ import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListener {
+class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), CompoundButton.OnCheckedChangeListener {
     @Inject lateinit var pageProvider: UserProfilePageProvider
 
     private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
@@ -72,7 +72,6 @@ class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_profile)
         setHasOptionsMenu(false)
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)

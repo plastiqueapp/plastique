@@ -3,16 +3,14 @@ package io.plastique.feed.settings
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.getCallback
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import io.plastique.core.BaseBottomSheetDialogFragment
 import io.plastique.core.DisposableContainer
 import io.plastique.core.DisposableContainerImpl
 import io.plastique.core.content.ContentState
@@ -31,8 +29,7 @@ import io.plastique.inject.BaseFragmentComponent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class FeedSettingsFragment :
-    BottomSheetDialogFragment(),
+class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_feed_settings),
     BaseFragmentComponent.Holder,
     DisposableContainer by DisposableContainerImpl() {
 
@@ -49,10 +46,6 @@ class FeedSettingsFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = getCallback()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_feed_settings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -15,12 +15,11 @@ import io.plastique.gallery.R
 import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.inject.getComponent
 
-class FolderDeviationListActivity : BaseActivity() {
+class FolderDeviationListActivity : BaseActivity(R.layout.activity_gallery_folder_deviations) {
     private lateinit var contentFragment: FolderDeviationListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery_folder_deviations)
 
         val folderId = intent.getParcelableExtra<GalleryFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
