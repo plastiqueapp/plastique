@@ -10,16 +10,16 @@ import androidx.room.Update
 @Dao
 interface CacheEntryDao {
     @Query("SELECT * FROM cache_entries WHERE `key` = :key")
-    fun getEntryByKey(key: String): CacheEntry?
+    fun getEntryByKey(key: String): CacheEntryEntity?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(entry: CacheEntry): Long
+    fun insert(entry: CacheEntryEntity): Long
 
     @Update
-    fun update(entry: CacheEntry)
+    fun update(entry: CacheEntryEntity)
 
     @Transaction
-    fun insertOrUpdate(entry: CacheEntry) {
+    fun insertOrUpdate(entry: CacheEntryEntity) {
         if (insert(entry) == -1L) {
             update(entry)
         }

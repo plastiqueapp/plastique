@@ -8,8 +8,8 @@ import io.plastique.collections.CollectionDao
 import io.plastique.comments.CommentDao
 import io.plastique.comments.CommentEntity
 import io.plastique.comments.CommentLinkage
-import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryDao
+import io.plastique.core.cache.CacheEntryEntity
 import io.plastique.core.db.converters.DurationConverter
 import io.plastique.core.db.converters.InstantConverter
 import io.plastique.core.db.converters.SizeConverter
@@ -51,7 +51,7 @@ import io.plastique.gallery.folders.FolderLinkage as GalleryFolderLinkage
 
 @Database(
     entities = [
-        CacheEntry::class,
+        CacheEntryEntity::class,
         CategoryEntity::class,
 
         CollectionFolderEntity::class,

@@ -48,7 +48,7 @@ class UserProfileRepository @Inject constructor(
     private fun refreshUserProfile(username: String, cacheKey: String): Completable {
         return userService.getUserProfile(username)
             .doOnSuccess { userProfile ->
-                val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant)
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
                 persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
             }
             .mapError { error ->

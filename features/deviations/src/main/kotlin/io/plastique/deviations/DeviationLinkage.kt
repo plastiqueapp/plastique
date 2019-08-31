@@ -4,13 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import io.plastique.core.cache.CacheEntry
+import io.plastique.core.cache.CacheEntryEntity
 
 @Entity(
     tableName = "deviation_linkage",
     primaryKeys = ["key", "deviation_id"],
     foreignKeys = [
-        ForeignKey(entity = CacheEntry::class, parentColumns = ["key"], childColumns = ["key"]),
+        ForeignKey(entity = CacheEntryEntity::class, parentColumns = ["key"], childColumns = ["key"]),
         ForeignKey(entity = DeviationEntity::class, parentColumns = ["id"], childColumns = ["deviation_id"])
     ],
     indices = [

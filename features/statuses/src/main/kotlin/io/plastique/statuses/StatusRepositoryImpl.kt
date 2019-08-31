@@ -102,7 +102,6 @@ class StatusRepositoryImpl @Inject constructor(
         return database.createObservable("users", "deviation_images", "deviations", "statuses", "user_statuses") {
             val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
-            cacheEntryRepository.getEntryByKey(cacheKey)
             PagedData(statuses, nextCursor)
         }.distinctUntilChanged()
     }
