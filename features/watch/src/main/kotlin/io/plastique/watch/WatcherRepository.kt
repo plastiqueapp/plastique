@@ -14,7 +14,9 @@ import io.plastique.api.watch.WatcherDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
@@ -51,7 +53,7 @@ class WatcherRepository @Inject constructor(
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
                     cachedData = getWatchersFromDb(cacheKey),
-                    updater = fetchWatchers(username, null, cacheKey).ignoreElement())
+                    updater = fetchWatchers(username, cacheKey, cursor = null).ignoreElement())
             }
     }
 
@@ -60,11 +62,11 @@ class WatcherRepository @Inject constructor(
             .firstOrError()
             .flatMap { session ->
                 val cacheUsername = username ?: session.requireUser().username
-                fetchWatchers(username, cursor, getCacheKey(cacheUsername))
+                fetchWatchers(username, getCacheKey(cacheUsername), cursor)
             }
     }
 
-    private fun fetchWatchers(username: String?, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
+    private fun fetchWatchers(username: String?, cacheKey: CacheKey, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return if (username != null) {
             watchService.getWatchers(username = username, offset = offset, limit = WATCHERS_PER_PAGE)
@@ -86,9 +88,9 @@ class WatcherRepository @Inject constructor(
             }
     }
 
-    private fun getWatchersFromDb(cacheKey: String): Observable<PagedData<List<Watcher>, OffsetCursor>> {
+    private fun getWatchersFromDb(cacheKey: CacheKey): Observable<PagedData<List<Watcher>, OffsetCursor>> {
         return database.createObservable("users", "watchers") {
-            val watchers = watchDao.getWatchersByKey(cacheKey).map { it.toWatcher() }
+            val watchers = watchDao.getWatchersByKey(cacheKey.value).map { it.toWatcher() }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(watchers, nextCursor)
         }.distinctUntilChanged()
@@ -102,26 +104,27 @@ class WatcherRepository @Inject constructor(
             cacheEntryRepository.setEntry(cacheEntry)
 
             val startIndex = if (replaceExisting) {
-                watchDao.deleteWatchersByKey(cacheEntry.key)
+                watchDao.deleteWatchersByKey(cacheEntry.key.value)
                 1
             } else {
-                watchDao.getMaxOrder(cacheEntry.key) + 1
+                watchDao.getMaxOrder(cacheEntry.key.value) + 1
             }
 
             val watcherEntities = watchers.mapIndexed { index, watcher ->
-                WatcherEntity(key = cacheEntry.key, userId = watcher.user.id, order = startIndex + index)
+                WatcherEntity(key = cacheEntry.key.value, userId = watcher.user.id, order = startIndex + index)
             }
             watchDao.insertWatchers(watcherEntities)
         }
     }
 
-    private fun getNextCursor(cacheKey: String): OffsetCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): OffsetCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val metadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<WatchersCacheMetadata>(it) }
         return metadata?.nextCursor
     }
 
-    private fun getCacheKey(username: String): String = "watchers-$username"
+    private fun getCacheKey(username: String): CacheKey =
+        "watchers-$username".toCacheKey()
 
     private companion object {
         private val CACHE_DURATION = Duration.ofHours(4)

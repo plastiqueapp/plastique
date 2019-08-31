@@ -13,6 +13,7 @@ import io.plastique.api.deviations.VideoDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.db.createObservable
 import io.plastique.core.paging.Cursor
@@ -48,7 +49,7 @@ class DeviationRepositoryImpl @Inject constructor(
         return CacheHelper(cacheEntryRepository, cacheEntryChecker).createObservable(
             cacheKey = cacheKey,
             cachedData = getDeviationsFromDb(cacheKey, params, metadataSerializer),
-            updater = fetch(fetcher, cacheKey, params).ignoreElement())
+            updater = fetch(fetcher, cacheKey, params, cursor = null).ignoreElement())
     }
 
     fun fetch(params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
@@ -103,7 +104,7 @@ class DeviationRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: String, params: FetchParams, cursor: Cursor? = null): Single<Optional<Cursor>> {
+    private fun fetch(fetcher: DeviationFetcher<FetchParams, Cursor>, cacheKey: CacheKey, params: FetchParams, cursor: Cursor?): Single<Optional<Cursor>> {
         return fetcher.fetch(params, cursor)
             .map { fetchResult ->
                 val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
@@ -115,19 +116,19 @@ class DeviationRepositoryImpl @Inject constructor(
     }
 
     private fun getDeviationsFromDb(
-        key: String,
+        cacheKey: CacheKey,
         params: FetchParams,
         metadataSerializer: DeviationCacheMetadataSerializer
     ): Observable<PagedData<List<Deviation>, Cursor>> {
         return database.createObservable("users", "daily_deviations", "deviation_images", "deviation_videos", "deviations", "deviation_linkage") {
-            val deviationsWithRelations = deviationDao.getDeviationsByKey(key)
+            val deviationsWithRelations = deviationDao.getDeviationsByKey(cacheKey.value)
             val deviations = combineAndFilter(deviationsWithRelations, params)
-            val nextCursor = getNextCursor(key, metadataSerializer)
+            val nextCursor = getNextCursor(cacheKey, metadataSerializer)
             PagedData(deviations, nextCursor)
         }.distinctUntilChanged()
     }
 
-    private fun getNextCursor(cacheKey: String, metadataSerializer: DeviationCacheMetadataSerializer): Cursor? {
+    private fun getNextCursor(cacheKey: CacheKey, metadataSerializer: DeviationCacheMetadataSerializer): Cursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val metadata = cacheEntry?.metadata?.let { metadataSerializer.deserialize(it) }
         return metadata?.nextCursor
@@ -152,14 +153,14 @@ class DeviationRepositoryImpl @Inject constructor(
             cacheEntryRepository.setEntry(cacheEntry)
 
             val startIndex = if (replaceExisting) {
-                deviationDao.deleteLinksByKey(cacheEntry.key)
+                deviationDao.deleteLinksByKey(cacheEntry.key.value)
                 1
             } else {
-                deviationDao.getMaxOrder(cacheEntry.key) + 1
+                deviationDao.getMaxOrder(cacheEntry.key.value) + 1
             }
 
             val links = deviations.mapIndexed { index, deviation ->
-                DeviationLinkage(key = cacheEntry.key, deviationId = deviation.id, order = startIndex + index)
+                DeviationLinkage(key = cacheEntry.key.value, deviationId = deviation.id, order = startIndex + index)
             }
             deviationDao.insertLinks(links)
         }

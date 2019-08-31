@@ -9,15 +9,15 @@ class CacheHelper(
     private val cacheEntryChecker: CacheEntryChecker,
     private val cacheStrategy: CacheStrategy = UpdateIfNotActualStrategy
 ) {
-    fun <T> createObservable(cacheKey: String, cachedData: Observable<T>, updater: Completable): Observable<T> {
+    fun <T> createObservable(cacheKey: CacheKey, cachedData: Observable<T>, updater: Completable): Observable<T> {
         return Observable.defer {
             val cacheStatus = getCacheStatus(cacheKey)
-            Timber.tag(LOG_TAG).d("Cache status for '%s': %s", cacheKey, cacheStatus)
+            Timber.tag(LOG_TAG).d("Cache status for '%s': %s", cacheKey.value, cacheStatus)
             cacheStrategy.apply(cacheStatus, cachedData, updater)
         }
     }
 
-    private fun getCacheStatus(cacheKey: String): CacheStatus {
+    private fun getCacheStatus(cacheKey: CacheKey): CacheStatus {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         return cacheEntry?.let(cacheEntryChecker::getCacheStatus) ?: CacheStatus.Absent
     }

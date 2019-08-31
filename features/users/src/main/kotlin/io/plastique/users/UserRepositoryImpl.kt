@@ -6,7 +6,9 @@ import io.plastique.api.users.UserService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.time.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -71,7 +73,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getCacheKey(userId: String) = "user-$userId"
+    private fun getCacheKey(userId: String): CacheKey =
+        "user-$userId".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(4)

@@ -5,6 +5,8 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.gallery.GalleryService
 import io.plastique.api.gallery.SortModes
 import io.plastique.api.nextCursor
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
@@ -34,8 +36,8 @@ data class GalleryDeviationParams(
 class GalleryDeviationFetcher @Inject constructor(
     private val galleryService: GalleryService
 ) : DeviationFetcher<GalleryDeviationParams, OffsetCursor> {
-    override fun getCacheKey(params: GalleryDeviationParams): String =
-        "gallery-deviations-${params.folderId.id}"
+    override fun getCacheKey(params: GalleryDeviationParams): CacheKey =
+        "gallery-deviations-${params.folderId.id}".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = GalleryDeviationParams::class.java, cursorType = OffsetCursor::class.java)

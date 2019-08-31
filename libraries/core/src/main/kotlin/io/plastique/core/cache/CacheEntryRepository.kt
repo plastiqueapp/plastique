@@ -2,24 +2,25 @@ package io.plastique.core.cache
 
 import javax.inject.Inject
 
+@Suppress("NOTHING_TO_INLINE")
 class CacheEntryRepository @Inject constructor(
     private val dao: CacheEntryDao
 ) {
-    fun getEntryByKey(key: String): CacheEntry? {
-        return dao.getEntryByKey(key)?.toCacheEntry()
+    fun getEntryByKey(key: CacheKey): CacheEntry? {
+        return dao.getEntryByKey(key.value)?.toCacheEntry()
     }
 
     fun setEntry(entry: CacheEntry) {
         dao.insertOrUpdate(entry.toCacheEntryEntity())
     }
 
-    fun deleteEntryByKey(key: String) {
-        dao.deleteEntryByKey(key)
+    fun deleteEntryByKey(key: CacheKey) {
+        dao.deleteEntryByKey(key.value)
     }
 
-    private fun CacheEntryEntity.toCacheEntry(): CacheEntry =
-        CacheEntry(key = key, timestamp = timestamp, metadata = metadata)
+    private inline fun CacheEntryEntity.toCacheEntry(): CacheEntry =
+        CacheEntry(key = key.toCacheKey(), timestamp = timestamp, metadata = metadata)
 
-    private fun CacheEntry.toCacheEntryEntity(): CacheEntryEntity =
-        CacheEntryEntity(key = key, timestamp = timestamp, metadata = metadata)
+    private inline fun CacheEntry.toCacheEntryEntity(): CacheEntryEntity =
+        CacheEntryEntity(key = key.value, timestamp = timestamp, metadata = metadata)
 }

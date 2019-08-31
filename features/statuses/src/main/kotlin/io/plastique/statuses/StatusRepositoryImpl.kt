@@ -16,7 +16,9 @@ import io.plastique.api.users.UserDto
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
@@ -51,7 +53,7 @@ class StatusRepositoryImpl @Inject constructor(
         return cacheHelper.createObservable(
             cacheKey = cacheKey,
             cachedData = getStatusesFromDb(cacheKey),
-            updater = fetch(params, null).ignoreElement())
+            updater = fetch(params, cursor = null).ignoreElement())
     }
 
     fun fetch(params: StatusListLoadParams, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
@@ -85,28 +87,28 @@ class StatusRepositoryImpl @Inject constructor(
             put(statuses)
 
             val startIndex = if (replaceExisting) {
-                statusDao.deleteLinksByKey(cacheEntry.key)
+                statusDao.deleteLinksByKey(cacheEntry.key.value)
                 1
             } else {
-                statusDao.getMaxOrder(cacheEntry.key) + 1
+                statusDao.getMaxOrder(cacheEntry.key.value) + 1
             }
 
             val links = statuses.mapIndexed { index, status ->
-                StatusLinkage(key = cacheEntry.key, statusId = status.id, order = startIndex + index)
+                StatusLinkage(key = cacheEntry.key.value, statusId = status.id, order = startIndex + index)
             }
             statusDao.insertLinks(links)
         }
     }
 
-    private fun getStatusesFromDb(cacheKey: String): Observable<PagedData<List<Status>, OffsetCursor>> {
+    private fun getStatusesFromDb(cacheKey: CacheKey): Observable<PagedData<List<Status>, OffsetCursor>> {
         return database.createObservable("users", "deviation_images", "deviations", "statuses", "user_statuses") {
-            val statuses = statusDao.getStatusesByKey(cacheKey).map { it.toStatus(timeProvider.timeZone) }
+            val statuses = statusDao.getStatusesByKey(cacheKey.value).map { it.toStatus(timeProvider.timeZone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(statuses, nextCursor)
         }.distinctUntilChanged()
     }
 
-    private fun getNextCursor(cacheKey: String): OffsetCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): OffsetCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val cacheMetadata = cacheEntry?.metadata?.let { cacheMetadataConverter.fromJson<StatusListCacheMetadata>(it) }
         return cacheMetadata?.nextCursor
@@ -169,7 +171,8 @@ class StatusRepositoryImpl @Inject constructor(
             sharedStatusId = sharedStatusId)
     }
 
-    private fun getCacheKey(params: StatusListLoadParams): String = "statuses-${params.username}"
+    private fun getCacheKey(params: StatusListLoadParams): CacheKey =
+        "statuses-${params.username}".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)

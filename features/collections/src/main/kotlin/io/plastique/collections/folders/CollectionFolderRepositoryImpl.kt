@@ -15,7 +15,9 @@ import io.plastique.collections.CollectionDao
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
@@ -58,13 +60,13 @@ class CollectionFolderRepositoryImpl @Inject constructor(
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
                     cachedData = getFoldersFromDb(cacheKey, own),
-                    updater = fetchFolders(params, null, cacheKey).ignoreElement())
+                    updater = fetchFolders(params, cacheKey, cursor = null).ignoreElement())
             }
     }
 
-    private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
+    private fun getFoldersFromDb(cacheKey: CacheKey, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return database.createObservable("collection_folders", "user_collection_folders", "deleted_collection_folders") {
-            val folders = collectionDao.getFoldersByKey(cacheKey).asSequence()
+            val folders = collectionDao.getFoldersByKey(cacheKey.value).asSequence()
                 .map { it.toFolder(own) }
                 .filter { own || it.isNotEmpty }
                 .toList()
@@ -73,7 +75,7 @@ class CollectionFolderRepositoryImpl @Inject constructor(
         }.distinctUntilChanged()
     }
 
-    private fun getNextCursor(cacheKey: String): OffsetCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): OffsetCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val metadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<FolderCacheMetadata>(it) }
         return metadata?.nextCursor
@@ -84,11 +86,11 @@ class CollectionFolderRepositoryImpl @Inject constructor(
             .firstOrError()
             .flatMap { session ->
                 val cacheUsername = params.username ?: session.requireUser().username
-                fetchFolders(params, cursor, getCacheKey(cacheUsername))
+                fetchFolders(params, getCacheKey(cacheUsername), cursor)
             }
     }
 
-    private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
+    private fun fetchFolders(params: FolderLoadParams, cacheKey: CacheKey, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return collectionService.getFolders(
             username = params.username,
@@ -171,34 +173,33 @@ class CollectionFolderRepositoryImpl @Inject constructor(
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderDto>, replaceExisting: Boolean) {
         database.runInTransaction {
             val startIndex = if (replaceExisting) {
-                collectionDao.deleteFoldersByKey(cacheEntry.key)
+                collectionDao.deleteFoldersByKey(cacheEntry.key.value)
                 1
             } else {
-                collectionDao.maxOrder(cacheEntry.key) + 1
+                collectionDao.maxOrder(cacheEntry.key.value) + 1
             }
 
             put(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
             val userFolders = folders.mapIndexed { index, folder ->
-                FolderLinkage(key = cacheEntry.key, folderId = folder.id, order = startIndex + index)
+                FolderLinkage(key = cacheEntry.key.value, folderId = folder.id, order = startIndex + index)
             }
             collectionDao.insertLinks(userFolders)
         }
     }
 
-    private fun persist(cacheKey: String, folder: FolderDto) {
+    private fun persist(cacheKey: CacheKey, folder: FolderDto) {
         database.runInTransaction {
-            val order = collectionDao.maxOrder(cacheKey) + 1
-            val link = FolderLinkage(key = cacheKey, folderId = folder.id, order = order)
+            val order = collectionDao.maxOrder(cacheKey.value) + 1
+            val link = FolderLinkage(key = cacheKey.value, folderId = folder.id, order = order)
             collectionDao.insertFolder(folder.toFolderEntity())
             collectionDao.insertLink(link)
         }
     }
 
-    private fun getCacheKey(username: String): String {
-        return "collection-folders-$username"
-    }
+    private fun getCacheKey(username: String): CacheKey =
+        "collection-folders-$username".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)

@@ -4,6 +4,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.nextCursor
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
@@ -53,7 +55,7 @@ data class UndiscoveredParams(
 class UndiscoveredDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<UndiscoveredParams, OffsetCursor> {
-    override fun getCacheKey(params: UndiscoveredParams): String = "undiscovered-deviations"
+    override fun getCacheKey(params: UndiscoveredParams): CacheKey = "undiscovered-deviations".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = UndiscoveredParams::class.java, cursorType = OffsetCursor::class.java)

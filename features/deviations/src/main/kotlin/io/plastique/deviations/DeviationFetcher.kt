@@ -2,6 +2,7 @@ package io.plastique.deviations
 
 import android.os.Parcelable
 import io.plastique.api.deviations.DeviationDto
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.paging.Cursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
@@ -22,7 +23,7 @@ data class FetchResult<TCursor : Cursor>(
 )
 
 interface DeviationFetcher<TParams : FetchParams, TCursor : Cursor> {
-    fun getCacheKey(params: TParams): String
+    fun getCacheKey(params: TParams): CacheKey
 
     fun createMetadataSerializer(): DeviationCacheMetadataSerializer
 

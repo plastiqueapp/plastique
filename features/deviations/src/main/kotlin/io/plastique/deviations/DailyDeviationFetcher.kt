@@ -5,6 +5,8 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.common.ListResult
 import io.plastique.api.deviations.DeviationDto
 import io.plastique.api.deviations.DeviationService
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.DateCursor
 import io.reactivex.Single
 import kotlinx.android.parcel.Parcelize
@@ -29,7 +31,7 @@ data class DailyParams(
 class DailyDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<DailyParams, DateCursor> {
-    override fun getCacheKey(params: DailyParams): String = "daily-deviations"
+    override fun getCacheKey(params: DailyParams): CacheKey = "daily-deviations".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = DailyParams::class.java, cursorType = DateCursor::class.java)

@@ -19,8 +19,10 @@ import io.plastique.collections.folders.toFolder
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.PagedData
@@ -62,10 +64,10 @@ class FeedRepository @Inject constructor(
         return cacheHelper.createObservable(
             cacheKey = CACHE_KEY,
             cachedData = getFromDb(CACHE_KEY),
-            updater = fetch(matureContent, null).ignoreElement())
+            updater = fetch(matureContent, cursor = null).ignoreElement())
     }
 
-    private fun getFromDb(cacheKey: String): Observable<PagedData<List<FeedElement>, StringCursor>> {
+    private fun getFromDb(cacheKey: CacheKey): Observable<PagedData<List<FeedElement>, StringCursor>> {
         return database.createObservable("deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses",
             "feed", "users") {
             val feedElements = feedDao.getFeed().map { it.toFeedElement(timeProvider.timeZone) }
@@ -74,7 +76,7 @@ class FeedRepository @Inject constructor(
         }
     }
 
-    private fun getNextCursor(cacheKey: String): StringCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): StringCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val cacheMetadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<FeedCacheMetadata>(it) }
         return cacheMetadata?.nextCursor
@@ -161,7 +163,7 @@ class FeedRepository @Inject constructor(
     }
 
     companion object {
-        const val CACHE_KEY = "feed"
+        val CACHE_KEY = "feed".toCacheKey()
         private val CACHE_DURATION = Duration.ofHours(1)
     }
 }

@@ -2,6 +2,8 @@ package io.plastique.feed
 
 import io.plastique.api.feed.FeedService
 import io.plastique.api.nextCursor
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
@@ -10,7 +12,8 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 class BucketDeviationFetcher @Inject constructor(private val feedService: FeedService) : DeviationFetcher<BucketDeviationParams, OffsetCursor> {
-    override fun getCacheKey(params: BucketDeviationParams): String = "feed-bucket-${params.bucketId}"
+    override fun getCacheKey(params: BucketDeviationParams): CacheKey =
+        "feed-bucket-${params.bucketId}".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = BucketDeviationParams::class.java, cursorType = OffsetCursor::class.java)

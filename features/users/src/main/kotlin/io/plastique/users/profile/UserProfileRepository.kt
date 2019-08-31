@@ -10,7 +10,9 @@ import io.plastique.api.users.UserService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserDao
 import io.plastique.users.UserNotFoundException
@@ -45,7 +47,7 @@ class UserProfileRepository @Inject constructor(
             .distinctUntilChanged()
     }
 
-    private fun refreshUserProfile(username: String, cacheKey: String): Completable {
+    private fun refreshUserProfile(username: String, cacheKey: CacheKey): Completable {
         return userService.getUserProfile(username)
             .doOnSuccess { userProfile ->
                 val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
@@ -70,16 +72,15 @@ class UserProfileRepository @Inject constructor(
         }
     }
 
-    private fun deleteUser(username: String, cacheKey: String) {
+    private fun deleteUser(username: String, cacheKey: CacheKey) {
         database.runInTransaction {
             userDao.deleteProfileByName(username)
             cacheEntryRepository.deleteEntryByKey(cacheKey)
         }
     }
 
-    private fun getCacheKey(username: String): String {
-        return "user-profile-$username"
-    }
+    private fun getCacheKey(username: String): CacheKey =
+        "user-profile-$username".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(1)

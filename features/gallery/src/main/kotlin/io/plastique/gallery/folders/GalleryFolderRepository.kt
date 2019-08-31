@@ -14,8 +14,10 @@ import io.plastique.api.nextCursor
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
@@ -59,7 +61,7 @@ class GalleryFolderRepository @Inject constructor(
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
                     cachedData = getFoldersFromDb(cacheKey, own),
-                    updater = fetchFolders(params, null, cacheKey).ignoreElement())
+                    updater = fetchFolders(params, cacheKey, cursor = null).ignoreElement())
             }
     }
 
@@ -68,11 +70,11 @@ class GalleryFolderRepository @Inject constructor(
             .firstOrError()
             .flatMap { session ->
                 val cacheUsername = params.username ?: session.requireUser().username
-                fetchFolders(params, cursor, getCacheKey(cacheUsername))
+                fetchFolders(params, getCacheKey(cacheUsername), cursor)
             }
     }
 
-    private fun fetchFolders(params: FolderLoadParams, cursor: OffsetCursor?, cacheKey: String): Single<Optional<OffsetCursor>> {
+    private fun fetchFolders(params: FolderLoadParams, cacheKey: CacheKey, cursor: OffsetCursor?): Single<Optional<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolders(
             username = params.username,
@@ -82,7 +84,7 @@ class GalleryFolderRepository @Inject constructor(
             limit = FOLDERS_PER_PAGE)
             .map { folderList ->
                 val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
-                val cacheEntry = CacheEntry(cacheKey, timeProvider.currentInstant, metadataConverter.toJson(cacheMetadata))
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
                 val entities = folderList.results.map { folder -> folder.toFolderEntity() }
                 persist(cacheEntry = cacheEntry, folders = entities, replaceExisting = offset == 0)
                 cacheMetadata.nextCursor.toOptional()
@@ -96,9 +98,9 @@ class GalleryFolderRepository @Inject constructor(
             }
     }
 
-    private fun getFoldersFromDb(cacheKey: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
+    private fun getFoldersFromDb(cacheKey: CacheKey, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return database.createObservable("gallery_folders", "user_gallery_folders", "deleted_gallery_folders") {
-            val folders = galleryDao.getFolders(cacheKey).asSequence()
+            val folders = galleryDao.getFolders(cacheKey.value).asSequence()
                 .map { it.toFolder(own) }
                 .filter { own || it.isNotEmpty }
                 .toList()
@@ -107,7 +109,7 @@ class GalleryFolderRepository @Inject constructor(
         }.distinctUntilChanged()
     }
 
-    private fun getNextCursor(cacheKey: String): OffsetCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): OffsetCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val metadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<FolderCacheMetadata>(it) }
         return metadata?.nextCursor
@@ -165,34 +167,33 @@ class GalleryFolderRepository @Inject constructor(
     private fun persist(cacheEntry: CacheEntry, folders: List<FolderEntity>, replaceExisting: Boolean) {
         database.runInTransaction {
             val startIndex = if (replaceExisting) {
-                galleryDao.deleteFoldersByKey(cacheEntry.key)
+                galleryDao.deleteFoldersByKey(cacheEntry.key.value)
                 1
             } else {
-                galleryDao.maxOrder(cacheEntry.key) + 1
+                galleryDao.maxOrder(cacheEntry.key.value) + 1
             }
 
             galleryDao.insertOrUpdateFolders(folders)
             cacheEntryRepository.setEntry(cacheEntry)
 
             val userFolders = folders.mapIndexed { index, folder ->
-                FolderLinkage(key = cacheEntry.key, folderId = folder.id, order = startIndex + index)
+                FolderLinkage(key = cacheEntry.key.value, folderId = folder.id, order = startIndex + index)
             }
             galleryDao.insertLinks(userFolders)
         }
     }
 
-    private fun persist(cacheKey: String, folder: FolderDto) {
+    private fun persist(cacheKey: CacheKey, folder: FolderDto) {
         database.runInTransaction {
-            val order = galleryDao.maxOrder(cacheKey) + 1
-            val link = FolderLinkage(key = cacheKey, folderId = folder.id, order = order)
+            val order = galleryDao.maxOrder(cacheKey.value) + 1
+            val link = FolderLinkage(key = cacheKey.value, folderId = folder.id, order = order)
             galleryDao.insertFolder(folder.toFolderEntity())
             galleryDao.insertLink(link)
         }
     }
 
-    private fun getCacheKey(username: String): String {
-        return "gallery-folders-$username"
-    }
+    private fun getCacheKey(username: String): CacheKey =
+        "gallery-folders-$username".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)

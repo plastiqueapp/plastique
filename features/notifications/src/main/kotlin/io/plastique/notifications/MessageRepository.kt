@@ -15,8 +15,10 @@ import io.plastique.comments.CommentRepository
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.CleanableRepository
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.PagedData
@@ -55,7 +57,7 @@ class MessageRepository @Inject constructor(
         return cacheHelper.createObservable(
             cacheKey = CACHE_KEY,
             cachedData = getMessagesFromDb(CACHE_KEY),
-            updater = fetch(null).ignoreElement())
+            updater = fetch(cursor = null).ignoreElement())
     }
 
     fun fetch(cursor: StringCursor?): Single<Optional<StringCursor>> {
@@ -69,7 +71,7 @@ class MessageRepository @Inject constructor(
             }
     }
 
-    private fun getMessagesFromDb(cacheKey: String): Observable<PagedData<List<Message>, StringCursor>> {
+    private fun getMessagesFromDb(cacheKey: CacheKey): Observable<PagedData<List<Message>, StringCursor>> {
         return database.createObservable("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages") {
             val messages = messageDao.getMessages()
                 .asSequence()
@@ -81,7 +83,7 @@ class MessageRepository @Inject constructor(
         }.distinctUntilChanged()
     }
 
-    private fun getNextCursor(cacheKey: String): StringCursor? {
+    private fun getNextCursor(cacheKey: CacheKey): StringCursor? {
         val cacheEntry = cacheEntryRepository.getEntryByKey(cacheKey)
         val cacheMetadata = cacheEntry?.metadata?.let { metadataConverter.fromJson<MessageFeedCacheMetadata>(it) }
         return cacheMetadata?.nextCursor
@@ -181,7 +183,7 @@ class MessageRepository @Inject constructor(
     }
 
     companion object {
-        private const val CACHE_KEY = "messages"
+        private val CACHE_KEY = "messages".toCacheKey()
         private val CACHE_DURATION = Duration.ofHours(1)
     }
 }

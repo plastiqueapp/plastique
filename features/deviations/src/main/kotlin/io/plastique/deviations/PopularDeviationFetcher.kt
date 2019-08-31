@@ -5,6 +5,8 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.deviations.TimeRanges
 import io.plastique.api.nextCursor
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
@@ -59,7 +61,7 @@ data class PopularParams(
 class PopularDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<PopularParams, OffsetCursor> {
-    override fun getCacheKey(params: PopularParams): String = "popular-deviations"
+    override fun getCacheKey(params: PopularParams): CacheKey = "popular-deviations".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = PopularParams::class.java, cursorType = OffsetCursor::class.java)

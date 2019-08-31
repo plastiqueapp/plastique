@@ -5,6 +5,8 @@ import com.squareup.moshi.JsonClass
 import io.plastique.api.collections.CollectionService
 import io.plastique.api.nextCursor
 import io.plastique.collections.folders.CollectionFolderId
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.DeviationCacheMetadataSerializer
 import io.plastique.deviations.DeviationFetcher
@@ -33,8 +35,8 @@ data class CollectionDeviationParams(
 class CollectionDeviationFetcher @Inject constructor(
     private val collectionService: CollectionService
 ) : DeviationFetcher<CollectionDeviationParams, OffsetCursor> {
-    override fun getCacheKey(params: CollectionDeviationParams): String =
-        "collection-folder-deviations-${params.folderId.id}"
+    override fun getCacheKey(params: CollectionDeviationParams): CacheKey =
+        "collection-folder-deviations-${params.folderId.id}".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = CollectionDeviationParams::class.java, cursorType = OffsetCursor::class.java)

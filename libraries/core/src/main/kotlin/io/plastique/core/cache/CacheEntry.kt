@@ -4,7 +4,7 @@ import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 
 data class CacheEntry(
-    val key: String,
+    val key: CacheKey,
     val timestamp: Instant,
     val metadata: String? = null
 ) {

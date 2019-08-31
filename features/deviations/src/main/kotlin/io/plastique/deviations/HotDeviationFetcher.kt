@@ -4,6 +4,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.plastique.api.deviations.DeviationService
 import io.plastique.api.nextCursor
+import io.plastique.core.cache.CacheKey
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.deviations.categories.Category
 import io.reactivex.Single
@@ -53,7 +55,7 @@ data class HotParams(
 class HotDeviationFetcher @Inject constructor(
     private val deviationService: DeviationService
 ) : DeviationFetcher<HotParams, OffsetCursor> {
-    override fun getCacheKey(params: HotParams): String = "hot-deviations"
+    override fun getCacheKey(params: HotParams): CacheKey = "hot-deviations".toCacheKey()
 
     override fun createMetadataSerializer(): DeviationCacheMetadataSerializer =
         DeviationCacheMetadataSerializer(paramsType = HotParams::class.java, cursorType = OffsetCursor::class.java)

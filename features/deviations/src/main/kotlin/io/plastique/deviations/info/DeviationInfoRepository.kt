@@ -9,7 +9,9 @@ import io.plastique.api.deviations.DeviationService
 import io.plastique.core.cache.CacheEntry
 import io.plastique.core.cache.CacheEntryRepository
 import io.plastique.core.cache.CacheHelper
+import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
+import io.plastique.core.cache.toCacheKey
 import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationNotFoundException
 import io.plastique.deviations.DeviationRepository
@@ -32,14 +34,14 @@ class DeviationInfoRepository @Inject constructor(
     private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
 
     fun getDeviationInfo(deviationId: String): Observable<DeviationInfo> {
-        val cacheKey = "deviation-info-$deviationId"
+        val cacheKey = getCacheKey(deviationId)
         return cacheHelper.createObservable(
             cacheKey = cacheKey,
             cachedData = getDeviationInfoFromDb(deviationId),
             updater = fetch(deviationId, cacheKey))
     }
 
-    private fun fetch(deviationId: String, cacheKey: String): Completable {
+    private fun fetch(deviationId: String, cacheKey: CacheKey): Completable {
         return Singles.zip(
             deviationRepository.getDeviationTitleById(deviationId),
             deviationService.getMetadataByIds(listOf(deviationId))
@@ -60,7 +62,7 @@ class DeviationInfoRepository @Inject constructor(
             .distinctUntilChanged()
     }
 
-    private fun persist(cacheKey: String, metadataList: List<DeviationMetadataDto>) {
+    private fun persist(cacheKey: CacheKey, metadataList: List<DeviationMetadataDto>) {
         val entities = metadataList.map { it.toDeviationMetadataEntity() }
         database.runInTransaction {
             val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
@@ -68,6 +70,9 @@ class DeviationInfoRepository @Inject constructor(
             deviationMetadataDao.insertOrUpdate(entities)
         }
     }
+
+    private fun getCacheKey(deviationId: String): CacheKey =
+        "deviation-info-$deviationId".toCacheKey()
 
     companion object {
         private val CACHE_DURATION = Duration.ofHours(2)
