@@ -1,9 +1,15 @@
 configurations.all { config ->
     exclude group: "com.google.code.findbugs", module: "jsr305"
 
-    resolutionStrategy.eachDependency { details ->
-        if (config.name.contains("UnitTest") && details.requested.group == "com.squareup.leakcanary" && details.requested.name == "leakcanary-android") {
-            details.useTarget(group: details.requested.group, name: "leakcanary-android-no-op", version: details.requested.version)
+    resolutionStrategy {
+        force "com.google.auto.value:auto-value-annotations:1.6.6"
+        eachDependency { details ->
+            if (config.name.contains("UnitTest") && details.requested.group == "com.squareup.leakcanary" && details.requested.name == "leakcanary-android") {
+                details.useTarget "com.squareup.leakcanary:leakcanary-android-no-op:${details.requested.version}"
+            }
+            if (details.requested.group == "com.google.auto.value" && details.requested.name == "auto-value") {
+                details.useTarget "com.google.auto.value:auto-value-annotations:1.6.6"
+            }
         }
     }
 }
