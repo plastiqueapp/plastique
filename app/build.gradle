@@ -93,6 +93,10 @@ android {
         exclude "/fabric/*.properties"
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all {
             outputFileName = "plastique-${variant.versionName}-${variant.buildType.name}.apk"
