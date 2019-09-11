@@ -45,8 +45,11 @@ download_screenshots() {
     echo "Downloading screenshots"
     rm -rf "${screenshot_path}"*
     mkdir -p "${screenshot_path}"
-    ${ADB} shell "find $device_screenshot_path -type f -print0" | xargs -0 -n 1 -I "{}" ${ADB} pull "{}" "$screenshot_path" > /dev/null
+    ${ADB} pull "$device_screenshot_path" "$screenshot_path"
     ${ADB} shell rm -r "$device_screenshot_path"
+
+    find "$screenshot_path" -type f -exec mv {} "$screenshot_path" \;
+    find "$screenshot_path" -type d -empty -delete
 }
 
 ensure_device
