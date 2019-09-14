@@ -148,8 +148,9 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
 
-        if (state.userProfile != prevState?.userProfile) {
-            realNameView.text = state.userProfile!!.realName
+        if (state.userProfile != null && state.userProfile != prevState?.userProfile) {
+            avatarView.contentDescription = getString(R.string.common_avatar_description, state.userProfile.user.name)
+            realNameView.text = state.userProfile.realName
             statisticsView.render(state.userProfile.stats)
 
             watchButton.setOnCheckedChangeListener(null)

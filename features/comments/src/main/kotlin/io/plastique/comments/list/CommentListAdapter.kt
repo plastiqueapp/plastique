@@ -33,12 +33,14 @@ private class CommentItemDelegate(
     }
 
     override fun onBindViewHolder(item: CommentItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatarView.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.comment.author.name)
         holder.authorView.text = item.comment.author.name
         holder.textView.text = item.comment.text.value
         holder.timeView.text = elapsedTimeFormatter.format(item.comment.datePosted)
 
         val replyingTo = if (item.comment.isReply) {
-            holder.itemView.context.getString(R.string.comments_replying_to, item.comment.parentAuthorName)
+            holder.itemView.resources.getString(R.string.comments_replying_to, item.comment.parentAuthorName)
         } else {
             null
         }

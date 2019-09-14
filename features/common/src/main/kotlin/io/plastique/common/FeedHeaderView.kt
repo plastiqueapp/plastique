@@ -30,6 +30,7 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
     }
 
     fun setUser(user: User, glide: GlideRequests) {
+        avatarView.contentDescription = resources.getString(R.string.common_avatar_description, user.name)
         usernameView.text = user.name
         glide.load(user.avatarUrl)
             .fallback(R.drawable.default_avatar_64dp)

@@ -36,6 +36,7 @@
         app:layout_constraintBottom_toTopOf="@id/guide_buttons"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guide_top"
+        tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
     <TextView

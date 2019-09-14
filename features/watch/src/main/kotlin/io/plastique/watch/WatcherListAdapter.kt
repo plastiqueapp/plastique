@@ -27,6 +27,8 @@ private class WatcherItemDelegate(
     }
 
     override fun onBindViewHolder(item: WatcherItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatar.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.watcher.user.name)
         holder.username.text = item.watcher.user.name
 
         glide.load(item.watcher.user.avatarUrl)

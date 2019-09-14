@@ -88,6 +88,7 @@ class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
             is DeviationInfoViewState.Content -> {
                 contentStateController.state = ContentState.Content
                 titleView.text = state.title
+                authorAvatarView.contentDescription = getString(R.string.common_avatar_description, state.author.name)
                 authorNameView.text = state.author.name
                 descriptionView.text = state.description.value
                 publishDateView.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)

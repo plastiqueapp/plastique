@@ -29,6 +29,7 @@
         android:layout_margin="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar"
+        tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
 
     <TextView

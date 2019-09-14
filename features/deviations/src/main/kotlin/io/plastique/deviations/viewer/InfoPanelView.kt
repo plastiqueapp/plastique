@@ -35,6 +35,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
 
     fun render(state: InfoViewState, glide: GlideRequests) {
         titleView.text = state.title
+        avatarView.contentDescription = resources.getString(R.string.common_avatar_description, state.author.name)
         authorView.text = state.author.name
         favoriteButton.text = state.favoriteCount.formatCount()
         favoriteButton.isChecked = state.isFavoriteChecked

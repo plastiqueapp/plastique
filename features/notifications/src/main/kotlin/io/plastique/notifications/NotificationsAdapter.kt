@@ -32,6 +32,8 @@ private class AddToCollectionItemDelegate(
     }
 
     override fun onBindViewHolder(item: AddToCollectionItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatarView.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
@@ -75,6 +77,8 @@ private class BadgeGivenItemDelegate(
     }
 
     override fun onBindViewHolder(item: BadgeGivenItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatarView.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
@@ -117,6 +121,8 @@ private class FavoriteItemDelegate(
     }
 
     override fun onBindViewHolder(item: FavoriteItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatarView.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
@@ -159,6 +165,8 @@ private class WatchItemDelegate(
     }
 
     override fun onBindViewHolder(item: WatchItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
+        holder.avatarView.contentDescription =
+            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
         holder.usernameView.text = item.user.name
         holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
