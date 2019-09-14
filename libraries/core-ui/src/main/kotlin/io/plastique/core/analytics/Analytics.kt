@@ -41,7 +41,7 @@ class Analytics @Inject constructor(
 
         val matcher = Pattern.compile("^(\\d+\\.\\d+)[^\\d]").matcher(packageInfo.versionName)
         return if (matcher.find()) {
-            matcher.group(1)
+            matcher.group(1)!!
         } else {
             "unknown"
         }

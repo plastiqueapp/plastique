@@ -65,7 +65,7 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
     private var menuState: MenuState? = null
 
     private val deviationId: String
-        get() = intent.getStringExtra(EXTRA_DEVIATION_ID)
+        get() = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

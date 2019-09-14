@@ -14,8 +14,8 @@ class HotDeviationsFragment : BaseDeviationListFragment<HotParams>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SELECT_CATEGORY && resultCode == Activity.RESULT_OK && data != null) {
-            val category = data.getParcelableExtra<Category>(CategoryListActivity.RESULT_SELECTED_CATEGORY)
+        if (requestCode == REQUEST_CODE_SELECT_CATEGORY && resultCode == Activity.RESULT_OK) {
+            val category = data?.getParcelableExtra<Category>(CategoryListActivity.RESULT_SELECTED_CATEGORY) ?: return
             updateParams(params.copy(category = category, categoryPath = category.path))
         }
     }

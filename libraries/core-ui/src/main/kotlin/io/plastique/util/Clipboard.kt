@@ -11,6 +11,6 @@ class Clipboard @Inject constructor(context: Context) {
 
     fun setText(text: String) {
         val clipData = ClipData.newPlainText("", text)
-        clipboardManager.primaryClip = clipData
+        clipboardManager.setPrimaryClip(clipData)
     }
 }

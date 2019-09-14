@@ -17,7 +17,7 @@ plugins {
 
 ext.ci = System.getenv("CI") != null
 ext.buildConfig = [
-    compileSdk : 28,
+    compileSdk : 29,
     minSdk     : 21,
     targetSdk  : 28,
 

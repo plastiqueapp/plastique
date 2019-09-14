@@ -3,6 +3,7 @@ package io.plastique.util
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import com.github.technoir42.android.extensions.requireSystemService
 import javax.inject.Inject
@@ -16,7 +17,11 @@ class FileDownloader @Inject constructor(context: Context) {
             setTitle(fileName)
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, fileName)
-            allowScanningByMediaScanner()
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                @Suppress("DEPRECATION")
+                allowScanningByMediaScanner()
+            }
         }
         downloadManager.enqueue(request)
     }

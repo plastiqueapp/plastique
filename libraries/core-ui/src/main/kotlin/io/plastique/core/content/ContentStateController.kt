@@ -48,7 +48,7 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
     }
 
     private fun switchState(state: ContentState) {
-        mainThreadHandler.removeCallbacks(switchStateRunnable)
+        switchStateRunnable?.let { mainThreadHandler.removeCallbacks(it) }
 
         var delay = 0L
         if (displayedState == ContentState.Loading) {
@@ -59,8 +59,9 @@ class ContentStateController(private val onSwitchStateListener: OnSwitchStateLis
         }
 
         if (delay != 0L) {
-            switchStateRunnable = Runnable { dispatchSwitchState(state, true) }
-            mainThreadHandler.postDelayed(switchStateRunnable, delay)
+            val delayedRunnable = Runnable { dispatchSwitchState(state, true) }
+            mainThreadHandler.postDelayed(delayedRunnable, delay)
+            switchStateRunnable = delayedRunnable
         } else {
             dispatchSwitchState(state, true)
         }

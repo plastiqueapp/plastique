@@ -40,7 +40,7 @@ class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
     private lateinit var adapter: CategoryListAdapter
 
     private val parentCategory: Category
-        get() = intent.getParcelableExtra(EXTRA_PARENT_CATEGORY)
+        get() = intent.getParcelableExtra(EXTRA_PARENT_CATEGORY)!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

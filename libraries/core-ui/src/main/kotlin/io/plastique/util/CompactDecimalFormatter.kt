@@ -17,7 +17,7 @@ object CompactDecimalFormatter {
         if (value < 0) return "-" + format(-value)
         if (value < 1000) return value.toString()
 
-        val (divideBy, suffix) = suffixes.floorEntry(value)
+        val (divideBy, suffix) = suffixes.floorEntry(value)!!
         val truncated = value / (divideBy / 10)
         val hasDecimal = truncated < 100 && truncated / 10.0 != (truncated / 10).toDouble()
         return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix

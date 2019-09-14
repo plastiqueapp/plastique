@@ -14,6 +14,7 @@ interface NetworkConnectivityChecker {
 class NetworkConnectivityCheckerImpl @Inject constructor(context: Context) : NetworkConnectivityChecker {
     private val connectivityManager = context.requireSystemService<ConnectivityManager>()
 
+    @Suppress("DEPRECATION")
     override val isConnectedToNetwork: Boolean
         get() = connectivityManager.activeNetworkInfo?.isConnected ?: false
 }

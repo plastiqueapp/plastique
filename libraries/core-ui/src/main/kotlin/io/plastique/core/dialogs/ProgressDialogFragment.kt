@@ -9,12 +9,12 @@ class ProgressDialogFragment : BaseDialogFragment() {
         isCancelable = false
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = requireArguments()
         val titleId = args.getInt(ARG_TITLE_ID)
         val messageId = args.getInt(ARG_MESSAGE_ID)
 
-        @Suppress("DEPRECATION")
         val dialog = android.app.ProgressDialog(requireContext())
         if (titleId != 0) {
             dialog.setTitle(getString(titleId))
