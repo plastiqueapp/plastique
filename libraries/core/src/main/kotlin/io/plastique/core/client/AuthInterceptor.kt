@@ -17,10 +17,10 @@ class AuthInterceptor @Inject constructor(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         // Stop if previous attempt has failed
-        if (response.priorResponse() != null) {
+        if (response.priorResponse != null) {
             return null
         }
-        val request = response.request()
+        val request = response.request
         if (request.isAuthorized && request.tag(AccessTokenProvidedTag::class.java) == null) {
             val previousAccessToken = accessTokenAppender.getAccessToken(request)!!
             val accessToken = accessTokenProvider.getAccessToken(previousAccessToken)
@@ -38,7 +38,7 @@ class AuthInterceptor @Inject constructor(
             .header(HttpHeaders.API_VERSION, configuration.apiVersion)
             .header(HttpHeaders.USER_AGENT, configuration.userAgent)
 
-        val providedAccessToken = request.url().queryParameter("access_token")
+        val providedAccessToken = request.url.queryParameter("access_token")
         if (providedAccessToken != null) {
             builder.tag(AccessTokenProvidedTag::class.java, AccessTokenProvidedTag)
         } else if (request.isAuthorized) {
@@ -50,7 +50,7 @@ class AuthInterceptor @Inject constructor(
     }
 
     private val Request.isAuthorized: Boolean
-        get() = url().encodedPath().startsWith("/api/v1/")
+        get() = url.encodedPath.startsWith("/api/v1/")
 
     @Keep
     private object AccessTokenProvidedTag

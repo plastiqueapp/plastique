@@ -32,7 +32,7 @@ class UrlAccessTokenAppenderTest {
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 
-        assertEquals("https://acme.org/?access_token=abc", builder.build().url().toString())
+        assertEquals("https://acme.org/?access_token=abc", builder.build().url.toString())
     }
 
     @Test
@@ -43,6 +43,6 @@ class UrlAccessTokenAppenderTest {
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 
-        assertEquals("https://acme.org/?access_token=abc", builder.build().url().toString())
+        assertEquals("https://acme.org/?access_token=abc", builder.build().url.toString())
     }
 }

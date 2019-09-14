@@ -26,11 +26,11 @@ class HeaderAccessTokenAppender : AccessTokenAppender {
 
 class UrlAccessTokenAppender : AccessTokenAppender {
     override fun getAccessToken(request: Request): String? {
-        return request.url().queryParameter("access_token")
+        return request.url.queryParameter("access_token")
     }
 
     override fun append(accessToken: String, request: Request, builder: Request.Builder) {
-        val url = request.url()
+        val url = request.url
             .newBuilder()
             .setQueryParameter("access_token", accessToken)
             .build()

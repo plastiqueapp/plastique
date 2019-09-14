@@ -33,7 +33,7 @@ class Authenticator @Inject constructor(
             apiConfig.authRedirectUrl,
             REQUESTED_SCOPES.joinToString(" "))
         this.csrfToken = csrfToken
-        return call.request().url().toString()
+        return call.request().url.toString()
     }
 
     fun isAuthRedirectUri(uri: Uri): Boolean {

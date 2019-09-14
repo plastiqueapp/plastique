@@ -45,8 +45,8 @@ plugins.whenPluginAdded { plugin ->
                 textOutput "stdout"
                 explainIssues false
 
-                disable "GradleDependency", "GoogleAppIndexingWarning", "ObsoleteLintCustomCheck"
-                ignore "ContentDescription"
+                disable "AnnotationProcessorOnCompilePath", "GradleDependency", "ObsoleteLintCustomCheck"
+                informational "ContentDescription"
             }
 
             sourceSets {

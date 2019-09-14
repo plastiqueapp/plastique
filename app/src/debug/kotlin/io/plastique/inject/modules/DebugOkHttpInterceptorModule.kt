@@ -15,7 +15,7 @@ object DebugOkHttpInterceptorModule {
     @Provides
     @JvmStatic
     fun provideInterceptors(): List<Interceptor> =
-        listOf(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
+        listOf(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
 
     @Provides
     @Named("network")

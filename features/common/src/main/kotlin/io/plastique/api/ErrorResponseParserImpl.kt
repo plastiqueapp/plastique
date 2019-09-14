@@ -16,7 +16,7 @@ import javax.inject.Inject
 class ErrorResponseParserImpl @Inject constructor(private val moshi: Moshi) : ErrorResponseParser {
     override fun parse(response: Response<*>): HttpException {
         if (response.code() == HttpResponseCodes.TOO_MANY_REQUESTS) {
-            return RateLimitExceededException(response.code(), response.raw().request().url().encodedPath())
+            return RateLimitExceededException(response.code(), response.raw().request.url.encodedPath)
         }
         val errorBody = response.errorBody()
         if (errorBody != null && isClientHttpError(response.code())) {

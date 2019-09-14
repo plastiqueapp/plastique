@@ -1,6 +1,6 @@
 package io.plastique.core.client
 
-import okhttp3.Headers
+import okhttp3.Headers.Companion.headersOf
 import okhttp3.Request
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -46,7 +46,7 @@ class HeaderAccessTokenAppenderTest {
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 
-        assertEquals(Headers.of(HttpHeaders.AUTHORIZATION, "Bearer abc"), builder.build().headers())
+        assertEquals(headersOf(HttpHeaders.AUTHORIZATION, "Bearer abc"), builder.build().headers)
     }
 
     @Test
@@ -58,6 +58,6 @@ class HeaderAccessTokenAppenderTest {
         val builder = request.newBuilder()
         appender.append("abc", request, builder)
 
-        assertEquals(Headers.of(HttpHeaders.AUTHORIZATION, "Bearer abc"), builder.build().headers())
+        assertEquals(headersOf(HttpHeaders.AUTHORIZATION, "Bearer abc"), builder.build().headers)
     }
 }
