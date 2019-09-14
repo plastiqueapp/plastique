@@ -14,8 +14,7 @@
         android:id="@+id/deviation_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
+        android:paddingHorizontal="16dp"
         android:textAppearance="?textAppearanceHeadline6"
         tools:text="@tools:sample/lorem" />
 
@@ -23,10 +22,8 @@
         android:id="@+id/deviation_excerpt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         android:textAppearance="?textAppearanceBody2"
         tools:text="@tools:sample/lorem/random" />
 </LinearLayout>

@@ -5,10 +5,9 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:orientation="vertical"
+    android:paddingVertical="8dp"
     android:paddingStart="?android:listPreferredItemPaddingStart"
-    android:paddingTop="8dp"
     android:paddingEnd="?android:listPreferredItemPaddingEnd"
-    android:paddingBottom="8dp"
     tools:ignore="Overdraw">
 
     <TextView

@@ -7,8 +7,8 @@
     android:background="?selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingEnd="?android:listPreferredItemPaddingEnd"
     android:paddingStart="?android:listPreferredItemPaddingStart"
+    android:paddingEnd="?android:listPreferredItemPaddingEnd"
     tools:ignore="Overdraw">
 
     <ImageView

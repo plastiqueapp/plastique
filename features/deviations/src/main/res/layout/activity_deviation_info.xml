@@ -37,27 +37,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:paddingVertical="16dp">
 
             <TextView
                 android:id="@+id/deviation_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16sp"
+                android:paddingHorizontal="16dp"
                 android:textAppearance="?textAppearanceHeadline5"
                 tools:text="@tools:sample/lorem" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="16dp"
+                android:paddingVertical="8dp">
 
                 <ImageView
                     android:id="@+id/deviation_author_avatar"
@@ -71,8 +66,7 @@
                     android:id="@+id/deviation_author_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginHorizontal="16dp"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/publish_date"
@@ -95,8 +89,7 @@
                 android:id="@+id/deviation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingHorizontal="16dp"
                 tools:maxLines="10"
                 tools:text="@tools:sample/lorem/random" />
 
@@ -106,8 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:overScrollMode="never"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+                android:paddingHorizontal="16dp"
                 tools:itemCount="3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_deviation_tag"
@@ -130,8 +122,7 @@
         android:id="@android:id/empty"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_empty_view_horizontal_margin"
-        android:layout_marginEnd="@dimen/common_empty_view_horizontal_margin"
+        android:layout_marginHorizontal="@dimen/common_empty_view_horizontal_margin"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

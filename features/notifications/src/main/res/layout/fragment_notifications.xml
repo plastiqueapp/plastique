@@ -13,8 +13,7 @@
             android:id="@+id/notifications"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingVertical="8dp"
             android:scrollbars="vertical"
             tools:itemCount="3"
             tools:listitem="@layout/item_notifications_simple" />
@@ -33,7 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/common_empty_view_horizontal_margin"
-        android:layout_marginStart="@dimen/common_empty_view_horizontal_margin"
+        android:layout_marginHorizontal="@dimen/common_empty_view_horizontal_margin"
         android:visibility="gone" />
 </FrameLayout>

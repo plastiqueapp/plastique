@@ -14,8 +14,7 @@
         android:id="@+id/deviation_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingHorizontal="16dp"
         android:textAppearance="?textAppearanceHeadline6"
         tools:text="@tools:sample/lorem" />
 
@@ -26,10 +25,8 @@
         android:breakStrategy="balanced"
         android:ellipsize="none"
         android:fadingEdgeLength="60dp"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         android:requiresFadingEdge="vertical"
         android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp"

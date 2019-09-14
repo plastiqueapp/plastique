@@ -2,9 +2,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp"
-    android:paddingEnd="?android:listPreferredItemPaddingEnd"
+    android:paddingVertical="16dp"
     android:paddingStart="?android:listPreferredItemPaddingStart"
-    android:paddingTop="16dp"
+    android:paddingEnd="?android:listPreferredItemPaddingEnd"
     android:text="@string/licenses_header"
     android:textAppearance="?textAppearanceBody2" />

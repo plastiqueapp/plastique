@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
+        android:paddingHorizontal="16dp"
         android:textAppearance="?textAppearanceHeadline6"
         tools:text="@tools:sample/lorem" />
 
@@ -21,10 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:breakStrategy="balanced"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         android:textAppearance="?textAppearanceBody2"
         tools:targetApi="m"
         tools:text="@tools:sample/lorem/random" />
