@@ -11,7 +11,9 @@ dependencies {
     implementation project(":libraries:core-ui")
     implementation project(":features:common")
 
-    compileOnly "com.google.auto.factory:auto-factory:$versions.autoFactory"
+    compileOnly("com.google.auto.factory:auto-factory:$versions.autoFactory") {
+        transitive = false
+    }
     kapt "com.google.auto.factory:auto-factory:$versions.autoFactory"
 
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
