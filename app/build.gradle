@@ -2,7 +2,7 @@ plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
     id "org.jetbrains.kotlin.kapt"
-    id "com.github.triplet.play" version "2.4.1"
+    id "com.github.triplet.play" version "2.4.2"
 }
 
 def googleServicesEnabled = file("google-services.json").exists()
@@ -128,6 +128,7 @@ dependencies {
     implementation "io.requery:sqlite-android:$versions.sqlite"
 
     debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
+    debugImplementation "com.facebook.flipper:flipper-network-plugin:$versions.flipper"
     debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
     debugImplementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 
