@@ -7,7 +7,7 @@ plugins {
     id "org.jetbrains.kotlin.android.extensions" version "1.3.50" apply false
     id "org.jetbrains.kotlin.kapt" version "1.3.50" apply false
 
-    id "com.github.ben-manes.versions" version "0.25.0"
+    id "com.github.ben-manes.versions" version "0.27.0"
     id "com.github.plnice.canidropjetifier" version "0.5"
     id "com.gradle.build-scan" version "2.4.2"
     id "com.google.gms.google-services" version "4.3.2" apply false
@@ -105,20 +105,14 @@ tasks.named("detekt").configure {
     exclude "**/build/**"
 }
 
-dependencyUpdates.resolutionStrategy {
-  componentSelection { rules ->
-    rules.all { ComponentSelection selection ->
-      def isNonStable = { String version ->
-        ['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'b', 'ea'].any { qualifier ->
-          version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
-        }
-      }
+dependencyUpdates.rejectVersionIf {
+    isNonStableVersion(it.candidate.version) && !isNonStableVersion(it.currentVersion)
+}
 
-      if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
-        selection.reject('Release candidate')
-      }
+static def isNonStableVersion(version) {
+    ["alpha", "beta", "rc", "cr", "m", "preview", "b", "ea"].any { qualifier ->
+        version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
     }
-  }
 }
 
 apply from: "gradle/versions.gradle"
