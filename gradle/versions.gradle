@@ -78,6 +78,6 @@ ext.versions = [
 
     mockito              : "3.1.0",
     mockitoKotlin        : "2.2.0",
-    robolectric          : "4.3",
+    robolectric          : "4.3.1",
     rxjava2junit5        : "1.0.0",
 ]
