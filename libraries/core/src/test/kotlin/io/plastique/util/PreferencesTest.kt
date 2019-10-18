@@ -1,6 +1,6 @@
 package io.plastique.util
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Before
 import org.junit.Test
