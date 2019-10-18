@@ -1,20 +1,23 @@
-def copyTestResults = tasks.create("copyTestResults", Sync) {
+def copyTestResultsTask = tasks.register("copyTestResults", Sync) {
     group = "verification"
-    description = "Consolidate all Test task results in one directory."
-    into "$rootDir/test-results"
+    description = "Consolidate all test results in one directory."
+    into "$buildDir/reports/all-tests"
     includeEmptyDirs = false
     include "**/*.xml"
 }
 
-allprojects { project ->
-    project.tasks.withType(Test) { task ->
-        copyTestResults.from({ task.reports.junitXml.destination }) {
-            def parts = task.path.split(":")[1..-1]
-            if (parts.size() == 1) {
-                parts = [project.name] + parts
+subprojects { project ->
+    project.afterEvaluate {
+        if (project.hasProperty("testResultsDir")) {
+            copyTestResultsTask.configure {
+                from(project.testResultsDir) {
+                    into project.path.split(":")[1..-1].join("/")
+                }
             }
-            into parts.join("/")
         }
-        task.finalizedBy copyTestResults
+    }
+
+    project.tasks.withType(Test).configureEach { task ->
+        task.finalizedBy copyTestResultsTask
     }
 }

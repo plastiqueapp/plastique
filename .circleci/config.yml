@@ -72,7 +72,7 @@ jobs:
           destination: logs
 
       - store_test_results:
-          path: test-results
+          path: build/reports/all-tests
 
 workflows:
   version: 2
