@@ -5,14 +5,6 @@
     <attr name="emptyViewStyle" format="reference" />
     <attr name="progressBarStyleMedium" format="reference" />
 
-    <!-- Workaround for https://issuetracker.google.com/issues/136103084 -->
-    <attr name="flow_horizontalSeparator" />
-    <attr name="flow_verticalSeparator" />
-    <attr name="motionProgress" />
-    <attr name="waveDecay" />
-    <attr name="motionPathRotate" />
-    <attr name="duration" />
-
     <declare-styleable name="Theme.App">
         <attr name="inlineButtonStyle" format="reference" />
     </declare-styleable>
