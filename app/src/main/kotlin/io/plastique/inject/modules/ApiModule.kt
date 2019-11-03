@@ -12,22 +12,11 @@ import io.plastique.BuildConfig
 import io.plastique.R
 import io.plastique.api.ErrorResponseParserImpl
 import io.plastique.api.NullIfDeletedJsonAdapterFactory
-import io.plastique.api.auth.AuthService
-import io.plastique.api.collections.CollectionService
-import io.plastique.api.comments.CommentService
 import io.plastique.api.common.ApiConstants
-import io.plastique.api.deviations.DeviationService
 import io.plastique.api.feed.FeedElementDto
 import io.plastique.api.feed.FeedElementTypes
-import io.plastique.api.feed.FeedService
-import io.plastique.api.gallery.GalleryService
-import io.plastique.api.messages.MessageService
 import io.plastique.api.statuses.StatusDto
-import io.plastique.api.statuses.StatusService
-import io.plastique.api.users.UserService
-import io.plastique.api.watch.WatchService
 import io.plastique.core.client.AccessTokenProvider
-import io.plastique.core.client.ApiClient
 import io.plastique.core.client.ApiConfiguration
 import io.plastique.core.client.ErrorResponseParser
 import io.plastique.core.json.adapters.InstantAdapter
@@ -38,63 +27,13 @@ import io.plastique.core.session.SessionManager
 import io.plastique.notifications.MessageDtoSubjectJsonAdapterFactory
 import org.threeten.bp.format.DateTimeFormatter
 
-@Module
+@Module(includes = [ApiServiceModule::class])
 abstract class ApiModule {
     @Binds
     abstract fun bindErrorResponseParser(impl: ErrorResponseParserImpl): ErrorResponseParser
 
     @Module
     companion object {
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideAuthService(apiClient: ApiClient): AuthService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideCommentService(apiClient: ApiClient): CommentService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideCollectionService(apiClient: ApiClient): CollectionService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideDeviationService(apiClient: ApiClient): DeviationService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideFeedService(apiClient: ApiClient): FeedService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideGalleryService(apiClient: ApiClient): GalleryService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideMessageService(apiClient: ApiClient): MessageService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideStatusService(apiClient: ApiClient): StatusService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideUserService(apiClient: ApiClient): UserService = apiClient.createService()
-
-        @Provides
-        @Reusable
-        @JvmStatic
-        fun provideWatchService(apiClient: ApiClient): WatchService = apiClient.createService()
-
         @Provides
         @Reusable
         @JvmStatic
@@ -136,9 +75,8 @@ abstract class ApiModule {
         @Provides
         @JvmStatic
         fun provideAccessTokenProvider(sessionManager: Lazy<SessionManager>): AccessTokenProvider = object : AccessTokenProvider {
-            override fun getAccessToken(invalidatedAccessToken: String?): String {
-                return sessionManager.get().getAccessToken(invalidatedAccessToken)
-            }
+            override fun getAccessToken(invalidatedAccessToken: String?): String =
+                sessionManager.get().getAccessToken(invalidatedAccessToken)
         }
     }
 }

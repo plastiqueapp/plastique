@@ -13,13 +13,11 @@ import javax.inject.Named
 @Module
 object DebugOkHttpInterceptorModule {
     @Provides
-    @JvmStatic
     fun provideInterceptors(): List<Interceptor> =
         listOf(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
 
     @Provides
     @Named("network")
-    @JvmStatic
     fun provideNetworkInterceptors(flipperClient: FlipperClient): List<Interceptor> =
         listOf(StethoInterceptor(), FlipperOkhttpInterceptor(flipperClient.getPlugin(NetworkFlipperPlugin.ID)))
 }

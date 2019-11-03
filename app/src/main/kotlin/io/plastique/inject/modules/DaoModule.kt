@@ -20,54 +20,41 @@ import io.plastique.watch.WatchDao
 @Module
 object DaoModule {
     @Provides
-    @JvmStatic
     fun provideCacheEntryDao(database: AppDatabase): CacheEntryDao = database.cacheEntryDao()
 
     @Provides
-    @JvmStatic
     fun provideCategoryDao(database: AppDatabase): CategoryDao = database.categoryDao()
 
     @Provides
-    @JvmStatic
     fun provideCollectionDao(database: AppDatabase): CollectionDao = database.collectionDao()
 
     @Provides
-    @JvmStatic
     fun provideCommentDao(database: AppDatabase): CommentDao = database.commentDao()
 
     @Provides
-    @JvmStatic
     fun provideDeviationDao(database: AppDatabase): DeviationDao = database.deviationDao()
 
     @Provides
-    @JvmStatic
     fun provideDeviationMetadataDao(database: AppDatabase): DeviationMetadataDao = database.deviationMetadataDao()
 
     @Provides
-    @JvmStatic
     fun provideDownloadInfoDao(database: AppDatabase): DownloadInfoDao = database.downloadInfoDao()
 
     @Provides
-    @JvmStatic
     fun provideFeedDao(database: AppDatabase): FeedDao = database.feedDao()
 
     @Provides
-    @JvmStatic
     fun provideGalleryDao(database: AppDatabase): GalleryDao = database.galleryDao()
 
     @Provides
-    @JvmStatic
     fun provideMessageDao(database: AppDatabase): MessageDao = database.messageDao()
 
     @Provides
-    @JvmStatic
     fun provideStatusDao(database: AppDatabase): StatusDao = database.statusDao()
 
     @Provides
-    @JvmStatic
     fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 
     @Provides
-    @JvmStatic
     fun provideWatchDao(database: AppDatabase): WatchDao = database.watchDao()
 }

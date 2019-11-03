@@ -17,7 +17,6 @@ import javax.inject.Singleton
 object DebuggingModule {
     @Provides
     @Singleton
-    @JvmStatic
     fun provideFlipperClient(context: Context): FlipperClient {
         val flipperClient = AndroidFlipperClient.getInstance(context)
         flipperClient.addPlugin(InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()))

@@ -8,11 +8,9 @@ import javax.inject.Named
 @Module
 object OkHttpInterceptorModule {
     @Provides
-    @JvmStatic
     fun provideInterceptors(): List<Interceptor> = emptyList()
 
     @Provides
     @Named("network")
-    @JvmStatic
     fun provideNetworkInterceptors(): List<Interceptor> = emptyList()
 }
