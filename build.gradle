@@ -9,7 +9,6 @@ plugins {
 
     id "com.github.ben-manes.versions" version "0.27.0"
     id "com.github.plnice.canidropjetifier" version "0.5"
-    id "com.gradle.build-scan" version "2.4.2"
     id "com.google.gms.google-services" version "4.3.2" apply false
     id "io.fabric" version "1.31.1" apply false
     id "io.gitlab.arturbosch.detekt" version "1.1.1"
@@ -70,28 +69,6 @@ task clean(type: Delete) {
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    if (ext.ci) {
-        tag "CI"
-        publishAlways()
-
-        def buildUrl = System.getenv("CIRCLE_BUILD_URL")
-        if (buildUrl != null) {
-            link "Build", buildUrl
-        }
-
-        def pullRequestUrl = System.getenv("CIRCLE_PULL_REQUEST")
-        if (pullRequestUrl != null) {
-            link "Pull Request", pullRequestUrl
-        }
-    } else {
-        tag "Local"
-    }
 }
 
 detekt {

@@ -26,9 +26,39 @@ pluginManagement {
     }
 }
 
+plugins {
+    id "com.gradle.enterprise" version "3.1.1"
+}
+
+def ci = System.getenv("CI") != null
+
 buildCache {
     local {
-        enabled = System.getenv("CI") == null
+        enabled = !ci
+    }
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+
+        if (ci) {
+            publishAlways()
+            tag "CI"
+
+            def buildUrl = System.getenv("CIRCLE_BUILD_URL")
+            if (buildUrl != null) {
+                link "Build", buildUrl
+            }
+
+            def pullRequestUrl = System.getenv("CIRCLE_PULL_REQUEST")
+            if (pullRequestUrl != null) {
+                link "Pull Request", pullRequestUrl
+            }
+        } else {
+            tag "Local"
+        }
     }
 }
 
