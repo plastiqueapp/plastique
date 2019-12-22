@@ -9,5 +9,6 @@ class TimberInitializer @Inject constructor() : Initializer() {
     }
 
     @Suppress("MagicNumber")
-    override val priority: Int get() = 10
+    override val priority: Int
+        get() = 10
 }

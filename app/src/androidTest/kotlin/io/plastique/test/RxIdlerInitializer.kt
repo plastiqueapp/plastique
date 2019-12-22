@@ -14,5 +14,6 @@ class RxIdlerInitializer @Inject constructor() : Initializer() {
     }
 
     @Suppress("MagicNumber")
-    override val priority: Int get() = 9
+    override val priority: Int
+        get() = 9
 }
