@@ -34,7 +34,7 @@ dependencies {
     api "com.jakewharton.timber:timber:$versions.timber"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.jakewharton.threetenabp:threetenabp:$versions.threetenabp"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     api "com.github.technoir42:android-extensions:$versions.androidExtensions"
     api "com.github.technoir42:kotlin-extensions:$versions.kotlinExtensions"
     api "com.gojuno.koptional:koptional:$versions.koptional"

@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation "androidx.annotation:annotation:$versions.androidx.annotation"
     api "io.reactivex.rxjava2:rxjava:$versions.rxjava"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
     api "com.squareup.retrofit2:retrofit:$versions.retrofit"

@@ -65,7 +65,6 @@ plugins.withId("com.android.library") {
 
 plugins.withId("org.jetbrains.kotlin.android.extensions") {
     androidExtensions {
-        experimental = true
         features = ["parcelize"]
         defaultCacheImplementation = "NONE"
     }
@@ -74,11 +73,5 @@ plugins.withId("org.jetbrains.kotlin.android.extensions") {
 plugins.withId("org.jetbrains.kotlin.kapt") {
     kapt {
         correctErrorTypes = true
-
-        if (plugins.hasPlugin("org.jetbrains.kotlin.android") && JavaVersion.current() >= JavaVersion.VERSION_1_9) {
-            javacOptions {
-                option("-source", "8")
-            }
-        }
     }
 }
