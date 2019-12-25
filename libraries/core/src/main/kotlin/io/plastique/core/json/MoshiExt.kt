@@ -12,6 +12,7 @@ inline fun <reified T> Moshi.adapter(): JsonAdapter<T> {
     return adapter<T>(type)
 }
 
+@Suppress("UnnecessaryAbstractClass")
 abstract class TypeToken<in T> {
     val type: Type = getSuperclassTypeParameter(javaClass)
 
