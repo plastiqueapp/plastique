@@ -111,10 +111,8 @@ internal class CommentListAdapter(
 
     fun findCommentPosition(commentId: String): Int {
         for ((index, item) in items.withIndex()) {
-            if (item is CommentItem) {
-                if (item.comment.id == commentId) {
-                    return index
-                }
+            if (item is CommentItem && item.comment.id == commentId) {
+                return index
             }
         }
         return RecyclerView.NO_POSITION

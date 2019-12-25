@@ -1,5 +1,6 @@
 package io.plastique.util
 
+import java.util.Locale
 import kotlin.math.ln
 import kotlin.math.pow
 
@@ -10,6 +11,6 @@ object ByteCountFormatter {
         if (bytes < unit) return "$bytes B"
         val exp = (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
-        return String.format("%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
+        return String.format(Locale.ENGLISH, "%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
     }
 }

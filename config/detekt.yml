@@ -13,6 +13,10 @@ empty-blocks:
   EmptyFunctionBlock:
     ignoreOverriddenFunctions: true
 
+exceptions:
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: true
+
 formatting:
   MaximumLineLength:
     maxLineLength: 160
@@ -21,14 +25,26 @@ performance:
   SpreadOperator:
     active: false
 
+potential-bugs:
+  ImplicitDefaultLocale:
+    active: true
+
 style:
+  CollapsibleIfStatements:
+    active: true
+  EqualsOnSignatureLine:
+    active: true
+  ExplicitItLambdaParameter:
+    active: true
   ForbiddenComment:
     active: false
   MandatoryBracesIfStatements:
     active: true
   MaxLineLength:
     maxLineLength: 160
-  MayBeConst:
+  NoTabs:
+    active: true
+  RedundantExplicitType:
     active: true
   RedundantVisibilityModifierRule:
     active: true
@@ -46,7 +62,9 @@ style:
     active: true
   UnusedImports:
     active: true
-  VarCouldBeVal:
+  UseArrayLiteralsInAnnotations:
     active: true
   UseRequire:
+    active: true
+  VarCouldBeVal:
     active: true

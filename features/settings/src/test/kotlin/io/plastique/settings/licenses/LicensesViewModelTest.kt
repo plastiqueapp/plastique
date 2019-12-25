@@ -10,7 +10,6 @@ import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.io.IOException
 
 @ExtendWith(OverrideSchedulersExtension::class)
 class LicensesViewModelTest {
@@ -30,7 +29,7 @@ class LicensesViewModelTest {
 
     @Test
     fun `Load error`() {
-        whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()))
+        whenever(licenseRepository.getLicenses()).thenReturn(Single.error(Exception()))
         whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(ERROR_STATE)
 
         viewModel.state.test()
@@ -52,7 +51,7 @@ class LicensesViewModelTest {
 
     @Test
     fun retry() {
-        whenever(licenseRepository.getLicenses()).thenReturn(Single.error(IOException()), Single.just(listOf(LICENSE)))
+        whenever(licenseRepository.getLicenses()).thenReturn(Single.error(Exception()), Single.just(listOf(LICENSE)))
         whenever(errorMessageProvider.getErrorState(any(), any())).thenReturn(ERROR_STATE)
 
         val observer = viewModel.state
