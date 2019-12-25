@@ -29,6 +29,7 @@ ext.versions = [
     ],
 
     playServices         : [
+        core       : "1.6.4",
         instantApps: "17.0.0",
     ],
 
