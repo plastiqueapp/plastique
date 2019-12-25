@@ -9,7 +9,6 @@ jobs:
     environment:
       TERM: dumb
       _JAVA_OPTIONS: "-XX:+HeapDumpOnOutOfMemoryError"
-      GRADLE_OPTS: "-Dorg.gradle.cache.cleanup=false -Dorg.gradle.jvmargs='-Xmx2048m -XX:MaxMetaspaceSize=320m' -Dkotlin.daemon.jvm.options=-Xmx512m -Djava.util.concurrent.ForkJoinPool.common.parallelism=2"
 
     steps:
       - checkout
@@ -30,8 +29,12 @@ jobs:
             - v3-plastique-
 
       - run:
+          name: Copy gradle.properties
+          command: mkdir -p ~/.gradle ; cp .github/gradle.properties ~/.gradle/gradle.properties
+
+      - run:
           name: Build and Test
-          command: ./gradlew testDebug :app:lintProdDebug :app:lintProdRelease :detekt --max-workers=2 --stacktrace
+          command: ./gradlew :app:assembleDevDebug :app:lintDevDebug testDebug detekt
           no_output_timeout: 5m
 
       - run:
@@ -39,13 +42,6 @@ jobs:
           command: |
             mkdir -p /tmp/heap_dumps
             cp *.hprof /tmp/heap_dumps 2>/dev/null || :
-          when: on_fail
-
-      - run:
-          name: Copy logs
-          command: |
-            mkdir -p /tmp/logs
-            find /tmp -name "kotlin-daemon.*.log" -exec cp {} /tmp/logs/ \;
           when: on_fail
 
       - save_cache:
@@ -66,10 +62,6 @@ jobs:
       - store_artifacts:
           path: /tmp/heap_dumps
           destination: heap_dumps
-
-      - store_artifacts:
-          path: /tmp/logs
-          destination: logs
 
       - store_test_results:
           path: build/reports/all-tests

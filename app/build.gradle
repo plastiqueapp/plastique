@@ -15,6 +15,10 @@ if (googleServicesEnabled) {
 }
 
 android {
+    if (System.getenv("GITHUB_ACTIONS")) {
+        ndkVersion = "20.1.5948944"
+    }
+
     defaultConfig {
         applicationId "io.plastique.android"
         versionCode buildConfig.versionCode
