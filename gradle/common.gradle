@@ -1,15 +1,4 @@
-configurations.all { config ->
-    exclude group: "com.google.code.findbugs", module: "jsr305"
-
-    resolutionStrategy {
-        force "com.google.auto.value:auto-value-annotations:1.6.6"
-        eachDependency { details ->
-            if (details.requested.group == "com.google.auto.value" && details.requested.name == "auto-value") {
-                details.useTarget "com.google.auto.value:auto-value-annotations:1.6.6"
-            }
-        }
-    }
-}
+apply from: "$rootDir/gradle/dependencies.gradle"
 
 plugins.whenPluginAdded { plugin ->
     if (plugin.class.name in ["com.android.build.gradle.AppPlugin",

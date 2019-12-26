@@ -7,6 +7,8 @@ plugins {
     id "io.gitlab.arturbosch.detekt"
 }
 
+apply from: "gradle/versions.gradle"
+
 ext.ci = System.getenv("CI") != null
 ext.buildConfig = [
     compileSdk : 29,
@@ -84,8 +86,6 @@ static def isNonStableVersion(version) {
         version ==~ /(?i).*[.-]$qualifier[.\d-+]*/
     }
 }
-
-apply from: "gradle/versions.gradle"
 
 if (ext.ci) {
     apply from: "gradle/ci.gradle"
