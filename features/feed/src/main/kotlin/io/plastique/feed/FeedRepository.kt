@@ -27,7 +27,6 @@ import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
-import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.toDeviation
 import io.plastique.statuses.StatusRepository
@@ -37,12 +36,14 @@ import io.plastique.users.toUser
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
 import kotlin.math.max
 
 class FeedRepository @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val feedDao: FeedDao,
     private val feedService: FeedService,
@@ -51,12 +52,11 @@ class FeedRepository @Inject constructor(
     private val collectionFolderRepository: CollectionFolderRepository,
     private val statusRepository: StatusRepository,
     private val userRepository: UserRepository,
-    private val metadataConverter: NullFallbackAdapter,
-    private val timeProvider: TimeProvider
+    private val metadataConverter: NullFallbackAdapter
 ) : CleanableRepository {
 
     fun getFeed(matureContent: Boolean): Observable<PagedData<List<FeedElement>, StringCursor>> {
-        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(clock, CACHE_DURATION) { serializedMetadata ->
             val cacheMetadata = metadataConverter.fromJson<FeedCacheMetadata>(serializedMetadata)
             cacheMetadata?.matureContent == matureContent
         }
@@ -70,7 +70,7 @@ class FeedRepository @Inject constructor(
     private fun getFromDb(cacheKey: CacheKey): Observable<PagedData<List<FeedElement>, StringCursor>> {
         return database.createObservable("deviations", "collection_folders", "deviation_images", "deviation_videos", "feed_deviations_ordered", "statuses",
             "feed", "users") {
-            val feedElements = feedDao.getFeed().map { it.toFeedElement(timeProvider.timeZone) }
+            val feedElements = feedDao.getFeed().map { it.toFeedElement(clock.zone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(feedElements, nextCursor)
         }
@@ -87,7 +87,7 @@ class FeedRepository @Inject constructor(
             .map { feedResult ->
                 val nextCursor = if (feedResult.hasMore) StringCursor(feedResult.cursor!!) else null
                 val cacheMetadata = FeedCacheMetadata(matureContent = matureContent, nextCursor = nextCursor)
-                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = clock.instant(), metadata = metadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, feedElements = feedResult.items, replaceExisting = cursor == null)
                 nextCursor.toOptional()
             }

@@ -25,28 +25,28 @@ import io.plastique.core.paging.PagedData
 import io.plastique.core.session.Session
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
-import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import timber.log.Timber
 import javax.inject.Inject
 
 class CollectionFolderRepositoryImpl @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val collectionDao: CollectionDao,
     private val collectionService: CollectionService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val metadataConverter: NullFallbackAdapter,
-    private val sessionManager: SessionManager,
-    private val timeProvider: TimeProvider
+    private val sessionManager: SessionManager
 ) : CollectionFolderRepository {
 
     fun getFolders(params: FolderLoadParams): Observable<PagedData<List<Folder>, OffsetCursor>> {
-        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(clock, CACHE_DURATION) { serializedMetadata ->
             val metadata = metadataConverter.fromJson<FolderCacheMetadata>(serializedMetadata)
             metadata?.params == params
         }
@@ -100,7 +100,7 @@ class CollectionFolderRepositoryImpl @Inject constructor(
             limit = FOLDERS_PER_PAGE)
             .map { folderList ->
                 val cacheMetadata = FolderCacheMetadata(params = params, nextCursor = folderList.nextCursor)
-                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = clock.instant(), metadata = metadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, folders = folderList.results, replaceExisting = offset == 0)
                 cacheMetadata.nextCursor.toOptional()
             }

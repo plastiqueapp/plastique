@@ -18,30 +18,30 @@ import io.plastique.core.cache.MetadataValidatingCacheEntryChecker
 import io.plastique.core.db.createObservable
 import io.plastique.core.paging.Cursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.plastique.util.Size
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 class DeviationRepositoryImpl @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val deviationDao: DeviationDao,
     private val deviationService: DeviationService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val fetcherFactory: DeviationFetcherFactory,
-    private val timeProvider: TimeProvider,
     private val userRepository: UserRepository
 ) : DeviationRepository {
 
     fun getDeviations(params: FetchParams): Observable<PagedData<List<Deviation>, Cursor>> {
         val fetcher = fetcherFactory.createFetcher(params)
         val metadataSerializer = fetcher.createMetadataSerializer()
-        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(clock, CACHE_DURATION) { serializedMetadata ->
             val metadata = metadataSerializer.deserialize(serializedMetadata)
             metadata?.params == params
         }
@@ -109,7 +109,7 @@ class DeviationRepositoryImpl @Inject constructor(
             .map { fetchResult ->
                 val cacheMetadata = DeviationCacheMetadata(params, fetchResult.nextCursor)
                 val metadataSerializer = fetcher.createMetadataSerializer()
-                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataSerializer.serialize(cacheMetadata))
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = clock.instant(), metadata = metadataSerializer.serialize(cacheMetadata))
                 persist(cacheEntry = cacheEntry, deviations = fetchResult.deviations, replaceExisting = fetchResult.replaceExisting)
                 cacheMetadata.nextCursor.toOptional()
             }
@@ -137,7 +137,7 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun combineAndFilter(deviationsWithRelations: List<DeviationEntityWithRelations>, params: FetchParams): List<Deviation> {
         return deviationsWithRelations
             .asSequence()
-            .map { it.toDeviation(timeProvider.timeZone) }
+            .map { it.toDeviation(clock.zone) }
             .filter { matchesParams(it, params) }
             .toList()
     }
@@ -175,7 +175,7 @@ class DeviationRepositoryImpl @Inject constructor(
     private fun getDeviationByIdFromDb(deviationId: String): Observable<Deviation> {
         return deviationDao.getDeviationById(deviationId)
             .takeWhile { it.isNotEmpty() }
-            .map { it.first().toDeviation(timeProvider.timeZone) }
+            .map { it.first().toDeviation(clock.zone) }
             .distinctUntilChanged()
     }
 

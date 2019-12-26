@@ -23,26 +23,26 @@ import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
 import io.plastique.core.session.SessionManager
 import io.plastique.core.session.requireUser
-import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
 class WatcherRepository @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val watchService: WatchService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val metadataConverter: NullFallbackAdapter,
     private val sessionManager: SessionManager,
-    private val timeProvider: TimeProvider,
     private val userRepository: UserRepository,
     private val watchDao: WatchDao
 ) {
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
 
     fun getWatchers(username: String?): Observable<PagedData<List<Watcher>, OffsetCursor>> {
         return sessionManager.sessionChanges
@@ -75,7 +75,7 @@ class WatcherRepository @Inject constructor(
         }
             .map { watcherList ->
                 val cacheMetadata = WatchersCacheMetadata(nextCursor = watcherList.nextCursor)
-                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = clock.instant(), metadata = metadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, watchers = watcherList.results, replaceExisting = offset == 0)
                 cacheMetadata.nextCursor.toOptional()
             }

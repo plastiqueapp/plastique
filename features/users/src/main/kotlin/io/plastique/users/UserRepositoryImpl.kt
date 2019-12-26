@@ -9,23 +9,23 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.cache.toCacheKey
-import io.plastique.core.time.TimeProvider
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Inject
 import kotlin.math.max
 
 class UserRepositoryImpl @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val userDao: UserDao,
     private val userService: UserService,
-    private val cacheEntryRepository: CacheEntryRepository,
-    private val timeProvider: TimeProvider
+    private val cacheEntryRepository: CacheEntryRepository
 ) : UserRepository {
 
     override fun getCurrentUser(userId: String): Observable<User> {
-        val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+        val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
         return cacheHelper.createObservable(
             cacheKey = getCacheKey(userId),
             cachedData = getUserByIdFromDb(userId),
@@ -50,7 +50,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun persistWithTimestamp(user: UserDto) {
         database.runInTransaction {
-            val cacheEntry = CacheEntry(key = getCacheKey(user.id), timestamp = timeProvider.currentInstant)
+            val cacheEntry = CacheEntry(key = getCacheKey(user.id), timestamp = clock.instant())
             cacheEntryRepository.setEntry(cacheEntry)
             userDao.insertOrUpdate(user.toUserEntity())
         }

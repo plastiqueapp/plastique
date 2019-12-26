@@ -25,8 +25,6 @@ import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
 import io.plastique.core.themes.ThemeIdConverter
-import io.plastique.core.time.SystemTimeProvider
-import io.plastique.core.time.TimeProvider
 import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutModeConverter
 import io.plastique.main.MainPageProvider
@@ -40,6 +38,7 @@ import io.plastique.util.NoCryptor
 import io.plastique.util.Preferences
 import io.plastique.watch.WatchManager
 import io.plastique.watch.WatchManagerImpl
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Singleton
 
@@ -85,7 +84,7 @@ abstract class AppModule {
 
         @Provides
         @JvmStatic
-        fun provideTimeProvider(): TimeProvider = SystemTimeProvider
+        fun provideClock(): Clock = Clock.systemDefaultZone()
 
         @Provides
         @Singleton

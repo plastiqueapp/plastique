@@ -2,6 +2,7 @@ package io.plastique.core.time
 
 import android.content.Context
 import io.plastique.core.ui.R
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -10,10 +11,10 @@ import javax.inject.Inject
 
 class ElapsedTimeFormatter @Inject constructor(
     private val context: Context,
-    private val timeProvider: TimeProvider
+    private val clock: Clock
 ) {
     fun format(from: ZonedDateTime): String {
-        return format(from, timeProvider.currentTime)
+        return format(from, ZonedDateTime.now(clock))
     }
 
     @Suppress("MagicNumber")

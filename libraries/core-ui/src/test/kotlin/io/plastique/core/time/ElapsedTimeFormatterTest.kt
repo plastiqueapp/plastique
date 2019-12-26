@@ -1,12 +1,13 @@
 package io.plastique.core.time
 
 import androidx.test.core.app.ApplicationProvider
-import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.runner.RunWith
 import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.ParameterizedRobolectricTestRunner.Parameters
+import org.threeten.bp.Clock
+import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -16,8 +17,8 @@ class ElapsedTimeFormatterTest(
     private val to: ZonedDateTime,
     private val expected: String
 ) {
-    private val timeProvider = mock<TimeProvider>()
-    private val elapsedTimeFormatter = ElapsedTimeFormatter(ApplicationProvider.getApplicationContext(), timeProvider)
+    private val clock = Clock.fixed(Instant.EPOCH, ZONE)
+    private val elapsedTimeFormatter = ElapsedTimeFormatter(ApplicationProvider.getApplicationContext(), clock)
 
     @Test
     fun format() {
@@ -26,6 +27,8 @@ class ElapsedTimeFormatterTest(
     }
 
     companion object {
+        private val ZONE = ZoneId.of("UTC")
+
         @Parameters
         @JvmStatic
         fun data(): Collection<Array<Any>> = listOf(
@@ -96,7 +99,7 @@ class ElapsedTimeFormatterTest(
 
         @Suppress("LongParameterList")
         private fun dateTimeOf(year: Int, month: Int, dayOfMonth: Int, hour: Int = 0, minute: Int = 0, second: Int = 0): ZonedDateTime {
-            return ZonedDateTime.of(year, month, dayOfMonth, hour, minute, second, 0, ZoneId.systemDefault())
+            return ZonedDateTime.of(year, month, dayOfMonth, hour, minute, second, 0, ZONE)
         }
     }
 }

@@ -22,26 +22,26 @@ import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val commentDao: CommentDao,
     private val commentService: CommentService,
     private val cacheEntryRepository: CacheEntryRepository,
     private val metadataConverter: NullFallbackAdapter,
-    private val timeProvider: TimeProvider,
     private val userRepository: UserRepository
 ) : CommentRepository {
 
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
 
     fun getComments(threadId: CommentThreadId): Observable<PagedData<List<Comment>, OffsetCursor>> {
         val cacheKey = threadId.cacheKey
@@ -62,7 +62,7 @@ class CommentRepositoryImpl @Inject constructor(
                 val cacheMetadata = CommentCacheMetadata(nextCursor = commentList.nextCursor)
                 val cacheEntry = CacheEntry(
                     key = cacheKey,
-                    timestamp = timeProvider.currentInstant,
+                    timestamp = clock.instant(),
                     metadata = metadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, comments = commentList.comments, replaceExisting = offset == 0)
                 cacheMetadata.nextCursor.toOptional()

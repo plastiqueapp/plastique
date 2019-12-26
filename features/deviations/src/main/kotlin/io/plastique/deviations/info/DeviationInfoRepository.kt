@@ -12,26 +12,26 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.cache.toCacheKey
-import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationNotFoundException
 import io.plastique.deviations.DeviationRepository
 import io.plastique.users.toUser
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Singles
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 class DeviationInfoRepository @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val deviationService: DeviationService,
     private val deviationMetadataDao: DeviationMetadataDao,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val timeProvider: TimeProvider,
     private val deviationRepository: DeviationRepository
 ) {
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
 
     fun getDeviationInfo(deviationId: String): Observable<DeviationInfo> {
         val cacheKey = getCacheKey(deviationId)
@@ -58,14 +58,14 @@ class DeviationInfoRepository @Inject constructor(
     private fun getDeviationInfoFromDb(deviationId: String): Observable<DeviationInfo> {
         return deviationMetadataDao.getDeviationInfoById(deviationId)
             .filter { it.isNotEmpty() }
-            .map { it.first().toDeviationInfo(timeProvider.timeZone) }
+            .map { it.first().toDeviationInfo(clock.zone) }
             .distinctUntilChanged()
     }
 
     private fun persist(cacheKey: CacheKey, metadataList: List<DeviationMetadataDto>) {
         val entities = metadataList.map { it.toDeviationMetadataEntity() }
         database.runInTransaction {
-            val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
+            val cacheEntry = CacheEntry(key = cacheKey, timestamp = clock.instant())
             cacheEntryRepository.setEntry(cacheEntry)
             deviationMetadataDao.insertOrUpdate(entities)
         }

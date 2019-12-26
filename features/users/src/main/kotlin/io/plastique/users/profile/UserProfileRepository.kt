@@ -13,25 +13,25 @@ import io.plastique.core.cache.CacheHelper
 import io.plastique.core.cache.CacheKey
 import io.plastique.core.cache.DurationBasedCacheEntryChecker
 import io.plastique.core.cache.toCacheKey
-import io.plastique.core.time.TimeProvider
 import io.plastique.users.UserDao
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.plastique.users.toUser
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
 class UserProfileRepository @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val userDao: UserDao,
     private val userService: UserService,
     private val cacheEntryRepository: CacheEntryRepository,
-    private val userRepository: UserRepository,
-    private val timeProvider: TimeProvider
+    private val userRepository: UserRepository
 ) {
-    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+    private val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
 
     fun getUserProfileByName(username: String): Observable<UserProfile> {
         val cacheKey = getCacheKey(username)
@@ -50,7 +50,7 @@ class UserProfileRepository @Inject constructor(
     private fun refreshUserProfile(username: String, cacheKey: CacheKey): Completable {
         return userService.getUserProfile(username)
             .doOnSuccess { userProfile ->
-                val cacheEntry = CacheEntry(key = cacheKey, timestamp = timeProvider.currentInstant)
+                val cacheEntry = CacheEntry(key = cacheKey, timestamp = clock.instant())
                 persistUserProfile(cacheEntry = cacheEntry, userProfile = userProfile)
             }
             .mapError { error ->

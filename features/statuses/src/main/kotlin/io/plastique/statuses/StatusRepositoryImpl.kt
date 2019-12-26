@@ -23,28 +23,28 @@ import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.OffsetCursor
 import io.plastique.core.paging.PagedData
-import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationRepository
 import io.plastique.users.UserNotFoundException
 import io.plastique.users.UserRepository
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import javax.inject.Inject
 
 class StatusRepositoryImpl @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val statusService: StatusService,
     private val statusDao: StatusDao,
     private val cacheEntryRepository: CacheEntryRepository,
     private val deviationRepository: DeviationRepository,
     private val userRepository: UserRepository,
-    private val cacheMetadataConverter: NullFallbackAdapter,
-    private val timeProvider: TimeProvider
+    private val cacheMetadataConverter: NullFallbackAdapter
 ) : StatusRepository {
 
     fun getStatuses(params: StatusListLoadParams): Observable<PagedData<List<Status>, OffsetCursor>> {
-        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(timeProvider, CACHE_DURATION) { serializedMetadata ->
+        val cacheEntryChecker = MetadataValidatingCacheEntryChecker(clock, CACHE_DURATION) { serializedMetadata ->
             val metadata = cacheMetadataConverter.fromJson<StatusListCacheMetadata>(serializedMetadata)
             metadata?.params == params
         }
@@ -67,7 +67,7 @@ class StatusRepositoryImpl @Inject constructor(
                 val cacheMetadata = StatusListCacheMetadata(params, statusList.nextCursor)
                 val cacheEntry = CacheEntry(
                     key = getCacheKey(params),
-                    timestamp = timeProvider.currentInstant,
+                    timestamp = clock.instant(),
                     metadata = cacheMetadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, statuses = statusList.results, replaceExisting = offset == 0)
                 cacheMetadata.nextCursor.toOptional()
@@ -102,7 +102,7 @@ class StatusRepositoryImpl @Inject constructor(
 
     private fun getStatusesFromDb(cacheKey: CacheKey): Observable<PagedData<List<Status>, OffsetCursor>> {
         return database.createObservable("users", "deviation_images", "deviations", "statuses", "user_statuses") {
-            val statuses = statusDao.getStatusesByKey(cacheKey.value).map { it.toStatus(timeProvider.timeZone) }
+            val statuses = statusDao.getStatusesByKey(cacheKey.value).map { it.toStatus(clock.zone) }
             val nextCursor = getNextCursor(cacheKey)
             PagedData(statuses, nextCursor)
         }.distinctUntilChanged()

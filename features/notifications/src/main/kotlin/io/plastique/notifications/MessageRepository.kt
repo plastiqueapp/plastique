@@ -23,7 +23,6 @@ import io.plastique.core.db.createObservable
 import io.plastique.core.json.adapters.NullFallbackAdapter
 import io.plastique.core.paging.PagedData
 import io.plastique.core.paging.StringCursor
-import io.plastique.core.time.TimeProvider
 import io.plastique.deviations.DeviationRepository
 import io.plastique.deviations.toDeviation
 import io.plastique.statuses.StatusRepository
@@ -33,12 +32,14 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.internal.functions.Functions
+import org.threeten.bp.Clock
 import org.threeten.bp.Duration
 import org.threeten.bp.ZoneId
 import timber.log.Timber
 import javax.inject.Inject
 
 class MessageRepository @Inject constructor(
+    private val clock: Clock,
     private val database: RoomDatabase,
     private val messageDao: MessageDao,
     private val messageService: MessageService,
@@ -48,12 +49,11 @@ class MessageRepository @Inject constructor(
     private val commentRepository: CommentRepository,
     private val statusRepository: StatusRepository,
     private val userRepository: UserRepository,
-    private val metadataConverter: NullFallbackAdapter,
-    private val timeProvider: TimeProvider
+    private val metadataConverter: NullFallbackAdapter
 ) : CleanableRepository {
 
     fun getMessages(): Observable<PagedData<List<Message>, StringCursor>> {
-        val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(timeProvider, CACHE_DURATION))
+        val cacheHelper = CacheHelper(cacheEntryRepository, DurationBasedCacheEntryChecker(clock, CACHE_DURATION))
         return cacheHelper.createObservable(
             cacheKey = CACHE_KEY,
             cachedData = getMessagesFromDb(CACHE_KEY),
@@ -65,7 +65,7 @@ class MessageRepository @Inject constructor(
             .map { result ->
                 val nextCursor = if (result.hasMore) StringCursor(result.cursor) else null
                 val cacheMetadata = MessageFeedCacheMetadata(nextCursor = nextCursor)
-                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = timeProvider.currentInstant, metadata = metadataConverter.toJson(cacheMetadata))
+                val cacheEntry = CacheEntry(key = CACHE_KEY, timestamp = clock.instant(), metadata = metadataConverter.toJson(cacheMetadata))
                 persist(cacheEntry = cacheEntry, messages = result.results, replaceExisting = cursor == null)
                 nextCursor.toOptional()
             }
@@ -75,7 +75,7 @@ class MessageRepository @Inject constructor(
         return database.createObservable("users", "deviation_images", "deviations", "collection_folders", "messages", "deleted_messages") {
             val messages = messageDao.getMessages()
                 .asSequence()
-                .map { it.toMessage(timeProvider.timeZone) }
+                .map { it.toMessage(clock.zone) }
                 .filterNotNull()
                 .toList()
             val nextCursor = getNextCursor(cacheKey)
