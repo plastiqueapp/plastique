@@ -139,7 +139,6 @@ dependencies {
 
     debugImplementation "com.facebook.flipper:flipper:$versions.flipper"
     debugImplementation "com.facebook.flipper:flipper-network-plugin:$versions.flipper"
-    debugImplementation "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
     debugImplementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 
     kapt "androidx.room:room-compiler:$versions.androidx.room"

@@ -62,8 +62,6 @@ ext.versions = [
     rxJava2Extensions    : "0.2.1",
     rxIdler              : "0.9.1",
     sqlite               : "3.29.0",
-    stetho               : "1.5.1",
-    stethoTimber         : "1.0.0",
     threetenbp           : "1.4.0",
     threetenabp          : "1.2.1",
     timber               : "4.7.1",

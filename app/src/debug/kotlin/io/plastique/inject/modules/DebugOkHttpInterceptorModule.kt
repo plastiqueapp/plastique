@@ -3,7 +3,6 @@ package io.plastique.inject.modules
 import com.facebook.flipper.core.FlipperClient
 import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
 import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
-import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -19,5 +18,5 @@ object DebugOkHttpInterceptorModule {
     @Provides
     @Named("network")
     fun provideNetworkInterceptors(flipperClient: FlipperClient): List<Interceptor> =
-        listOf(StethoInterceptor(), FlipperOkhttpInterceptor(flipperClient.getPlugin(NetworkFlipperPlugin.ID)))
+        listOf(FlipperOkhttpInterceptor(flipperClient.getPlugin(NetworkFlipperPlugin.ID)))
 }
