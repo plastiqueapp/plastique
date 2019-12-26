@@ -8,9 +8,10 @@ plugins {
 dependencies {
     dagger()
 
-    implementation project(":libraries:api")
-    implementation project(":libraries:core")
-    implementation project(":libraries:core-ui")
+    api project(":libraries:api")
+    api project(":libraries:cache")
+    api project(":libraries:core")
+    api project(":libraries:core-ui")
 
     api "androidx.swiperefreshlayout:swiperefreshlayout:$versions.androidx.swiperefreshlayout"
     api "com.github.Commit451.ForegroundViews:foregroundviews:$versions.foregroundViews"

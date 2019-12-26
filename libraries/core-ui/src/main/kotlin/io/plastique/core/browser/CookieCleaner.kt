@@ -1,14 +1,12 @@
 package io.plastique.core.browser
 
 import android.webkit.CookieManager
-import io.plastique.core.session.OnLogoutListener
 import javax.inject.Inject
 
 class CookieCleaner @Inject constructor(
     private val cookieManager: CookieManager
-) : OnLogoutListener {
-
-    override fun onLogout() {
+) {
+    fun clean() {
         cookieManager.removeAllCookies(null)
     }
 }

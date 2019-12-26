@@ -67,6 +67,7 @@ gradleEnterprise {
 }
 
 include ":libraries:api"
+include ":libraries:cache"
 include ":libraries:core"
 include ":libraries:core-ui"
 

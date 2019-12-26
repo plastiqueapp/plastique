@@ -9,7 +9,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     api "org.threeten:threetenbp:$versions.threetenbp:no-tzdb"
     implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
-    api "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
 
     implementation "com.squareup.moshi:moshi:$versions.moshi"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"

@@ -9,9 +9,6 @@ dependencies {
     autoFactory()
     dagger()
 
-    implementation project(":libraries:api")
-    implementation project(":libraries:core")
-    implementation project(":libraries:core-ui")
     implementation project(":features:common")
 
     implementation "com.github.chrisbanes:PhotoView:$versions.photoView"

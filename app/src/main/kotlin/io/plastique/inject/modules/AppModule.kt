@@ -10,7 +10,6 @@ import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoSet
 import io.plastique.BuildConfig
 import io.plastique.R
 import io.plastique.auth.SessionManagerImpl
@@ -18,14 +17,11 @@ import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
 import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
-import io.plastique.core.browser.CookieCleaner
 import io.plastique.core.config.AppConfig
 import io.plastique.core.config.FirebaseAppConfig
 import io.plastique.core.config.LocalAppConfig
-import io.plastique.core.session.OnLogoutListener
 import io.plastique.core.session.SessionManager
 import io.plastique.core.themes.ThemeIdConverter
-import io.plastique.core.work.WorkerCleaner
 import io.plastique.deviations.list.LayoutModeConverter
 import io.plastique.main.MainPageProvider
 import io.plastique.main.MainPageProviderImpl
@@ -43,8 +39,8 @@ import org.threeten.bp.Duration
 import javax.inject.Singleton
 
 @Module(includes = [
-    CacheModule::class,
     RepositoryModule::class,
+    SessionModule::class,
     WorkerModule::class
 ])
 abstract class AppModule {
@@ -65,14 +61,6 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindWatchManager(impl: WatchManagerImpl): WatchManager
-
-    @Binds
-    @IntoSet
-    abstract fun bindCookieCleaner(impl: CookieCleaner): OnLogoutListener
-
-    @Binds
-    @IntoSet
-    abstract fun bindWorkerCleaner(impl: WorkerCleaner): OnLogoutListener
 
     @Module
     companion object {

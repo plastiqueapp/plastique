@@ -8,7 +8,6 @@ data class CacheEntry(
     val timestamp: Instant,
     val metadata: String? = null
 ) {
-    fun isActual(now: Instant, cacheDuration: Duration): Boolean {
-        return timestamp.plus(cacheDuration).isAfter(now) && timestamp.isBefore(now)
-    }
+    fun isActual(now: Instant, cacheDuration: Duration): Boolean =
+        timestamp.plus(cacheDuration).isAfter(now) && timestamp.isBefore(now)
 }
