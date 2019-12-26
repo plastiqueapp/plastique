@@ -1,5 +1,6 @@
 package io.plastique.test
 
+import androidx.test.espresso.IdlingResource
 import com.squareup.rx2.idler.IdlingResourceScheduler
 import com.squareup.rx2.idler.Rx2Idler
 import io.plastique.core.init.Initializer
@@ -18,6 +19,13 @@ class RxIdlerInitializer @Inject constructor() : Initializer() {
         check(Schedulers.io() is IdlingResourceScheduler) { "IO scheduler is already initialized" }
         check(Schedulers.single() is IdlingResourceScheduler) { "Single scheduler is already initialized" }
         check(Schedulers.newThread() is IdlingResourceScheduler) { "New thread scheduler is already initialized" }
+
+        // Workaround for https://github.com/square/RxIdler/issues/20
+        val noopIdleCallback = IdlingResource.ResourceCallback { }
+        (Schedulers.computation() as IdlingResourceScheduler).registerIdleTransitionCallback(noopIdleCallback)
+        (Schedulers.io() as IdlingResourceScheduler).registerIdleTransitionCallback(noopIdleCallback)
+        (Schedulers.single() as IdlingResourceScheduler).registerIdleTransitionCallback(noopIdleCallback)
+        (Schedulers.newThread() as IdlingResourceScheduler).registerIdleTransitionCallback(noopIdleCallback)
     }
 
     @Suppress("MagicNumber")
