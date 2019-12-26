@@ -113,6 +113,8 @@ android {
 }
 
 dependencies {
+    dagger()
+
     implementation project(":libraries:api")
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
@@ -141,8 +143,6 @@ dependencies {
     debugImplementation "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 
     kapt "androidx.room:room-compiler:$versions.androidx.room"
-    kapt "com.google.dagger:dagger-compiler:$versions.dagger"
-    kaptAndroidTest "com.google.dagger:dagger-compiler:$versions.dagger"
 
     androidTestImplementation "junit:junit:$versions.junit.four"
     androidTestImplementation "androidx.test:core:$versions.androidx.test.core"

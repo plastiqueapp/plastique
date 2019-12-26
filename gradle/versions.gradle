@@ -36,7 +36,7 @@ ext.versions = [
     androidExtensions    : "0.1.2",
     kotlinExtensions     : "0.0.1",
     autoFactory          : "1.0-beta7",
-    dagger               : "2.25.2",
+    dagger               : "2.25.3",
     javaxAnnotation      : "1.3.2",
     flexboxLayout        : "1.1.1",
     materialComponents   : "1.1.0-beta01",

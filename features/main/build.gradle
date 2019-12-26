@@ -1,9 +1,12 @@
 plugins {
     id "com.android.library"
     id "org.jetbrains.kotlin.android"
+    id "org.jetbrains.kotlin.kapt"
 }
 
 dependencies {
+    dagger()
+
     implementation project(":libraries:core")
     implementation project(":libraries:core-ui")
     implementation project(":features:common")

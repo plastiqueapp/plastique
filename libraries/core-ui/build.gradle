@@ -7,6 +7,8 @@ plugins {
 apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
+    dagger()
+
     implementation project(":libraries:core")
 
     api "androidx.activity:activity:$versions.androidx.activity"

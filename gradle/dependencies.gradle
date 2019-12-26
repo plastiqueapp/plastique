@@ -18,4 +18,19 @@ dependencies.ext {
         }
         dependencies.add("kapt", "com.google.auto.factory:auto-factory:$versions.autoFactory")
     }
+    dagger = {
+        dependencies.add("implementation", "com.google.dagger:dagger:$versions.dagger")
+        dependencies.add("kapt", "com.google.dagger:dagger-compiler:$versions.dagger")
+
+        // Workaround for https://youtrack.jetbrains.com/issue/KT-27404
+        if (plugins.hasPlugin("org.jetbrains.kotlin.android")) {
+            dependencies.add("kaptAndroidTest", "com.google.dagger:dagger-compiler:$versions.dagger")
+        }
+
+        kapt {
+            arguments {
+                arg("dagger.warnIfInjectionFactoryNotGeneratedUpstream", "enabled")
+            }
+        }
+    }
 }

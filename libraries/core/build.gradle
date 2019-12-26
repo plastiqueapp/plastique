@@ -2,6 +2,7 @@ plugins {
     id "com.android.library"
     id "org.jetbrains.kotlin.android"
     id "org.jetbrains.kotlin.android.extensions"
+    id "org.jetbrains.kotlin.kapt"
 }
 apply from: "$rootDir/gradle/testing.gradle"
 
@@ -17,6 +18,8 @@ android {
 }
 
 dependencies {
+    dagger()
+
     api "androidx.annotation:annotation:$versions.androidx.annotation"
     api "androidx.core:core:$versions.androidx.core"
     api "androidx.core:core-ktx:$versions.androidx.core"
@@ -27,7 +30,6 @@ dependencies {
     api "androidx.work:work-runtime-ktx:$versions.androidx.work"
     api "androidx.work:work-rxjava2:$versions.androidx.work"
     implementation "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
-    api "com.google.dagger:dagger:$versions.dagger"
     implementation "com.google.firebase:firebase-core:$versions.firebase.core"
     implementation "com.google.firebase:firebase-config:$versions.firebase.config"
     implementation "com.jakewharton:process-phoenix:$versions.processPhoenix"
