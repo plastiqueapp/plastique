@@ -11,13 +11,12 @@ import io.plastique.collections.CollectionsActivityComponent
 import io.plastique.collections.R
 import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.BaseActivity
+import io.plastique.core.ScrollableToTop
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
 class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_folder_deviations) {
-    private lateinit var contentFragment: FolderDeviationListFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -31,7 +30,6 @@ class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_fo
                 .add<FolderDeviationListFragment>(R.id.deviations_container, args = FolderDeviationListFragment.newArgs(folderId))
                 .commit()
         }
-        contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as FolderDeviationListFragment
     }
 
     private fun initToolbar(username: String?, folderName: String) {
@@ -41,7 +39,10 @@ class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_fo
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val onClickListener = View.OnClickListener { contentFragment.scrollToTop() }
+        val onClickListener = View.OnClickListener {
+            val contentFragment = supportFragmentManager.findFragmentById(R.id.deviations_container) as ScrollableToTop
+            contentFragment.scrollToTop()
+        }
         toolbar.setTitleOnClickListener(onClickListener)
         toolbar.setSubtitleOnClickListener(onClickListener)
     }

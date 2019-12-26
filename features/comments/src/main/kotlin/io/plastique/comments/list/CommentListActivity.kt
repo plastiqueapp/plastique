@@ -11,13 +11,12 @@ import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsActivityComponent
 import io.plastique.comments.R
 import io.plastique.core.BaseActivity
+import io.plastique.core.ScrollableToTop
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
 class CommentListActivity : BaseActivity(R.layout.activity_comment_list) {
-    private lateinit var contentFragment: CommentListFragment
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initToolbar()
@@ -28,7 +27,6 @@ class CommentListActivity : BaseActivity(R.layout.activity_comment_list) {
                 .add<CommentListFragment>(R.id.comments_container, args = CommentListFragment.newArgs(username))
                 .commit()
         }
-        contentFragment = supportFragmentManager.findFragmentById(R.id.comments_container) as CommentListFragment
     }
 
     override fun injectDependencies() {
@@ -40,7 +38,10 @@ class CommentListActivity : BaseActivity(R.layout.activity_comment_list) {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val onClickListener = View.OnClickListener { contentFragment.scrollToTop() }
+        val onClickListener = View.OnClickListener {
+            val contentFragment = supportFragmentManager.findFragmentById(R.id.comments_container) as ScrollableToTop
+            contentFragment.scrollToTop()
+        }
         toolbar.setTitleOnClickListener(onClickListener)
         toolbar.setSubtitleOnClickListener(onClickListener)
     }
