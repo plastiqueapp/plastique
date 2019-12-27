@@ -4,7 +4,6 @@ plugins {
     id "org.jetbrains.kotlin.android.extensions"
     id "org.jetbrains.kotlin.kapt"
 }
-apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
     dagger()
@@ -16,3 +15,5 @@ dependencies {
 
     testImplementation "com.github.technoir42:rxjava2-junit5:$versions.rxjava2junit5"
 }
+
+apply from: "$rootDir/gradle/testing.gradle"

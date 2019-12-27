@@ -4,7 +4,6 @@ plugins {
     id "org.jetbrains.kotlin.android.extensions"
     id "org.jetbrains.kotlin.kapt"
 }
-apply from: "$rootDir/gradle/testing.gradle"
 
 dependencies {
     dagger()
@@ -39,3 +38,5 @@ dependencies {
         implementation "androidx.viewpager2:viewpager2:$versions.androidx.viewpager2"
     }
 }
+
+apply from: "$rootDir/gradle/testing.gradle"

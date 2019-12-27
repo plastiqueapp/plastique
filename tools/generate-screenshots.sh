@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-app_id=io.plastique.android.dev
-test_app_id=io.plastique.android.dev.test
 device_screenshot_path="/mnt/sdcard/Pictures/screenshots/plastique/"
 screenshot_path="app/src/prod/play/listings/en-US/graphics/phone-screenshots/"
 
@@ -32,13 +30,8 @@ exit_demo_mode() {
 }
 
 run_tests() {
-    ./gradlew -q :app:installDevDebug :app:installDevDebugAndroidTest
-    ${ADB} shell am instrument -w -e package io.plastique.test ${test_app_id}/io.plastique.test.PlastiqueJUnitRunner
-}
-
-uninstall() {
-    ${ADB} uninstall ${app_id} > /dev/null
-    ${ADB} uninstall ${test_app_id} > /dev/null
+    ./gradlew :app:connectedDevDebugAndroidTest \
+        -Pandroid.testInstrumentationRunnerArguments.annotation=io.plastique.test.filter.GeneratesScreenshot
 }
 
 download_screenshots() {
@@ -57,5 +50,4 @@ trap exit_demo_mode EXIT
 
 enter_demo_mode
 run_tests
-uninstall
 download_screenshots

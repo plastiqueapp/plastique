@@ -35,6 +35,7 @@ android {
         }
 
         testInstrumentationRunner "io.plastique.test.PlastiqueJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: "true"
     }
 
     signingConfigs {
@@ -103,6 +104,7 @@ android {
 
     testOptions {
         animationsDisabled = true
+        execution "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     applicationVariants.all { variant ->
@@ -150,6 +152,7 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$versions.androidx.test.runner"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.androidx.test.espresso"
     androidTestImplementation "com.squareup.rx.idler:rx2-idler:$versions.rxIdler"
+    androidTestUtil "androidx.test:orchestrator:$versions.androidx.test.orchestrator"
 }
 
 kapt {
@@ -180,3 +183,5 @@ play {
 if (googleServicesEnabled) {
     apply plugin: "com.google.gms.google-services"
 }
+
+apply from: "$rootDir/gradle/testing.gradle"

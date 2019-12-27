@@ -4,7 +4,6 @@ plugins {
     id "org.jetbrains.kotlin.android.extensions"
     id "org.jetbrains.kotlin.kapt"
 }
-apply from: "$rootDir/gradle/testing.gradle"
 
 android {
     defaultConfig {
@@ -65,3 +64,5 @@ dependencies {
         implementation "com.squareup.okio:okio:$versions.okio"
     }
 }
+
+apply from: "$rootDir/gradle/testing.gradle"

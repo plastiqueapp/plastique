@@ -1,4 +1,4 @@
-package io.plastique.test.util
+package io.plastique.test.rules
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
