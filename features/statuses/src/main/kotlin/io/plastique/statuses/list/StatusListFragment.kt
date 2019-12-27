@@ -79,7 +79,7 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, view)
     }
 

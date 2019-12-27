@@ -34,21 +34,26 @@ class BrowseScreenTest {
     @Test
     @GeneratesScreenshot
     fun screenshot() {
-        ActivityScenario.launch(MainActivity::class.java)
+        ActivityScenario.launch(MainActivity::class.java).use {
+            // Wait for images to load
+            Thread.sleep(4000)
 
-        Thread.sleep(4000)
-        onIdle()
-        takeScreenshot("browse")
+            onIdle {
+                takeScreenshot("browse")
+            }
+        }
     }
 
     @Test
     @GeneratesScreenshot
     fun screenshotDark() {
         preferences.edit { put(ThemeManager.PREF_UI_THEME, ThemeManager.THEME_DARK) }
-        ActivityScenario.launch(MainActivity::class.java)
-
-        Thread.sleep(4000)
-        onIdle()
-        takeScreenshot("browse_dark")
+        ActivityScenario.launch(MainActivity::class.java).use {
+            // Wait for images to load
+            Thread.sleep(4000)
+            onIdle {
+                takeScreenshot("browse_dark")
+            }
+        }
     }
 }

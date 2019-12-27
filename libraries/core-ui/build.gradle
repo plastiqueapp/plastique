@@ -19,6 +19,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common:$versions.androidx.lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$versions.androidx.lifecycle"
     implementation "androidx.preference:preference:$versions.androidx.preference"
+    implementation "androidx.test.espresso:espresso-idling-resource:$versions.androidx.test.espresso"
     api "androidx.recyclerview:recyclerview:$versions.androidx.recyclerView"
 
     implementation "com.google.android.gms:play-services-instantapps:$versions.playServices.instantApps"

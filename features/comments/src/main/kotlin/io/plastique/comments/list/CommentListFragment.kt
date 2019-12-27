@@ -92,7 +92,7 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        contentStateController = ContentStateController(view, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, refreshLayout)
 
         emptyView = view.findViewById(android.R.id.empty)

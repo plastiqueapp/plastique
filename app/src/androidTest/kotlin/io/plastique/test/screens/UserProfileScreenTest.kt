@@ -28,14 +28,17 @@ class UserProfileScreenTest {
 
     @Test
     @GeneratesScreenshot
-    fun screenshot() {
+    fun galleryScreenshot() {
         val route = UserProfileActivity.route(ApplicationProvider.getApplicationContext(), "rossdraws") as Route.Activity
-        ActivityScenario.launch<UserProfileActivity>(route.intent)
+        ActivityScenario.launch<UserProfileActivity>(route.intent).use {
+            Thread.sleep(2000)
+            onView(withText("Gallery")).perform(click())
 
-        Thread.sleep(2000)
-        onView(withText("Gallery")).perform(click())
-        Thread.sleep(4000)
-        onIdle()
-        takeScreenshot("user_profile")
+            // Wait for images to load
+            Thread.sleep(4000)
+            onIdle {
+                takeScreenshot("user_profile")
+            }
+        }
     }
 }

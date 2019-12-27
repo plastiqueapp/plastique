@@ -41,7 +41,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToT
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        contentStateController = ContentStateController(view, R.id.content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

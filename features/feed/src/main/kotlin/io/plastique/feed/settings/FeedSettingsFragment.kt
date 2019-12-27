@@ -62,7 +62,7 @@ class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_fee
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
 
-        contentStateController = ContentStateController(view, R.id.options, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, R.id.options, android.R.id.progress, android.R.id.empty)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
