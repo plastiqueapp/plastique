@@ -1,18 +1,12 @@
 package io.plastique.test.screens
 
-import android.app.Application
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onIdle
-import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.screenshot.Screenshot
 import io.plastique.core.themes.ThemeManager
-import io.plastique.inject.components.AppComponent
-import io.plastique.inject.getComponent
 import io.plastique.main.MainActivity
 import io.plastique.test.filter.GeneratesScreenshot
-import io.plastique.test.rules.IdlingResourceRule
-import io.plastique.test.util.OkHttp3IdlingResource
+import io.plastique.test.rules.ScreenTestRule
 import io.plastique.test.util.ScreenshotProcessor
 import io.plastique.test.util.takeScreenshot
 import io.plastique.util.Preferences
@@ -22,14 +16,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class BrowseScreenTest {
-    private val appComponent: AppComponent get() = ApplicationProvider.getApplicationContext<Application>().getComponent()
-    private val preferences: Preferences get() = appComponent.preferences()
-
     @get:Rule
-    val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val screenTestRule = ScreenTestRule()
 
-    @get:Rule
-    val idlingResourceRule = IdlingResourceRule(OkHttp3IdlingResource(appComponent.okHttpClient(), "OkHttpClient"))
+    private val preferences: Preferences get() = screenTestRule.appComponent.preferences()
 
     @Before
     fun setUp() {
