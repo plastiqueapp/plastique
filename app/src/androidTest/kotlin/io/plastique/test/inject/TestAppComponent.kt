@@ -3,6 +3,7 @@ package io.plastique.test.inject
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import io.plastique.core.themes.ThemeManager
 import io.plastique.inject.components.AppComponent
 import io.plastique.inject.modules.ApiModule
 import io.plastique.inject.modules.AppModule
@@ -15,6 +16,7 @@ import io.plastique.inject.modules.NavigationModule
 import io.plastique.inject.modules.NetworkModule
 import io.plastique.inject.modules.ViewModelModule
 import io.plastique.test.inject.modules.TestInitializerModule
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 @Singleton
@@ -32,6 +34,10 @@ import javax.inject.Singleton
     ViewModelModule::class
 ])
 interface TestAppComponent : AppComponent {
+    fun okHttpClient(): OkHttpClient
+
+    fun themeManager(): ThemeManager
+
     @Component.Factory
     interface Factory {
         fun create(@BindsInstance application: Application): TestAppComponent

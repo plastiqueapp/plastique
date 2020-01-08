@@ -2,7 +2,6 @@ package io.plastique.core.themes
 
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import io.plastique.util.Preferences
 import io.reactivex.Observable
@@ -17,15 +16,21 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
         currentThemeChanges.subscribe { applyTheme(it) }
     }
 
-    private fun applyTheme(themeId: ThemeId) {
-        Timber.d("Applying theme '${themeId.value}'")
-        AppCompatDelegate.setDefaultNightMode(themeId.toNightMode())
-    }
+    var currentTheme: ThemeId
+        get() = preferences.get(PREF_UI_THEME, THEME_DEFAULT)
+        set(value) {
+            preferences.edit { put(PREF_UI_THEME, value.ensureValid()) }
+        }
 
     private val currentThemeChanges: Observable<ThemeId>
         get() = preferences.observable().get(PREF_UI_THEME, THEME_DEFAULT)
             .map { it.ensureValid() }
             .distinctUntilChanged()
+
+    private fun applyTheme(themeId: ThemeId) {
+        Timber.d("Applying theme '${themeId.value}'")
+        AppCompatDelegate.setDefaultNightMode(themeId.toNightMode())
+    }
 
     private fun ThemeId.ensureValid(): ThemeId {
         return if (this in VALID_THEMES) this else THEME_DEFAULT
@@ -42,12 +47,10 @@ class ThemeManager @Inject constructor(private val preferences: Preferences) {
     }
 
     companion object {
-        @VisibleForTesting
-        const val PREF_UI_THEME = "ui.theme"
+        private const val PREF_UI_THEME = "ui.theme"
 
-        @VisibleForTesting
         val THEME_DARK = ThemeId("dark")
-        private val THEME_LIGHT = ThemeId("light")
+        val THEME_LIGHT = ThemeId("light")
         private val THEME_DEFAULT = ThemeId("default")
         private val VALID_THEMES = arrayOf(THEME_DARK, THEME_LIGHT, THEME_DEFAULT)
     }
