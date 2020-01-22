@@ -30,9 +30,6 @@ class BrowseScreenTest {
         themeManager.currentTheme = ThemeManager.THEME_LIGHT
 
         ActivityScenario.launch(MainActivity::class.java).use {
-            // Wait for images to load
-            Thread.sleep(4000)
-
             onIdle {
                 takeScreenshot("browse")
             }
@@ -45,8 +42,6 @@ class BrowseScreenTest {
         themeManager.currentTheme = ThemeManager.THEME_DARK
 
         ActivityScenario.launch(MainActivity::class.java).use {
-            // Wait for images to load
-            Thread.sleep(4000)
             onIdle {
                 takeScreenshot("browse_dark")
             }

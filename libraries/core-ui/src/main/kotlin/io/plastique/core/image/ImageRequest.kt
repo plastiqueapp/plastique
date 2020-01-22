@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -11,6 +12,7 @@ import com.bumptech.glide.request.target.ImageViewTarget
 
 class ImageRequest internal constructor(
     private val glide: GlideRequests,
+    private val idlingResource: CountingIdlingResource,
     private val uri: Uri?,
     private val params: ImageLoadParams = ImageLoadParams()
 ) {
@@ -28,7 +30,7 @@ class ImageRequest internal constructor(
         glide.load(uri)
             .applyParams(params)
             .applyScaleType(view.scaleType)
-            .into(target)
+            .into(IdlingResourceTarget(target, idlingResource))
     }
 
     fun createPreloadRequest(): RequestBuilder<Drawable> {
@@ -40,7 +42,7 @@ class ImageRequest internal constructor(
     fun enqueue(callback: (Drawable?) -> Unit) {
         glide.load(uri)
             .applyParams(params)
-            .into(DrawableCallbackTarget(callback))
+            .into(IdlingResourceTarget(DrawableCallbackTarget(callback), idlingResource))
     }
 
     private fun GlideRequest<Drawable>.applyParams(params: ImageLoadParams): GlideRequest<Drawable> {

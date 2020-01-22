@@ -39,8 +39,6 @@ class DeviationViewerScreenTest {
                 .check(matches(isDisplayed()))
                 .check(selectedDescendantsMatch(withId(R.id.deviation_title), withText("Goth Witch")))
 
-            // Wait for images to load
-            Thread.sleep(4000)
             onIdle {
                 takeScreenshot("deviation_viewer")
             }
