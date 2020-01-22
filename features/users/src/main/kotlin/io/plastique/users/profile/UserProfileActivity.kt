@@ -22,14 +22,14 @@ import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.pager.FragmentListPagerAdapter
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersActivityComponent
@@ -46,7 +46,7 @@ import javax.inject.Inject
 class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), CompoundButton.OnCheckedChangeListener {
     @Inject lateinit var pageProvider: UserProfilePageProvider
 
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val imageLoader = ImageLoader.from(this)
     private val viewModel: UserProfileViewModel by viewModel()
     private val navigator: UsersNavigator get() = viewModel.navigator
 
@@ -157,10 +157,11 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
             watchButton.isChecked = state.userProfile.isWatching
             watchButton.setOnCheckedChangeListener(this)
 
-            glide.load(state.userProfile.user.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
+            imageLoader.load(state.userProfile.user.avatarUrl)
+                .params {
+                    fallbackDrawable = R.drawable.default_avatar_64dp
+                    transforms += TransformType.CircleCrop
+                }
                 .into(avatarView)
         }
 

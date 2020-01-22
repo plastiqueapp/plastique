@@ -1,16 +1,15 @@
 package io.plastique.deviations.list
 
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.ListItem
-import io.plastique.glide.GlideRequests
 
 class DeviationsPreloaderFactory(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val recyclerView: RecyclerView,
     private val adapter: ListDelegationAdapter<List<ListItem>>
 ) {
@@ -29,17 +28,18 @@ class DeviationsPreloaderFactory(
             val maxImageWidth = ImageHelper.getMaxWidth(recyclerView)
             val preview = ImageHelper.choosePreview(item.preview, item.content, maxImageWidth)
             val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, maxImageWidth)
-            val request = glide.load(preview.url)
-                .override(previewSize.width, previewSize.height)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .priority(Priority.LOW)
-                .skipMemoryCache(true)
-
+            val request = imageLoader.load(preview.url)
+                .params {
+                    size = previewSize
+                    transforms += TransformType.CenterCrop
+                    cacheSource = true
+                    cacheInMemory = false
+                }
+                .createPreloadRequest()
             preloader.preload(request, previewSize.width, previewSize.height)
         }
 
-        return ListPreloader(glide, callback, MAX_PRELOAD_ITEMS_LIST)
+        return ListPreloader(imageLoader.glide, callback, MAX_PRELOAD_ITEMS_LIST)
     }
 
     private fun createGridPreloader(gridParams: GridParams): ListPreloader {
@@ -48,14 +48,15 @@ class DeviationsPreloaderFactory(
 
             val itemSize = gridParams.getItemSize(item.index)
             val image = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
-            val request = glide.load(image.url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .priority(Priority.LOW)
-
+            val request = imageLoader.load(image.url)
+                .params {
+                    cacheSource = true
+                }
+                .createPreloadRequest()
             preloader.preload(request, itemSize.width, itemSize.height)
         }
 
-        return ListPreloader(glide, callback, MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
+        return ListPreloader(imageLoader.glide, callback, MAX_PRELOAD_ROWS_GRID * gridParams.columnCount)
     }
 
     companion object {

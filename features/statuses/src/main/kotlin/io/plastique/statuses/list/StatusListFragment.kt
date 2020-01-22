@@ -14,6 +14,7 @@ import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
@@ -24,7 +25,6 @@ import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.statuses.R
 import io.plastique.statuses.StatusesFragmentComponent
@@ -57,7 +57,7 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         statusesAdapter = StatusListAdapter(
-            glide = GlideApp.with(this),
+            imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
             onStatusClick = { statusId -> navigator.openStatus(statusId) },

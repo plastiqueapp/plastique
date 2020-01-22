@@ -1,17 +1,14 @@
 package io.plastique.deviations.viewer
 
 import android.graphics.Matrix
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewStub
 import android.webkit.WebView
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
-import com.bumptech.glide.request.target.ImageViewTarget
 import com.github.chrisbanes.photoview.PhotoView
+import io.plastique.core.image.ImageLoader
 import io.plastique.deviations.R
-import io.plastique.glide.GlideRequest
-import io.plastique.glide.GlideRequests
 
 internal abstract class DeviationContentView(stub: ViewStub, @LayoutRes layoutId: Int) {
     protected val rootView: View = stub.apply { layoutResource = layoutId }.inflate()
@@ -20,14 +17,14 @@ internal abstract class DeviationContentView(stub: ViewStub, @LayoutRes layoutId
     abstract fun render(content: DeviationContent)
 }
 
-internal fun createContentView(glide: GlideRequests, stub: ViewStub, content: DeviationContent): DeviationContentView = when (content) {
-    is DeviationContent.Image -> ImageContentView(glide, stub)
+internal fun createContentView(imageLoader: ImageLoader, stub: ViewStub, content: DeviationContent): DeviationContentView = when (content) {
+    is DeviationContent.Image -> ImageContentView(imageLoader, stub)
     is DeviationContent.Literature -> LiteratureContentView(stub)
-    is DeviationContent.Video -> VideoContentView(glide, stub)
+    is DeviationContent.Video -> VideoContentView(imageLoader, stub)
 }
 
 private class ImageContentView(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     stub: ViewStub
 ) : DeviationContentView(stub, R.layout.item_deviation_viewer_image) {
     private val imageView: PhotoView = rootView.findViewById(R.id.deviation_image)
@@ -39,33 +36,21 @@ private class ImageContentView(
     override fun render(content: DeviationContent) {
         require(content is DeviationContent.Image)
 
-        val thumbnailRequest = content.thumbnailUrls.asSequence()
-            .fold<String, GlideRequest<Drawable>?>(null) { previous, thumbnailUrl ->
-                val current = glide.load(thumbnailUrl).onlyRetrieveFromCache(true)
-                if (previous != null) {
-                    current.thumbnail(previous)
+        imageLoader.load(content.url)
+            .params {
+                thumbnailUrls = content.thumbnailUrls
+            }
+            .into(imageView) { view, drawable ->
+                if (drawable != null) {
+                    // Preserve current transformation matrix in case full resolution image gets loaded after a thumbnail
+                    val matrix = Matrix()
+                    view.getSuppMatrix(matrix)
+                    view.setImageDrawable(drawable)
+                    view.setSuppMatrix(matrix)
                 } else {
-                    current
+                    view.setImageDrawable(drawable)
                 }
             }
-
-        glide.load(content.url)
-            .thumbnail(thumbnailRequest)
-            .into<ImageViewTarget<Drawable>>(object : ImageViewTarget<Drawable>(imageView) {
-                override fun setResource(resource: Drawable?) {
-                    if (resource != null) {
-                        require(view is PhotoView)
-
-                        // Preserve current transformation matrix in case full resolution image was loaded after a thumbnail
-                        val matrix = Matrix()
-                        view.getSuppMatrix(matrix)
-                        view.setImageDrawable(resource)
-                        view.setSuppMatrix(matrix)
-                    } else {
-                        view.setImageDrawable(resource)
-                    }
-                }
-            })
     }
 }
 
@@ -79,15 +64,17 @@ private class LiteratureContentView(stub: ViewStub) : DeviationContentView(stub,
 }
 
 private class VideoContentView(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     stub: ViewStub
 ) : DeviationContentView(stub, R.layout.item_deviation_viewer_video) {
     private val imageView: ImageView = rootView.findViewById(R.id.deviation_preview)
 
     override fun render(content: DeviationContent) {
         require(content is DeviationContent.Video)
-        glide.load(content.previewUrl)
-            .skipMemoryCache(true)
+        imageLoader.load(content.previewUrl)
+            .params {
+                cacheInMemory = false
+            }
             .into(imageView)
     }
 }

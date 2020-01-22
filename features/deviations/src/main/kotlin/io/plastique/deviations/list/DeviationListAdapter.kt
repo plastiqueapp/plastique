@@ -1,17 +1,17 @@
 package io.plastique.deviations.list
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.CommentThreadId
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
@@ -19,11 +19,8 @@ import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.print
-import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationActionsView
 import io.plastique.deviations.R
-import io.plastique.glide.GlideRequest
-import io.plastique.glide.GlideRequests
 import io.plastique.statuses.ShareObjectId
 import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
@@ -32,7 +29,7 @@ import java.util.Locale
 
 // region Grid
 class GridImageDeviationItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -62,9 +59,11 @@ class GridImageDeviationItemDelegate(
         holder.thumbnail.contentDescription = item.title
 
         val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
-        glide.load(thumbnail.url)
-            .placeholder(R.drawable.deviations_placeholder_background)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        imageLoader.load(thumbnail.url)
+            .params {
+                placeholderDrawable = R.drawable.deviations_placeholder_background
+                cacheSource = true
+            }
             .into(holder.thumbnail)
     }
 
@@ -133,7 +132,7 @@ class GridLiteratureDeviationItemDelegate(
 }
 
 class GridVideoDeviationItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener
@@ -164,9 +163,11 @@ class GridVideoDeviationItemDelegate(
         holder.durationView.text = item.duration.print()
 
         val thumbnail = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
-        glide.load(thumbnail.url)
-            .placeholder(R.drawable.deviations_placeholder_background)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        imageLoader.load(thumbnail.url)
+            .params {
+                placeholderDrawable = R.drawable.deviations_placeholder_background
+                cacheSource = true
+            }
             .into(holder.thumbnail)
     }
 
@@ -191,7 +192,7 @@ class GridVideoDeviationItemDelegate(
 
 // region List
 private class ListImageDeviationItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
@@ -217,22 +218,14 @@ private class ListImageDeviationItemDelegate(
         val previewSize = ImageHelper.calculateOptimalPreviewSize(preview, holder.maxImageWidth)
         (holder.previewView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = previewSize.dimensionRatio
 
-        val thumbnailRequest = item.thumbnails.asSequence()
-            .fold<Deviation.ImageInfo, GlideRequest<Drawable>?>(null) { previous, thumbnail ->
-                val current = glide.load(thumbnail.url).onlyRetrieveFromCache(true)
-                if (previous != null) {
-                    current.thumbnail(previous)
-                } else {
-                    current
-                }
+        imageLoader.load(preview.url)
+            .params {
+                size = previewSize
+                placeholderDrawable = R.drawable.deviations_placeholder_background
+                thumbnailUrls = item.thumbnails.map { it.url }
+                transforms += TransformType.CenterCrop
+                cacheSource = true
             }
-
-        glide.load(preview.url)
-            .thumbnail(thumbnailRequest)
-            .override(previewSize.width, previewSize.height)
-            .centerCrop()
-            .placeholder(R.drawable.deviations_placeholder_background)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.previewView)
     }
 
@@ -308,7 +301,7 @@ private class ListLiteratureDeviationItemDelegate(
 }
 
 private class ListVideoDeviationItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<VideoDeviationItem, ListItem, ListVideoDeviationItemDelegate.ViewHolder>() {
@@ -334,10 +327,12 @@ private class ListVideoDeviationItemDelegate(
         val preview = item.preview
         (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = preview.size.dimensionRatio
 
-        glide.load(preview.url)
-            .override(preview.size.width, preview.size.height)
-            .placeholder(R.drawable.deviations_placeholder_background)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        imageLoader.load(preview.url)
+            .params {
+                size = preview.size
+                placeholderDrawable = R.drawable.deviations_placeholder_background
+                cacheSource = true
+            }
             .into(holder.imageView)
     }
 
@@ -388,7 +383,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
 }
 
 internal class DeviationsAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,
     private val onDeviationClick: OnDeviationClickListener,
@@ -398,13 +393,13 @@ internal class DeviationsAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
 
-        delegatesManager.addDelegate(ListImageDeviationItemDelegate(glide, layoutModeProvider, this))
+        delegatesManager.addDelegate(ListImageDeviationItemDelegate(imageLoader, layoutModeProvider, this))
         delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(layoutModeProvider, this))
-        delegatesManager.addDelegate(ListVideoDeviationItemDelegate(glide, layoutModeProvider, this))
+        delegatesManager.addDelegate(ListVideoDeviationItemDelegate(imageLoader, layoutModeProvider, this))
 
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(DateItemDelegate())

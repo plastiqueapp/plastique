@@ -1,7 +1,6 @@
-package io.plastique.glide
+package io.plastique.core.image
 
 import android.content.Context
-
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.load.DecodeFormat

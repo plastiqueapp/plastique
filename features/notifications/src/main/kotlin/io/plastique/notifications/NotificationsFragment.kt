@@ -15,6 +15,7 @@ import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
@@ -25,7 +26,6 @@ import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.notifications.NotificationsEvent.DeleteMessageEvent
@@ -107,7 +107,7 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
 
     private fun createAdapter(): NotificationsAdapter {
         return NotificationsAdapter(
-            glide = GlideApp.with(this),
+            imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },
             onOpenComment = { /* TODO */ },

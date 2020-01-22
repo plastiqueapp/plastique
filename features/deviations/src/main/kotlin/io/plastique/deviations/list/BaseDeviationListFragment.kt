@@ -23,6 +23,7 @@ import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
@@ -46,7 +47,6 @@ import io.plastique.deviations.tags.OnTagClickListener
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
-import io.plastique.glide.GlideApp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -115,9 +115,9 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
-        val glide = GlideApp.with(this)
+        val imageLoader = ImageLoader.from(this)
         adapter = DeviationsAdapter(
-            glide = glide,
+            imageLoader = imageLoader,
             layoutModeProvider = { fixedLayoutMode ?: layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
@@ -125,7 +125,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
-        preloaderFactory = DeviationsPreloaderFactory(glide, deviationsView, adapter)
+        preloaderFactory = DeviationsPreloaderFactory(imageLoader, deviationsView, adapter)
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
         deviationsView.addOnScrollListener(onScrollListener)
         deviationsView.adapter = adapter

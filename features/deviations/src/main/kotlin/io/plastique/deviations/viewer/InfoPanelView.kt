@@ -9,8 +9,9 @@ import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.deviations.R
-import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 
 class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
@@ -33,7 +34,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         infoButton = findViewById(R.id.button_info)
     }
 
-    fun render(state: InfoViewState, glide: GlideRequests) {
+    fun render(state: InfoViewState, imageLoader: ImageLoader) {
         titleView.text = state.title
         avatarView.contentDescription = resources.getString(R.string.common_avatar_description, state.author.name)
         authorView.text = state.author.name
@@ -46,10 +47,11 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         commentsButton.updateDrawablePadding()
 
         if (author?.avatarUrl != state.author.avatarUrl) {
-            glide.load(state.author.avatarUrl)
-                .fallback(R.drawable.default_avatar_64dp)
-                .circleCrop()
-                .dontAnimate()
+            imageLoader.load(state.author.avatarUrl)
+                .params {
+                    fallbackDrawable = R.drawable.default_avatar_64dp
+                    transforms += TransformType.CircleCrop
+                }
                 .into(avatarView)
         }
 

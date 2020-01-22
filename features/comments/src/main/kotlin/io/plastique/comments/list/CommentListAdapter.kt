@@ -10,17 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.comments.R
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 
 private class CommentItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<CommentItem, ListItem, CommentItemDelegate.ViewHolder>() {
@@ -49,10 +50,11 @@ private class CommentItemDelegate(
         holder.replyingToView.isVisible = replyingTo != null
         holder.replyButton.isVisible = item.showReplyButton
 
-        glide.load(item.comment.author.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.comment.author.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatarView)
     }
 
@@ -82,7 +84,7 @@ private class CommentItemDelegate(
 }
 
 internal class CommentListAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onReplyClick: OnReplyClickListener,
     private val onReplyingToClick: OnReplyingToClickListener,
@@ -90,7 +92,7 @@ internal class CommentListAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(CommentItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(CommentItemDelegate(imageLoader, elapsedTimeFormatter, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

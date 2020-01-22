@@ -13,8 +13,6 @@ import androidx.core.text.htmlEncode
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Priority
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
@@ -30,6 +28,8 @@ import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnConfirmListener
 import io.plastique.core.dialogs.OnInputDialogResultListener
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParams
 import io.plastique.core.lists.GridParamsCalculator
@@ -53,8 +53,6 @@ import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
 import io.plastique.gallery.folders.Folder
 import io.plastique.gallery.folders.GalleryFolderId
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -102,9 +100,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
-        val glide = GlideApp.with(this)
+        val imageLoader = ImageLoader.from(this)
         adapter = GalleryAdapter(
-            glide = glide,
+            imageLoader = imageLoader,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item ->
                 navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
@@ -127,7 +125,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
         galleryView.addOnScrollListener(onScrollListener)
 
-        createPreloader(glide, adapter, folderGridParams, deviationGridParams)
+        createPreloader(imageLoader, adapter, folderGridParams, deviationGridParams)
             .subscribeToLifecycle(lifecycle)
             .attach(galleryView)
 
@@ -246,7 +244,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     }
 
     private fun createPreloader(
-        glide: GlideRequests,
+        imageLoader: ImageLoader,
         adapter: GalleryAdapter,
         folderGridParams: GridParams,
         deviationsGridParams: GridParams
@@ -256,9 +254,11 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
                 is FolderItem -> {
                     item.folder.thumbnailUrl?.let { thumbnailUrl ->
                         val itemSize = folderGridParams.getItemSize(item.index)
-                        val request = glide.load(thumbnailUrl)
-                            .centerCrop()
-                            .priority(Priority.LOW)
+                        val request = imageLoader.load(thumbnailUrl)
+                            .params {
+                                transforms += TransformType.CenterCrop
+                            }
+                            .createPreloadRequest()
                         preloader.preload(request, itemSize.width, itemSize.height)
                     }
                 }
@@ -266,14 +266,16 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
                 is ImageDeviationItem -> {
                     val itemSize = deviationsGridParams.getItemSize(item.index)
                     val image = ImageHelper.chooseThumbnail(item.thumbnails, itemSize.width)
-                    val request = glide.load(image.url)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .priority(Priority.LOW)
+                    val request = imageLoader.load(image.url)
+                        .params {
+                            cacheSource = true
+                        }
+                        .createPreloadRequest()
                     preloader.preload(request, itemSize.width, itemSize.height)
                 }
             }
         }
-        return ListPreloader(glide, callback, MAX_PRELOAD_ROWS * deviationsGridParams.columnCount)
+        return ListPreloader(imageLoader.glide, callback, MAX_PRELOAD_ROWS * deviationsGridParams.columnCount)
     }
 
     override fun getTitle(): Int = R.string.gallery_title

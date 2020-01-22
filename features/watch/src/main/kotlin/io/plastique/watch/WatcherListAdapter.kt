@@ -7,15 +7,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 
 private class WatcherItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<WatcherItem, ListItem, WatcherItemDelegate.ViewHolder>() {
 
@@ -31,10 +32,11 @@ private class WatcherItemDelegate(
             holder.itemView.resources.getString(R.string.common_avatar_description, item.watcher.user.name)
         holder.username.text = item.watcher.user.name
 
-        glide.load(item.watcher.user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.watcher.user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatar)
     }
 
@@ -56,12 +58,12 @@ private class WatcherItemDelegate(
 }
 
 internal class WatcherListAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     private val onUserClick: OnUserClickListener
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(WatcherItemDelegate(glide, this))
+        delegatesManager.addDelegate(WatcherItemDelegate(imageLoader, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

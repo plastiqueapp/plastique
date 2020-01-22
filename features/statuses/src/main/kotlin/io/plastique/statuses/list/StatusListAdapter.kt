@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.common.FeedHeaderView
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideRequests
 import io.plastique.statuses.R
 import io.plastique.statuses.ShareObjectId
 import io.plastique.statuses.ShareUiModel
@@ -22,7 +22,7 @@ import io.plastique.statuses.StatusActionsView
 import io.plastique.statuses.isDeleted
 
 class StatusItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<StatusItem, ListItem, StatusItemDelegate.ViewHolder>() {
@@ -36,11 +36,11 @@ class StatusItemDelegate(
 
     override fun onBindViewHolder(item: StatusItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
         holder.headerView.time = elapsedTimeFormatter.format(item.date)
-        holder.headerView.setUser(item.author, glide)
+        holder.headerView.setUser(item.author, imageLoader)
         holder.textView.text = item.statusText.value
         holder.actionsView.render(item.actionsState)
 
-        holder.shareView.setShare(item.share, glide, elapsedTimeFormatter)
+        holder.shareView.setShare(item.share, imageLoader, elapsedTimeFormatter)
         holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
     }
 
@@ -64,7 +64,7 @@ class StatusItemDelegate(
 }
 
 internal class StatusListAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onDeviationClick: OnDeviationClickListener,
     private val onStatusClick: OnStatusClickListener,
@@ -73,7 +73,7 @@ internal class StatusListAdapter(
 ) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
 
     init {
-        delegatesManager.addDelegate(StatusItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(StatusItemDelegate(imageLoader, elapsedTimeFormatter, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

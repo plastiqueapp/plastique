@@ -20,6 +20,7 @@ import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.content.ProgressViewController
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.GridParamsCalculator
 import io.plastique.core.lists.ListItem
@@ -38,7 +39,6 @@ import io.plastique.feed.FeedEvent.SetFeedSettingsEvent
 import io.plastique.feed.FeedEvent.SnackbarShownEvent
 import io.plastique.feed.settings.FeedSettings
 import io.plastique.feed.settings.OnFeedSettingsChangedListener
-import io.plastique.glide.GlideApp
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -83,7 +83,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         adapter = FeedAdapter(
-            glide = GlideApp.with(this),
+            imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
             onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },

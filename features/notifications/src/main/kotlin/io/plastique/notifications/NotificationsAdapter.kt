@@ -9,17 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.github.technoir42.android.extensions.isStrikethrough
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideRequests
 import io.plastique.users.User
 import io.plastique.users.UserType
 
 private class AddToCollectionItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<AddToCollectionItem, ListItem, AddToCollectionItemDelegate.ViewHolder>() {
@@ -40,10 +41,11 @@ private class AddToCollectionItemDelegate(
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_add_to_collection,
             item.deviationTitle, item.folderName), 0)
 
-        glide.load(item.user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatarView)
     }
 
@@ -64,7 +66,7 @@ private class AddToCollectionItemDelegate(
 }
 
 private class BadgeGivenItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<BadgeGivenItem, ListItem, BadgeGivenItemDelegate.ViewHolder>() {
@@ -84,10 +86,11 @@ private class BadgeGivenItemDelegate(
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = item.text
 
-        glide.load(item.user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatarView)
     }
 
@@ -108,7 +111,7 @@ private class BadgeGivenItemDelegate(
 }
 
 private class FavoriteItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<FavoriteItem, ListItem, FavoriteItemDelegate.ViewHolder>() {
@@ -128,10 +131,11 @@ private class FavoriteItemDelegate(
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_favorite, item.deviationTitle), 0)
 
-        glide.load(item.user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatarView)
     }
 
@@ -152,7 +156,7 @@ private class FavoriteItemDelegate(
 }
 
 private class WatchItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onViewHolderClickListener: OnViewHolderClickListener
 ) : BaseAdapterDelegate<WatchItem, ListItem, WatchItemDelegate.ViewHolder>() {
@@ -172,10 +176,11 @@ private class WatchItemDelegate(
         holder.timeView.text = elapsedTimeFormatter.format(item.time)
         holder.descriptionView.text = holder.itemView.resources.getString(R.string.notifications_item_watch)
 
-        glide.load(item.user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(item.user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(holder.avatarView)
     }
 
@@ -196,7 +201,7 @@ private class WatchItemDelegate(
 }
 
 internal class NotificationsAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     private val onOpenCollection: OnOpenCollectionListener,
     private val onOpenComment: OnOpenCommentListener,
@@ -207,10 +212,10 @@ internal class NotificationsAdapter(
 
     init {
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate.VIEW_TYPE, LoadingIndicatorItemDelegate())
-        delegatesManager.addDelegate(AddToCollectionItemDelegate(glide, elapsedTimeFormatter, this))
-        delegatesManager.addDelegate(BadgeGivenItemDelegate(glide, elapsedTimeFormatter, this))
-        delegatesManager.addDelegate(FavoriteItemDelegate(glide, elapsedTimeFormatter, this))
-        delegatesManager.addDelegate(WatchItemDelegate(glide, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(AddToCollectionItemDelegate(imageLoader, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(BadgeGivenItemDelegate(imageLoader, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(FavoriteItemDelegate(imageLoader, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(WatchItemDelegate(imageLoader, elapsedTimeFormatter, this))
     }
 
     override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {

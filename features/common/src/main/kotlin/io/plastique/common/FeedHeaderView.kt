@@ -7,7 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import io.plastique.glide.GlideRequests
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.users.User
 
 class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
@@ -29,13 +30,14 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
         dateView = findViewById(R.id.date)
     }
 
-    fun setUser(user: User, glide: GlideRequests) {
+    fun setUser(user: User, imageLoader: ImageLoader) {
         avatarView.contentDescription = resources.getString(R.string.common_avatar_description, user.name)
         usernameView.text = user.name
-        glide.load(user.avatarUrl)
-            .fallback(R.drawable.default_avatar_64dp)
-            .circleCrop()
-            .dontAnimate()
+        imageLoader.load(user.avatarUrl)
+            .params {
+                fallbackDrawable = R.drawable.default_avatar_64dp
+                transforms += TransformType.CircleCrop
+            }
             .into(avatarView)
     }
 

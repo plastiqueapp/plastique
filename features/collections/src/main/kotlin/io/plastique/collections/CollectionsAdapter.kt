@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
@@ -19,10 +21,9 @@ import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
-import io.plastique.glide.GlideRequests
 
 private class FolderItemDelegate(
-    private val glide: GlideRequests,
+    private val imageLoader: ImageLoader,
     private val itemSizeCallback: ItemSizeCallback,
     private val onViewHolderClickListener: OnViewHolderClickListener,
     private val onViewHolderLongClickListener: OnViewHolderLongClickListener
@@ -49,8 +50,10 @@ private class FolderItemDelegate(
         holder.size.text = item.folder.size.toString()
 
         // TODO: Placeholder for null thumbnailUrl
-        glide.load(item.folder.thumbnailUrl)
-            .centerCrop()
+        imageLoader.load(item.folder.thumbnailUrl)
+            .params {
+                transforms += TransformType.CenterCrop
+            }
             .into(holder.thumbnail)
     }
 
@@ -96,7 +99,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
 }
 
 internal class CollectionsAdapter(
-    glide: GlideRequests,
+    imageLoader: ImageLoader,
     itemSizeCallback: ItemSizeCallback,
     private val onFolderClick: OnFolderClickListener,
     private val onFolderLongClick: OnFolderLongClickListener,
@@ -105,11 +108,11 @@ internal class CollectionsAdapter(
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(FolderItemDelegate(glide, itemSizeCallback, this, this))
+        delegatesManager.addDelegate(FolderItemDelegate(imageLoader, itemSizeCallback, this, this))
         delegatesManager.addDelegate(HeaderItemDelegate())
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(glide, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
 

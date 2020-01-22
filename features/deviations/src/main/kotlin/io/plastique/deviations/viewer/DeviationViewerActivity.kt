@@ -20,6 +20,7 @@ import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
+import io.plastique.core.image.ImageLoader
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
@@ -33,8 +34,6 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClick
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SetFavoriteEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.ByteCountFormatter
@@ -49,7 +48,7 @@ import javax.inject.Inject
 class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer) {
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationViewerViewModel by viewModel()
     private val navigator: DeviationsNavigator get() = viewModel.navigator
 
@@ -161,7 +160,7 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
         }
 
         if (state.infoViewState != null && state.infoViewState != prevState?.infoViewState) {
-            infoPanelView.render(state.infoViewState, glide)
+            infoPanelView.render(state.infoViewState, imageLoader)
             infoPanelView.isVisible = true
         }
 
@@ -180,7 +179,7 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
     private fun renderContent(content: DeviationContent) {
         val contentView = contentView ?: run {
             val contentStub = findViewById<ViewStub>(R.id.deviation_content_stub)
-            createContentView(glide, contentStub, content).apply {
+            createContentView(imageLoader, contentStub, content).apply {
                 contentView = this
                 onTapListener = { systemUiController.toggleVisibility() }
             }

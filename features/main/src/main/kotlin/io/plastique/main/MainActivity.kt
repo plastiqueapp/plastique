@@ -17,13 +17,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.BaseActivity
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
-import io.plastique.glide.CustomDrawableTarget
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.plastique.util.InstantAppHelper
+import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class MainActivity : BaseActivity(R.layout.activity_main),
     @Inject lateinit var navigator: MainNavigator
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val imageLoader = ImageLoader.from(this)
     private val viewModel: MainViewModel by viewModel()
 
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
@@ -118,15 +118,14 @@ class MainActivity : BaseActivity(R.layout.activity_main),
 
         if (state.user != null) {
             val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
-            glide.load(state.user.avatarUrl)
-                .placeholder(R.drawable.default_avatar_32dp)
-                .error(R.drawable.default_avatar_32dp)
-                .circleCrop()
-                .into(object : CustomDrawableTarget(avatarSize, avatarSize) {
-                    override fun setDrawable(drawable: Drawable?) {
-                        setCurrentUserIcon(drawable)
-                    }
-                })
+            imageLoader.load(state.user.avatarUrl)
+                .params {
+                    size = Size(avatarSize, avatarSize)
+                    placeholderDrawable = R.drawable.default_avatar_32dp
+                    errorDrawable = R.drawable.default_avatar_32dp
+                    transforms += TransformType.CircleCrop
+                }
+                .enqueue { setCurrentUserIcon(it) }
         } else {
             setCurrentUserIcon(null)
         }

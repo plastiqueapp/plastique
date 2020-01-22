@@ -8,25 +8,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import io.plastique.common.FeedHeaderView
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideRequests
 import io.plastique.util.dimensionRatio
 
 class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private var layoutId: Int = 0
     private var share: ShareUiModel = ShareUiModel.None
 
-    fun setShare(share: ShareUiModel, glide: GlideRequests, elapsedTimeFormatter: ElapsedTimeFormatter) {
+    fun setShare(share: ShareUiModel, imageLoader: ImageLoader, elapsedTimeFormatter: ElapsedTimeFormatter) {
         if (this.share != share) {
             this.share = share
-            renderShare(share, glide, elapsedTimeFormatter)
+            renderShare(share, imageLoader, elapsedTimeFormatter)
         }
     }
 
-    private fun renderShare(share: ShareUiModel, glide: GlideRequests, elapsedTimeFormatter: ElapsedTimeFormatter) {
+    private fun renderShare(share: ShareUiModel, imageLoader: ImageLoader, elapsedTimeFormatter: ElapsedTimeFormatter) {
         when (share) {
             ShareUiModel.None -> {
                 setLayout(0)
@@ -41,21 +41,23 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val previewView: ImageView = findViewById(R.id.deviation_preview)
                 val matureContentView: TextView = findViewById(R.id.mature_content)
-                headerView.setUser(share.author, glide)
+                headerView.setUser(share.author, imageLoader)
                 titleView.text = share.title
                 matureContentView.isVisible = share.isConcealedMature
                 (previewView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = share.preview.size.dimensionRatio
 
                 if (share.isConcealedMature) {
-                    glide.clear(previewView)
+                    imageLoader.cancel(previewView)
                     previewView.setImageDrawable(null)
                     previewView.setBackgroundResource(R.color.statuses_placeholder_background)
                 } else {
                     previewView.setBackgroundResource(0)
 
-                    glide.load(share.preview.url)
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    imageLoader.load(share.preview.url)
+                        .params {
+                            transforms += TransformType.CenterCrop
+                            cacheSource = true
+                        }
                         .into(previewView)
                 }
             }
@@ -67,7 +69,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val titleView: TextView = findViewById(R.id.deviation_title)
                 val excerptView: RichTextView = findViewById(R.id.deviation_excerpt)
-                headerView.setUser(share.author, glide)
+                headerView.setUser(share.author, imageLoader)
                 headerView.time = if (share.isJournal) elapsedTimeFormatter.format(share.date) else null
                 titleView.text = share.title
                 excerptView.text = share.excerpt.value
@@ -79,7 +81,7 @@ class ShareView(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
                 val headerView: FeedHeaderView = findViewById(R.id.header)
                 val statusTextView: RichTextView = findViewById(R.id.status_text)
-                headerView.setUser(share.author, glide)
+                headerView.setUser(share.author, imageLoader)
                 headerView.time = elapsedTimeFormatter.format(share.date)
                 statusTextView.text = share.text.value
             }

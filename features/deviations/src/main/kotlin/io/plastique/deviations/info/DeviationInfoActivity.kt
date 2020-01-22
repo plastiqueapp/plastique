@@ -13,6 +13,8 @@ import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
@@ -22,8 +24,6 @@ import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.info.DeviationInfoEvent.RetryClickEvent
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.threeten.bp.format.DateTimeFormatter
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
     @Inject lateinit var navigator: DeviationsNavigator
 
-    private val glide: GlideRequests by lazy(LazyThreadSafetyMode.NONE) { GlideApp.with(this) }
+    private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationInfoViewModel by viewModel()
 
     private lateinit var authorNameView: TextView
@@ -93,10 +93,11 @@ class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
                 descriptionView.text = state.description.value
                 publishDateView.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)
 
-                glide.load(state.author.avatarUrl)
-                    .fallback(R.drawable.default_avatar_64dp)
-                    .circleCrop()
-                    .dontAnimate()
+                imageLoader.load(state.author.avatarUrl)
+                    .params {
+                        fallbackDrawable = R.drawable.default_avatar_64dp
+                        transforms += TransformType.CircleCrop
+                    }
                     .into(authorAvatarView)
 
                 tagListAdapter.items = state.tags

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Priority
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
@@ -28,6 +27,8 @@ import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
+import io.plastique.core.image.ImageLoader
+import io.plastique.core.image.TransformType
 import io.plastique.core.lists.EndlessScrollListener
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.ListUpdateData
@@ -37,8 +38,6 @@ import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.glide.GlideApp
-import io.plastique.glide.GlideRequests
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -64,9 +63,9 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val glide = GlideApp.with(this)
+        val imageLoader = ImageLoader.from(this)
         adapter = CommentListAdapter(
-            glide = glide,
+            imageLoader = imageLoader,
             elapsedTimeFormatter = elapsedTimeFormatter,
             onReplyClick = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) },
             onReplyingToClick = { commentId -> scrollToComment(commentId) },
@@ -80,7 +79,7 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
 
-        createPreloader(glide, adapter)
+        createPreloader(imageLoader, adapter)
             .subscribeToLifecycle(lifecycle)
             .attach(commentsView)
 
@@ -140,23 +139,23 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
         }
     }
 
-    private fun createPreloader(glide: GlideRequests, adapter: CommentListAdapter): ListPreloader {
+    private fun createPreloader(imageLoader: ImageLoader, adapter: CommentListAdapter): ListPreloader {
         val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_medium)
         val callback = ListPreloader.Callback { position, preloader ->
             val item = adapter.items[position] as? CommentItem ?: return@Callback
             val avatarUrl = item.comment.author.avatarUrl
             if (avatarUrl != null) {
-                val request = glide.load(avatarUrl)
-                    .circleCrop()
-                    .dontAnimate()
-                    .priority(Priority.LOW)
-                    .skipMemoryCache(true)
-
+                val request = imageLoader.load(avatarUrl)
+                    .params {
+                        transforms += TransformType.CircleCrop
+                        cacheInMemory = false
+                    }
+                    .createPreloadRequest()
                 preloader.preload(request, avatarSize, avatarSize)
             }
         }
 
-        return ListPreloader(glide, callback, MAX_PRELOAD)
+        return ListPreloader(imageLoader.glide, callback, MAX_PRELOAD)
     }
 
     override fun scrollToTop() {
