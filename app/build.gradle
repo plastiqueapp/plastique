@@ -5,13 +5,14 @@ plugins {
     id "com.github.triplet.play"
 
     // Applied conditionally
-    id "io.fabric" apply false
     id "com.google.gms.google-services" apply false
+    id "com.google.firebase.crashlytics" apply false
 }
 
 def googleServicesEnabled = file("google-services.json").exists()
 if (googleServicesEnabled) {
-    apply plugin: "io.fabric"
+    apply plugin: "com.google.gms.google-services"
+    apply plugin: "com.google.firebase.crashlytics"
 }
 
 android {
@@ -51,7 +52,6 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            ext.alwaysUpdateBuildId = false
             buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "Boolean.parseBoolean(\"$googleServicesEnabled\")"
         }
         release {
@@ -99,7 +99,6 @@ android {
         exclude "**/*.kotlin_metadata"
         exclude "**/*.kotlin_module"
         exclude "/*.properties"
-        exclude "/fabric/*.properties"
     }
 
     testOptions {
@@ -178,10 +177,6 @@ play {
     defaultToAppBundles = true
     serviceAccountCredentials file("publish-keys.json")
     track = "internal"
-}
-
-if (googleServicesEnabled) {
-    apply plugin: "com.google.gms.google-services"
 }
 
 apply from: "$rootDir/gradle/testing.gradle"

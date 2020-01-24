@@ -24,9 +24,10 @@ ext.versions = [
     ],
 
     firebase             : [
-        analytics: "17.2.1",
-        config   : "19.1.0",
-        core     : "17.2.1",
+        analytics  : "17.2.1",
+        config     : "19.1.0",
+        core       : "17.2.1",
+        crashlytics: "17.0.0-beta01",
     ],
 
     playServices         : [
@@ -52,7 +53,6 @@ ext.versions = [
     koptional            : "1.6.0",
     adapterDelegates     : "4.2.0",
     foregroundViews      : "2.5.0",
-    crashlytics          : "2.10.1",
     neon                 : "0.11.0",
     permissionsDispatcher: "4.6.0",
     photoView            : "2.3.0",

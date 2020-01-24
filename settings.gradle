@@ -2,9 +2,6 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
-        maven {
-            url "https://maven.fabric.io/public"
-        }
     }
 
     plugins {
@@ -24,8 +21,8 @@ pluginManagement {
             useModule "com.android.tools.build:gradle:3.6.0-rc01"
         } else if (requested.id.id == "com.google.gms.google-services") {
             useModule "com.google.gms:google-services:4.3.3"
-        } else if (requested.id.id == "io.fabric") {
-            useModule "io.fabric.tools:gradle:1.31.2"
+        } else if (requested.id.id == "com.google.firebase.crashlytics") {
+            useModule "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta01"
         }
     }
 }

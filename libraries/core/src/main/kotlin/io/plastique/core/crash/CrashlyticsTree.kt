@@ -1,13 +1,15 @@
-package io.plastique.core.reporting
+package io.plastique.core.crash
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 import java.io.IOException
 
-class CrashlyticsTree : Timber.Tree() {
+internal class CrashlyticsTree(
+    private val firebaseCrashlytics: FirebaseCrashlytics
+) : Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (t != null && !t.isIgnored) {
-            Crashlytics.logException(t)
+            firebaseCrashlytics.recordException(t)
         }
     }
 
