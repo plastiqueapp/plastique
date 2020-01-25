@@ -16,7 +16,7 @@ if (googleServicesEnabled) {
 }
 
 android {
-    if (System.getenv("GITHUB_ACTIONS")) {
+    if (System.getenv("CIRCLECI") == null) {
         ndkVersion = "20.1.5948944"
     }
 
