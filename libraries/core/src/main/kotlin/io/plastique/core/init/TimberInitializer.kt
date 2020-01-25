@@ -3,9 +3,11 @@ package io.plastique.core.init
 import timber.log.Timber
 import javax.inject.Inject
 
-class TimberInitializer @Inject constructor() : Initializer() {
+class TimberInitializer @Inject constructor(
+    private val trees: Set<@JvmSuppressWildcards Timber.Tree>
+) : Initializer() {
     override fun initialize() {
-        Timber.plant(Timber.DebugTree())
+        trees.forEach { Timber.plant(it) }
     }
 
     @Suppress("MagicNumber")

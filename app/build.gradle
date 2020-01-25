@@ -52,14 +52,12 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "Boolean.parseBoolean(\"$googleServicesEnabled\")"
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard.cfg"
             signingConfig signingConfigs.release
-            buildConfigField "boolean", "GOOGLE_SERVICES_ENABLED", "$googleServicesEnabled"
         }
     }
 
@@ -104,6 +102,14 @@ android {
     testOptions {
         animationsDisabled = true
         execution "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+
+    sourceSets {
+        if (googleServicesEnabled) {
+            main.java.srcDirs += "src/withPlayServices/kotlin"
+        } else {
+            main.java.srcDirs += "src/withoutPlayServices/kotlin"
+        }
     }
 
     applicationVariants.all { variant ->

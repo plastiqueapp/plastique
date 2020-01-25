@@ -2,18 +2,23 @@ package io.plastique.inject.modules
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoSet
 import io.plastique.core.init.FlipperInitializer
 import io.plastique.core.init.Initializer
-import io.plastique.core.init.TimberInitializer
+import timber.log.Timber
 
 @Module(includes = [InitializerModule::class])
-interface DebugInitializerModule {
+abstract class DebugInitializerModule {
     @Binds
     @IntoSet
-    fun bindFlipperInitializer(impl: FlipperInitializer): Initializer
+    abstract fun bindFlipperInitializer(impl: FlipperInitializer): Initializer
 
-    @Binds
-    @IntoSet
-    fun bindTimberInitializer(impl: TimberInitializer): Initializer
+    @Module
+    companion object {
+        @Provides
+        @IntoSet
+        @JvmStatic
+        fun provideDebugTree(): Timber.Tree = Timber.DebugTree()
+    }
 }

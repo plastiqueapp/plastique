@@ -10,16 +10,11 @@ import androidx.work.WorkManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import io.plastique.BuildConfig
-import io.plastique.R
+import dagger.multibindings.Multibinds
 import io.plastique.auth.SessionManagerImpl
 import io.plastique.collections.FavoritesModel
 import io.plastique.collections.FavoritesModelImpl
-import io.plastique.core.analytics.FirebaseTracker
 import io.plastique.core.analytics.Tracker
-import io.plastique.core.config.AppConfig
-import io.plastique.core.config.FirebaseAppConfig
-import io.plastique.core.config.LocalAppConfig
 import io.plastique.core.session.SessionManager
 import io.plastique.core.themes.ThemeIdConverter
 import io.plastique.deviations.list.LayoutModeConverter
@@ -35,10 +30,10 @@ import io.plastique.util.Preferences
 import io.plastique.watch.WatchManager
 import io.plastique.watch.WatchManagerImpl
 import org.threeten.bp.Clock
-import org.threeten.bp.Duration
 import javax.inject.Singleton
 
 @Module(includes = [
+    PlayServicesModule::class,
     RepositoryModule::class,
     SessionModule::class,
     WorkerModule::class
@@ -62,14 +57,11 @@ abstract class AppModule {
     @Binds
     abstract fun bindWatchManager(impl: WatchManagerImpl): WatchManager
 
+    @Multibinds
+    abstract fun bindTrackers(): Set<@JvmSuppressWildcards Tracker>
+
     @Module
     companion object {
-        private val CONFIG_FETCH_INTERVAL = if (BuildConfig.DEBUG) {
-            Duration.ofMinutes(2)
-        } else {
-            Duration.ofHours(6)
-        }
-
         @Provides
         @JvmStatic
         fun provideClock(): Clock = Clock.systemDefaultZone()
@@ -97,23 +89,6 @@ abstract class AppModule {
         @Provides
         @JvmStatic
         fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
-
-        @Provides
-        @Singleton
-        @JvmStatic
-        fun provideAppConfig(context: Context): AppConfig = if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
-            FirebaseAppConfig(R.xml.config_defaults, CONFIG_FETCH_INTERVAL)
-        } else {
-            LocalAppConfig(context, R.xml.config_defaults)
-        }
-
-        @Provides
-        @JvmStatic
-        fun provideAnalyticsTrackers(context: Context): List<Tracker> = if (BuildConfig.GOOGLE_SERVICES_ENABLED) {
-            listOf(FirebaseTracker(context))
-        } else {
-            emptyList()
-        }
 
         @Provides
         @JvmStatic

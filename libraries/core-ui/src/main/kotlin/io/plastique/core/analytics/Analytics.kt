@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class Analytics @Inject constructor(
     private val context: Context,
     private val instantAppHelper: InstantAppHelper,
-    private val trackers: List<@JvmSuppressWildcards Tracker>
+    private val trackers: Set<@JvmSuppressWildcards Tracker>
 ) {
 
     fun setUserProperty(name: String, value: String?) {
