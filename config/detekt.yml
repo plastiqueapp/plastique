@@ -1,6 +1,3 @@
-build:
-  maxIssues: 1
-
 complexity:
   ComplexMethod:
     ignoreSingleWhenExpression: true
@@ -11,7 +8,7 @@ complexity:
 
 empty-blocks:
   EmptyFunctionBlock:
-    ignoreOverriddenFunctions: true
+    ignoreOverridden: true
 
 exceptions:
   ThrowingExceptionsWithoutMessageOrCause:

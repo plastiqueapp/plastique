@@ -32,11 +32,9 @@ abstract class ApiModule {
     @Binds
     abstract fun bindErrorResponseParser(impl: ErrorResponseParserImpl): ErrorResponseParser
 
-    @Module
     companion object {
         @Provides
         @Reusable
-        @JvmStatic
         fun provideApiConfiguration(context: Context): ApiConfiguration = ApiConfiguration(
             apiUrl = ApiConstants.URL,
             clientId = context.getString(R.string.api_client_id),
@@ -48,7 +46,6 @@ abstract class ApiModule {
 
         @Provides
         @Reusable
-        @JvmStatic
         fun provideMoshi(): Moshi {
             val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
             return Moshi.Builder()
@@ -73,7 +70,6 @@ abstract class ApiModule {
         }
 
         @Provides
-        @JvmStatic
         fun provideAccessTokenProvider(sessionManager: Lazy<SessionManager>): AccessTokenProvider = object : AccessTokenProvider {
             override fun getAccessToken(invalidatedAccessToken: String?): String =
                 sessionManager.get().getAccessToken(invalidatedAccessToken)

@@ -12,12 +12,6 @@ plugins.whenPluginAdded { plugin ->
                 targetSdkVersion buildConfig.targetSdk
 
                 vectorDrawables.useSupportLibrary = true
-
-                javaCompileOptions {
-                    annotationProcessorOptions {
-                        includeCompileClasspath = false
-                    }
-                }
             }
 
             compileOptions {
@@ -31,8 +25,9 @@ plugins.whenPluginAdded { plugin ->
                 textOutput "stdout"
                 explainIssues false
 
-                disable "AnnotationProcessorOnCompilePath", "GradleDependency", "ObsoleteLintCustomCheck"
-                informational "ContentDescription"
+                disable "GradleDependency", "ObsoleteLintCustomCheck"
+                informational "ContentDescription",
+                    "Instantiatable" // Has false-positives in 4.0.0-beta01: https://issuetracker.google.com/issues/148172219
             }
 
             sourceSets {
@@ -43,12 +38,6 @@ plugins.whenPluginAdded { plugin ->
                 androidTest.java.srcDirs += "src/androidTest/kotlin"
             }
         }
-    }
-}
-
-plugins.withId("com.android.library") {
-    android.libraryVariants.all {
-        it.generateBuildConfigProvider.configure { enabled = false }
     }
 }
 

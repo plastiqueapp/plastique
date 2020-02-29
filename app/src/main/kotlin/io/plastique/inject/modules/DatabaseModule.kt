@@ -21,11 +21,9 @@ abstract class DatabaseModule {
     @Binds
     abstract fun bindRoomDatabase(database: AppDatabase): RoomDatabase
 
-    @Module
     companion object {
         @Provides
         @Singleton
-        @JvmStatic
         fun provideDatabase(context: Context, openHelperFactory: SupportSQLiteOpenHelper.Factory, analytics: Analytics): AppDatabase {
             return Room.databaseBuilder(context, AppDatabase::class.java, "main.db")
                 .fallbackToDestructiveMigration()
@@ -39,7 +37,6 @@ abstract class DatabaseModule {
         }
 
         @Provides
-        @JvmStatic
         fun provideSQLiteOpenHelperFactory(): SupportSQLiteOpenHelper.Factory = if (BuildConfig.DEBUG) {
             DebugOpenHelperFactory(RequerySQLiteOpenHelperFactory())
         } else {

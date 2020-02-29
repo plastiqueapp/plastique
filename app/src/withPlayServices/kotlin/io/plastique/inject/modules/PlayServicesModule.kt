@@ -27,16 +27,13 @@ abstract class PlayServicesModule {
     @IntoSet
     abstract fun bindFirebaseTracker(firebaseTracker: FirebaseTracker): Tracker
 
-    @Module
     companion object {
         @Provides
         @Singleton
-        @JvmStatic
         fun provideAppConfig(): AppConfig = FirebaseAppConfig(R.xml.config_defaults, CONFIG_FETCH_INTERVAL)
 
         @Provides
         @IntoSet
-        @JvmStatic
         fun provideCrashlyticsInitializer(): Initializer = CrashlyticsInitializer(BuildConfig.DEBUG)
 
         private val CONFIG_FETCH_INTERVAL = if (BuildConfig.DEBUG) {

@@ -14,11 +14,9 @@ abstract class DebugInitializerModule {
     @IntoSet
     abstract fun bindFlipperInitializer(impl: FlipperInitializer): Initializer
 
-    @Module
     companion object {
         @Provides
         @IntoSet
-        @JvmStatic
         fun provideDebugTree(): Timber.Tree = Timber.DebugTree()
     }
 }

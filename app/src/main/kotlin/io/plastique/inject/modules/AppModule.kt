@@ -60,20 +60,16 @@ abstract class AppModule {
     @Multibinds
     abstract fun bindTrackers(): Set<@JvmSuppressWildcards Tracker>
 
-    @Module
     companion object {
         @Provides
-        @JvmStatic
         fun provideClock(): Clock = Clock.systemDefaultZone()
 
         @Provides
         @Singleton
-        @JvmStatic
         fun provideSharedPreferences(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         @Provides
         @Singleton
-        @JvmStatic
         fun providePreferences(sharedPreferences: SharedPreferences): Preferences {
             return Preferences.Builder()
                 .sharedPreferences(sharedPreferences)
@@ -83,15 +79,12 @@ abstract class AppModule {
         }
 
         @Provides
-        @JvmStatic
         fun provideCookieManager(): CookieManager = CookieManager.getInstance()
 
         @Provides
-        @JvmStatic
         fun provideWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
         @Provides
-        @JvmStatic
         fun provideCryptor(instantAppHelper: InstantAppHelper): Cryptor {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !instantAppHelper.isInstantApp) {
                 AesCryptor()

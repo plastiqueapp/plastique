@@ -19,11 +19,9 @@ abstract class NetworkModule {
     @Binds
     abstract fun bindNetworkConnectivityMonitor(impl: NetworkConnectivityMonitorImpl): NetworkConnectivityMonitor
 
-    @Module
     companion object {
         @Provides
         @Singleton
-        @JvmStatic
         fun provideOkHttpClient(factory: OkHttpClientFactory): OkHttpClient {
             return factory.createClient()
         }

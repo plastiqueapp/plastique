@@ -9,7 +9,9 @@ local.properties
 .idea/libraries/
 .idea/shelf/
 .idea/assetWizardSettings.xml
+.idea/encodings.xml
 .idea/gradle.xml
+.idea/jarRepositories.xml
 .idea/modules.xml
 .idea/tasks.xml
 .idea/workspace.xml
