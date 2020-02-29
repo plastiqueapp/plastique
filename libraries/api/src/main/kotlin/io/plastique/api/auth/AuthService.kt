@@ -1,7 +1,6 @@
 package io.plastique.api.auth
 
 import io.reactivex.Single
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,7 +12,7 @@ interface AuthService {
         @Query("state") csrfToken: String,
         @Query("redirect_uri") redirectUri: String,
         @Query("scope") scope: String
-    ): Call<ResponseBody>
+    ): Call<Any>
 
     @GET("/oauth2/token?grant_type=client_credentials")
     fun requestAccessToken(
