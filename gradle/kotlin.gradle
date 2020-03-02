@@ -1,0 +1,20 @@
+tasks.matching { isInstanceOfClass(it, "org.jetbrains.kotlin.gradle.tasks.KotlinCompile") }.configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = ["-Xnew-inference", "-Xinline-classes"]
+
+        if (name.toLowerCase().contains("release")) {
+            allWarningsAsErrors = true
+            freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
+        }
+    }
+}
+
+static def isInstanceOfClass(Object obj, String className) {
+    for (def cls = obj.class; cls != null; cls = cls.superclass) {
+        if (cls.canonicalName == className) {
+            return true
+        }
+    }
+    return false
+}

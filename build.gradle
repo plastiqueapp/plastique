@@ -45,16 +45,12 @@ subprojects {
 
     apply from: "$rootDir/gradle/common.gradle"
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            freeCompilerArgs = ["-Xnew-inference", "-Xinline-classes"]
+    plugins.withId("org.jetbrains.kotlin.android") {
+        project.apply from: "$rootDir/gradle/kotlin.gradle"
+    }
 
-            if (name.toLowerCase().contains("release")) {
-                allWarningsAsErrors = true
-                freeCompilerArgs += ["-Xno-call-assertions", "-Xno-param-assertions", "-Xno-receiver-assertions"]
-            }
-        }
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        project.apply from: "$rootDir/gradle/kotlin.gradle"
     }
 }
 
