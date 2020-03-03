@@ -26,23 +26,6 @@ repositories {
 }
 
 subprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-            mavenContent {
-                snapshotsOnly()
-            }
-            content {
-                includeGroup "com.squareup.moshi"
-            }
-        }
-        jcenter()
-        maven { url "https://dl.bintray.com/sch/maven" }
-        maven { url "https://jitpack.io" }
-    }
-
     apply from: "$rootDir/gradle/common.gradle"
 
     plugins.withId("org.jetbrains.kotlin.android") {

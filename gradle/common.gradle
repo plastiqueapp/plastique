@@ -1,5 +1,13 @@
 apply from: "$rootDir/gradle/dependencies.gradle"
 
+repositories {
+    google()
+    mavenCentral()
+    jcenter()
+    maven { url "https://dl.bintray.com/sch/maven" }
+    maven { url "https://jitpack.io" }
+}
+
 plugins.whenPluginAdded { plugin ->
     if (plugin.class.name in ["com.android.build.gradle.AppPlugin",
                               "com.android.build.gradle.LibraryPlugin",
