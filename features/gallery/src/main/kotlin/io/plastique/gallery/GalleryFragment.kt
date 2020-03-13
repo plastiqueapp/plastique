@@ -139,6 +139,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -195,10 +196,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         onScrollListener.isEnabled = state.listState.isPagingEnabled
         refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
-
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     private fun showFolderPopupMenu(folder: Folder, itemView: View) {

@@ -92,6 +92,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(this, supportFragmentManager)
         snackbarController = SnackbarController(rootView)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
@@ -167,10 +168,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
 
         watchButton.isVisible = state.contentState == ContentState.Content && !state.isCurrentUser
         progressDialogController.isShown = state.showProgressDialog
-
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     private fun initTabs() {

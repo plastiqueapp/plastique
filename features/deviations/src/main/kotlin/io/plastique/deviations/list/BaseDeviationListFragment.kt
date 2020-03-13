@@ -102,6 +102,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -183,9 +184,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             tagManager?.setTags(state.tags, true)
         }
 
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     override fun scrollToTop() {

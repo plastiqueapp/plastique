@@ -73,6 +73,7 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, refreshLayout)
         snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         notificationsView.addOnScrollListener(onScrollListener)
@@ -99,10 +100,7 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
 
         onScrollListener.isEnabled = state.listState.isPagingEnabled
         refreshLayout.isRefreshing = state.listState.isRefreshing
-
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     private fun createAdapter(): NotificationsAdapter {

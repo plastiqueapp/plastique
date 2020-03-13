@@ -59,6 +59,7 @@ class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
 
         contentStateController = ContentStateController(this, R.id.categories, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(categoriesView)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
@@ -92,9 +93,7 @@ class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
             finish()
         }
 
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     override fun injectDependencies() {

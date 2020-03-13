@@ -113,6 +113,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -160,10 +161,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         refreshLayout.isRefreshing = state.listState.isRefreshing
         horizontalProgressViewController.isVisible = state.isApplyingSettings
         progressDialogController.isShown = state.showProgressDialog
-
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     override fun scrollToTop() {

@@ -72,6 +72,7 @@ class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(refreshLayout)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         viewModel.init(username)
         viewModel.state
@@ -90,10 +91,7 @@ class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
 
         onScrollListener.isEnabled = state.listState.isPagingEnabled
         refreshLayout.isRefreshing = state.listState.isRefreshing
-
-        if (state.snackbarState != null && snackbarController.showSnackbar(state.snackbarState)) {
-            viewModel.dispatch(SnackbarShownEvent)
-        }
+        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     private fun createPreloader(imageLoader: ImageLoader, adapter: WatcherListAdapter): ListPreloader {

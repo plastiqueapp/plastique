@@ -13,6 +13,7 @@ class SnackbarController(private val rootView: View) {
     private val shownSnackbars = mutableSetOf<Snackbar>()
     private var snackbarState: SnackbarState? = null
     var onActionClickListener: OnSnackbarActionClickListener? = null
+    var onSnackbarShown: OnSnackbarShownListener? = null
 
     constructor(fragment: Fragment, rootView: View) : this(rootView) {
         fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -26,9 +27,9 @@ class SnackbarController(private val rootView: View) {
     }
 
     @SuppressLint("WrongConstant")
-    fun showSnackbar(state: SnackbarState): Boolean {
+    fun showSnackbar(state: SnackbarState) {
         if (state.id == snackbarState?.id) {
-            return false
+            return
         }
 
         snackbarState = state
@@ -48,7 +49,7 @@ class SnackbarController(private val rootView: View) {
                     .show()
             }
         }
-        return true
+        onSnackbarShown?.invoke()
     }
 
     private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {
@@ -81,3 +82,4 @@ class SnackbarController(private val rootView: View) {
 }
 
 typealias OnSnackbarActionClickListener = (actionData: Any) -> Unit
+typealias OnSnackbarShownListener = () -> Unit
