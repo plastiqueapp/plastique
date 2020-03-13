@@ -22,7 +22,6 @@
     <declare-styleable name="EmptyView">
         <attr name="android:text" />
         <attr name="android:textAppearance" />
-        <attr name="android:layout" />
         <attr name="buttonText" format="string" />
         <attr name="buttonTextAppearance" format="reference" />
         <attr name="showButton" format="boolean" />

@@ -5,14 +5,14 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputFilter
-import android.view.View
+import android.view.LayoutInflater
 import android.view.WindowManager
-import android.widget.EditText
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
 import com.github.technoir42.android.extensions.getCallback
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.plastique.core.ui.R
+import io.plastique.core.ui.databinding.DialogInputBinding
 
 interface OnInputDialogResultListener {
     fun onInputDialogResult(dialog: InputDialogFragment, text: String)
@@ -33,33 +33,32 @@ class InputDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = requireArguments()
-        val contentView = View.inflate(requireContext(), R.layout.dialog_input, null)
-        val editText = contentView.findViewById<EditText>(R.id.edit)
-        editText.hint = getString(args.getInt(ARG_HINT))
-        editText.requestFocus()
+        val binding = DialogInputBinding.inflate(LayoutInflater.from(requireContext()))
+        binding.input.hint = getString(args.getInt(ARG_HINT))
+        binding.input.requestFocus()
 
         val maxLength = args.getInt(ARG_MAX_LENGTH)
         if (maxLength > 0) {
-            editText.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+            binding.input.filters = arrayOf(InputFilter.LengthFilter(maxLength))
         }
 
         val listener = DialogInterface.OnClickListener { _, which ->
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                onInputDialogResultListener?.onInputDialogResult(this, editText.text.toString())
+                onInputDialogResultListener?.onInputDialogResult(this, binding.input.text.toString())
             }
         }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(args.getInt(ARG_TITLE))
-            .setView(contentView)
+            .setView(binding.root)
             .setPositiveButton(args.getInt(ARG_POSITIVE_BUTTON), listener)
             .setNegativeButton(args.getInt(ARG_NEGATIVE_BUTTON), listener)
             .create()
 
         dialog.setOnShowListener {
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = editText.text!!.isNotBlank()
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = binding.input.text!!.isNotBlank()
         }
-        editText.doAfterTextChanged { text ->
+        binding.input.doAfterTextChanged { text ->
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = !text.isNullOrBlank()
         }
 

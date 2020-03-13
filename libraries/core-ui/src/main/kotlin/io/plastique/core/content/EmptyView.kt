@@ -3,14 +3,14 @@ package io.plastique.core.content
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
+import com.github.technoir42.android.extensions.layoutInflater
 import io.plastique.core.ui.R
+import io.plastique.core.ui.databinding.ViewEmptyBinding
 
 class EmptyView @JvmOverloads constructor(
     context: Context,
@@ -19,8 +19,7 @@ class EmptyView @JvmOverloads constructor(
     defStyleRes: Int = R.style.Widget_App_EmptyView
 ) : LinearLayout(context, attrs, defStyleAttr, defStyleRes) {
 
-    private val messageView: TextView
-    private val button: Button
+    private val binding: ViewEmptyBinding
 
     var state: EmptyState? = null
         set(value) {
@@ -34,7 +33,6 @@ class EmptyView @JvmOverloads constructor(
         orientation = VERTICAL
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.EmptyView, defStyleAttr, defStyleRes)
-        val layoutId = a.getResourceId(R.styleable.EmptyView_android_layout, 0)
         val text = a.getString(R.styleable.EmptyView_android_text)
         val buttonText = a.getString(R.styleable.EmptyView_buttonText)
         val textAppearance = a.getResourceId(R.styleable.EmptyView_android_textAppearance, 0)
@@ -42,35 +40,33 @@ class EmptyView @JvmOverloads constructor(
         val showButton = a.getBoolean(R.styleable.EmptyView_showButton, true)
         a.recycle()
 
-        View.inflate(context, layoutId, this)
-        messageView = findViewById(android.R.id.message)
-        button = findViewById(android.R.id.button1)
+        binding = ViewEmptyBinding.inflate(layoutInflater, this)
 
-        TextViewCompat.setTextAppearance(messageView, textAppearance)
-        messageView.text = text
+        TextViewCompat.setTextAppearance(binding.message, textAppearance)
+        binding.message.text = text
 
-        TextViewCompat.setTextAppearance(button, buttonTextAppearance)
-        button.text = buttonText
-        button.isVisible = showButton
+        TextViewCompat.setTextAppearance(binding.button1, buttonTextAppearance)
+        binding.button1.text = buttonText
+        binding.button1.isVisible = showButton
     }
 
     private fun renderState(state: EmptyState) {
         when (state) {
             is EmptyState.Message -> {
-                messageView.text = getMessageWithArgs(state.messageResId, state.messageArgs)
-                button.isVisible = false
+                binding.message.text = getMessageWithArgs(state.messageResId, state.messageArgs)
+                binding.button1.isVisible = false
             }
 
             is EmptyState.MessageWithButton -> {
-                messageView.text = getMessageWithArgs(state.messageResId, state.messageArgs)
-                button.setText(state.buttonTextId)
-                button.isVisible = true
+                binding.message.text = getMessageWithArgs(state.messageResId, state.messageArgs)
+                binding.button1.setText(state.buttonTextId)
+                binding.button1.isVisible = true
             }
         }
     }
 
     fun setOnButtonClickListener(listener: (view: View) -> Unit) {
-        button.setOnClickListener(listener)
+        binding.button1.setOnClickListener(listener)
     }
 
     private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {

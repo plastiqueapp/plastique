@@ -42,7 +42,6 @@
     <style name="Widget.App.EmptyView" parent="">
         <item name="android:text">@string/common_message_load_failed</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
-        <item name="android:layout">@layout/view_empty</item>
         <item name="buttonText">@string/common_button_try_again</item>
         <item name="buttonTextAppearance">@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored</item>
         <item name="showButton">true</item>

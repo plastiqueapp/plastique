@@ -2,12 +2,12 @@ package io.plastique.deviations.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.StringRes
 import com.github.technoir42.android.extensions.getCallback
+import com.github.technoir42.android.extensions.layoutInflater
 import io.plastique.core.BaseBottomSheetDialogFragment
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.dialogRoute
@@ -30,9 +30,9 @@ class TimeRangeDialogFragment : BaseBottomSheetDialogFragment(R.layout.dialog_ti
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         require(view is ViewGroup)
-        val inflater = LayoutInflater.from(view.context)
+        val layoutInflater = view.layoutInflater
         for (timeRange in TimeRange.values()) {
-            val textView = inflater.inflate(R.layout.item_time_range, view, false) as TextView
+            val textView = layoutInflater.inflate(R.layout.item_time_range, view, false) as TextView
             textView.setText(getTimeRangeResId(timeRange))
             textView.tag = timeRange
             textView.setOnClickListener(this)
