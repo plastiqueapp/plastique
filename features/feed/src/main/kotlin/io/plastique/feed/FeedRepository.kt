@@ -183,7 +183,7 @@ private fun FeedElementEntityWithRelations.toFeedElement(timeZone: ZoneId): Feed
         FeedElementTypes.COLLECTION_UPDATE -> FeedElement.CollectionUpdate(
             timestamp = feedElement.timestamp,
             user = user,
-            folder = collectionFolder!!.toFolder(),
+            folder = collectionFolder!!.toFolder(user.name),
             addedCount = feedElement.addedCount)
 
         FeedElementTypes.DEVIATION_SUBMITTED -> if (deviations.size > 1) {

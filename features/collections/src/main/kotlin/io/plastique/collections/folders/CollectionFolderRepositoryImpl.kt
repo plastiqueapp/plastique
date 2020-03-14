@@ -55,19 +55,19 @@ class CollectionFolderRepositoryImpl @Inject constructor(
             .firstOrError()
             .flatMapObservable { session ->
                 val own = params.username == null || params.username == (session as? Session.User)?.username
-                val cacheUsername = params.username ?: session.requireUser().username
-                val cacheKey = getCacheKey(cacheUsername)
+                val owner = params.username ?: session.requireUser().username
+                val cacheKey = getCacheKey(owner)
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
-                    cachedData = getFoldersFromDb(cacheKey, own),
+                    cachedData = getFoldersFromDb(cacheKey, owner, own),
                     updater = fetchFolders(params, cacheKey, cursor = null).ignoreElement())
             }
     }
 
-    private fun getFoldersFromDb(cacheKey: CacheKey, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
+    private fun getFoldersFromDb(cacheKey: CacheKey, owner: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return database.createObservable("collection_folders", "user_collection_folders", "deleted_collection_folders") {
             val folders = collectionDao.getFoldersByKey(cacheKey.value).asSequence()
-                .map { it.toFolder(own) }
+                .map { it.toFolder(owner, own) }
                 .filter { own || it.isNotEmpty }
                 .toList()
             val nextCursor = getNextCursor(cacheKey)

@@ -103,7 +103,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
         adapter = CollectionsAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { item -> navigator.openCollectionFolder(state.params.username, item.folder.id, item.folder.name) },
+            onFolderClick = { item -> navigator.openCollectionFolder(item.folder.owner, item.folder.id, item.folder.name) },
             onFolderLongClick = { item, itemView ->
                 if (state.showMenu && item.folder.isDeletable) {
                     showFolderPopupMenu(item.folder, itemView)

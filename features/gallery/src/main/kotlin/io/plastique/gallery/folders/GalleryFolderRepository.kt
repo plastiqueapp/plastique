@@ -56,11 +56,11 @@ class GalleryFolderRepository @Inject constructor(
             .firstOrError()
             .flatMapObservable { session ->
                 val own = params.username == null || params.username == (session as? Session.User)?.username
-                val cacheUsername = params.username ?: session.requireUser().username
-                val cacheKey = getCacheKey(cacheUsername)
+                val owner = params.username ?: session.requireUser().username
+                val cacheKey = getCacheKey(owner)
                 cacheHelper.createObservable(
                     cacheKey = cacheKey,
-                    cachedData = getFoldersFromDb(cacheKey, own),
+                    cachedData = getFoldersFromDb(cacheKey, owner, own),
                     updater = fetchFolders(params, cacheKey, cursor = null).ignoreElement())
             }
     }
@@ -98,10 +98,10 @@ class GalleryFolderRepository @Inject constructor(
             }
     }
 
-    private fun getFoldersFromDb(cacheKey: CacheKey, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
+    private fun getFoldersFromDb(cacheKey: CacheKey, owner: String, own: Boolean): Observable<PagedData<List<Folder>, OffsetCursor>> {
         return database.createObservable("gallery_folders", "user_gallery_folders", "deleted_gallery_folders") {
             val folders = galleryDao.getFolders(cacheKey.value).asSequence()
-                .map { it.toFolder(own) }
+                .map { it.toFolder(owner, own) }
                 .filter { own || it.isNotEmpty }
                 .toList()
             val nextCursor = getNextCursor(cacheKey)
@@ -217,9 +217,10 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
     return FolderEntity(id = id, name = name, size = size, thumbnailUrl = thumbnailUrl)
 }
 
-private fun FolderEntity.toFolder(own: Boolean): Folder = Folder(
+private fun FolderEntity.toFolder(owner: String, own: Boolean): Folder = Folder(
     id = id,
     name = name,
+    owner = owner,
     size = size,
     thumbnailUrl = thumbnailUrl,
     isDeletable = own && name != Folder.FEATURED)

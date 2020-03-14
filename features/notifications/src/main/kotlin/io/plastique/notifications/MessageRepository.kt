@@ -219,7 +219,7 @@ private fun MessageEntityWithRelations.toMessage(timeZone: ZoneId): Message? {
             Message.Data.AddToCollection(
                 deviationId = deviation.id,
                 deviationTitle = deviation.title,
-                folder = collectionFolder!!.toFolder())
+                folder = collectionFolder!!.toFolder(originator.name))
         }
 
         MessageTypes.FAVORITE -> {

@@ -105,7 +105,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
             imageLoader = imageLoader,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item ->
-                navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = state.params.username), item.folder.name)
+                navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = item.folder.owner), item.folder.name)
             },
             onFolderLongClick = { item, itemView ->
                 if (state.showMenu && item.folder.isDeletable) {
