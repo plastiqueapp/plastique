@@ -75,8 +75,6 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
 
-    private lateinit var state: CollectionsViewState
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
@@ -105,12 +103,10 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { item -> navigator.openCollectionFolder(item.folder.owner, item.folder.id, item.folder.name) },
             onFolderLongClick = { item, itemView ->
-                if (state.showMenu && item.folder.isDeletable) {
+                if (item.folder.isDeletable) {
                     showFolderPopupMenu(item.folder, itemView)
-                    true
-                } else {
-                    false
                 }
+                true
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
@@ -182,7 +178,6 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
     }
 
     private fun renderState(state: CollectionsViewState, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState

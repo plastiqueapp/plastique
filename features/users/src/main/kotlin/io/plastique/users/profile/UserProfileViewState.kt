@@ -16,4 +16,7 @@ data class UserProfileViewState(
 ) {
     val isCurrentUser: Boolean
         get() = currentUserId == userProfile?.user?.id
+
+    val showSignOut: Boolean
+        get() = isCurrentUser
 }

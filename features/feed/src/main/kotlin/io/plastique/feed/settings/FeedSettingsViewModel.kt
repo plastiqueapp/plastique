@@ -78,7 +78,7 @@ class FeedSettingsStateReducer @Inject constructor(
 
     override fun reduce(state: FeedSettingsViewState, event: FeedSettingsEvent): StateWithEffects<FeedSettingsViewState, FeedSettingsEffect> = when (event) {
         is FeedSettingsLoadedEvent -> {
-            next(FeedSettingsViewState.Content(settings = event.settings, items = event.items))
+            next(FeedSettingsViewState.Content(settings = event.settings, items = event.items, changedSettings = FeedSettings(emptyMap())))
         }
 
         is LoadErrorEvent -> {
@@ -91,7 +91,11 @@ class FeedSettingsStateReducer @Inject constructor(
 
         is SetEnabledEvent -> {
             if (state is FeedSettingsViewState.Content) {
-                next(state.copy(items = state.items.replaceIf({ item -> item.key == event.optionKey }) { item -> item.copy(isChecked = event.isEnabled) }))
+                val items = state.items.replaceIf({ it.key == event.optionKey }) { it.copy(isChecked = event.isEnabled) }
+                val include = items.asSequence()
+                    .filter { it.isChecked != state.settings.include[it.key] }
+                    .associateBy({ it.key }, { it.isChecked })
+                next(state.copy(items = items, changedSettings = FeedSettings(include)))
             } else {
                 next(state)
             }

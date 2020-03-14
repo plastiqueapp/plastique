@@ -59,7 +59,8 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var state: UserProfileViewState
+
+    private var showSignOut: Boolean = false
 
     private val username: String by lazy(LazyThreadSafetyMode.NONE) {
         if (intent.hasExtra(EXTRA_USERNAME)) {
@@ -110,7 +111,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.users_profile_action_sign_out)?.isVisible = state.isCurrentUser
+        menu.findItem(R.id.users_profile_action_sign_out)?.isVisible = showSignOut
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -134,7 +135,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         if (buttonView === watchButton) {
             // Restore isChecked value because it should be driven by state
             buttonView.setOnCheckedChangeListener(null)
-            buttonView.isChecked = state.userProfile?.isWatching == true
+            buttonView.isChecked = buttonView.getTag(R.id.tag_is_checked) as Boolean
             buttonView.setOnCheckedChangeListener(this)
 
             viewModel.dispatch(SetWatchingEvent(isChecked))
@@ -142,9 +143,9 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
     }
 
     private fun renderState(state: UserProfileViewState, prevState: UserProfileViewState?) {
-        this.state = state
         supportActionBar!!.title = state.title
         setHasOptionsMenu(state.userProfile != null)
+        showSignOut = state.showSignOut
 
         contentStateController.state = state.contentState
         emptyView.state = state.emptyState
@@ -156,6 +157,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
 
             watchButton.setOnCheckedChangeListener(null)
             watchButton.isChecked = state.userProfile.isWatching
+            watchButton.setTag(R.id.tag_is_checked, state.userProfile.isWatching)
             watchButton.setOnCheckedChangeListener(this)
 
             imageLoader.load(state.userProfile.user.avatarUrl)

@@ -76,8 +76,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     private lateinit var snackbarController: SnackbarController
     private lateinit var onScrollListener: EndlessScrollListener
 
-    private lateinit var state: GalleryViewState
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
@@ -108,12 +106,10 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
                 navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = item.folder.owner), item.folder.name)
             },
             onFolderLongClick = { item, itemView ->
-                if (state.showMenu && item.folder.isDeletable) {
+                if (item.folder.isDeletable) {
                     showFolderPopupMenu(item.folder, itemView)
-                    true
-                } else {
-                    false
                 }
+                true
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
@@ -185,7 +181,6 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     }
 
     private fun renderState(state: GalleryViewState, listUpdateData: ListUpdateData<ListItem>) {
-        this.state = state
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState

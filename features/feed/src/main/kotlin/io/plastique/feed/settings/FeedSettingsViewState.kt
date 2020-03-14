@@ -7,12 +7,14 @@ sealed class FeedSettingsViewState {
 
     data class Content(
         val settings: FeedSettings,
-        val items: List<OptionItem>
+        val items: List<OptionItem>,
+        val changedSettings: FeedSettings
     ) : FeedSettingsViewState() {
         override fun toString(): String {
             return "FeedSettingsViewState.Content(" +
                     "settings=$settings, " +
-                    "items=${items.size}" +
+                    "items=${items.size}, " +
+                    "changedSettings=$changedSettings" +
                     ")"
         }
     }

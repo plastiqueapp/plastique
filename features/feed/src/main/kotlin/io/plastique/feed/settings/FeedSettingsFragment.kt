@@ -40,7 +40,7 @@ class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_fee
     private lateinit var optionsAdapter: OptionsAdapter
     private lateinit var contentStateController: ContentStateController
 
-    private lateinit var state: FeedSettingsViewState
+    private var changedSettings: FeedSettings? = null
     private var listener: OnFeedSettingsChangedListener? = null
 
     override fun onAttach(context: Context) {
@@ -88,29 +88,19 @@ class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_fee
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-
-        when (val state = this.state) {
-            is FeedSettingsViewState.Content -> {
-                val include = state.items.asSequence()
-                    .filter { item -> item.isChecked != state.settings.include[item.key] }
-                    .associateBy({ item -> item.key }, { item -> item.isChecked })
-
-                if (include.isNotEmpty()) {
-                    listener?.onFeedSettingsChanged(FeedSettings(include))
-                }
-            }
-        }
+        changedSettings
+            ?.takeIf { it.include.isNotEmpty() }
+            ?.let { listener?.onFeedSettingsChanged(it) }
     }
 
     private fun renderState(state: FeedSettingsViewState, listUpdateData: ListUpdateData<OptionItem>) {
-        this.state = state
-
         when (state) {
             FeedSettingsViewState.Loading -> {
                 contentStateController.state = ContentState.Loading
             }
 
             is FeedSettingsViewState.Content -> {
+                changedSettings = state.changedSettings
                 contentStateController.state = ContentState.Content
                 listUpdateData.applyTo(optionsAdapter)
             }

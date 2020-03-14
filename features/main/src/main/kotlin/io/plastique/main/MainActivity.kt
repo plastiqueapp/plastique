@@ -22,6 +22,7 @@ import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
+import io.plastique.users.User
 import io.plastique.util.InstantAppHelper
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -39,7 +40,7 @@ class MainActivity : BaseActivity(R.layout.activity_main),
     private val viewModel: MainViewModel by viewModel()
 
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
-    private lateinit var state: MainViewState
+    private var currentUser: User? = null
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fragmentManager: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
@@ -88,7 +89,7 @@ class MainActivity : BaseActivity(R.layout.activity_main),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
-            state.user?.let { navigator.openUserProfile(it) }
+            currentUser?.let { navigator.openUserProfile(it) }
             true
         }
         R.id.main_action_settings -> {
@@ -114,7 +115,7 @@ class MainActivity : BaseActivity(R.layout.activity_main),
     }
 
     private fun renderState(state: MainViewState) {
-        this.state = state
+        currentUser = state.user
 
         if (state.user != null) {
             val avatarSize = resources.getDimensionPixelSize(R.dimen.common_avatar_size_small)
