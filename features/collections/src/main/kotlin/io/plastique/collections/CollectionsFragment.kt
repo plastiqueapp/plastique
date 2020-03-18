@@ -10,9 +10,9 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
@@ -113,7 +113,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
         collectionsView = view.findViewById(R.id.collections)
         collectionsView.adapter = adapter
         collectionsView.layoutManager = FlexboxLayoutManager(context)
-        collectionsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        collectionsView.disableChangeAnimations()
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
         collectionsView.addOnScrollListener(onScrollListener)

@@ -6,10 +6,10 @@ import android.util.DisplayMetrics
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.findParentOfType
 import com.github.technoir42.android.extensions.getLayoutBehavior
 import com.github.technoir42.glide.preloader.ListPreloader
@@ -91,7 +91,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         deviationsView = view.findViewById(R.id.deviations)
-        deviationsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        deviationsView.disableChangeAnimations()
 
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }

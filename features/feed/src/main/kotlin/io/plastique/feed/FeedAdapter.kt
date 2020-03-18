@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
@@ -90,7 +90,7 @@ private class CollectionUpdateItemDelegate(
             headerView.onUserClickListener = onUserClick
             folderNameView.setOnClickListener(this)
             folderItemsView.adapter = folderItemsAdapter
-            folderItemsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+            folderItemsView.disableChangeAnimations()
 
             // TODO: Thumbnail click listener
         }
@@ -257,7 +257,7 @@ private class MultipleDeviationsItemDelegate(
         init {
             headerView.onUserClickListener = onUserClick
             deviationsView.adapter = adapter
-            deviationsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+            deviationsView.disableChangeAnimations()
         }
     }
 }

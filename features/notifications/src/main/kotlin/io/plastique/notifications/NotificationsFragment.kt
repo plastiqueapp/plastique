@@ -3,11 +3,11 @@ package io.plastique.notifications
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.BaseFragment
@@ -62,7 +62,7 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
         notificationsView = view.findViewById(R.id.notifications)
         notificationsView.adapter = adapter
         notificationsView.layoutManager = LinearLayoutManager(context)
-        notificationsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        notificationsView.disableChangeAnimations()
 
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }

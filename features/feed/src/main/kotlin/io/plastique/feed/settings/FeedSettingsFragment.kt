@@ -7,6 +7,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.getCallback
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
@@ -58,6 +59,7 @@ class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_fee
         optionsView = view.findViewById(R.id.options)
         optionsView.adapter = optionsAdapter
         optionsView.layoutManager = LinearLayoutManager(context)
+        optionsView.disableChangeAnimations()
 
         emptyView = view.findViewById(android.R.id.empty)
         emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }

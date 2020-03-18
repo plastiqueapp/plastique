@@ -7,9 +7,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -97,7 +97,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         feedView = view.findViewById(R.id.feed)
         feedView.adapter = adapter
         feedView.layoutManager = FlexboxLayoutManager(requireContext())
-        feedView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        feedView.disableChangeAnimations()
         feedView.addItemDecoration(FeedItemDecoration(requireContext()))
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }

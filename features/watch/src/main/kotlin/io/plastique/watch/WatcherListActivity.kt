@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
@@ -57,8 +58,9 @@ class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
             onUserClick = { user -> navigator.openUserProfile(user) })
 
         watchersView = findViewById(R.id.watchers)
-        watchersView.layoutManager = LinearLayoutManager(this)
         watchersView.adapter = adapter
+        watchersView.layoutManager = LinearLayoutManager(this)
+        watchersView.disableChangeAnimations()
         createPreloader(imageLoader, adapter).attach(watchersView)
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(WatcherListEvent.LoadMoreEvent) }

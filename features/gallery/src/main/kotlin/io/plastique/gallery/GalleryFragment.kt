@@ -10,9 +10,9 @@ import android.view.View
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
@@ -116,7 +116,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         galleryView = view.findViewById(R.id.gallery)
         galleryView.adapter = adapter
         galleryView.layoutManager = FlexboxLayoutManager(context)
-        galleryView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        galleryView.disableChangeAnimations()
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
         galleryView.addOnScrollListener(onScrollListener)

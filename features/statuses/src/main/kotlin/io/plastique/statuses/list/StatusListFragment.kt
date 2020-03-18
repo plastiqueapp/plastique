@@ -3,10 +3,10 @@ package io.plastique.statuses.list
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
@@ -67,7 +67,7 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
         statusesView = view.findViewById(R.id.statuses)
         statusesView.adapter = statusesAdapter
         statusesView.layoutManager = LinearLayoutManager(requireContext())
-        statusesView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        statusesView.disableChangeAnimations()
         statusesView.addItemDecoration(DividerItemDecoration.Builder(requireContext()).build())
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }

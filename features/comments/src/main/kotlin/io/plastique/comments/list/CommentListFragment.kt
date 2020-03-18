@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.glide.preloader.ListPreloader
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
@@ -74,7 +74,7 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
         commentsView = view.findViewById(R.id.comments)
         commentsView.adapter = adapter
         commentsView.layoutManager = LinearLayoutManager(requireContext())
-        commentsView.itemAnimator = DefaultItemAnimator().apply { supportsChangeAnimations = false }
+        commentsView.disableChangeAnimations()
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
         commentsView.addOnScrollListener(onScrollListener)
