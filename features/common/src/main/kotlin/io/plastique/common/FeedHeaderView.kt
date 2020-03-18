@@ -15,6 +15,9 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
     private val avatarView: ImageView
     private val usernameView: TextView
     private val dateView: TextView
+    private lateinit var user: User
+
+    var onUserClickListener: OnUserClickListener? = null
 
     var time: String? = null
         set(value) {
@@ -28,9 +31,15 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
         avatarView = findViewById(R.id.avatar)
         usernameView = findViewById(R.id.username)
         dateView = findViewById(R.id.date)
+
+        val onClickListener = OnClickListener { onUserClickListener?.invoke(user) }
+        avatarView.setOnClickListener(onClickListener)
+        usernameView.setOnClickListener(onClickListener)
     }
 
     fun setUser(user: User, imageLoader: ImageLoader) {
+        this.user = user
+
         avatarView.contentDescription = resources.getString(R.string.common_avatar_description, user.name)
         usernameView.text = user.name
         imageLoader.load(user.avatarUrl)
@@ -40,10 +49,6 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
             }
             .into(avatarView)
     }
-
-    fun setOnUserClickListener(listener: OnClickListener) {
-        val wrapper = OnClickListener { listener.onClick(this) }
-        avatarView.setOnClickListener(wrapper)
-        usernameView.setOnClickListener(wrapper)
-    }
 }
+
+typealias OnUserClickListener = (User) -> Unit
