@@ -6,7 +6,7 @@ ext.versions = [
         browser           : "1.2.0",
         constraintLayout  : "2.0.0-beta4",
         core              : "1.2.0",
-        fragment          : "1.2.2",
+        fragment          : "1.2.3",
         lifecycle         : "2.2.0",
         preference        : "1.1.0",
         recyclerView      : "1.1.0",

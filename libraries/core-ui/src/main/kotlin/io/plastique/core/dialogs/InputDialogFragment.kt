@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputFilter
-import android.view.LayoutInflater
 import android.view.WindowManager
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
@@ -33,7 +32,7 @@ class InputDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val args = requireArguments()
-        val binding = DialogInputBinding.inflate(LayoutInflater.from(requireContext()))
+        val binding = DialogInputBinding.inflate(layoutInflater)
         binding.input.hint = getString(args.getInt(ARG_HINT))
         binding.input.requestFocus()
 
