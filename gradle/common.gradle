@@ -34,8 +34,7 @@ plugins.whenPluginAdded { plugin ->
                 explainIssues false
 
                 disable "GradleDependency", "ObsoleteLintCustomCheck"
-                informational "ContentDescription",
-                    "Instantiatable" // Has false-positives in 4.0.0-beta01: https://issuetracker.google.com/issues/148172219
+                informational "ContentDescription"
             }
 
             sourceSets {
