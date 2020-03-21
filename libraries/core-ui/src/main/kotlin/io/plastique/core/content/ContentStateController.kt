@@ -4,8 +4,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.View
-import androidx.annotation.IdRes
-import androidx.core.view.ViewCompat.requireViewById
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -42,21 +40,21 @@ class ContentStateController private constructor() {
 
     constructor(
         fragment: Fragment,
-        @IdRes contentViewId: Int,
-        @IdRes progressViewId: Int = View.NO_ID,
-        @IdRes emptyViewId: Int = View.NO_ID
+        contentView: View,
+        progressView: View? = null,
+        emptyView: View? = null
     ) : this() {
-        addListener(ContentStateApplier(fragment.requireView(), contentViewId, progressViewId, emptyViewId))
+        addListener(ContentStateApplier(contentView, progressView, emptyView))
         registerIdlingResource(fragment.viewLifecycleOwner, fragment.javaClass.simpleName)
     }
 
     constructor(
         activity: FragmentActivity,
-        @IdRes contentViewId: Int,
-        @IdRes progressViewId: Int = View.NO_ID,
-        @IdRes emptyViewId: Int = View.NO_ID
+        contentView: View,
+        progressView: View? = null,
+        emptyView: View? = null
     ) : this() {
-        addListener(ContentStateApplier(activity.window.decorView, contentViewId, progressViewId, emptyViewId))
+        addListener(ContentStateApplier(contentView, progressView, emptyView))
         registerIdlingResource(activity, activity.javaClass.simpleName)
     }
 
@@ -152,15 +150,10 @@ class ContentStateController private constructor() {
 }
 
 private class ContentStateApplier(
-    rootView: View,
-    @IdRes contentViewId: Int,
-    @IdRes progressViewId: Int,
-    @IdRes emptyViewId: Int
+    private val contentView: View,
+    private val progressView: View?,
+    private val emptyView: View?
 ) : ContentStateController.OnSwitchStateListener {
-
-    private val contentView = requireViewById<View>(rootView, contentViewId)
-    private val progressView = if (progressViewId != View.NO_ID) requireViewById<View>(rootView, progressViewId) else null
-    private val emptyView = if (emptyViewId != View.NO_ID) requireViewById<View>(rootView, emptyViewId) else null
 
     override fun onSwitchState(state: ContentState, animated: Boolean) {
         contentView.setVisible(state == ContentState.Content, animated)

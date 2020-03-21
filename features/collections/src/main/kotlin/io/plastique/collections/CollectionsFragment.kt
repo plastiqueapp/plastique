@@ -3,15 +3,15 @@ package io.plastique.collections
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
@@ -25,12 +25,12 @@ import io.plastique.collections.CollectionsEvent.RefreshEvent
 import io.plastique.collections.CollectionsEvent.RetryClickEvent
 import io.plastique.collections.CollectionsEvent.SnackbarShownEvent
 import io.plastique.collections.CollectionsEvent.UndoDeleteFolderEvent
+import io.plastique.collections.databinding.FragmentCollectionsBinding
 import io.plastique.collections.folders.Folder
 import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ConfirmationDialogFragment
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnConfirmListener
@@ -57,7 +57,7 @@ import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
+class CollectionsFragment : BaseFragment(),
     MainPage,
     ScrollableToTop,
     OnConfirmListener,
@@ -66,23 +66,24 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
     private val viewModel: CollectionsViewModel by viewModel()
     private val navigator: CollectionsNavigator get() = viewModel.navigator
 
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var emptyView: EmptyView
-    private lateinit var adapter: CollectionsAdapter
-    private lateinit var collectionsView: RecyclerView
+    private lateinit var binding: FragmentCollectionsBinding
+    private lateinit var collectionsAdapter: CollectionsAdapter
+    private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var onScrollListener: EndlessScrollListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentCollectionsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
@@ -98,7 +99,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         val imageLoader = ImageLoader.from(this)
-        adapter = CollectionsAdapter(
+        collectionsAdapter = CollectionsAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
@@ -108,27 +109,25 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
-        collectionsView = view.findViewById(R.id.collections)
-        collectionsView.adapter = adapter
-        collectionsView.layoutManager = FlexboxLayoutManager(context)
-        collectionsView.disableChangeAnimations()
-
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
-        collectionsView.addOnScrollListener(onScrollListener)
 
-        createPreloader(imageLoader, adapter, folderGridParams, deviationGridParams)
+        binding.collections.apply {
+            adapter = collectionsAdapter
+            layoutManager = FlexboxLayoutManager(context)
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
+
+        createPreloader(imageLoader, collectionsAdapter, folderGridParams, deviationGridParams)
             .subscribeToLifecycle(lifecycle)
-            .attach(collectionsView)
+            .attach(binding.collections)
 
-        refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
-
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
@@ -179,14 +178,13 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
-
-        listUpdateData.applyTo(adapter)
-
+        binding.empty.state = state.emptyState
+        binding.refresh.isRefreshing = state.listState.isRefreshing
         onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
         state.snackbarState?.let(snackbarController::showSnackbar)
+
+        listUpdateData.applyTo(collectionsAdapter)
     }
 
     private fun showFolderPopupMenu(folder: Folder, itemView: View) {
@@ -274,7 +272,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
     }
 
     override fun scrollToTop() {
-        collectionsView.scrollToPosition(0)
+        binding.collections.scrollToPosition(0)
     }
 
     override fun injectDependencies() {

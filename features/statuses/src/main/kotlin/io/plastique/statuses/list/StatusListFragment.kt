@@ -2,17 +2,16 @@ package io.plastique.statuses.list
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.lists.EndlessScrollListener
@@ -25,9 +24,9 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.inject.getComponent
-import io.plastique.statuses.R
 import io.plastique.statuses.StatusesFragmentComponent
 import io.plastique.statuses.StatusesNavigator
+import io.plastique.statuses.databinding.FragmentStatusListBinding
 import io.plastique.statuses.list.StatusListEvent.LoadMoreEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
 import io.plastique.statuses.list.StatusListEvent.RetryClickEvent
@@ -35,15 +34,13 @@ import io.plastique.statuses.list.StatusListEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class StatusListFragment : BaseFragment(R.layout.fragment_status_list), ScrollableToTop {
+class StatusListFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
     @Inject lateinit var navigator: StatusesNavigator
 
     private val viewModel: StatusListViewModel by viewModel()
 
-    private lateinit var statusesView: RecyclerView
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var emptyView: EmptyView
+    private lateinit var binding: FragmentStatusListBinding
     private lateinit var statusesAdapter: StatusListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
@@ -52,6 +49,11 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentStatusListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,22 +65,20 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
             onCommentsClick = { threadId -> navigator.openComments(threadId) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
-        statusesView = view.findViewById(R.id.statuses)
-        statusesView.adapter = statusesAdapter
-        statusesView.layoutManager = LinearLayoutManager(requireContext())
-        statusesView.disableChangeAnimations()
-        statusesView.addItemDecoration(DividerItemDecoration.Builder(requireContext()).build())
-
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
-        statusesView.addOnScrollListener(onScrollListener)
 
-        refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        binding.statuses.apply {
+            adapter = statusesAdapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration.Builder(context).build())
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
 
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         snackbarController = SnackbarController(this, view)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
@@ -98,17 +98,16 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
 
     private fun renderState(state: StatusListViewState, listUpdateData: ListUpdateData<ListItem>) {
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
+        binding.empty.state = state.emptyState
+        binding.refresh.isRefreshing = state.listState.isRefreshing
+        onScrollListener.isEnabled = state.listState.isPagingEnabled
+        state.snackbarState?.let(snackbarController::showSnackbar)
 
         listUpdateData.applyTo(statusesAdapter)
-
-        onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
-        state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     override fun scrollToTop() {
-        statusesView.smartScrollToPosition(0)
+        binding.statuses.smartScrollToPosition(0)
     }
 
     override fun injectDependencies() {

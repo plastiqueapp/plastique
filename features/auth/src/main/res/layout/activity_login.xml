@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/appbar" />
 
     <ProgressBar
-        android:id="@+id/progress"
+        android:id="@android:id/progress"
         style="?android:progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/guide_buttons" />
 
     <ImageView
-        android:id="@+id/deviation_author_avatar"
+        android:id="@+id/author_avatar"
         android:layout_width="@dimen/common_avatar_size_medium"
         android:layout_height="@dimen/common_avatar_size_medium"
         android:layout_marginStart="16dp"
@@ -40,7 +40,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/deviation_title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -48,24 +48,24 @@
         android:singleLine="true"
         android:textAppearance="?textAppearanceSubtitle1"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/deviation_author"
+        app:layout_constraintBottom_toTopOf="@id/author_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
+        app:layout_constraintStart_toEndOf="@id/author_avatar"
         app:layout_constraintTop_toBottomOf="@id/guide_top"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Title" />
 
     <TextView
-        android:id="@+id/deviation_author"
+        android:id="@+id/author_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:textColor="#b3ffffff"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/guide_buttons"
-        app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
-        app:layout_constraintTop_toBottomOf="@id/deviation_title"
+        app:layout_constraintStart_toEndOf="@id/author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="user" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -83,7 +83,7 @@
         app:layout_constraintGuide_percent="0.66" />
 
     <CheckedTextView
-        android:id="@+id/button_favorite"
+        android:id="@+id/favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
@@ -100,7 +100,7 @@
         tools:textColor="#fff" />
 
     <TextView
-        android:id="@+id/button_comments"
+        android:id="@+id/comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
@@ -117,7 +117,7 @@
         tools:textColor="#fff" />
 
     <ImageView
-        android:id="@+id/button_info"
+        android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"

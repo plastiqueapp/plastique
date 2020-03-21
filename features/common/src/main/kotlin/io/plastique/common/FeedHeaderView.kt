@@ -3,19 +3,17 @@ package io.plastique.common
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.OnClickListener
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import com.github.technoir42.android.extensions.layoutInflater
+import io.plastique.common.databinding.ViewFeedHeaderBinding
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.users.OnUserClickListener
 import io.plastique.users.User
 
 class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
-    private val avatarView: ImageView
-    private val usernameView: TextView
-    private val dateView: TextView
+    private val binding = ViewFeedHeaderBinding.inflate(layoutInflater, this)
     private lateinit var user: User
 
     var onUserClick: OnUserClickListener = {}
@@ -23,31 +21,26 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
     var time: String? = null
         set(value) {
             field = value
-            dateView.text = value
-            dateView.isVisible = value != null
+            binding.date.text = value
+            binding.date.isVisible = value != null
         }
 
     init {
-        inflate(context, R.layout.view_feed_header, this)
-        avatarView = findViewById(R.id.avatar)
-        usernameView = findViewById(R.id.username)
-        dateView = findViewById(R.id.date)
-
-        val onClickListener = OnClickListener { onUserClick(user) }
-        avatarView.setOnClickListener(onClickListener)
-        usernameView.setOnClickListener(onClickListener)
+        val onUserClickListener = OnClickListener { onUserClick(user) }
+        binding.avatar.setOnClickListener(onUserClickListener)
+        binding.username.setOnClickListener(onUserClickListener)
     }
 
     fun setUser(user: User, imageLoader: ImageLoader) {
         this.user = user
 
-        avatarView.contentDescription = resources.getString(R.string.common_avatar_description, user.name)
-        usernameView.text = user.name
+        binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, user.name)
+        binding.username.text = user.name
         imageLoader.load(user.avatarUrl)
             .params {
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(avatarView)
+            .into(binding.avatar)
     }
 }

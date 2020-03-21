@@ -2,9 +2,7 @@ package io.plastique.gallery
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.layoutInflater
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.image.ImageLoader
@@ -18,6 +16,8 @@ import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
+import io.plastique.gallery.databinding.ItemGalleryFolderBinding
+import io.plastique.gallery.databinding.ItemGalleryHeaderBinding
 import io.plastique.gallery.folders.Folder
 import io.plastique.gallery.folders.GalleryFolderId
 
@@ -31,43 +31,41 @@ private class FolderItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is FolderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_gallery_folder)
-        return ViewHolder(view, onFolderClick, onFolderLongClick)
+        val binding = ItemGalleryFolderBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onFolderClick, onFolderLongClick)
     }
 
     override fun onBindViewHolder(item: FolderItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        (holder.itemView.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
+        val resources = holder.binding.root.resources
+        (holder.binding.root.layoutParams as FlexboxLayoutManager.LayoutParams).apply {
             val itemSize = itemSizeCallback.getItemSize(item)
-            val spacing = holder.itemView.resources.getDimensionPixelOffset(R.dimen.gallery_folder_spacing)
+            val spacing = resources.getDimensionPixelOffset(R.dimen.gallery_folder_spacing)
             width = itemSize.width
             height = itemSize.height
             leftMargin = if (item.index % itemSizeCallback.getColumnCount(item) != 0) spacing else 0
             topMargin = if (item.index >= itemSizeCallback.getColumnCount(item)) spacing else 0
         }
 
-        holder.name.text = item.folder.name
-        holder.size.text = item.folder.size.toString()
+        holder.binding.folderName.text = item.folder.name
+        holder.binding.folderSize.text = item.folder.size.toString()
 
         // TODO: Placeholder for null thumbnailUrl
         imageLoader.load(item.folder.thumbnailUrl)
             .params {
                 transforms += TransformType.CenterCrop
             }
-            .into(holder.thumbnail)
+            .into(holder.binding.thumbnail)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemGalleryFolderBinding,
         onFolderClick: OnGalleryFolderClickListener,
         onFolderLongClick: OnGalleryFolderLongClickListener
-    ) : BaseAdapterDelegate.ViewHolder<FolderItem>(itemView) {
-        val thumbnail: ImageView = itemView.findViewById(R.id.folder_thumbnail)
-        val name: TextView = itemView.findViewById(R.id.folder_name)
-        val size: TextView = itemView.findViewById(R.id.folder_size)
+    ) : BaseAdapterDelegate.ViewHolder<FolderItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onFolderClick(item.folder.id, item.folder.name) }
-            itemView.setOnLongClickListener { view -> onFolderLongClick(item.folder, view) }
+            binding.root.setOnClickListener { onFolderClick(item.folder.id, item.folder.name) }
+            binding.root.setOnLongClickListener { view -> onFolderLongClick(item.folder, view) }
         }
     }
 }
@@ -76,17 +74,15 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
     override fun isForViewType(item: ListItem): Boolean = item is HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_gallery_header)
-        return ViewHolder(view)
+        val binding = ItemGalleryHeaderBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(item: HeaderItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.title.text = item.title
+        holder.binding.title.text = item.title
     }
 
-    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<HeaderItem>(itemView) {
-        val title: TextView = itemView.findViewById(R.id.title)
-    }
+    class ViewHolder(val binding: ItemGalleryHeaderBinding) : BaseAdapterDelegate.ViewHolder<HeaderItem>(binding.root)
 }
 
 internal class GalleryAdapter(

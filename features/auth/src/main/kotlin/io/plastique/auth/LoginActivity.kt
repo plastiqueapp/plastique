@@ -9,12 +9,12 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.showAllowingStateLoss
 import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
+import io.plastique.auth.databinding.ActivityLoginBinding
 import io.plastique.core.BaseActivity
 import io.plastique.core.dialogs.MessageDialogFragment
 import io.plastique.core.dialogs.OnDismissDialogListener
@@ -28,25 +28,26 @@ import io.plastique.util.Intents
 import io.reactivex.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
-class LoginActivity : BaseActivity(R.layout.activity_login), OnDismissDialogListener {
+class LoginActivity : BaseActivity(), OnDismissDialogListener {
     private val viewModel: LoginViewModel by viewModel()
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var webView: WebView
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var progressDialogController: ProgressDialogController
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setActionBar(R.id.toolbar) {
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        progressBar = findViewById(R.id.progress)
-        webView = findViewById(R.id.webview)
-        webView.settings.javaScriptEnabled = true
-        webView.webChromeClient = LoginWebChromeClient()
-        webView.webViewClient = LoginWebViewClient()
+        binding.webview.apply {
+            settings.javaScriptEnabled = true
+            webChromeClient = LoginWebChromeClient()
+            webViewClient = LoginWebViewClient()
+        }
 
         progressDialogController = ProgressDialogController(this, supportFragmentManager, titleId = R.string.login_progress_title)
 
@@ -57,8 +58,8 @@ class LoginActivity : BaseActivity(R.layout.activity_login), OnDismissDialogList
     }
 
     override fun onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack()
+        if (binding.webview.canGoBack()) {
+            binding.webview.goBack()
         } else {
             super.onBackPressed()
         }
@@ -74,7 +75,7 @@ class LoginActivity : BaseActivity(R.layout.activity_login), OnDismissDialogList
         LoginViewState.Initial -> Unit
 
         is LoginViewState.LoadUrl ->
-            webView.loadUrl(state.authUrl)
+            binding.webview.loadUrl(state.authUrl)
 
         LoginViewState.InProgress ->
             progressDialogController.isShown = true
@@ -98,12 +99,12 @@ class LoginActivity : BaseActivity(R.layout.activity_login), OnDismissDialogList
     }
 
     private fun setLoadProgress(progress: Int) {
-        progressBar.progress = progress
+        binding.progress.progress = progress
         if (progress != MAX_PROGRESS) {
-            progressBar.alpha = 1.0f
-            progressBar.visibility = View.VISIBLE
+            binding.progress.alpha = 1.0f
+            binding.progress.visibility = View.VISIBLE
         } else {
-            Animations.fadeOut(progressBar, Animations.DURATION_SHORT)
+            Animations.fadeOut(binding.progress, Animations.DURATION_SHORT)
         }
     }
 

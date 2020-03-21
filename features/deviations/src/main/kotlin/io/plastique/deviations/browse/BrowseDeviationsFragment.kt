@@ -3,16 +3,17 @@ package io.plastique.deviations.browse
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import androidx.viewpager.widget.ViewPager
 import com.github.technoir42.android.extensions.doOnTabReselected
-import com.google.android.material.tabs.TabLayout
+import com.github.technoir42.android.extensions.layoutInflater
 import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
@@ -20,6 +21,8 @@ import io.plastique.core.mvvm.viewModel
 import io.plastique.core.pager.FragmentListPagerAdapter
 import io.plastique.deviations.DeviationsFragmentComponent
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.FragmentBrowseDeviationsBinding
+import io.plastique.deviations.databinding.IncBrowseAppbarBinding
 import io.plastique.deviations.list.DailyDeviationsFragment
 import io.plastique.deviations.list.HotDeviationsFragment
 import io.plastique.deviations.list.LayoutMode
@@ -27,20 +30,19 @@ import io.plastique.deviations.list.PopularDeviationsFragment
 import io.plastique.deviations.list.UndiscoveredDeviationsFragment
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
-import io.plastique.deviations.tags.TagsView
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 
-class BrowseDeviationsFragment : BaseFragment(R.layout.fragment_browse_deviations),
+class BrowseDeviationsFragment : BaseFragment(),
     MainPage,
     ScrollableToTop,
     TagManagerProvider {
 
     private val viewModel: BrowseDeviationsViewModel by viewModel()
 
+    private lateinit var binding: FragmentBrowseDeviationsBinding
+    private lateinit var appbarBinding: IncBrowseAppbarBinding
     private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
-    private lateinit var tagsView: TagsView
-    private lateinit var pager: ViewPager
     private lateinit var pagerAdapter: FragmentListPagerAdapter
     private var switchLayoutMenuItem: MenuItem? = null
     private var layoutMode: LayoutMode = LayoutMode.DEFAULT
@@ -50,11 +52,15 @@ class BrowseDeviationsFragment : BaseFragment(R.layout.fragment_browse_deviation
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentBrowseDeviationsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         pagerAdapter = FragmentListPagerAdapter(this, PAGES)
-        pager = view.findViewById(R.id.pager)
-        pager.adapter = pagerAdapter
-        pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.deviations_browse_page_spacing)
+        binding.pager.adapter = pagerAdapter
+        binding.pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.deviations_browse_page_spacing)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -104,28 +110,24 @@ class BrowseDeviationsFragment : BaseFragment(R.layout.fragment_browse_deviation
     override fun createAppBarViews(parent: ExpandableToolbarLayout) {
         expandableToolbarLayout = parent
 
-        View.inflate(parent.context, R.layout.inc_browse_appbar, parent)
-
-        val tabLayout: TabLayout = parent.findViewById(R.id.browse_tabs)
-        tabLayout.setupWithViewPager(pager)
-        tabLayout.doOnTabReselected { tab ->
+        appbarBinding = IncBrowseAppbarBinding.inflate(parent.layoutInflater, parent)
+        appbarBinding.tabs.setupWithViewPager(binding.pager)
+        appbarBinding.tabs.doOnTabReselected { tab ->
             val fragment = pagerAdapter.getFragment(tab.position)
             if (fragment is ScrollableToTop) {
                 fragment.scrollToTop()
             }
         }
-
-        tagsView = parent.findViewById(R.id.browse_tags)
     }
 
     override fun scrollToTop() {
-        val currentFragment = pagerAdapter.getFragment(pager.currentItem)
+        val currentFragment = pagerAdapter.getFragment(binding.pager.currentItem)
         if (currentFragment is ScrollableToTop) {
             currentFragment.scrollToTop()
         }
     }
 
-    override val tagManager: TagManager get() = tagsView
+    override val tagManager: TagManager get() = appbarBinding.tags
 
     override fun injectDependencies() {
         getComponent<DeviationsFragmentComponent>().inject(this)

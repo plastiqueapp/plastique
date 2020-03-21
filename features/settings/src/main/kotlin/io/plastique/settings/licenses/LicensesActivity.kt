@@ -3,12 +3,10 @@ package io.plastique.settings.licenses
 import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
@@ -18,40 +16,43 @@ import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
 import io.plastique.settings.SettingsNavigator
+import io.plastique.settings.databinding.ActivityLicensesBinding
 import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class LicensesActivity : BaseActivity(R.layout.activity_licenses) {
+class LicensesActivity : BaseActivity() {
     @Inject lateinit var navigator: SettingsNavigator
 
     private val viewModel: LicensesViewModel by viewModel()
 
-    private lateinit var emptyView: EmptyView
-    private lateinit var adapter: LicensesAdapter
+    private lateinit var binding: ActivityLicensesBinding
+    private lateinit var licensesAdapter: LicensesAdapter
     private lateinit var contentStateController: ContentStateController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setActionBar(R.id.toolbar) {
+        val binding = ActivityLicensesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
         navigator.attach(navigationContext)
 
-        adapter = LicensesAdapter(onLicenseClick = { license -> navigator.openUrl(license.url) })
+        licensesAdapter = LicensesAdapter(onLicenseClick = { license -> navigator.openUrl(license.url) })
 
-        val licensesView = findViewById<RecyclerView>(R.id.licenses)
-        licensesView.adapter = adapter
-        licensesView.layoutManager = LinearLayoutManager(this)
-        licensesView.addItemDecoration(DividerItemDecoration.Builder(this)
-            .divider(R.drawable.preference_list_divider)
-            .viewTypes(LicensesAdapter.TYPE_LICENSE)
-            .build())
+        binding.licenses.apply {
+            adapter = licensesAdapter
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration.Builder(context)
+                .divider(R.drawable.preference_list_divider)
+                .viewTypes(LicensesAdapter.TYPE_LICENSE)
+                .build())
+        }
 
-        emptyView = findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
-        contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.licenses, binding.progress, binding.empty)
 
         viewModel.state
             .observeOn(AndroidSchedulers.mainThread())
@@ -67,12 +68,12 @@ class LicensesActivity : BaseActivity(R.layout.activity_licenses) {
 
             is LicensesViewState.Content -> {
                 contentStateController.state = ContentState.Content
-                adapter.update(state.items)
+                licensesAdapter.update(state.items)
             }
 
             is LicensesViewState.Empty -> {
                 contentStateController.state = ContentState.Empty
-                emptyView.state = state.emptyState
+                binding.empty.state = state.emptyState
             }
         }
     }

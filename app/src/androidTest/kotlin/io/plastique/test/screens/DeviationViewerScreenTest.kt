@@ -37,7 +37,7 @@ class DeviationViewerScreenTest {
         ActivityScenario.launch<DeviationViewerActivity>(route.intent).use {
             onView(withId(R.id.info_panel))
                 .check(matches(isDisplayed()))
-                .check(selectedDescendantsMatch(withId(R.id.deviation_title), withText("Goth Witch")))
+                .check(selectedDescendantsMatch(withId(R.id.title), withText("Goth Witch")))
 
             onIdle {
                 takeScreenshot("deviation_viewer")

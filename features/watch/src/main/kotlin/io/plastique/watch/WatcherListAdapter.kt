@@ -1,10 +1,7 @@
 package io.plastique.watch
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.layoutInflater
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
@@ -12,6 +9,7 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.users.OnUserClickListener
+import io.plastique.watch.databinding.ItemWatcherBinding
 
 private class WatcherItemDelegate(
     private val imageLoader: ImageLoader,
@@ -21,32 +19,30 @@ private class WatcherItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is WatcherItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_watcher)
-        return ViewHolder(view, onUserClick)
+        val binding = ItemWatcherBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onUserClick)
     }
 
     override fun onBindViewHolder(item: WatcherItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.avatar.contentDescription =
-            holder.itemView.resources.getString(R.string.common_avatar_description, item.watcher.user.name)
-        holder.username.text = item.watcher.user.name
+        val resources = holder.binding.root.resources
+        holder.binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, item.watcher.user.name)
+        holder.binding.username.text = item.watcher.user.name
 
         imageLoader.load(item.watcher.user.avatarUrl)
             .params {
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(holder.avatar)
+            .into(holder.binding.avatar)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemWatcherBinding,
         onUserClick: OnUserClickListener
-    ) : BaseAdapterDelegate.ViewHolder<WatcherItem>(itemView) {
-        val avatar: ImageView = itemView.findViewById(R.id.avatar)
-        val username: TextView = itemView.findViewById(R.id.username)
+    ) : BaseAdapterDelegate.ViewHolder<WatcherItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onUserClick(item.watcher.user) }
+            binding.root.setOnClickListener { onUserClick(item.watcher.user) }
         }
     }
 }

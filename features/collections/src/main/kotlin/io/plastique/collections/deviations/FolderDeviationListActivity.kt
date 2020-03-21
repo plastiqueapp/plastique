@@ -3,12 +3,14 @@ package io.plastique.collections.deviations
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.add
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
 import com.github.technoir42.android.extensions.setTitleOnClickListener
 import io.plastique.collections.CollectionsActivityComponent
 import io.plastique.collections.R
+import io.plastique.collections.databinding.ActivityCollectionFolderDeviationsBinding
 import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.BaseActivity
 import io.plastique.core.ScrollableToTop
@@ -16,14 +18,16 @@ import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
 
-class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_folder_deviations) {
+class FolderDeviationListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val binding = ActivityCollectionFolderDeviationsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
-
-        initToolbar(folderId.owner, folderName)
+        initToolbar(binding.toolbar, folderId.owner, folderName)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -32,8 +36,8 @@ class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_fo
         }
     }
 
-    private fun initToolbar(username: String?, folderName: String) {
-        val toolbar = setActionBar(R.id.toolbar) {
+    private fun initToolbar(toolbar: Toolbar, username: String?, folderName: String) {
+        setActionBar(toolbar) {
             title = folderName
             subtitle = username
             setDisplayHomeAsUpEnabled(true)

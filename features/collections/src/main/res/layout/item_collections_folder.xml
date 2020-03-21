@@ -9,7 +9,7 @@
     tools:ignore="UnusedAttribute">
 
     <com.commit451.foregroundviews.ForegroundImageView
-        android:id="@+id/folder_thumbnail"
+        android:id="@+id/thumbnail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:foreground="@drawable/folder_foreground"

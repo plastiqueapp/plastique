@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/deviation_title"
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -16,7 +16,7 @@
         tools:text="@tools:sample/lorem" />
 
     <io.plastique.core.text.RichTextView
-        android:id="@+id/deviation_excerpt"
+        android:id="@+id/excerpt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:breakStrategy="balanced"
@@ -27,7 +27,7 @@
         tools:text="@tools:sample/lorem/random" />
 
     <io.plastique.deviations.DeviationActionsView
-        android:id="@+id/deviation_actions"
+        android:id="@+id/actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

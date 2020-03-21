@@ -2,19 +2,21 @@ package io.plastique.deviations.list
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.annotation.StringRes
 import com.github.technoir42.android.extensions.getCallback
 import com.github.technoir42.android.extensions.layoutInflater
-import io.plastique.core.BaseBottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.dialogRoute
 import io.plastique.deviations.R
 import io.plastique.deviations.TimeRange
+import io.plastique.deviations.databinding.DialogTimeRangeBinding
+import io.plastique.deviations.databinding.ItemTimeRangeBinding
 
-class TimeRangeDialogFragment : BaseBottomSheetDialogFragment(R.layout.dialog_time_range), View.OnClickListener {
+class TimeRangeDialogFragment : BottomSheetDialogFragment() {
     private var onTimeRangeSelectedListener: OnTimeRangeSelectedListener? = null
 
     override fun onAttach(context: Context) {
@@ -27,22 +29,21 @@ class TimeRangeDialogFragment : BaseBottomSheetDialogFragment(R.layout.dialog_ti
         onTimeRangeSelectedListener = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        require(view is ViewGroup)
-        val layoutInflater = view.layoutInflater
-        for (timeRange in TimeRange.values()) {
-            val textView = layoutInflater.inflate(R.layout.item_time_range, view, false) as TextView
-            textView.setText(getTimeRangeResId(timeRange))
-            textView.tag = timeRange
-            textView.setOnClickListener(this)
-            view.addView(textView)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val binding = DialogTimeRangeBinding.inflate(inflater, container, false)
+        val layoutInflater = binding.root.layoutInflater
+        val onClickListener = View.OnClickListener { view ->
+            onTimeRangeSelectedListener?.onTimeRangeSelected(view.tag as TimeRange)
+            dismiss()
         }
-    }
-
-    override fun onClick(view: View) {
-        onTimeRangeSelectedListener?.onTimeRangeSelected(view.tag as TimeRange)
-        dismiss()
+        for (timeRange in TimeRange.values()) {
+            ItemTimeRangeBinding.inflate(layoutInflater, binding.root, true).apply {
+                root.setText(getTimeRangeResId(timeRange))
+                root.tag = timeRange
+                root.setOnClickListener(onClickListener)
+            }
+        }
+        return binding.root
     }
 
     @StringRes

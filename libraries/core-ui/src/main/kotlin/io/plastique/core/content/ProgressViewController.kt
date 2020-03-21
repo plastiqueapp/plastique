@@ -1,9 +1,7 @@
 package io.plastique.core.content
 
-import android.app.Activity
 import android.os.SystemClock
 import android.view.View
-import androidx.annotation.IdRes
 import androidx.core.view.isVisible
 import kotlin.math.max
 
@@ -25,9 +23,6 @@ class ProgressViewController(private val progressView: View) {
     init {
         progressView.isVisible = false
     }
-
-    constructor(activity: Activity, @IdRes progressViewId: Int) : this(activity.findViewById(progressViewId))
-    constructor(rootView: View, @IdRes progressViewId: Int) : this(rootView.findViewById(progressViewId))
 
     private fun setProgressBarVisible(visible: Boolean) {
         progressView.removeCallbacks(setVisibilityRunnable)

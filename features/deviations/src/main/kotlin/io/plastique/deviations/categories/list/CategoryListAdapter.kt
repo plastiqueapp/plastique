@@ -4,11 +4,10 @@ import android.content.res.Resources
 import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.ViewSwitcher
-import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.layoutInflater
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.ItemCategoryBinding
 import kotlin.math.max
 
 internal class CategoryListAdapter(
@@ -16,23 +15,23 @@ internal class CategoryListAdapter(
 ) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = parent.inflate(R.layout.item_category)
-        return ViewHolder(view, onCategoryClick)
+        val binding = ItemCategoryBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onCategoryClick)
     }
 
     override fun onBindViewHolder(item: CategoryItem, holder: ViewHolder, position: Int) {
-        holder.textView.text = getItemText(holder.itemView.resources, item)
-        holder.progressSwitcher.removeCallbacks(holder.showProgressCallback)
+        holder.binding.title.text = getItemText(holder.itemView.resources, item)
+        holder.binding.progressSwitcher.removeCallbacks(holder.showProgressCallback)
         if (!item.isParent && item.category.hasChildren) {
             // Show progress bar after a small delay
             val remainingTime = max(0, PROGRESS_BAR_SHOW_DELAY - SystemClock.elapsedRealtime() + item.startLoadingTimestamp)
-            holder.progressSwitcher.displayedChild = if (item.isLoading && remainingTime == 0L) 1 else 0
-            holder.progressSwitcher.visibility = View.VISIBLE
+            holder.binding.progressSwitcher.displayedChild = if (item.isLoading && remainingTime == 0L) 1 else 0
+            holder.binding.progressSwitcher.visibility = View.VISIBLE
             if (item.isLoading && remainingTime > 0) {
-                holder.progressSwitcher.postDelayed(holder.showProgressCallback, remainingTime)
+                holder.binding.progressSwitcher.postDelayed(holder.showProgressCallback, remainingTime)
             }
         } else {
-            holder.progressSwitcher.visibility = View.GONE
+            holder.binding.progressSwitcher.visibility = View.GONE
         }
     }
 
@@ -45,15 +44,13 @@ internal class CategoryListAdapter(
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemCategoryBinding,
         onCategoryClick: OnCategoryClickListener
-    ) : BaseListAdapter.ViewHolder<CategoryItem>(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.text)
-        val progressSwitcher: ViewSwitcher = itemView.findViewById(R.id.progress_switcher)
-        val showProgressCallback: Runnable = Runnable { progressSwitcher.displayedChild = 1 }
+    ) : BaseListAdapter.ViewHolder<CategoryItem>(binding.root) {
+        val showProgressCallback: Runnable = Runnable { binding.progressSwitcher.displayedChild = 1 }
 
         init {
-            itemView.setOnClickListener { onCategoryClick(item) }
+            binding.root.setOnClickListener { onCategoryClick(item) }
         }
     }
 

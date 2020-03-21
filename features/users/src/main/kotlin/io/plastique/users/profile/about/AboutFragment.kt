@@ -2,46 +2,40 @@ package io.plastique.users.profile.about
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.view.LayoutInflater
 import android.view.View
-import androidx.core.widget.NestedScrollView
+import android.view.ViewGroup
 import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.mvvm.viewModel
-import io.plastique.core.text.RichTextView
 import io.plastique.inject.getComponent
-import io.plastique.users.R
 import io.plastique.users.UsersFragmentComponent
 import io.plastique.users.UsersNavigator
+import io.plastique.users.databinding.FragmentUsersAboutBinding
 import io.plastique.users.profile.about.AboutEvent.RetryClickEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToTop {
+class AboutFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var navigator: UsersNavigator
 
     private val viewModel: AboutViewModel by viewModel()
 
-    private lateinit var contentView: NestedScrollView
-    private lateinit var bioHeaderView: View
-    private lateinit var bioView: RichTextView
-    private lateinit var emptyView: EmptyView
+    private lateinit var binding: FragmentUsersAboutBinding
     private lateinit var contentStateController: ContentStateController
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentUsersAboutBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding.bio.movementMethod = LinkMovementMethod.getInstance()
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
-        contentView = view.findViewById(R.id.content)
-        bioHeaderView = view.findViewById(R.id.bio_header)
-        bioView = view.findViewById(R.id.bio)
-        bioView.movementMethod = LinkMovementMethod.getInstance()
-
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
-
-        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.content, binding.progress, binding.empty)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,7 +52,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToT
         when (state) {
             is AboutViewState.Content -> {
                 contentStateController.state = ContentState.Content
-                bioView.text = state.bio.value
+                binding.bio.text = state.bio.value
             }
 
             is AboutViewState.Loading -> {
@@ -67,13 +61,13 @@ class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToT
 
             is AboutViewState.Error -> {
                 contentStateController.state = ContentState.Empty
-                emptyView.state = state.emptyState
+                binding.empty.state = state.emptyState
             }
         }
     }
 
     override fun scrollToTop() {
-        contentView.smoothScrollTo(0, 0)
+        binding.content.smoothScrollTo(0, 0)
     }
 
     override fun injectDependencies() {

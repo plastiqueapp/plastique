@@ -40,7 +40,7 @@
             android:paddingVertical="16dp">
 
             <TextView
-                android:id="@+id/deviation_title"
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
@@ -55,7 +55,7 @@
                 android:paddingVertical="8dp">
 
                 <ImageView
-                    android:id="@+id/deviation_author_avatar"
+                    android:id="@+id/author_avatar"
                     android:layout_width="@dimen/common_avatar_size_medium"
                     android:layout_height="@dimen/common_avatar_size_medium"
                     app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
                     tools:src="@tools:sample/avatars" />
 
                 <TextView
-                    android:id="@+id/deviation_author_name"
+                    android:id="@+id/author_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -72,7 +72,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/publish_date"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/deviation_author_avatar"
+                    app:layout_constraintStart_toEndOf="@id/author_avatar"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@tools:sample/full_names" />
 
@@ -81,13 +81,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?textAppearanceCaption"
-                    app:layout_constraintBaseline_toBaselineOf="@id/deviation_author_name"
+                    app:layout_constraintBaseline_toBaselineOf="@id/author_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:text="29 Dec 2018" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <io.plastique.core.text.RichTextView
-                android:id="@+id/deviation_description"
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
@@ -95,7 +95,7 @@
                 tools:text="@tools:sample/lorem/random" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/deviation_tags"
+                android:id="@+id/tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

@@ -3,9 +3,8 @@ package io.plastique.watch
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
@@ -15,7 +14,6 @@ import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.core.lists.EndlessScrollListener
@@ -31,49 +29,49 @@ import io.plastique.inject.getComponent
 import io.plastique.watch.WatcherListEvent.RefreshEvent
 import io.plastique.watch.WatcherListEvent.RetryClickEvent
 import io.plastique.watch.WatcherListEvent.SnackbarShownEvent
+import io.plastique.watch.databinding.ActivityWatcherListBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
+class WatcherListActivity : BaseActivity() {
     private val viewModel: WatcherListViewModel by viewModel()
     private val navigator: WatchNavigator get() = viewModel.navigator
 
-    private lateinit var watchersView: RecyclerView
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var emptyView: EmptyView
+    private lateinit var binding: ActivityWatcherListBinding
+    private lateinit var watcherListAdapter: WatcherListAdapter
+    private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var adapter: WatcherListAdapter
-    private lateinit var onScrollListener: EndlessScrollListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         navigator.attach(navigationContext)
 
+        binding = ActivityWatcherListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val username = intent.getStringExtra(EXTRA_USERNAME)
-        initToolbar(username)
+        initToolbar(binding.toolbar, username)
 
         val imageLoader = ImageLoader.from(this)
-        adapter = WatcherListAdapter(
+        watcherListAdapter = WatcherListAdapter(
             imageLoader = imageLoader,
             onUserClick = { user -> navigator.openUserProfile(user) })
 
-        watchersView = findViewById(R.id.watchers)
-        watchersView.adapter = adapter
-        watchersView.layoutManager = LinearLayoutManager(this)
-        watchersView.disableChangeAnimations()
-        createPreloader(imageLoader, adapter).attach(watchersView)
-
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(WatcherListEvent.LoadMoreEvent) }
-        watchersView.addOnScrollListener(onScrollListener)
 
-        refreshLayout = findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        binding.watchers.apply {
+            adapter = watcherListAdapter
+            layoutManager = LinearLayoutManager(context)
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
+        createPreloader(imageLoader, watcherListAdapter).attach(binding.watchers)
 
-        emptyView = findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        snackbarController = SnackbarController(refreshLayout)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
+        snackbarController = SnackbarController(binding.refresh)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         viewModel.init(username)
@@ -87,13 +85,12 @@ class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
 
     private fun renderState(state: WatcherListViewState, listUpdateData: ListUpdateData<ListItem>) {
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
-
-        listUpdateData.applyTo(adapter)
-
+        binding.empty.state = state.emptyState
+        binding.refresh.isRefreshing = state.listState.isRefreshing
         onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
         state.snackbarState?.let(snackbarController::showSnackbar)
+
+        listUpdateData.applyTo(watcherListAdapter)
     }
 
     private fun createPreloader(imageLoader: ImageLoader, adapter: WatcherListAdapter): ListPreloader {
@@ -115,14 +112,14 @@ class WatcherListActivity : BaseActivity(R.layout.activity_watcher_list) {
         return ListPreloader(imageLoader.glide, callback, MAX_PRELOAD)
     }
 
-    private fun initToolbar(username: String?) {
-        val toolbar = setActionBar(R.id.toolbar) {
+    private fun initToolbar(toolbar: Toolbar, username: String?) {
+        setActionBar(toolbar) {
             setTitle(if (username != null) R.string.watch_watchers_title else R.string.watch_watchers_title_current_user)
             subtitle = username
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val onClickListener = View.OnClickListener { watchersView.scrollToPosition(0) }
+        val onClickListener = View.OnClickListener { binding.watchers.scrollToPosition(0) }
         toolbar.setTitleOnClickListener(onClickListener)
         toolbar.setSubtitleOnClickListener(onClickListener)
     }

@@ -3,12 +3,13 @@ package io.plastique.deviations.list
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.findParentOfType
 import com.github.technoir42.android.extensions.getLayoutBehavior
@@ -21,7 +22,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.lists.EndlessScrollListener
@@ -37,6 +37,7 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.FragmentDeviationsBinding
 import io.plastique.deviations.list.DeviationListEvent.LoadMoreEvent
 import io.plastique.deviations.list.DeviationListEvent.ParamsChangedEvent
 import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
@@ -49,20 +50,17 @@ import io.plastique.deviations.tags.TagManagerProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(R.layout.fragment_deviations), ScrollableToTop {
+abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(), ScrollableToTop {
     @Inject lateinit var navigator: DeviationsNavigator
 
     private val viewModel: DeviationListViewModel by viewModel()
 
-    private lateinit var deviationsView: RecyclerView
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var emptyView: EmptyView
-
+    private lateinit var binding: FragmentDeviationsBinding
+    private lateinit var deviationListAdapter: DeviationListAdapter
+    private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var adapter: DeviationListAdapter
-    private lateinit var onScrollListener: EndlessScrollListener
 
     protected lateinit var params: ParamsType
     protected abstract val defaultParams: ParamsType
@@ -77,7 +75,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         set(value) {
             field?.detach()
             field = value
-            value?.attach(deviationsView)
+            value?.attach(binding.deviations)
         }
 
     override fun onAttach(context: Context) {
@@ -85,19 +83,18 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         navigator.attach(navigationContext)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentDeviationsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        deviationsView = view.findViewById(R.id.deviations)
-        deviationsView.disableChangeAnimations()
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
-
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
-
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
@@ -113,7 +110,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         val imageLoader = ImageLoader.from(this)
-        adapter = DeviationListAdapter(
+        deviationListAdapter = DeviationListAdapter(
             imageLoader = imageLoader,
             layoutModeProvider = { fixedLayoutMode ?: layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
@@ -122,10 +119,14 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
-        preloaderFactory = DeviationsPreloaderFactory(imageLoader, deviationsView, adapter)
+        preloaderFactory = DeviationsPreloaderFactory(imageLoader, binding.deviations, deviationListAdapter)
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }
-        deviationsView.addOnScrollListener(onScrollListener)
-        deviationsView.adapter = adapter
+
+        binding.deviations.apply {
+            adapter = deviationListAdapter
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
         fixedLayoutMode?.let { initLayoutMode(it) }
 
         @Suppress("UNCHECKED_CAST")
@@ -156,23 +157,23 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         layoutMode = state.layoutMode
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
+        binding.empty.state = state.emptyState
 
         if (fixedLayoutMode == null && state.layoutMode != prevState?.layoutMode) {
             initLayoutMode(state.layoutMode)
 
-            if (adapter.itemCount > 0) {
-                deviationsView.scrollToPosition(0)
+            if (deviationListAdapter.itemCount > 0) {
+                binding.deviations.scrollToPosition(0)
             }
 
-            adapter.items = state.listState.items
-            adapter.notifyDataSetChanged()
+            deviationListAdapter.items = state.listState.items
+            deviationListAdapter.notifyDataSetChanged()
         } else {
-            listUpdateData.applyTo(adapter)
+            listUpdateData.applyTo(deviationListAdapter)
         }
 
         onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
+        binding.refresh.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
 
         tags = state.tags
@@ -184,7 +185,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
     }
 
     override fun scrollToTop() {
-        val coordinatorLayout = deviationsView.findParentOfType<CoordinatorLayout>()
+        val coordinatorLayout = binding.deviations.findParentOfType<CoordinatorLayout>()
         coordinatorLayout?.children?.forEach { child ->
             if (child is BottomNavigationView) {
                 val behavior = child.getLayoutBehavior<HideBottomViewOnScrollBehavior<BottomNavigationView>>()
@@ -193,7 +194,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             }
         }
 
-        deviationsView.scrollToPosition(0)
+        binding.deviations.scrollToPosition(0)
     }
 
     open fun onTagClick(tag: Tag) {
@@ -209,7 +210,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
     }
 
     private fun initLayoutMode(layoutMode: LayoutMode) {
-        deviationsView.layoutManager = createLayoutManager(requireContext(), layoutMode)
+        binding.deviations.layoutManager = createLayoutManager(binding.deviations.context, layoutMode)
         onScrollListener.loadMoreThreshold = calculateLoadMoreThreshold(layoutMode)
         preloader = preloaderFactory.createPreloader(layoutMode, gridParams).subscribeToLifecycle(lifecycle)
     }

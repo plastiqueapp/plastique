@@ -3,26 +3,23 @@ package io.plastique.deviations.info
 import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.setActionBar
 import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
-import io.plastique.core.text.RichTextView
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.ActivityDeviationInfoBinding
 import io.plastique.deviations.info.DeviationInfoEvent.RetryClickEvent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,45 +28,37 @@ import org.threeten.bp.format.FormatStyle
 import java.util.Locale
 import javax.inject.Inject
 
-class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
+class DeviationInfoActivity : BaseActivity() {
     @Inject lateinit var navigator: DeviationsNavigator
 
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationInfoViewModel by viewModel()
 
-    private lateinit var authorNameView: TextView
-    private lateinit var authorAvatarView: ImageView
-    private lateinit var titleView: TextView
-    private lateinit var descriptionView: RichTextView
-    private lateinit var publishDateView: TextView
-    private lateinit var emptyView: EmptyView
-    private lateinit var contentStateController: ContentStateController
-    private lateinit var tagsView: RecyclerView
+    private lateinit var binding: ActivityDeviationInfoBinding
     private lateinit var tagListAdapter: TagListAdapter
+    private lateinit var contentStateController: ContentStateController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setActionBar(R.id.toolbar) {
+        binding = ActivityDeviationInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
         navigator.attach(navigationContext)
 
-        authorNameView = findViewById(R.id.deviation_author_name)
-        authorAvatarView = findViewById(R.id.deviation_author_avatar)
-        titleView = findViewById(R.id.deviation_title)
-        descriptionView = findViewById(R.id.deviation_description)
-        descriptionView.movementMethod = LinkMovementMethod.getInstance()
-        tagsView = findViewById(R.id.deviation_tags)
-        publishDateView = findViewById(R.id.publish_date)
-        emptyView = findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.description.movementMethod = LinkMovementMethod.getInstance()
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         tagListAdapter = TagListAdapter(onTagClick = { tag -> navigator.openTag(tag) })
-        tagsView.adapter = tagListAdapter
-        tagsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.tags.apply {
+            adapter = tagListAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            disableChangeAnimations()
+        }
 
-        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.content, binding.progress, binding.empty)
 
         val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)
@@ -87,27 +76,27 @@ class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
 
             is DeviationInfoViewState.Content -> {
                 contentStateController.state = ContentState.Content
-                titleView.text = state.title
-                authorAvatarView.contentDescription = getString(R.string.common_avatar_description, state.author.name)
-                authorNameView.text = state.author.name
-                descriptionView.text = state.description.value
-                publishDateView.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)
+                binding.title.text = state.title
+                binding.authorAvatar.contentDescription = getString(R.string.common_avatar_description, state.author.name)
+                binding.authorName.text = state.author.name
+                binding.description.text = state.description.value
+                binding.publishDate.text = PUBLISH_DATE_FORMATTER.format(state.publishTime)
 
                 imageLoader.load(state.author.avatarUrl)
                     .params {
                         fallbackDrawable = R.drawable.default_avatar_64dp
                         transforms += TransformType.CircleCrop
                     }
-                    .into(authorAvatarView)
+                    .into(binding.authorAvatar)
 
                 tagListAdapter.items = state.tags
                 tagListAdapter.notifyDataSetChanged()
-                tagsView.isVisible = state.tags.isNotEmpty()
+                binding.tags.isVisible = state.tags.isNotEmpty()
             }
 
             is DeviationInfoViewState.Error -> {
                 contentStateController.state = ContentState.Empty
-                emptyView.state = state.emptyViewState
+                binding.empty.state = state.emptyViewState
             }
         }
     }

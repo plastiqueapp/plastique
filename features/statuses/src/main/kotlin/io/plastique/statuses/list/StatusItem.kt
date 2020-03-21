@@ -2,8 +2,8 @@ package io.plastique.statuses.list
 
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
-import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.StatusActionsState
+import io.plastique.statuses.share.ShareUiModel
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 

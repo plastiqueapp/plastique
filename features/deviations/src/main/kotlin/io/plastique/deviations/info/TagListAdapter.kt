@@ -1,37 +1,35 @@
 package io.plastique.deviations.info
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.layoutInflater
 import io.plastique.core.lists.BaseListAdapter
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.ItemDeviationTagBinding
 
 internal class TagListAdapter(
     private val onTagClick: OnTagClickListener
 ) : BaseListAdapter<String, TagListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = parent.inflate(R.layout.item_deviation_tag)
-        return ViewHolder(view, onTagClick)
+        val binding = ItemDeviationTagBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onTagClick)
     }
 
     override fun onBindViewHolder(item: String, holder: ViewHolder, position: Int) {
-        holder.textView.text = holder.textView.resources.getString(R.string.common_hashtag, item)
-
-        (holder.textView.layoutParams as ViewGroup.MarginLayoutParams).apply {
-            leftMargin = if (position != 0) holder.itemView.resources.getDimensionPixelOffset(R.dimen.deviations_info_tag_spacing) else 0
+        val resources = holder.binding.root.resources
+        holder.binding.text1.text = resources.getString(R.string.common_hashtag, item)
+        (holder.binding.text1.layoutParams as ViewGroup.MarginLayoutParams).apply {
+            leftMargin = if (position != 0) resources.getDimensionPixelOffset(R.dimen.deviations_info_tag_spacing) else 0
         }
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemDeviationTagBinding,
         onTagClick: OnTagClickListener
-    ) : BaseListAdapter.ViewHolder<String>(itemView) {
-        val textView: TextView = itemView.findViewById(android.R.id.text1)
+    ) : BaseListAdapter.ViewHolder<String>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onTagClick(item) }
+            binding.root.setOnClickListener { onTagClick(item) }
         }
     }
 }

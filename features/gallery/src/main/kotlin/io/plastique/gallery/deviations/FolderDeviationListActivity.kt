@@ -3,6 +3,7 @@ package io.plastique.gallery.deviations
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.add
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setSubtitleOnClickListener
@@ -13,17 +14,19 @@ import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.gallery.GalleryActivityComponent
 import io.plastique.gallery.R
+import io.plastique.gallery.databinding.ActivityGalleryFolderDeviationsBinding
 import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.inject.getComponent
 
-class FolderDeviationListActivity : BaseActivity(R.layout.activity_gallery_folder_deviations) {
+class FolderDeviationListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val binding = ActivityGalleryFolderDeviationsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val folderId = intent.getParcelableExtra<GalleryFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
-
-        initToolbar(folderId.owner, folderName)
+        initToolbar(binding.toolbar, folderId.owner, folderName)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -32,8 +35,8 @@ class FolderDeviationListActivity : BaseActivity(R.layout.activity_gallery_folde
         }
     }
 
-    private fun initToolbar(username: String?, folderName: String) {
-        val toolbar = setActionBar(R.id.toolbar) {
+    private fun initToolbar(toolbar: Toolbar, username: String?, folderName: String) {
+        setActionBar(toolbar) {
             title = folderName
             subtitle = username
             setDisplayHomeAsUpEnabled(true)

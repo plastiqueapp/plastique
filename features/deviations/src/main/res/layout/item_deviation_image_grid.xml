@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.commit451.foregroundviews.ForegroundImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/deviation_thumbnail"
+    android:id="@+id/thumbnail"
     android:layout_width="@dimen/deviations_list_min_cell_size"
     android:layout_height="@dimen/deviations_list_min_cell_size"
     android:foreground="?selectableItemBackground"

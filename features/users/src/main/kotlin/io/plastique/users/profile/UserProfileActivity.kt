@@ -5,22 +5,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.ToggleButton
 import androidx.core.view.isVisible
-import androidx.viewpager.widget.ViewPager
 import com.github.technoir42.android.extensions.doOnTabReselected
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
-import com.google.android.material.tabs.TabLayout
 import io.plastique.core.BaseActivity
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentState
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
@@ -34,6 +27,7 @@ import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersActivityComponent
 import io.plastique.users.UsersNavigator
+import io.plastique.users.databinding.ActivityUserProfileBinding
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.OpenInBrowserEvent
 import io.plastique.users.profile.UserProfileEvent.RetryClickEvent
@@ -43,19 +37,14 @@ import io.plastique.users.profile.UserProfileEvent.SnackbarShownEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), CompoundButton.OnCheckedChangeListener {
+class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListener {
     @Inject lateinit var pageProvider: UserProfilePageProvider
 
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: UserProfileViewModel by viewModel()
     private val navigator: UsersNavigator get() = viewModel.navigator
 
-    private lateinit var rootView: View
-    private lateinit var avatarView: ImageView
-    private lateinit var realNameView: TextView
-    private lateinit var statisticsView: UserStatisticsView
-    private lateinit var watchButton: ToggleButton
-    private lateinit var emptyView: EmptyView
+    private lateinit var binding: ActivityUserProfileBinding
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
@@ -73,30 +62,24 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        navigator.attach(navigationContext)
+
+        binding = ActivityUserProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setHasOptionsMenu(false)
-        setActionBar(R.id.toolbar) {
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
         initTabs()
-        navigator.attach(navigationContext)
 
-        rootView = findViewById(android.R.id.content)
-        avatarView = findViewById(R.id.user_avatar)
-        realNameView = findViewById(R.id.user_real_name)
+        binding.statistics.onWatchersClick = { navigator.openWatchers(username) }
+        binding.watch.setOnCheckedChangeListener(this)
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
-        statisticsView = findViewById(R.id.statistics)
-        statisticsView.onWatchersClick = { navigator.openWatchers(username) }
-
-        watchButton = findViewById(R.id.button_watch)
-        watchButton.setOnCheckedChangeListener(this)
-
-        contentStateController = ContentStateController(this, R.id.profile_content, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.profileContent, binding.progress, binding.empty)
         progressDialogController = ProgressDialogController(this, supportFragmentManager)
-        snackbarController = SnackbarController(rootView)
+        snackbarController = SnackbarController(binding.root)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-
-        emptyView = findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(username)
         viewModel.state
@@ -132,7 +115,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        if (buttonView === watchButton) {
+        if (buttonView === binding.watch) {
             // Restore isChecked value because it should be driven by state
             buttonView.setOnCheckedChangeListener(null)
             buttonView.isChecked = buttonView.getTag(R.id.tag_is_checked) as Boolean
@@ -148,40 +131,39 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         showSignOut = state.showSignOut
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
+        binding.empty.state = state.emptyState
 
         if (state.userProfile != null && state.userProfile != prevState?.userProfile) {
-            avatarView.contentDescription = getString(R.string.common_avatar_description, state.userProfile.user.name)
-            realNameView.text = state.userProfile.realName
-            statisticsView.render(state.userProfile.stats)
+            binding.userAvatar.contentDescription = getString(R.string.common_avatar_description, state.userProfile.user.name)
+            binding.userRealName.text = state.userProfile.realName
+            binding.statistics.render(state.userProfile.stats)
 
-            watchButton.setOnCheckedChangeListener(null)
-            watchButton.isChecked = state.userProfile.isWatching
-            watchButton.setTag(R.id.tag_is_checked, state.userProfile.isWatching)
-            watchButton.setOnCheckedChangeListener(this)
+            binding.watch.apply {
+                setOnCheckedChangeListener(null)
+                isChecked = state.userProfile.isWatching
+                setTag(R.id.tag_is_checked, state.userProfile.isWatching)
+                setOnCheckedChangeListener(this@UserProfileActivity)
+            }
 
             imageLoader.load(state.userProfile.user.avatarUrl)
                 .params {
                     fallbackDrawable = R.drawable.default_avatar_64dp
                     transforms += TransformType.CircleCrop
                 }
-                .into(avatarView)
+                .into(binding.userAvatar)
         }
 
-        watchButton.isVisible = state.contentState == ContentState.Content && !state.isCurrentUser
+        binding.watch.isVisible = state.contentState == ContentState.Content && !state.isCurrentUser
         progressDialogController.isShown = state.showProgressDialog
         state.snackbarState?.let(snackbarController::showSnackbar)
     }
 
     private fun initTabs() {
         val adapter = FragmentListPagerAdapter(this, pageProvider.getPages(username))
-        val pager: ViewPager = findViewById(R.id.pager)
-        pager.adapter = adapter
-        pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.users_profile_page_spacing)
-
-        val tabLayout: TabLayout = findViewById(R.id.tabs)
-        tabLayout.setupWithViewPager(pager)
-        tabLayout.doOnTabReselected { tab ->
+        binding.pager.adapter = adapter
+        binding.pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.users_profile_page_spacing)
+        binding.tabs.setupWithViewPager(binding.pager)
+        binding.tabs.doOnTabReselected { tab ->
             val fragment = adapter.getFragment(tab.position)
             if (fragment is ScrollableToTop) {
                 fragment.scrollToTop()

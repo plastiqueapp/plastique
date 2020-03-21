@@ -5,14 +5,14 @@
     tools:parentTag="io.plastique.core.ExpandableToolbarLayout">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/browse_tabs"
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_pin="true"
         app:tabMode="scrollable" />
 
     <io.plastique.deviations.tags.TagsView
-        android:id="@+id/browse_tags"
+        android:id="@+id/tags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="6dp"

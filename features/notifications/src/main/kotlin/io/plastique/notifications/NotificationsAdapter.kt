@@ -1,12 +1,9 @@
 package io.plastique.notifications
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.text.HtmlCompat
-import com.github.technoir42.android.extensions.inflate
 import com.github.technoir42.android.extensions.isStrikethrough
+import com.github.technoir42.android.extensions.layoutInflater
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.collections.OnCollectionFolderClickListener
 import io.plastique.core.image.ImageLoader
@@ -16,6 +13,7 @@ import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.OnDeviationClickListener
+import io.plastique.notifications.databinding.ItemNotificationsSimpleBinding
 import io.plastique.statuses.OnStatusClickListener
 import io.plastique.users.OnUserClickListener
 import io.plastique.users.UserType
@@ -29,17 +27,17 @@ private class AddToCollectionItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is AddToCollectionItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_notifications_simple)
-        return ViewHolder(view, onCollectionFolderClick)
+        val binding = ItemNotificationsSimpleBinding.inflate(parent.layoutInflater)
+        return ViewHolder(binding, onCollectionFolderClick)
     }
 
     override fun onBindViewHolder(item: AddToCollectionItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.avatarView.contentDescription =
-            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
-        holder.usernameView.text = item.user.name
-        holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = elapsedTimeFormatter.format(item.time)
-        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_add_to_collection,
+        val resources = holder.binding.root.resources
+        holder.binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, item.user.name)
+        holder.binding.username.text = item.user.name
+        holder.binding.username.isStrikethrough = item.user.type == UserType.Banned
+        holder.binding.time.text = elapsedTimeFormatter.format(item.time)
+        holder.binding.description.text = HtmlCompat.fromHtml(resources.getString(R.string.notifications_item_add_to_collection,
             item.deviationTitle, item.folderName), 0)
 
         imageLoader.load(item.user.avatarUrl)
@@ -47,20 +45,16 @@ private class AddToCollectionItemDelegate(
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(holder.avatarView)
+            .into(holder.binding.avatar)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemNotificationsSimpleBinding,
         onCollectionFolderClick: OnCollectionFolderClickListener
-    ) : BaseAdapterDelegate.ViewHolder<AddToCollectionItem>(itemView) {
-        val avatarView: ImageView = itemView.findViewById(R.id.avatar)
-        val usernameView: TextView = itemView.findViewById(R.id.username)
-        val timeView: TextView = itemView.findViewById(R.id.time)
-        val descriptionView: TextView = itemView.findViewById(R.id.description)
+    ) : BaseAdapterDelegate.ViewHolder<AddToCollectionItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onCollectionFolderClick(item.folderId, item.folderName) }
+            binding.root.setOnClickListener { onCollectionFolderClick(item.folderId, item.folderName) }
         }
     }
 }
@@ -74,37 +68,33 @@ private class BadgeGivenItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is BadgeGivenItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_notifications_simple)
-        return ViewHolder(view, onUserClick)
+        val binding = ItemNotificationsSimpleBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onUserClick)
     }
 
     override fun onBindViewHolder(item: BadgeGivenItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.avatarView.contentDescription =
-            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
-        holder.usernameView.text = item.user.name
-        holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = elapsedTimeFormatter.format(item.time)
-        holder.descriptionView.text = item.text
+        val resources = holder.binding.root.resources
+        holder.binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, item.user.name)
+        holder.binding.username.text = item.user.name
+        holder.binding.username.isStrikethrough = item.user.type == UserType.Banned
+        holder.binding.time.text = elapsedTimeFormatter.format(item.time)
+        holder.binding.description.text = item.text
 
         imageLoader.load(item.user.avatarUrl)
             .params {
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(holder.avatarView)
+            .into(holder.binding.avatar)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemNotificationsSimpleBinding,
         onUserClick: OnUserClickListener
-    ) : BaseAdapterDelegate.ViewHolder<BadgeGivenItem>(itemView) {
-        val avatarView: ImageView = itemView.findViewById(R.id.avatar)
-        val usernameView: TextView = itemView.findViewById(R.id.username)
-        val timeView: TextView = itemView.findViewById(R.id.time)
-        val descriptionView: TextView = itemView.findViewById(R.id.description)
+    ) : BaseAdapterDelegate.ViewHolder<BadgeGivenItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onUserClick(item.user) }
+            binding.root.setOnClickListener { onUserClick(item.user) }
         }
     }
 }
@@ -118,37 +108,33 @@ private class FavoriteItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is FavoriteItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_notifications_simple)
-        return ViewHolder(view, onUserClick)
+        val binding = ItemNotificationsSimpleBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onUserClick)
     }
 
     override fun onBindViewHolder(item: FavoriteItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.avatarView.contentDescription =
-            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
-        holder.usernameView.text = item.user.name
-        holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = elapsedTimeFormatter.format(item.time)
-        holder.descriptionView.text = HtmlCompat.fromHtml(holder.itemView.resources.getString(R.string.notifications_item_favorite, item.deviationTitle), 0)
+        val resources = holder.binding.root.resources
+        holder.binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, item.user.name)
+        holder.binding.username.text = item.user.name
+        holder.binding.username.isStrikethrough = item.user.type == UserType.Banned
+        holder.binding.time.text = elapsedTimeFormatter.format(item.time)
+        holder.binding.description.text = HtmlCompat.fromHtml(resources.getString(R.string.notifications_item_favorite, item.deviationTitle), 0)
 
         imageLoader.load(item.user.avatarUrl)
             .params {
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(holder.avatarView)
+            .into(holder.binding.avatar)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemNotificationsSimpleBinding,
         onUserClick: OnUserClickListener
-    ) : BaseAdapterDelegate.ViewHolder<FavoriteItem>(itemView) {
-        val avatarView: ImageView = itemView.findViewById(R.id.avatar)
-        val usernameView: TextView = itemView.findViewById(R.id.username)
-        val timeView: TextView = itemView.findViewById(R.id.time)
-        val descriptionView: TextView = itemView.findViewById(R.id.description)
+    ) : BaseAdapterDelegate.ViewHolder<FavoriteItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onUserClick(item.user) }
+            binding.root.setOnClickListener { onUserClick(item.user) }
         }
     }
 }
@@ -162,37 +148,33 @@ private class WatchItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is WatchItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_notifications_simple)
-        return ViewHolder(view, onUserClick)
+        val binding = ItemNotificationsSimpleBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onUserClick)
     }
 
     override fun onBindViewHolder(item: WatchItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.avatarView.contentDescription =
-            holder.itemView.resources.getString(R.string.common_avatar_description, item.user.name)
-        holder.usernameView.text = item.user.name
-        holder.usernameView.isStrikethrough = item.user.type == UserType.Banned
-        holder.timeView.text = elapsedTimeFormatter.format(item.time)
-        holder.descriptionView.text = holder.itemView.resources.getString(R.string.notifications_item_watch)
+        val resources = holder.binding.root.resources
+        holder.binding.avatar.contentDescription = resources.getString(R.string.common_avatar_description, item.user.name)
+        holder.binding.username.text = item.user.name
+        holder.binding.username.isStrikethrough = item.user.type == UserType.Banned
+        holder.binding.time.text = elapsedTimeFormatter.format(item.time)
+        holder.binding.description.text = resources.getString(R.string.notifications_item_watch)
 
         imageLoader.load(item.user.avatarUrl)
             .params {
                 fallbackDrawable = R.drawable.default_avatar_64dp
                 transforms += TransformType.CircleCrop
             }
-            .into(holder.avatarView)
+            .into(holder.binding.avatar)
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemNotificationsSimpleBinding,
         onUserClick: OnUserClickListener
-    ) : BaseAdapterDelegate.ViewHolder<WatchItem>(itemView) {
-        val avatarView: ImageView = itemView.findViewById(R.id.avatar)
-        val usernameView: TextView = itemView.findViewById(R.id.username)
-        val timeView: TextView = itemView.findViewById(R.id.time)
-        val descriptionView: TextView = itemView.findViewById(R.id.description)
+    ) : BaseAdapterDelegate.ViewHolder<WatchItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onUserClick(item.user) }
+            binding.root.setOnClickListener { onUserClick(item.user) }
         }
     }
 }

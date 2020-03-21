@@ -12,7 +12,7 @@ import io.plastique.feed.FeedElement.JournalSubmitted
 import io.plastique.feed.FeedElement.StatusUpdate
 import io.plastique.feed.FeedElement.UsernameChange
 import io.plastique.statuses.createActionsState
-import io.plastique.statuses.toShareUiModel
+import io.plastique.statuses.share.toShareUiModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.concurrent.atomic.AtomicReference

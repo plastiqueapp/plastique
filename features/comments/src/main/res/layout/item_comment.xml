@@ -9,7 +9,7 @@
     tools:ignore="Overdraw">
 
     <ImageView
-        android:id="@+id/comment_author_avatar"
+        android:id="@+id/author_avatar"
         android:layout_width="@dimen/common_avatar_size_medium"
         android:layout_height="@dimen/common_avatar_size_medium"
         android:layout_marginStart="16dp"
@@ -20,7 +20,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/comment_author_name"
+        android:id="@+id/author_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -29,26 +29,26 @@
         android:singleLine="true"
         android:textSize="14sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toStartOf="@+id/comment_time"
+        app:layout_constraintEnd_toStartOf="@+id/posted"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/comment_author_avatar"
+        app:layout_constraintStart_toEndOf="@id/author_avatar"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="alice" />
 
     <TextView
-        android:id="@+id/comment_time"
+        android:id="@+id/posted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@id/comment_author_name"
-        app:layout_constraintEnd_toStartOf="@+id/comment_button_reply"
-        app:layout_constraintStart_toEndOf="@id/comment_author_name"
+        app:layout_constraintBaseline_toBaselineOf="@id/author_name"
+        app:layout_constraintEnd_toStartOf="@+id/reply"
+        app:layout_constraintStart_toEndOf="@id/author_name"
         tools:text="30m" />
 
     <ImageButton
-        android:id="@+id/comment_button_reply"
+        android:id="@+id/reply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -60,7 +60,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/comment_replying_to"
+        android:id="@+id/replying_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -71,20 +71,20 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/comment_author_avatar"
-        app:layout_constraintTop_toBottomOf="@id/comment_author_name"
+        app:layout_constraintStart_toEndOf="@id/author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/author_name"
         tools:text="Replying to a.wesker"
         tools:visibility="visible" />
 
     <io.plastique.core.text.RichTextView
-        android:id="@+id/comment_text"
+        android:id="@+id/text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/comment_author_avatar"
-        app:layout_constraintTop_toBottomOf="@id/comment_replying_to"
+        app:layout_constraintStart_toEndOf="@id/author_avatar"
+        app:layout_constraintTop_toBottomOf="@id/replying_to"
         tools:maxLines="3"
         tools:text="@tools:sample/lorem/random" />
 </androidx.constraintlayout.widget.ConstraintLayout>

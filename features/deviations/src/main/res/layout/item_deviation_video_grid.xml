@@ -5,7 +5,7 @@
     android:layout_height="@dimen/deviations_list_min_cell_size">
 
     <com.commit451.foregroundviews.ForegroundImageView
-        android:id="@+id/deviation_thumbnail"
+        android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foreground="?selectableItemBackground"
@@ -14,6 +14,7 @@
         tools:src="#fff" />
 
     <include
+        android:id="@+id/duration"
         layout="@layout/inc_deviations_video_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -7,7 +7,7 @@
     tools:parentTag="android.widget.LinearLayout">
 
     <LinearLayout
-        android:id="@+id/statistics_watchers"
+        android:id="@+id/watchers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -15,14 +15,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/statistics_watchers_value"
+            android:id="@+id/watchers_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceSubtitle2"
             tools:text="123K" />
 
         <TextView
-            android:id="@+id/statistics_watchers_label"
+            android:id="@+id/watchers_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceCaption"
@@ -30,7 +30,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/statistics_deviations"
+        android:id="@+id/deviations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -38,14 +38,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/statistics_deviations_value"
+            android:id="@+id/deviations_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceSubtitle2"
             tools:text="8.6K" />
 
         <TextView
-            android:id="@+id/statistics_deviations_label"
+            android:id="@+id/deviations_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceCaption"
@@ -53,7 +53,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/statistics_favorites"
+        android:id="@+id/favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -61,14 +61,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/statistics_favorites_value"
+            android:id="@+id/favorites_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceSubtitle2"
             tools:text="2.5K" />
 
         <TextView
-            android:id="@+id/statistics_favorites_label"
+            android:id="@+id/favorites_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?textAppearanceCaption"

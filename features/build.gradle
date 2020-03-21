@@ -1,0 +1,9 @@
+subprojects {
+    plugins.withId("com.android.library") {
+        android {
+            buildFeatures {
+                viewBinding = true
+            }
+        }
+    }
+}

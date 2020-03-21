@@ -1,27 +1,26 @@
 package io.plastique.settings.licenses
 
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.isVisible
-import com.github.technoir42.android.extensions.inflate
+import com.github.technoir42.android.extensions.layoutInflater
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
-import io.plastique.settings.R
+import io.plastique.settings.databinding.ItemLicensesHeaderBinding
+import io.plastique.settings.databinding.ItemLicensesLicenseBinding
 
 private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, HeaderItemDelegate.ViewHolder>() {
     override fun isForViewType(item: ListItem): Boolean = item === HeaderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_licenses_header)
-        return ViewHolder(view)
+        val binding = ItemLicensesHeaderBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(item: HeaderItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
     }
 
-    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<HeaderItem>(itemView)
+    class ViewHolder(binding: ItemLicensesHeaderBinding) : BaseAdapterDelegate.ViewHolder<HeaderItem>(binding.root)
 }
 
 private class LicenseItemDelegate(
@@ -31,27 +30,24 @@ private class LicenseItemDelegate(
     override fun isForViewType(item: ListItem): Boolean = item is LicenseItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val view = parent.inflate(R.layout.item_licenses_license)
-        return ViewHolder(view, onLicenseClick)
+        val binding = ItemLicensesLicenseBinding.inflate(parent.layoutInflater, parent, false)
+        return ViewHolder(binding, onLicenseClick)
     }
 
     override fun onBindViewHolder(item: LicenseItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
-        holder.nameView.text = item.license.libraryName
-        holder.descriptionView.text = item.license.libraryDescription
-        holder.descriptionView.isVisible = !item.license.libraryDescription.isNullOrEmpty()
-        holder.licenseView.text = item.license.license
+        holder.binding.libraryName.text = item.license.libraryName
+        holder.binding.libraryDescription.text = item.license.libraryDescription
+        holder.binding.libraryDescription.isVisible = !item.license.libraryDescription.isNullOrEmpty()
+        holder.binding.license.text = item.license.license
     }
 
     class ViewHolder(
-        itemView: View,
+        val binding: ItemLicensesLicenseBinding,
         onLicenseClick: OnLicenseClickListener
-    ) : BaseAdapterDelegate.ViewHolder<LicenseItem>(itemView) {
-        val nameView: TextView = itemView.findViewById(R.id.library_name)
-        val descriptionView: TextView = itemView.findViewById(R.id.library_description)
-        val licenseView: TextView = itemView.findViewById(R.id.license)
+    ) : BaseAdapterDelegate.ViewHolder<LicenseItem>(binding.root) {
 
         init {
-            itemView.setOnClickListener { onLicenseClick(item.license) }
+            binding.root.setOnClickListener { onLicenseClick(item.license) }
         }
     }
 }

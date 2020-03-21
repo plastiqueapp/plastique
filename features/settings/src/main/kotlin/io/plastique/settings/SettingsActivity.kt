@@ -14,8 +14,9 @@ import io.plastique.core.BaseActivity
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.inject.getComponent
+import io.plastique.settings.databinding.ActivitySettingsBinding
 
-class SettingsActivity : BaseActivity(R.layout.activity_settings), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : BaseActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentViewCreated(fragmentManager: FragmentManager, fragment: Fragment, view: View, savedInstanceState: Bundle?) {
             if (fragment is PreferenceFragmentCompat) {
@@ -26,7 +27,9 @@ class SettingsActivity : BaseActivity(R.layout.activity_settings), PreferenceFra
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setActionBar(R.id.toolbar) {
+        val binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
 

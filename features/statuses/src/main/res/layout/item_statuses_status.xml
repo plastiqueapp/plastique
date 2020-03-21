@@ -11,7 +11,7 @@
         android:layout_height="wrap_content" />
 
     <io.plastique.core.text.RichTextView
-        android:id="@+id/status_text"
+        android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
@@ -19,8 +19,8 @@
         tools:maxLines="4"
         tools:text="@tools:sample/lorem/random" />
 
-    <io.plastique.statuses.ShareView
-        android:id="@+id/status_share"
+    <io.plastique.statuses.share.ShareView
+        android:id="@+id/share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -28,7 +28,7 @@
         android:background="@drawable/status_share_background" />
 
     <io.plastique.statuses.StatusActionsView
-        android:id="@+id/status_actions"
+        android:id="@+id/actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

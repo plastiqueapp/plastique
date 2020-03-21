@@ -6,18 +6,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
-import com.google.android.material.appbar.AppBarLayout
 import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.mvvm.viewModel
@@ -28,6 +24,7 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
 import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
+import io.plastique.deviations.databinding.ActivityDeviationViewerBinding
 import io.plastique.deviations.viewer.DeviationViewerEvent.CopyLinkClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.DownloadOriginalClickEvent
 import io.plastique.deviations.viewer.DeviationViewerEvent.RetryClickEvent
@@ -44,17 +41,14 @@ import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
 @RuntimePermissions
-class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer) {
+class DeviationViewerActivity : BaseActivity() {
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationViewerViewModel by viewModel()
     private val navigator: DeviationsNavigator get() = viewModel.navigator
 
-    private lateinit var rootView: View
-    private lateinit var appBar: AppBarLayout
-    private lateinit var infoPanelView: InfoPanelView
-    private lateinit var emptyView: EmptyView
+    private lateinit var binding: ActivityDeviationViewerBinding
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
@@ -65,46 +59,44 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
-        setActionBar(R.id.toolbar) {
+        binding = ActivityDeviationViewerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
         navigator.attach(navigationContext)
 
-        rootView = findViewById(R.id.root)
-        appBar = findViewById(R.id.appbar)
-
         systemUiController.isVisible = true
         systemUiController.setVisibilityChangeListener { visible ->
             if (visible) {
-                Animations.fadeIn(appBar, Animations.DURATION_SHORT)
-                Animations.fadeIn(infoPanelView, Animations.DURATION_SHORT)
+                Animations.fadeIn(binding.appbar, Animations.DURATION_SHORT)
+                Animations.fadeIn(binding.infoPanel, Animations.DURATION_SHORT)
             } else {
-                Animations.fadeOut(appBar, Animations.DURATION_SHORT)
-                Animations.fadeOut(infoPanelView, Animations.DURATION_SHORT)
+                Animations.fadeOut(binding.appbar, Animations.DURATION_SHORT)
+                Animations.fadeOut(binding.infoPanel, Animations.DURATION_SHORT)
             }
         }
 
-        infoPanelView = findViewById(R.id.info_panel)
-        infoPanelView.onAuthorClick = { user -> navigator.openUserProfile(user) }
-        infoPanelView.onCommentsClick = { threadId -> navigator.openComments(threadId) }
-        infoPanelView.onFavoriteClick = { _, isFavorite -> viewModel.dispatch(SetFavoriteEvent(!isFavorite)) }
-        infoPanelView.onInfoClick = { deviationId -> navigator.openDeviationInfo(deviationId) }
+        binding.infoPanel.apply {
+            onAuthorClick = { user -> navigator.openUserProfile(user) }
+            onCommentsClick = { threadId -> navigator.openComments(threadId) }
+            onFavoriteClick = { _, isFavorite -> viewModel.dispatch(SetFavoriteEvent(!isFavorite)) }
+            onInfoClick = { deviationId -> navigator.openDeviationInfo(deviationId) }
+        }
 
-        val contentView = findViewById<ViewGroup>(R.id.content)
-        contentView.setOnApplyWindowInsetsListener { _, insets ->
-            infoPanelView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        binding.content.setOnApplyWindowInsetsListener { _, insets ->
+            binding.infoPanel.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.systemWindowInsetBottom
             }
             insets
         }
 
-        contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
-        progressDialogController = ProgressDialogController(this, supportFragmentManager)
-        snackbarController = SnackbarController(rootView)
-        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
-        emptyView = findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        contentStateController = ContentStateController(this, binding.content, binding.progress, binding.empty)
+        progressDialogController = ProgressDialogController(this, supportFragmentManager)
+        snackbarController = SnackbarController(binding.root)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)
@@ -151,15 +143,15 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
         menuState = state.menuState
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
+        binding.empty.state = state.emptyState
 
         if (state.content != null && state.content != prevState?.content) {
             renderContent(state.content)
         }
 
         if (state.infoViewState != null && state.infoViewState != prevState?.infoViewState) {
-            infoPanelView.render(state.infoViewState, imageLoader)
-            infoPanelView.isVisible = true
+            binding.infoPanel.render(state.infoViewState, imageLoader)
+            binding.infoPanel.isVisible = true
         }
 
         if (state.menuState != null && state.menuState != prevState?.menuState) {
@@ -173,8 +165,7 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
 
     private fun renderContent(content: DeviationContent) {
         val contentView = contentView ?: run {
-            val contentStub = findViewById<ViewStub>(R.id.deviation_content_stub)
-            createContentView(imageLoader, contentStub, content).apply {
+            createContentView(imageLoader, binding.contentStub, content).apply {
                 contentView = this
                 onTapListener = { systemUiController.toggleVisibility() }
             }

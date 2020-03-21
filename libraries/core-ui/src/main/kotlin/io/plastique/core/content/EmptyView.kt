@@ -32,6 +32,7 @@ class EmptyView @JvmOverloads constructor(
 
     init {
         orientation = VERTICAL
+        binding = ViewEmptyBinding.inflate(layoutInflater, this)
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.EmptyView, defStyleAttr, defStyleRes)
         val text = a.getString(R.styleable.EmptyView_android_text)
@@ -40,8 +41,6 @@ class EmptyView @JvmOverloads constructor(
         val buttonTextAppearance = a.getResourceId(R.styleable.EmptyView_buttonTextAppearance, 0)
         val showButton = a.getBoolean(R.styleable.EmptyView_showButton, true)
         a.recycle()
-
-        binding = ViewEmptyBinding.inflate(layoutInflater, this)
 
         TextViewCompat.setTextAppearance(binding.message, textAppearance)
         binding.message.text = text

@@ -8,7 +8,7 @@ import io.plastique.statuses.Status
 import io.plastique.statuses.StatusListLoadParams
 import io.plastique.statuses.StatusRepositoryImpl
 import io.plastique.statuses.createActionsState
-import io.plastique.statuses.toShareUiModel
+import io.plastique.statuses.share.toShareUiModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import java.util.concurrent.atomic.AtomicReference

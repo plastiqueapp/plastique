@@ -21,7 +21,7 @@
         tools:text="My Collection (+23)" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/thumbnails"
+        android:id="@+id/deviations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"

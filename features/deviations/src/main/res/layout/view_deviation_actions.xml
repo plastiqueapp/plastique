@@ -7,7 +7,7 @@
     tools:parentTag="android.widget.LinearLayout">
 
     <CheckedTextView
-        android:id="@+id/deviation_actions_favorite"
+        android:id="@+id/favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -21,7 +21,7 @@
         tools:text="30" />
 
     <TextView
-        android:id="@+id/deviation_actions_comments"
+        android:id="@+id/comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -35,7 +35,7 @@
         tools:text="15" />
 
     <ImageView
-        android:id="@+id/deviation_actions_share"
+        android:id="@+id/share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

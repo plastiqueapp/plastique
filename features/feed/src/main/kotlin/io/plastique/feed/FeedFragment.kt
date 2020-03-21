@@ -3,12 +3,12 @@ package io.plastique.feed
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.view.ViewGroup
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
@@ -17,7 +17,6 @@ import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.content.ProgressViewController
 import io.plastique.core.dialogs.ProgressDialogController
 import io.plastique.core.image.ImageLoader
@@ -37,6 +36,7 @@ import io.plastique.feed.FeedEvent.RetryClickEvent
 import io.plastique.feed.FeedEvent.SetFavoriteEvent
 import io.plastique.feed.FeedEvent.SetFeedSettingsEvent
 import io.plastique.feed.FeedEvent.SnackbarShownEvent
+import io.plastique.feed.databinding.FragmentFeedBinding
 import io.plastique.feed.settings.FeedSettings
 import io.plastique.feed.settings.OnFeedSettingsChangedListener
 import io.plastique.inject.getComponent
@@ -44,7 +44,7 @@ import io.plastique.main.MainPage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class FeedFragment : BaseFragment(R.layout.fragment_feed),
+class FeedFragment : BaseFragment(),
     MainPage,
     ScrollableToTop,
     OnFeedSettingsChangedListener {
@@ -54,10 +54,8 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
     private val viewModel: FeedViewModel by viewModel()
     private val navigator: FeedNavigator get() = viewModel.navigator
 
-    private lateinit var feedView: RecyclerView
-    private lateinit var emptyView: EmptyView
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var adapter: FeedAdapter
+    private lateinit var binding: FragmentFeedBinding
+    private lateinit var feedAdapter: FeedAdapter
     private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var horizontalProgressViewController: ProgressViewController
@@ -73,6 +71,11 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         navigator.attach(navigationContext)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFeedBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -82,7 +85,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
             minItemWidth = resources.getDimensionPixelSize(R.dimen.deviations_list_min_cell_size),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
-        adapter = FeedAdapter(
+        feedAdapter = FeedAdapter(
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
@@ -94,25 +97,23 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
             onStatusClick = { statusId -> navigator.openStatus(statusId) },
             onUserClick = { user -> navigator.openUserProfile(user) })
 
-        feedView = view.findViewById(R.id.feed)
-        feedView.adapter = adapter
-        feedView.layoutManager = FlexboxLayoutManager(requireContext())
-        feedView.disableChangeAnimations()
-        feedView.addItemDecoration(FeedItemDecoration(requireContext()))
-
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
-        feedView.addOnScrollListener(onScrollListener)
 
-        refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        binding.feed.apply {
+            adapter = feedAdapter
+            layoutManager = FlexboxLayoutManager(context)
+            addItemDecoration(FeedItemDecoration(context))
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
 
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
-        horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
+        horizontalProgressViewController = ProgressViewController(binding.progressHorizontal)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
@@ -153,19 +154,18 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         setHasOptionsMenu(state.isSignedIn)
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
-
-        listUpdateData.applyTo(adapter)
-
+        binding.empty.state = state.emptyState
+        binding.refresh.isRefreshing = state.listState.isRefreshing
         onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
         horizontalProgressViewController.isVisible = state.isApplyingSettings
         progressDialogController.isShown = state.showProgressDialog
         state.snackbarState?.let(snackbarController::showSnackbar)
+
+        listUpdateData.applyTo(feedAdapter)
     }
 
     override fun scrollToTop() {
-        feedView.scrollToPosition(0)
+        binding.feed.scrollToPosition(0)
     }
 
     override fun injectDependencies() {

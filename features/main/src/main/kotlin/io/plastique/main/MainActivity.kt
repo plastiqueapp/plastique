@@ -10,25 +10,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import com.github.technoir42.android.extensions.disableDragging
-import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.android.extensions.setTitleOnClickListener
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.plastique.core.BaseActivity
-import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
+import io.plastique.main.databinding.ActivityMainBinding
 import io.plastique.users.User
 import io.plastique.util.InstantAppHelper
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(R.layout.activity_main),
+class MainActivity : BaseActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     BottomNavigationView.OnNavigationItemReselectedListener {
 
@@ -39,7 +37,7 @@ class MainActivity : BaseActivity(R.layout.activity_main),
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: MainViewModel by viewModel()
 
-    private lateinit var expandableToolbarLayout: ExpandableToolbarLayout
+    private lateinit var binding: ActivityMainBinding
     private var currentUser: User? = null
 
     private val fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
@@ -54,18 +52,15 @@ class MainActivity : BaseActivity(R.layout.activity_main),
         super.onCreate(savedInstanceState)
         navigator.attach(navigationContext)
 
-        val toolbar = setActionBar(R.id.toolbar)
-        toolbar.setTitleOnClickListener(View.OnClickListener { scrollToTop() })
-
-        val appBar = findViewById<AppBarLayout>(R.id.appbar)
-        appBar.disableDragging()
-        expandableToolbarLayout = findViewById(R.id.expandable_toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.setTitleOnClickListener(View.OnClickListener { scrollToTop() })
+        binding.appbar.disableDragging()
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(this)
+        binding.bottomNavigation.setOnNavigationItemReselectedListener(this)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
-        bottomNavigationView.setOnNavigationItemReselectedListener(this)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -144,11 +139,13 @@ class MainActivity : BaseActivity(R.layout.activity_main),
     }
 
     private fun onPageCreated(page: MainPage) {
-        supportActionBar?.setTitle(page.getTitle())
-        if (expandableToolbarLayout.childCount > 1) {
-            expandableToolbarLayout.removeViews(1, expandableToolbarLayout.childCount - 1)
+        supportActionBar!!.setTitle(page.getTitle())
+        binding.expandableToolbar.apply {
+            if (childCount > 1) {
+                removeViews(1, childCount - 1)
+            }
+            page.createAppBarViews(this)
         }
-        page.createAppBarViews(expandableToolbarLayout)
     }
 
     private fun setCurrentUserIcon(drawable: Drawable?) {

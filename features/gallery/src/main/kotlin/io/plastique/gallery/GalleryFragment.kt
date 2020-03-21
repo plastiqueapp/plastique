@@ -3,15 +3,15 @@ package io.plastique.gallery
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.text.HtmlCompat
 import androidx.core.text.htmlEncode
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.instantiate
 import com.github.technoir42.glide.preloader.ListPreloader
@@ -22,7 +22,6 @@ import io.plastique.core.BaseFragment
 import io.plastique.core.ExpandableToolbarLayout
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
-import io.plastique.core.content.EmptyView
 import io.plastique.core.dialogs.ConfirmationDialogFragment
 import io.plastique.core.dialogs.InputDialogFragment
 import io.plastique.core.dialogs.OnConfirmListener
@@ -51,13 +50,14 @@ import io.plastique.gallery.GalleryEvent.RefreshEvent
 import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
+import io.plastique.gallery.databinding.FragmentGalleryBinding
 import io.plastique.gallery.folders.Folder
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
 import io.reactivex.android.schedulers.AndroidSchedulers
 
-class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
+class GalleryFragment : BaseFragment(),
     MainPage,
     ScrollableToTop,
     OnConfirmListener,
@@ -66,23 +66,24 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     private val viewModel: GalleryViewModel by viewModel()
     private val navigator: GalleryNavigator get() = viewModel.navigator
 
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var emptyView: EmptyView
-    private lateinit var adapter: GalleryAdapter
-    private lateinit var galleryView: RecyclerView
+    private lateinit var binding: FragmentGalleryBinding
+    private lateinit var galleryAdapter: GalleryAdapter
+    private lateinit var onScrollListener: EndlessScrollListener
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var onScrollListener: EndlessScrollListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         navigator.attach(navigationContext)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
@@ -98,7 +99,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         val imageLoader = ImageLoader.from(this)
-        adapter = GalleryAdapter(
+        galleryAdapter = GalleryAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
             onFolderClick = { folderId, folderName -> navigator.openGalleryFolder(folderId, folderName) },
@@ -108,27 +109,25 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
 
-        galleryView = view.findViewById(R.id.gallery)
-        galleryView.adapter = adapter
-        galleryView.layoutManager = FlexboxLayoutManager(context)
-        galleryView.disableChangeAnimations()
-
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
-        galleryView.addOnScrollListener(onScrollListener)
 
-        createPreloader(imageLoader, adapter, folderGridParams, deviationGridParams)
+        binding.gallery.apply {
+            adapter = galleryAdapter
+            layoutManager = FlexboxLayoutManager(context)
+            addOnScrollListener(onScrollListener)
+            disableChangeAnimations()
+        }
+
+        createPreloader(imageLoader, galleryAdapter, folderGridParams, deviationGridParams)
             .subscribeToLifecycle(lifecycle)
-            .attach(galleryView)
+            .attach(binding.gallery)
 
-        refreshLayout = view.findViewById(R.id.refresh)
-        refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
-        emptyView = view.findViewById(android.R.id.empty)
-        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
-
-        contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(this, refreshLayout)
+        snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
@@ -179,14 +178,13 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         setHasOptionsMenu(state.showMenu)
 
         contentStateController.state = state.contentState
-        emptyView.state = state.emptyState
-
-        listUpdateData.applyTo(adapter)
-
+        binding.empty.state = state.emptyState
+        binding.refresh.isRefreshing = state.listState.isRefreshing
         onScrollListener.isEnabled = state.listState.isPagingEnabled
-        refreshLayout.isRefreshing = state.listState.isRefreshing
         progressDialogController.isShown = state.showProgressDialog
         state.snackbarState?.let(snackbarController::showSnackbar)
+
+        listUpdateData.applyTo(galleryAdapter)
     }
 
     private fun showFolderPopupMenu(folder: Folder, itemView: View) {
@@ -274,7 +272,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     }
 
     override fun scrollToTop() {
-        galleryView.scrollToPosition(0)
+        binding.gallery.scrollToPosition(0)
     }
 
     override fun injectDependencies() {

@@ -1,8 +1,9 @@
-package io.plastique.statuses
+package io.plastique.statuses.share
 
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
+import io.plastique.statuses.Status
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
 

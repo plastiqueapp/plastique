@@ -2,25 +2,27 @@ package io.plastique.profile
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import io.plastique.core.BaseFragment
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
+import io.plastique.profile.databinding.FragmentProfileBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
+class ProfileFragment : BaseFragment() {
     @Inject lateinit var navigator: ProfileNavigator
 
     private val viewModel: ProfileViewModel by viewModel()
 
-    private lateinit var signInButton: Button
+    private lateinit var binding: FragmentProfileBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,9 +34,13 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        signInButton = view.findViewById(R.id.button_sign_in)
-        signInButton.setOnClickListener { navigator.openSignIn() }
+        binding.signIn.setOnClickListener { navigator.openSignIn() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,7 +66,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     }
 
     private fun renderState(state: ProfileViewState) {
-        signInButton.isVisible = state.showSignInButton
+        binding.signIn.isVisible = state.showSignInButton
     }
 
     override fun injectDependencies() {
