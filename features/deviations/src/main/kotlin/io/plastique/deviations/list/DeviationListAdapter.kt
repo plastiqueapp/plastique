@@ -5,23 +5,23 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import io.plastique.comments.CommentThreadId
+import io.plastique.comments.OnCommentsClickListener
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.print
 import io.plastique.deviations.DeviationActionsView
+import io.plastique.deviations.OnDeviationClickListener
+import io.plastique.deviations.OnFavoriteClickListener
 import io.plastique.deviations.R
-import io.plastique.statuses.ShareObjectId
+import io.plastique.statuses.OnShareClickListener
 import io.plastique.util.dimensionRatio
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
@@ -32,7 +32,7 @@ class GridImageDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onDeviationClick: OnDeviationClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, GridImageDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -40,7 +40,7 @@ class GridImageDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view: View = parent.inflate(R.layout.item_deviation_image_grid)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onDeviationClick)
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -69,17 +69,13 @@ class GridImageDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onDeviationClick: OnDeviationClickListener
+    ) : BaseAdapterDelegate.ViewHolder<ImageDeviationItem>(itemView) {
 
         val thumbnail: ImageView = itemView.findViewById(R.id.deviation_thumbnail)
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onDeviationClick(item.deviationId) }
         }
     }
 }
@@ -87,7 +83,7 @@ class GridImageDeviationItemDelegate(
 class GridLiteratureDeviationItemDelegate(
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onDeviationClick: OnDeviationClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, GridLiteratureDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -95,7 +91,7 @@ class GridLiteratureDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_literature_grid)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onDeviationClick)
     }
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -116,17 +112,13 @@ class GridLiteratureDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onDeviationClick: OnDeviationClickListener
+    ) : BaseAdapterDelegate.ViewHolder<LiteratureDeviationItem>(itemView) {
 
         val title: TextView = itemView.findViewById(R.id.deviation_title)
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onDeviationClick(item.deviationId) }
         }
     }
 }
@@ -135,7 +127,7 @@ class GridVideoDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
     private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onDeviationClick: OnDeviationClickListener
 ) : BaseAdapterDelegate<VideoDeviationItem, ListItem, GridVideoDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -143,7 +135,7 @@ class GridVideoDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_video_grid)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onDeviationClick)
     }
 
     override fun onBindViewHolder(item: VideoDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -173,18 +165,14 @@ class GridVideoDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onDeviationClick: OnDeviationClickListener
+    ) : BaseAdapterDelegate.ViewHolder<VideoDeviationItem>(itemView) {
 
         val thumbnail: ImageView = itemView.findViewById(R.id.deviation_thumbnail)
         val durationView: TextView = itemView.findViewById(R.id.deviation_video_duration)
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onDeviationClick(item.deviationId) }
         }
     }
 }
@@ -194,7 +182,10 @@ class GridVideoDeviationItemDelegate(
 private class ListImageDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ListImageDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -202,7 +193,7 @@ private class ListImageDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_image_list)
-        return ViewHolder(view, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
+        return ViewHolder(view, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick, ImageHelper.getMaxWidth(parent))
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -231,31 +222,34 @@ private class ListImageDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener,
+        onCommentsClick: OnCommentsClickListener,
+        onDeviationClick: OnDeviationClickListener,
+        onFavoriteClick: OnFavoriteClickListener,
+        onShareClick: OnShareClickListener,
         val maxImageWidth: Int
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    ) : BaseAdapterDelegate.ViewHolder<ImageDeviationItem>(itemView) {
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val previewView: ImageView = itemView.findViewById(R.id.deviation_preview)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            previewView.setOnClickListener(this)
-            titleView.setOnClickListener(this)
-            actionsView.setOnFavoriteClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onDeviationClickListener = View.OnClickListener { onDeviationClick(item.deviationId) }
+            previewView.setOnClickListener(onDeviationClickListener)
+            titleView.setOnClickListener(onDeviationClickListener)
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onFavoriteClick = onFavoriteClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
 
 private class ListLiteratureDeviationItemDelegate(
     private val layoutModeProvider: LayoutModeProvider,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, ListLiteratureDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -263,7 +257,7 @@ private class ListLiteratureDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_literature_list)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick)
     }
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -279,23 +273,23 @@ private class ListLiteratureDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onCommentsClick: OnCommentsClickListener,
+        onDeviationClick: OnDeviationClickListener,
+        onFavoriteClick: OnFavoriteClickListener,
+        onShareClick: OnShareClickListener
+    ) : BaseAdapterDelegate.ViewHolder<LiteratureDeviationItem>(itemView) {
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            titleView.setOnClickListener(this)
-            excerptView.setOnClickListener(this)
-            actionsView.setOnFavoriteClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onDeviationClickListener = View.OnClickListener { onDeviationClick(item.deviationId) }
+            titleView.setOnClickListener(onDeviationClickListener)
+            excerptView.setOnClickListener(onDeviationClickListener)
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onFavoriteClick = onFavoriteClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
@@ -303,7 +297,10 @@ private class ListLiteratureDeviationItemDelegate(
 private class ListVideoDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val layoutModeProvider: LayoutModeProvider,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener
 ) : BaseAdapterDelegate<VideoDeviationItem, ListItem, ListVideoDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean =
@@ -311,7 +308,7 @@ private class ListVideoDeviationItemDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_video_list)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick)
     }
 
     override fun onBindViewHolder(item: VideoDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -338,8 +335,11 @@ private class ListVideoDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onCommentsClick: OnCommentsClickListener,
+        onDeviationClick: OnDeviationClickListener,
+        onFavoriteClick: OnFavoriteClickListener,
+        onShareClick: OnShareClickListener
+    ) : BaseAdapterDelegate.ViewHolder<VideoDeviationItem>(itemView) {
 
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val imageView: ImageView = itemView.findViewById(R.id.deviation_preview)
@@ -347,15 +347,12 @@ private class ListVideoDeviationItemDelegate(
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            imageView.setOnClickListener(this)
-            titleView.setOnClickListener(this)
-            actionsView.setOnFavoriteClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onDeviationClickListener = View.OnClickListener { onDeviationClick(item.deviationId) }
+            imageView.setOnClickListener(onDeviationClickListener)
+            titleView.setOnClickListener(onDeviationClickListener)
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onFavoriteClick = onFavoriteClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
@@ -373,7 +370,7 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
         holder.date.text = item.date.format(DATE_FORMATTER)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<DateItem>(itemView) {
         val date: TextView = itemView.findViewById(R.id.date)
     }
 
@@ -382,53 +379,31 @@ private class DateItemDelegate : BaseAdapterDelegate<DateItem, ListItem, DateIte
     }
 }
 
-internal class DeviationsAdapter(
+internal class DeviationListAdapter(
     imageLoader: ImageLoader,
     layoutModeProvider: LayoutModeProvider,
     itemSizeCallback: ItemSizeCallback,
-    private val onDeviationClick: OnDeviationClickListener,
-    private val onCommentsClick: OnCommentsClickListener,
-    private val onFavoriteClick: OnFavoriteClickListener,
-    private val onShareClick: OnShareClickListener
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+    onDeviationClick: OnDeviationClickListener,
+    onCommentsClick: OnCommentsClickListener,
+    onFavoriteClick: OnFavoriteClickListener,
+    onShareClick: OnShareClickListener
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
 
-        delegatesManager.addDelegate(ListImageDeviationItemDelegate(imageLoader, layoutModeProvider, this))
-        delegatesManager.addDelegate(ListLiteratureDeviationItemDelegate(layoutModeProvider, this))
-        delegatesManager.addDelegate(ListVideoDeviationItemDelegate(imageLoader, layoutModeProvider, this))
+        delegatesManager.addDelegate(
+            ListImageDeviationItemDelegate(imageLoader, layoutModeProvider, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick))
+        delegatesManager.addDelegate(
+            ListLiteratureDeviationItemDelegate(layoutModeProvider, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick))
+        delegatesManager.addDelegate(
+            ListVideoDeviationItemDelegate(imageLoader, layoutModeProvider, onCommentsClick, onDeviationClick, onFavoriteClick, onShareClick))
 
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
         delegatesManager.addDelegate(DateItemDelegate())
     }
-
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return
-        val item = items[position] as DeviationItem
-        when (view.id) {
-            R.id.deviation_actions_comments -> {
-                onCommentsClick(CommentThreadId.Deviation(item.deviationId))
-            }
-
-            R.id.deviation_actions_favorite -> {
-                onFavoriteClick(item.deviationId, !item.actionsState.isFavorite)
-            }
-
-            R.id.deviation_actions_share -> {
-                onShareClick(ShareObjectId.Deviation(item.deviationId))
-            }
-
-            else -> onDeviationClick(item.deviationId)
-        }
-    }
 }
 
 private typealias LayoutModeProvider = () -> LayoutMode
-private typealias OnDeviationClickListener = (deviationId: String) -> Unit
-private typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
-private typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
-private typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit

@@ -1,10 +1,11 @@
 package io.plastique.notifications
 
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.navigation.Navigator
 import io.plastique.users.User
 
 interface NotificationsNavigator : Navigator {
-    fun openCollectionFolder(username: String?, folderId: String, folderName: String)
+    fun openCollectionFolder(folderId: CollectionFolderId, folderName: String)
 
     fun openDeviation(deviationId: String)
 

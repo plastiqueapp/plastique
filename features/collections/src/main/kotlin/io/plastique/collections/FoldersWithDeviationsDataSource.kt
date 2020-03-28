@@ -4,7 +4,6 @@ import com.gojuno.koptional.None
 import com.gojuno.koptional.Some
 import com.gojuno.koptional.toOptional
 import io.plastique.collections.deviations.CollectionDeviationParams
-import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.collections.folders.Folder
 import io.plastique.collections.folders.FolderLoadParams
 import io.plastique.collections.folders.FoldersDataSource
@@ -77,7 +76,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
         val folderParams = CollectionDeviationParams(
-            folderId = CollectionFolderId(id = featuredFolder.id, username = params.username),
+            folderId = featuredFolder.id,
             showMatureContent = params.matureContent)
         return deviationDataSource.getData(folderParams)
             .map { pagedData ->
@@ -87,7 +86,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
         return if (deviations.isNotEmpty()) {
-            listOf(HeaderItem(folderId = folder.id, title = folder.name)) +
+            listOf(HeaderItem(folderId = folder.id.id, title = folder.name)) +
                     deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
         } else {
             emptyList()

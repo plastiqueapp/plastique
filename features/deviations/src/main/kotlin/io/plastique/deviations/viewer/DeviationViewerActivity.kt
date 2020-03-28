@@ -15,7 +15,6 @@ import androidx.core.view.updateLayoutParams
 import com.github.technoir42.android.extensions.setActionBar
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import com.google.android.material.appbar.AppBarLayout
-import io.plastique.comments.CommentThreadId
 import io.plastique.core.BaseActivity
 import io.plastique.core.content.ContentStateController
 import io.plastique.core.content.EmptyView
@@ -63,9 +62,6 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
     private var contentView: DeviationContentView? = null
     private var menuState: MenuState? = null
 
-    private val deviationId: String
-        get() = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
@@ -89,10 +85,10 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
         }
 
         infoPanelView = findViewById(R.id.info_panel)
-        infoPanelView.setOnAuthorClickListener { author -> navigator.openUserProfile(author) }
-        infoPanelView.setOnFavoriteClickListener { _, isChecked -> viewModel.dispatch(SetFavoriteEvent(!isChecked)) }
-        infoPanelView.setOnCommentsClickListener { navigator.openComments(CommentThreadId.Deviation(deviationId)) }
-        infoPanelView.setOnInfoClickListener { navigator.openDeviationInfo(deviationId) }
+        infoPanelView.onAuthorClick = { user -> navigator.openUserProfile(user) }
+        infoPanelView.onCommentsClick = { threadId -> navigator.openComments(threadId) }
+        infoPanelView.onFavoriteClick = { _, isFavorite -> viewModel.dispatch(SetFavoriteEvent(!isFavorite)) }
+        infoPanelView.onInfoClick = { deviationId -> navigator.openDeviationInfo(deviationId) }
 
         val contentView = findViewById<ViewGroup>(R.id.content)
         contentView.setOnApplyWindowInsetsListener { _, insets ->
@@ -108,8 +104,9 @@ class DeviationViewerActivity : BaseActivity(R.layout.activity_deviation_viewer)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
+        val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)
         viewModel.state
             .pairwiseWithPrevious()

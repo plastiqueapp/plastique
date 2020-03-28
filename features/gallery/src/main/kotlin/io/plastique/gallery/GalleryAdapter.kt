@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
@@ -14,26 +13,26 @@ import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
-import io.plastique.core.lists.OnViewHolderClickListener
-import io.plastique.core.lists.OnViewHolderLongClickListener
-import io.plastique.deviations.list.DeviationItem
+import io.plastique.deviations.OnDeviationClickListener
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.LayoutMode
+import io.plastique.gallery.folders.Folder
+import io.plastique.gallery.folders.GalleryFolderId
 
 private class FolderItemDelegate(
     private val imageLoader: ImageLoader,
     private val itemSizeCallback: ItemSizeCallback,
-    private val onViewHolderClickListener: OnViewHolderClickListener,
-    private val onViewHolderLongClickListener: OnViewHolderLongClickListener
+    private val onFolderClick: OnGalleryFolderClickListener,
+    private val onFolderLongClick: OnGalleryFolderLongClickListener
 ) : BaseAdapterDelegate<FolderItem, ListItem, FolderItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is FolderItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_gallery_folder)
-        return ViewHolder(view, onViewHolderClickListener, onViewHolderLongClickListener)
+        return ViewHolder(view, onFolderClick, onFolderLongClick)
     }
 
     override fun onBindViewHolder(item: FolderItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -59,24 +58,16 @@ private class FolderItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener,
-        private val onLongClickListener: OnViewHolderLongClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+        onFolderClick: OnGalleryFolderClickListener,
+        onFolderLongClick: OnGalleryFolderLongClickListener
+    ) : BaseAdapterDelegate.ViewHolder<FolderItem>(itemView) {
         val thumbnail: ImageView = itemView.findViewById(R.id.folder_thumbnail)
         val name: TextView = itemView.findViewById(R.id.folder_name)
         val size: TextView = itemView.findViewById(R.id.folder_size)
 
         init {
-            itemView.setOnClickListener(this)
-            itemView.setOnLongClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
-        }
-
-        override fun onLongClick(view: View): Boolean {
-            return onLongClickListener.onViewHolderLongClick(this, view)
+            itemView.setOnClickListener { onFolderClick(item.folder.id, item.folder.name) }
+            itemView.setOnLongClickListener { view -> onFolderLongClick(item.folder, view) }
         }
     }
 }
@@ -93,7 +84,7 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
         holder.title.text = item.title
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<HeaderItem>(itemView) {
         val title: TextView = itemView.findViewById(R.id.title)
     }
 }
@@ -101,40 +92,21 @@ private class HeaderItemDelegate : BaseAdapterDelegate<HeaderItem, ListItem, Hea
 internal class GalleryAdapter(
     imageLoader: ImageLoader,
     itemSizeCallback: ItemSizeCallback,
-    private val onFolderClick: OnFolderClickListener,
-    private val onFolderLongClick: OnFolderLongClickListener,
-    private val onDeviationClick: OnDeviationClickListener
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener, OnViewHolderLongClickListener {
+    onFolderClick: OnGalleryFolderClickListener,
+    onFolderLongClick: OnGalleryFolderLongClickListener,
+    onDeviationClick: OnDeviationClickListener
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(FolderItemDelegate(imageLoader, itemSizeCallback, this, this))
+        delegatesManager.addDelegate(FolderItemDelegate(imageLoader, itemSizeCallback, onFolderClick, onFolderLongClick))
         delegatesManager.addDelegate(HeaderItemDelegate())
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
-    }
-
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return
-        when (val item = items[position]) {
-            is FolderItem -> onFolderClick(item)
-            is DeviationItem -> onDeviationClick(item.deviationId)
-        }
-    }
-
-    override fun onViewHolderLongClick(holder: RecyclerView.ViewHolder, view: View): Boolean {
-        val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return false
-        return when (val item = items[position]) {
-            is FolderItem -> onFolderLongClick(item, view)
-            else -> throw IllegalStateException("Unhandled item type ${item.javaClass}")
-        }
     }
 }
 
-private typealias OnFolderClickListener = (FolderItem) -> Unit
-private typealias OnFolderLongClickListener = (FolderItem, View) -> Boolean
-private typealias OnDeviationClickListener = (deviationId: String) -> Unit
+private typealias OnGalleryFolderClickListener = (folderId: GalleryFolderId, folderName: String) -> Unit
+private typealias OnGalleryFolderLongClickListener = (Folder, View) -> Boolean

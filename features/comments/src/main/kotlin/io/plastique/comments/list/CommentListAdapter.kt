@@ -15,22 +15,23 @@ import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
-import io.plastique.users.User
+import io.plastique.users.OnUserClickListener
 
 private class CommentItemDelegate(
     private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onReplyClick: OnReplyClickListener,
+    private val onReplyingToClick: OnReplyingToClickListener,
+    private val onUserClick: OnUserClickListener
 ) : BaseAdapterDelegate<CommentItem, ListItem, CommentItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is CommentItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_comment)
-        return ViewHolder(view, onViewHolderClickListener)
+        return ViewHolder(view, onReplyClick, onReplyingToClick, onUserClick)
     }
 
     override fun onBindViewHolder(item: CommentItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -60,8 +61,10 @@ private class CommentItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onReplyClick: OnReplyClickListener,
+        onReplyingToClick: OnReplyingToClickListener,
+        onUserClick: OnUserClickListener
+    ) : BaseAdapterDelegate.ViewHolder<CommentItem>(itemView) {
         val avatarView: ImageView = itemView.findViewById(R.id.comment_author_avatar)
         val authorView: TextView = itemView.findViewById(R.id.comment_author_name)
         val timeView: TextView = itemView.findViewById(R.id.comment_time)
@@ -70,15 +73,11 @@ private class CommentItemDelegate(
         val replyButton: ImageButton = itemView.findViewById(R.id.comment_button_reply)
 
         init {
-            itemView.setOnClickListener(this)
-            authorView.setOnClickListener(this)
-            avatarView.setOnClickListener(this)
-            replyButton.setOnClickListener(this)
-            replyingToView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onUserClickListener = View.OnClickListener { onUserClick(item.comment.author) }
+            authorView.setOnClickListener(onUserClickListener)
+            avatarView.setOnClickListener(onUserClickListener)
+            replyButton.setOnClickListener { onReplyClick(item.comment.id) }
+            replyingToView.setOnClickListener { onReplyingToClick(item.comment.id) }
         }
     }
 }
@@ -86,29 +85,14 @@ private class CommentItemDelegate(
 internal class CommentListAdapter(
     imageLoader: ImageLoader,
     elapsedTimeFormatter: ElapsedTimeFormatter,
-    private val onReplyClick: OnReplyClickListener,
-    private val onReplyingToClick: OnReplyingToClickListener,
-    private val onUserClick: OnUserClickListener
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+    onReplyClick: OnReplyClickListener,
+    onReplyingToClick: OnReplyingToClickListener,
+    onUserClick: OnUserClickListener
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
-        delegatesManager.addDelegate(CommentItemDelegate(imageLoader, elapsedTimeFormatter, this))
+        delegatesManager.addDelegate(CommentItemDelegate(imageLoader, elapsedTimeFormatter, onReplyClick, onReplyingToClick, onUserClick))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
-    }
-
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return
-        val item = items[position] as CommentItem
-        if (holder is CommentItemDelegate.ViewHolder) {
-            if (view === holder.avatarView || view === holder.authorView) {
-                onUserClick(item.comment.author)
-            } else if (view === holder.replyButton) {
-                onReplyClick(item.comment.id)
-            } else if (view === holder.replyingToView) {
-                onReplyingToClick(item.comment.id)
-            }
-        }
     }
 
     fun findCommentPosition(commentId: String): Int {
@@ -123,4 +107,3 @@ internal class CommentListAdapter(
 
 private typealias OnReplyClickListener = (commentId: String) -> Unit
 private typealias OnReplyingToClickListener = (commentId: String) -> Unit
-private typealias OnUserClickListener = (user: User) -> Unit

@@ -13,46 +13,48 @@ import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import io.plastique.comments.CommentThreadId
+import io.plastique.collections.OnCollectionFolderClickListener
+import io.plastique.comments.OnCommentsClickListener
 import io.plastique.common.FeedHeaderView
-import io.plastique.common.OnUserClickListener
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ItemSizeCallback
 import io.plastique.core.lists.ListItem
 import io.plastique.core.lists.LoadingIndicatorItemDelegate
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.text.RichTextView
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.deviations.DeviationActionsView
+import io.plastique.deviations.OnDeviationClickListener
+import io.plastique.deviations.OnFavoriteClickListener
 import io.plastique.deviations.list.GridImageDeviationItemDelegate
 import io.plastique.deviations.list.GridLiteratureDeviationItemDelegate
 import io.plastique.deviations.list.GridVideoDeviationItemDelegate
 import io.plastique.deviations.list.ImageHelper
 import io.plastique.deviations.list.LayoutMode
-import io.plastique.statuses.ShareObjectId
+import io.plastique.statuses.OnShareClickListener
+import io.plastique.statuses.OnStatusClickListener
 import io.plastique.statuses.ShareUiModel
 import io.plastique.statuses.ShareView
 import io.plastique.statuses.StatusActionsView
 import io.plastique.statuses.isDeleted
+import io.plastique.users.OnUserClickListener
 import io.plastique.util.dimensionRatio
-import io.plastique.deviations.list.DeviationItem as InnerDeviationItem
 
 private class CollectionUpdateItemDelegate(
     private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
     private val itemSizeCallback: ItemSizeCallback,
+    private val onCollectionFolderClick: OnCollectionFolderClickListener,
     private val onDeviationClick: OnDeviationClickListener,
-    private val onUserClick: OnUserClickListener,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onUserClick: OnUserClickListener
 ) : BaseAdapterDelegate<CollectionUpdateItem, ListItem, CollectionUpdateItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is CollectionUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_feed_collection_update)
-        return ViewHolder(view, imageLoader, itemSizeCallback, onDeviationClick, onUserClick, onViewHolderClickListener)
+        return ViewHolder(view, imageLoader, itemSizeCallback, onCollectionFolderClick, onDeviationClick, onUserClick)
     }
 
     override fun onBindViewHolder(item: CollectionUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -76,10 +78,10 @@ private class CollectionUpdateItemDelegate(
         itemView: View,
         imageLoader: ImageLoader,
         itemSizeCallback: ItemSizeCallback,
+        onCollectionFolderClick: OnCollectionFolderClickListener,
         onDeviationClick: OnDeviationClickListener,
-        onUserClick: OnUserClickListener,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onUserClick: OnUserClickListener
+    ) : BaseAdapterDelegate.ViewHolder<CollectionUpdateItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val folderNameView: TextView = itemView.findViewById(R.id.folder_name)
         val folderItemsView: RecyclerView = itemView.findViewById(R.id.thumbnails)
@@ -87,16 +89,12 @@ private class CollectionUpdateItemDelegate(
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(folderItemsView.context)
 
         init {
-            headerView.onUserClickListener = onUserClick
-            folderNameView.setOnClickListener(this)
+            headerView.onUserClick = onUserClick
+            folderNameView.setOnClickListener { onCollectionFolderClick(item.folderId, item.folderName) }
             folderItemsView.adapter = folderItemsAdapter
             folderItemsView.disableChangeAnimations()
 
             // TODO: Thumbnail click listener
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
         }
     }
 }
@@ -104,15 +102,18 @@ private class CollectionUpdateItemDelegate(
 private class ImageDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
-    private val onUserClick: OnUserClickListener,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener,
+    private val onUserClick: OnUserClickListener
 ) : BaseAdapterDelegate<ImageDeviationItem, ListItem, ImageDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is ImageDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_feed_deviation_image)
-        return ViewHolder(view, onUserClick, onViewHolderClickListener, ImageHelper.getMaxWidth(parent))
+        return ViewHolder(view, onDeviationClick, onCommentsClick, onFavoriteClick, onShareClick, onUserClick, ImageHelper.getMaxWidth(parent))
     }
 
     override fun onBindViewHolder(item: ImageDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -136,26 +137,26 @@ private class ImageDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
+        onDeviationClick: OnDeviationClickListener,
+        onCommentsClick: OnCommentsClickListener,
+        onFavoriteClick: OnFavoriteClickListener,
+        onShareClick: OnShareClickListener,
         onUserClick: OnUserClickListener,
-        private val onClickListener: OnViewHolderClickListener,
         val maxImageWidth: Int
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    ) : BaseAdapterDelegate.ViewHolder<ImageDeviationItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val previewView: ImageView = itemView.findViewById(R.id.deviation_preview)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            headerView.onUserClickListener = onUserClick
-            previewView.setOnClickListener(this)
-            titleView.setOnClickListener(this)
-            actionsView.setOnFavoriteClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onDeviationClickListener = View.OnClickListener { onDeviationClick(item.deviationId) }
+            previewView.setOnClickListener(onDeviationClickListener)
+            titleView.setOnClickListener(onDeviationClickListener)
+            headerView.onUserClick = onUserClick
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onFavoriteClick = onFavoriteClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
@@ -163,15 +164,18 @@ private class ImageDeviationItemDelegate(
 private class LiteratureDeviationItemDelegate(
     private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
-    private val onUserClick: OnUserClickListener,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onFavoriteClick: OnFavoriteClickListener,
+    private val onShareClick: OnShareClickListener,
+    private val onUserClick: OnUserClickListener
 ) : BaseAdapterDelegate<LiteratureDeviationItem, ListItem, LiteratureDeviationItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is LiteratureDeviationItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_feed_deviation_literature)
-        return ViewHolder(view, onUserClick, onViewHolderClickListener)
+        return ViewHolder(view, onDeviationClick, onCommentsClick, onFavoriteClick, onShareClick, onUserClick)
     }
 
     override fun onBindViewHolder(item: LiteratureDeviationItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -184,25 +188,25 @@ private class LiteratureDeviationItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        onUserClick: OnUserClickListener,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onDeviationClick: OnDeviationClickListener,
+        onCommentsClick: OnCommentsClickListener,
+        onFavoriteClick: OnFavoriteClickListener,
+        onShareClick: OnShareClickListener,
+        onUserClick: OnUserClickListener
+    ) : BaseAdapterDelegate.ViewHolder<LiteratureDeviationItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val titleView: TextView = itemView.findViewById(R.id.deviation_title)
         val excerptView: RichTextView = itemView.findViewById(R.id.deviation_excerpt)
         val actionsView: DeviationActionsView = itemView.findViewById(R.id.deviation_actions)
 
         init {
-            headerView.onUserClickListener = onUserClick
-            titleView.setOnClickListener(this)
-            excerptView.setOnClickListener(this)
-            actionsView.setOnFavoriteClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            val onDeviationClickListener = View.OnClickListener { onDeviationClick(item.deviationId) }
+            titleView.setOnClickListener(onDeviationClickListener)
+            excerptView.setOnClickListener(onDeviationClickListener)
+            headerView.onUserClick = onUserClick
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onFavoriteClick = onFavoriteClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
@@ -247,7 +251,7 @@ private class MultipleDeviationsItemDelegate(
         gridItemSizeCallback: ItemSizeCallback,
         onDeviationClick: OnDeviationClickListener,
         onUserClick: OnUserClickListener
-    ) : RecyclerView.ViewHolder(itemView) {
+    ) : BaseAdapterDelegate.ViewHolder<MultipleDeviationsItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
         val deviationsView: RecyclerView = itemView.findViewById(R.id.deviations)
@@ -255,7 +259,7 @@ private class MultipleDeviationsItemDelegate(
         val layoutManager: FlexboxLayoutManager = FlexboxLayoutManager(deviationsView.context)
 
         init {
-            headerView.onUserClickListener = onUserClick
+            headerView.onUserClick = onUserClick
             deviationsView.adapter = adapter
             deviationsView.disableChangeAnimations()
         }
@@ -265,15 +269,18 @@ private class MultipleDeviationsItemDelegate(
 private class StatusItemDelegate(
     private val imageLoader: ImageLoader,
     private val elapsedTimeFormatter: ElapsedTimeFormatter,
-    private val onUserClick: OnUserClickListener,
-    private val onViewHolderClickListener: OnViewHolderClickListener
+    private val onStatusClick: OnStatusClickListener,
+    private val onDeviationClick: OnDeviationClickListener,
+    private val onCommentsClick: OnCommentsClickListener,
+    private val onShareClick: OnShareClickListener,
+    private val onUserClick: OnUserClickListener
 ) : BaseAdapterDelegate<StatusUpdateItem, ListItem, StatusItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is StatusUpdateItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(R.layout.item_feed_status)
-        return ViewHolder(view, onUserClick, onViewHolderClickListener)
+        return ViewHolder(view, onStatusClick, onDeviationClick, onCommentsClick, onShareClick, onUserClick)
     }
 
     override fun onBindViewHolder(item: StatusUpdateItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -283,30 +290,35 @@ private class StatusItemDelegate(
         holder.actionsView.render(item.actionsState)
 
         holder.shareView.setShare(item.share, imageLoader, elapsedTimeFormatter)
-        holder.shareView.setOnClickListener(if (!item.share.isDeleted) holder else null)
+        holder.shareView.isClickable = !item.share.isDeleted
     }
 
     class ViewHolder(
         itemView: View,
-        onUserClick: OnUserClickListener,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onStatusClick: OnStatusClickListener,
+        onDeviationClick: OnDeviationClickListener,
+        onCommentsClick: OnCommentsClickListener,
+        onShareClick: OnShareClickListener,
+        onUserClick: OnUserClickListener
+    ) : BaseAdapterDelegate.ViewHolder<StatusUpdateItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val statusTextView: RichTextView = itemView.findViewById(R.id.status_text)
         val shareView: ShareView = itemView.findViewById(R.id.status_share)
         val actionsView: StatusActionsView = itemView.findViewById(R.id.status_actions)
 
         init {
-            headerView.onUserClickListener = onUserClick
-            statusTextView.setOnClickListener(this)
-            actionsView.setOnCommentsClickListener(this)
-            actionsView.setOnShareClickListener(this)
-
+            statusTextView.setOnClickListener { onStatusClick(item.statusId) }
             statusTextView.movementMethod = LinkMovementMethod.getInstance()
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            shareView.setOnClickListener {
+                when (val share = item.share) {
+                    is ShareUiModel.ImageDeviation -> onDeviationClick(share.deviationId)
+                    is ShareUiModel.LiteratureDeviation -> onDeviationClick(share.deviationId)
+                    is ShareUiModel.Status -> onStatusClick(share.statusId)
+                }
+            }
+            headerView.onUserClick = onUserClick
+            actionsView.onCommentsClick = onCommentsClick
+            actionsView.onShareClick = onShareClick
         }
     }
 }
@@ -334,12 +346,12 @@ private class UsernameChangeItemDelegate(
     class ViewHolder(
         itemView: View,
         onUserClick: OnUserClickListener
-    ) : RecyclerView.ViewHolder(itemView) {
+    ) : BaseAdapterDelegate.ViewHolder<UsernameChangeItem>(itemView) {
         val headerView: FeedHeaderView = itemView.findViewById(R.id.header)
         val descriptionView: TextView = itemView.findViewById(R.id.description)
 
         init {
-            headerView.onUserClickListener = onUserClick
+            headerView.onUserClick = onUserClick
         }
     }
 }
@@ -348,96 +360,42 @@ internal class FeedAdapter(
     imageLoader: ImageLoader,
     elapsedTimeFormatter: ElapsedTimeFormatter,
     gridItemSizeCallback: ItemSizeCallback,
-    private val onCollectionFolderClick: OnCollectionFolderClickListener,
-    private val onCommentsClick: OnCommentsClickListener,
-    private val onFavoriteClick: OnFavoriteClickListener,
-    private val onDeviationClick: OnDeviationClickListener,
-    private val onShareClick: OnShareClickListener,
-    private val onStatusClick: OnStatusClickListener,
+    onCollectionFolderClick: OnCollectionFolderClickListener,
+    onDeviationClick: OnDeviationClickListener,
+    onStatusClick: OnStatusClickListener,
+    onCommentsClick: OnCommentsClickListener,
+    onFavoriteClick: OnFavoriteClickListener,
+    onShareClick: OnShareClickListener,
     onUserClick: OnUserClickListener
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
-        delegatesManager.addDelegate(CollectionUpdateItemDelegate(imageLoader, elapsedTimeFormatter, gridItemSizeCallback, onDeviationClick, onUserClick, this))
-        delegatesManager.addDelegate(ImageDeviationItemDelegate(imageLoader, elapsedTimeFormatter, onUserClick, this))
-        delegatesManager.addDelegate(LiteratureDeviationItemDelegate(imageLoader, elapsedTimeFormatter, onUserClick, this))
-        delegatesManager.addDelegate(MultipleDeviationsItemDelegate(imageLoader, elapsedTimeFormatter, gridItemSizeCallback, onDeviationClick, onUserClick))
-        delegatesManager.addDelegate(StatusItemDelegate(imageLoader, elapsedTimeFormatter, onUserClick, this))
+        delegatesManager.addDelegate(
+            CollectionUpdateItemDelegate(imageLoader, elapsedTimeFormatter, gridItemSizeCallback, onCollectionFolderClick, onDeviationClick, onUserClick))
+        delegatesManager.addDelegate(
+            ImageDeviationItemDelegate(imageLoader, elapsedTimeFormatter, onDeviationClick, onCommentsClick, onFavoriteClick, onShareClick, onUserClick))
+        delegatesManager.addDelegate(
+            LiteratureDeviationItemDelegate(imageLoader, elapsedTimeFormatter, onDeviationClick, onCommentsClick, onFavoriteClick, onShareClick, onUserClick))
+        delegatesManager.addDelegate(
+            MultipleDeviationsItemDelegate(imageLoader, elapsedTimeFormatter, gridItemSizeCallback, onDeviationClick, onUserClick))
+        delegatesManager.addDelegate(
+            StatusItemDelegate(imageLoader, elapsedTimeFormatter, onStatusClick, onDeviationClick, onCommentsClick, onShareClick, onUserClick))
         delegatesManager.addDelegate(UsernameChangeItemDelegate(imageLoader, elapsedTimeFormatter, onUserClick))
         delegatesManager.addDelegate(LoadingIndicatorItemDelegate())
     }
-
-    @Suppress("ComplexMethod")
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position == RecyclerView.NO_POSITION) return
-        val item = items[position]
-        when (view.id) {
-            R.id.deviation_actions_comments -> {
-                require(item is DeviationItem)
-                onCommentsClick(CommentThreadId.Deviation(item.deviationId))
-            }
-            R.id.deviation_actions_favorite -> {
-                require(item is DeviationItem)
-                onFavoriteClick(item.id, !item.actionsState.isFavorite)
-            }
-            R.id.deviation_actions_share -> {
-                require(item is DeviationItem)
-                onShareClick(ShareObjectId.Deviation(item.deviationId))
-            }
-            R.id.status_actions_comments -> {
-                require(item is StatusUpdateItem)
-                onCommentsClick(CommentThreadId.Status(item.statusId))
-            }
-            R.id.status_actions_share -> {
-                require(item is StatusUpdateItem)
-                onShareClick(item.shareObjectId)
-            }
-            R.id.deviation_preview, R.id.deviation_title, R.id.deviation_excerpt -> {
-                require(item is DeviationItem)
-                onDeviationClick(item.deviationId)
-            }
-            R.id.status_text -> {
-                val statusId = (item as StatusUpdateItem).statusId
-                onStatusClick(statusId)
-            }
-            R.id.status_share -> {
-                require(item is StatusUpdateItem)
-                when (val share = item.share) {
-                    is ShareUiModel.ImageDeviation -> onDeviationClick(share.deviationId)
-                    is ShareUiModel.LiteratureDeviation -> onDeviationClick(share.deviationId)
-                    is ShareUiModel.Status -> onStatusClick(share.statusId)
-                    else -> throw IllegalStateException("Unexpected share $share")
-                }
-            }
-            R.id.folder_name -> {
-                require(item is CollectionUpdateItem)
-                onCollectionFolderClick(item.user.name, item.folderId, item.folderName)
-            }
-        }
-    }
-
-    private val StatusUpdateItem.shareObjectId: ShareObjectId
-        get() = when (share) {
-            is ShareUiModel.None -> ShareObjectId.Status(statusId)
-            is ShareUiModel.ImageDeviation -> ShareObjectId.Deviation(share.deviationId, statusId)
-            is ShareUiModel.LiteratureDeviation -> ShareObjectId.Deviation(share.deviationId, statusId)
-            is ShareUiModel.Status -> ShareObjectId.Status(share.statusId, statusId)
-            else -> throw IllegalStateException("Nothing to share")
-        }
 }
 
 private class DeviationsAdapter(
     imageLoader: ImageLoader,
     itemSizeCallback: ItemSizeCallback,
-    private val onDeviationClick: OnDeviationClickListener
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
+    onDeviationClick: OnDeviationClickListener
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
         val layoutModeProvider = { LayoutMode.Grid }
-        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, this))
-        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, this))
+        delegatesManager.addDelegate(GridImageDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridLiteratureDeviationItemDelegate(layoutModeProvider, itemSizeCallback, onDeviationClick))
+        delegatesManager.addDelegate(GridVideoDeviationItemDelegate(imageLoader, layoutModeProvider, itemSizeCallback, onDeviationClick))
     }
 
     fun update(items: List<ListItem>) {
@@ -446,19 +404,4 @@ private class DeviationsAdapter(
             notifyDataSetChanged()
         }
     }
-
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            val item = items[position] as InnerDeviationItem
-            onDeviationClick(item.deviationId)
-        }
-    }
 }
-
-private typealias OnCollectionFolderClickListener = (username: String?, folderId: String, folderName: String) -> Unit
-private typealias OnCommentsClickListener = (threadId: CommentThreadId) -> Unit
-private typealias OnDeviationClickListener = (deviationId: String) -> Unit
-private typealias OnFavoriteClickListener = (deviationId: String, favorite: Boolean) -> Unit
-private typealias OnShareClickListener = (shareObjectId: ShareObjectId) -> Unit
-private typealias OnStatusClickListener = (statusId: String) -> Unit

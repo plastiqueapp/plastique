@@ -1,12 +1,13 @@
 package io.plastique.feed
 
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.comments.CommentThreadId
 import io.plastique.core.navigation.Navigator
 import io.plastique.statuses.ShareObjectId
 import io.plastique.users.User
 
 interface FeedNavigator : Navigator {
-    fun openCollectionFolder(username: String?, folderId: String, folderName: String)
+    fun openCollectionFolder(folderId: CollectionFolderId, folderName: String)
 
     fun openComments(threadId: CommentThreadId)
 

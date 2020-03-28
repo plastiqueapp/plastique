@@ -13,6 +13,7 @@ import io.plastique.core.lists.DividerItemDecoration
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
+import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
 import io.plastique.settings.R
 import io.plastique.settings.SettingsActivityComponent
@@ -35,6 +36,7 @@ class LicensesActivity : BaseActivity(R.layout.activity_licenses) {
         setActionBar(R.id.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
+        navigator.attach(navigationContext)
 
         adapter = LicensesAdapter(onLicenseClick = { license -> navigator.openUrl(license.url) })
 
@@ -47,7 +49,7 @@ class LicensesActivity : BaseActivity(R.layout.activity_licenses) {
             .build())
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.licenses, android.R.id.progress, android.R.id.empty)
 

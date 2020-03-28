@@ -45,7 +45,7 @@ class GalleryDeviationFetcher @Inject constructor(
     override fun fetch(params: GalleryDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return galleryService.getFolderContents(
-            username = params.folderId.username,
+            username = params.folderId.owner,
             folderId = params.folderId.id,
             mode = SortModes.POPULAR,
             matureContent = params.showMatureContent,

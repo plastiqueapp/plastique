@@ -26,9 +26,10 @@ class ComposeCommentView(context: Context, attrs: AttributeSet?) : ConstraintLay
     private val postButton: ImageButton
     private val signInGroup: View
     private val postProgressSwitcher: ViewSwitcher
-    var onCancelReplyClickListener: OnCancelReplyClickListener? = null
-    var onPostCommentListener: OnPostCommentListener? = null
-    var onSignInClickListener: OnSignInClickListener? = null
+
+    var onCancelReplyClick: OnCancelReplyClickListener = {}
+    var onPostComment: OnPostCommentListener = {}
+    var onSignInClick: OnSignInClickListener = {}
 
     var draft: CharSequence
         get() = draftView.text
@@ -62,7 +63,7 @@ class ComposeCommentView(context: Context, attrs: AttributeSet?) : ConstraintLay
         View.inflate(context, R.layout.view_comments_compose, this)
 
         postButton = findViewById(R.id.button_post_comment)
-        postButton.setOnClickListener { onPostCommentListener?.invoke(draft.toString()) }
+        postButton.setOnClickListener { onPostComment(draft.toString()) }
         postButton.isEnabled = false
         postProgressSwitcher = findViewById(R.id.comment_post_switcher)
 
@@ -71,11 +72,11 @@ class ComposeCommentView(context: Context, attrs: AttributeSet?) : ConstraintLay
 
         replyingToView = findViewById(R.id.text_replying_to)
         cancelReplyButton = findViewById(R.id.button_cancel_reply)
-        cancelReplyButton.setOnClickListener { onCancelReplyClickListener?.invoke() }
+        cancelReplyButton.setOnClickListener { onCancelReplyClick() }
 
         signInGroup = findViewById(R.id.group_sign_in)
         val signInButton: Button = findViewById(R.id.button_sign_in)
-        signInButton.setOnClickListener { onSignInClickListener?.invoke() }
+        signInButton.setOnClickListener { onSignInClick() }
 
         applySignedInState(isSignedIn)
     }

@@ -23,6 +23,7 @@ sealed class DeviationContent {
 }
 
 data class InfoViewState(
+    val deviationId: String,
     val title: String,
     val author: User,
 

@@ -39,7 +39,7 @@ class AboutFragment : BaseFragment(R.layout.fragment_users_about), ScrollableToT
         bioView.movementMethod = LinkMovementMethod.getInstance()
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.content, android.R.id.progress, android.R.id.empty)
     }

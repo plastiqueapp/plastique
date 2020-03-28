@@ -9,7 +9,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.technoir42.android.extensions.disableChangeAnimations
 import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
-import io.plastique.comments.CommentThreadId
 import io.plastique.core.BaseFragment
 import io.plastique.core.ScrollableToTop
 import io.plastique.core.content.ContentStateController
@@ -61,7 +60,7 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
             elapsedTimeFormatter = elapsedTimeFormatter,
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
             onStatusClick = { statusId -> navigator.openStatus(statusId) },
-            onCommentsClick = { statusId -> navigator.openComments(CommentThreadId.Status(statusId)) },
+            onCommentsClick = { threadId -> navigator.openComments(threadId) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
 
         statusesView = view.findViewById(R.id.statuses)
@@ -77,7 +76,7 @@ class StatusListFragment : BaseFragment(R.layout.fragment_status_list), Scrollab
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, view)

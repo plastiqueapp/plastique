@@ -3,19 +3,17 @@ package io.plastique.deviations.info
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.lists.BaseListAdapter
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 
 internal class TagListAdapter(
     private val onTagClick: OnTagClickListener
-) : BaseListAdapter<String, TagListAdapter.ViewHolder>(), OnViewHolderClickListener {
+) : BaseListAdapter<String, TagListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.item_deviation_tag)
-        return ViewHolder(view, this)
+        return ViewHolder(view, onTagClick)
     }
 
     override fun onBindViewHolder(item: String, holder: ViewHolder, position: Int) {
@@ -26,22 +24,14 @@ internal class TagListAdapter(
         }
     }
 
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            onTagClick(items[position])
-        }
-    }
-
-    class ViewHolder(itemView: View, private val onClickListener: OnViewHolderClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class ViewHolder(
+        itemView: View,
+        onTagClick: OnTagClickListener
+    ) : BaseListAdapter.ViewHolder<String>(itemView) {
         val textView: TextView = itemView.findViewById(android.R.id.text1)
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onTagClick(item) }
         }
     }
 }

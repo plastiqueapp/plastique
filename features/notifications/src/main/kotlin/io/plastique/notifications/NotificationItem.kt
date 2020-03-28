@@ -1,5 +1,6 @@
 package io.plastique.notifications
 
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.lists.ListItem
 import io.plastique.users.User
 import org.threeten.bp.ZonedDateTime
@@ -18,7 +19,7 @@ data class AddToCollectionItem(
     override val user: User,
     val deviationId: String,
     val deviationTitle: String,
-    val folderId: String,
+    val folderId: CollectionFolderId,
     val folderName: String
 ) : NotificationItem()
 

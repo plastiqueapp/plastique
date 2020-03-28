@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewSwitcher
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.lists.BaseListAdapter
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.deviations.R
 import kotlin.math.max
 
 internal class CategoryListAdapter(
-    private val onItemClick: OnItemClickListener
-) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>(), OnViewHolderClickListener {
+    private val onCategoryClick: OnCategoryClickListener
+) : BaseListAdapter<CategoryItem, CategoryListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = parent.inflate(R.layout.item_category)
-        return ViewHolder(view, this)
+        return ViewHolder(view, onCategoryClick)
     }
 
     override fun onBindViewHolder(item: CategoryItem, holder: ViewHolder, position: Int) {
@@ -38,13 +36,6 @@ internal class CategoryListAdapter(
         }
     }
 
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            onItemClick(items[position])
-        }
-    }
-
     private fun getItemText(resources: Resources, item: CategoryItem): String {
         return if (item.isParent) {
             resources.getString(R.string.deviations_categories_see_all_in, item.category.title)
@@ -55,18 +46,14 @@ internal class CategoryListAdapter(
 
     class ViewHolder(
         itemView: View,
-        private val listener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onCategoryClick: OnCategoryClickListener
+    ) : BaseListAdapter.ViewHolder<CategoryItem>(itemView) {
         val textView: TextView = itemView.findViewById(R.id.text)
         val progressSwitcher: ViewSwitcher = itemView.findViewById(R.id.progress_switcher)
         val showProgressCallback: Runnable = Runnable { progressSwitcher.displayedChild = 1 }
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            listener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onCategoryClick(item) }
         }
     }
 
@@ -75,4 +62,4 @@ internal class CategoryListAdapter(
     }
 }
 
-private typealias OnItemClickListener = (CategoryItem) -> Unit
+private typealias OnCategoryClickListener = (CategoryItem) -> Unit

@@ -12,8 +12,8 @@ import com.google.android.material.snackbar.Snackbar
 class SnackbarController(private val rootView: View) {
     private val shownSnackbars = mutableSetOf<Snackbar>()
     private var snackbarState: SnackbarState? = null
-    var onActionClickListener: OnSnackbarActionClickListener? = null
-    var onSnackbarShown: OnSnackbarShownListener? = null
+    var onActionClick: OnSnackbarActionClickListener = {}
+    var onSnackbarShown: OnSnackbarShownListener = {}
 
     constructor(fragment: Fragment, rootView: View) : this(rootView) {
         fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -44,12 +44,12 @@ class SnackbarController(private val rootView: View) {
             is SnackbarState.MessageWithAction -> {
                 val message = getMessageWithArgs(state.messageResId, state.messageArgs)
                 Snackbar.make(rootView, message, SNACKBAR_DURATION)
-                    .setAction(state.actionTextId) { onActionClickListener?.invoke(state.actionData) }
+                    .setAction(state.actionTextId) { onActionClick(state.actionData) }
                     .addCallback(snackbarCallback)
                     .show()
             }
         }
-        onSnackbarShown?.invoke()
+        onSnackbarShown()
     }
 
     private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {

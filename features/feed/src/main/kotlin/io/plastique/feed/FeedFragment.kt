@@ -86,10 +86,10 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
-            onCollectionFolderClick = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },
+            onCollectionFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
             onCommentsClick = { threadId -> navigator.openComments(threadId) },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
-            onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
+            onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, !favorite)) },
             onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) },
             onStatusClick = { statusId -> navigator.openStatus(statusId) },
             onUserClick = { user -> navigator.openUserProfile(user) })
@@ -107,7 +107,7 @@ class FeedFragment : BaseFragment(R.layout.fragment_feed),
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         horizontalProgressViewController = ProgressViewController(view, R.id.progress_horizontal)

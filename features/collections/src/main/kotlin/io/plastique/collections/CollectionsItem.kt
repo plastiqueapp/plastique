@@ -8,7 +8,7 @@ data class FolderItem(
     val folder: Folder,
     override val index: Int
 ) : ListItem, IndexedItem {
-    override val id: String get() = folder.id
+    override val id: String get() = folder.id.id
 }
 
 data class HeaderItem(

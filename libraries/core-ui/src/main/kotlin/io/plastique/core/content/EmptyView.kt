@@ -2,7 +2,6 @@ package io.plastique.core.content
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.core.text.HtmlCompat
@@ -29,6 +28,8 @@ class EmptyView @JvmOverloads constructor(
             }
         }
 
+    var onButtonClick: OnButtonClickListener = {}
+
     init {
         orientation = VERTICAL
 
@@ -48,6 +49,7 @@ class EmptyView @JvmOverloads constructor(
         TextViewCompat.setTextAppearance(binding.button1, buttonTextAppearance)
         binding.button1.text = buttonText
         binding.button1.isVisible = showButton
+        binding.button1.setOnClickListener { onButtonClick() }
     }
 
     private fun renderState(state: EmptyState) {
@@ -65,10 +67,6 @@ class EmptyView @JvmOverloads constructor(
         }
     }
 
-    fun setOnButtonClickListener(listener: (view: View) -> Unit) {
-        binding.button1.setOnClickListener(listener)
-    }
-
     private fun getMessageWithArgs(@StringRes messageResId: Int, args: List<Any>): CharSequence {
         val html = if (args.isNotEmpty()) {
             resources.getString(messageResId, *args.toTypedArray())
@@ -78,3 +76,5 @@ class EmptyView @JvmOverloads constructor(
         return HtmlCompat.fromHtml(html, 0)
     }
 }
+
+typealias OnButtonClickListener = () -> Unit

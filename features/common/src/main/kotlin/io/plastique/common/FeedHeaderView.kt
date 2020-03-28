@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
+import io.plastique.users.OnUserClickListener
 import io.plastique.users.User
 
 class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
@@ -17,7 +18,7 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
     private val dateView: TextView
     private lateinit var user: User
 
-    var onUserClickListener: OnUserClickListener? = null
+    var onUserClick: OnUserClickListener = {}
 
     var time: String? = null
         set(value) {
@@ -32,7 +33,7 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
         usernameView = findViewById(R.id.username)
         dateView = findViewById(R.id.date)
 
-        val onClickListener = OnClickListener { onUserClickListener?.invoke(user) }
+        val onClickListener = OnClickListener { onUserClick(user) }
         avatarView.setOnClickListener(onClickListener)
         usernameView.setOnClickListener(onClickListener)
     }
@@ -50,5 +51,3 @@ class FeedHeaderView(context: Context, attrs: AttributeSet?) : ConstraintLayout(
             .into(avatarView)
     }
 }
-
-typealias OnUserClickListener = (User) -> Unit

@@ -21,4 +21,6 @@ dependencies {
 
     api "com.github.technoir42:glide-preloader:$versions.glidePreloader"
     debugApi "com.github.technoir42:glide-debug-indicator:$versions.glideDebugIndicator"
+
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
 }

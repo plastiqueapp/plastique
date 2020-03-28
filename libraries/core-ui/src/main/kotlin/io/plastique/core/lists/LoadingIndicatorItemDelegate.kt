@@ -2,7 +2,6 @@ package io.plastique.core.lists
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import io.plastique.core.ui.R
 
@@ -17,7 +16,7 @@ class LoadingIndicatorItemDelegate : BaseAdapterDelegate<LoadingIndicatorItem, L
     override fun onBindViewHolder(item: LoadingIndicatorItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<LoadingIndicatorItem>(itemView)
 
     companion object {
         const val VIEW_TYPE = 0

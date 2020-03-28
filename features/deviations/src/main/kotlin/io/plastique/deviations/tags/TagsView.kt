@@ -16,11 +16,7 @@ class TagsView(context: Context, attrs: AttributeSet?) : RecyclerView(context, a
     private val adapter: TagsAdapter
     private val tags = mutableListOf<Tag>()
 
-    override var onTagClickListener: OnTagClickListener?
-        get() = adapter.onTagClickListener
-        set(value) {
-            adapter.onTagClickListener = value
-        }
+    override var onTagClick: OnTagClickListener = {}
 
     init {
         overScrollMode = OVER_SCROLL_NEVER
@@ -32,7 +28,7 @@ class TagsView(context: Context, attrs: AttributeSet?) : RecyclerView(context, a
         a.recycle()
 
         layoutManager = FlexboxLayoutManager(context)
-        adapter = TagsAdapter(tagBackgroundResId, tagTextAppearance, tagMargin)
+        adapter = TagsAdapter(tagBackgroundResId, tagTextAppearance, tagMargin) { tag -> onTagClick(tag) }
         adapter.items = tags
         setAdapter(adapter)
     }
@@ -94,7 +90,7 @@ class TagsView(context: Context, attrs: AttributeSet?) : RecyclerView(context, a
         constructor(superState: Parcelable) : super(superState)
 
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
-            tags = source.createTypedArrayList(getParcelableCreator<Tag>())!!
+            tags = source.createTypedArrayList(getParcelableCreator())!!
         }
 
         override fun writeToParcel(out: Parcel, flags: Int) {

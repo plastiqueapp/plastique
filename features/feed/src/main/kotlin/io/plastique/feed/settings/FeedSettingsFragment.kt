@@ -62,7 +62,7 @@ class FeedSettingsFragment : BaseBottomSheetDialogFragment(R.layout.fragment_fee
         optionsView.disableChangeAnimations()
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.options, android.R.id.progress, android.R.id.empty)
     }

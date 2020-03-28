@@ -12,6 +12,13 @@ data class Status(
     val share: Share,
     val commentCount: Int
 ) {
+    val shareObjectId: ShareObjectId?
+        get() = when (share) {
+            Share.None -> ShareObjectId.Status(id)
+            is Share.DeviationShare -> share.deviation?.let { ShareObjectId.Deviation(it.id, id) }
+            is Share.StatusShare -> share.status?.let { ShareObjectId.Status(it.id, id) }
+        }
+
     sealed class Share {
         object None : Share() {
             override fun toString(): String = "None"

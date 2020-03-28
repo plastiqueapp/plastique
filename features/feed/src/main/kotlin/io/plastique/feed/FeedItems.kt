@@ -1,5 +1,6 @@
 package io.plastique.feed
 
+import io.plastique.collections.folders.CollectionFolderId
 import io.plastique.core.lists.ListItem
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
@@ -18,7 +19,7 @@ data class CollectionUpdateItem(
     override val id: String,
     override val date: ZonedDateTime,
     override val user: User,
-    val folderId: String,
+    val folderId: CollectionFolderId,
     val folderName: String,
     val addedCount: Int,
     val folderItems: List<ListItem>

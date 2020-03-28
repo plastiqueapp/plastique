@@ -5,14 +5,13 @@ import io.plastique.core.paging.StringCursor
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
 import io.plastique.deviations.Deviation
-import io.plastique.deviations.DeviationActionsState
+import io.plastique.deviations.createActionsState
 import io.plastique.deviations.list.DeviationItemFactory
 import io.plastique.feed.FeedElement.CollectionUpdate
 import io.plastique.feed.FeedElement.JournalSubmitted
 import io.plastique.feed.FeedElement.StatusUpdate
 import io.plastique.feed.FeedElement.UsernameChange
-import io.plastique.statuses.StatusActionsState
-import io.plastique.statuses.isDeleted
+import io.plastique.statuses.createActionsState
 import io.plastique.statuses.toShareUiModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -71,12 +70,6 @@ class FeedModel @Inject constructor(
         }
 
         is FeedElement.DeviationSubmitted -> {
-            val actionsState = DeviationActionsState(
-                isFavorite = feedElement.deviation.properties.isFavorite,
-                favoriteCount = feedElement.deviation.stats.favorites,
-                isCommentsEnabled = feedElement.deviation.properties.allowsComments,
-                commentCount = feedElement.deviation.stats.comments)
-
             when (val data = feedElement.deviation.data) {
                 is Deviation.Data.Image ->
                     ImageDeviationItem(
@@ -84,7 +77,7 @@ class FeedModel @Inject constructor(
                         user = feedElement.user,
                         deviationId = feedElement.deviation.id,
                         title = feedElement.deviation.title,
-                        actionsState = actionsState,
+                        actionsState = feedElement.deviation.createActionsState(),
                         preview = data.preview,
                         content = data.content)
 
@@ -94,7 +87,7 @@ class FeedModel @Inject constructor(
                         user = feedElement.user,
                         deviationId = feedElement.deviation.id,
                         title = feedElement.deviation.title,
-                        actionsState = actionsState,
+                        actionsState = feedElement.deviation.createActionsState(),
                         excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)))
 
                 is Deviation.Data.Video -> TODO()
@@ -108,11 +101,7 @@ class FeedModel @Inject constructor(
                 user = feedElement.user,
                 deviationId = feedElement.deviation.id,
                 title = feedElement.deviation.title,
-                actionsState = DeviationActionsState(
-                    isFavorite = feedElement.deviation.properties.isFavorite,
-                    favoriteCount = feedElement.deviation.stats.favorites,
-                    isCommentsEnabled = feedElement.deviation.properties.allowsComments,
-                    commentCount = feedElement.deviation.stats.comments),
+                actionsState = feedElement.deviation.createActionsState(),
                 excerpt = SpannedWrapper(richTextFormatter.format(data.excerpt)))
         }
 
@@ -124,9 +113,7 @@ class FeedModel @Inject constructor(
                 statusId = feedElement.status.id,
                 text = SpannedWrapper(richTextFormatter.format(feedElement.status.body)),
                 share = share,
-                actionsState = StatusActionsState(
-                    commentCount = feedElement.status.commentCount,
-                    isShareEnabled = !share.isDeleted))
+                actionsState = feedElement.status.createActionsState())
         }
 
         is UsernameChange ->

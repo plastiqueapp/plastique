@@ -20,7 +20,7 @@ fun <T : Any> calculateDiff(oldItems: List<T>?, newItems: List<T>, keySelector: 
     }
 }
 
-sealed class ListUpdateData<T> {
+sealed class ListUpdateData<T : Any> {
     abstract val items: List<T>
 
     abstract fun applyTo(adapter: BaseListAdapter<T, *>)
@@ -29,7 +29,7 @@ sealed class ListUpdateData<T> {
 
     abstract fun log(tag: String)
 
-    data class Full<T>(override val items: List<T>) : ListUpdateData<T>() {
+    data class Full<T : Any>(override val items: List<T>) : ListUpdateData<T>() {
         override fun applyTo(adapter: BaseListAdapter<T, *>) {
             adapter.items = items
             adapter.notifyDataSetChanged()
@@ -45,7 +45,7 @@ sealed class ListUpdateData<T> {
         }
     }
 
-    data class Diff<T>(override val items: List<T>, private val diffResult: DiffUtil.DiffResult) : ListUpdateData<T>() {
+    data class Diff<T : Any>(override val items: List<T>, private val diffResult: DiffUtil.DiffResult) : ListUpdateData<T>() {
         override fun applyTo(adapter: BaseListAdapter<T, *>) {
             adapter.items = items
             diffResult.dispatchUpdatesTo(adapter)

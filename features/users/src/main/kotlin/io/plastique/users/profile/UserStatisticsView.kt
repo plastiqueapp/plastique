@@ -17,6 +17,8 @@ class UserStatisticsView(context: Context, attrs: AttributeSet?) : LinearLayout(
     private val watchersLabel: TextView
     private val watchersValueView: TextView
 
+    var onWatchersClick: OnWatchersClickListener = {}
+
     init {
         orientation = HORIZONTAL
         inflate(context, R.layout.view_users_profile_statistics, this)
@@ -27,6 +29,7 @@ class UserStatisticsView(context: Context, attrs: AttributeSet?) : LinearLayout(
         watchersView = findViewById(R.id.statistics_watchers)
         watchersLabel = findViewById(R.id.statistics_watchers_label)
         watchersValueView = findViewById(R.id.statistics_watchers_value)
+        watchersView.setOnClickListener { onWatchersClick() }
     }
 
     fun render(stats: UserProfile.Stats) {
@@ -37,8 +40,6 @@ class UserStatisticsView(context: Context, attrs: AttributeSet?) : LinearLayout(
         watchersLabel.text = resources.getQuantityString(R.plurals.users_profile_statistics_watchers, stats.watchers)
         watchersValueView.text = CompactDecimalFormatter.format(stats.watchers)
     }
-
-    fun setOnWatchersClickListener(listener: OnClickListener) {
-        watchersView.setOnClickListener(listener)
-    }
 }
+
+private typealias OnWatchersClickListener = () -> Unit

@@ -23,6 +23,8 @@ class BreadcrumbsView @JvmOverloads constructor(
 
     private val adapter: BreadcrumbsAdapter
 
+    var onBreadcrumbClick: OnBreadcrumbClickListener = {}
+
     var breadcrumbs: List<Breadcrumb> = emptyList()
         set(value) {
             if (field == value) return
@@ -45,13 +47,9 @@ class BreadcrumbsView @JvmOverloads constructor(
 
         check(breadcrumbLayoutId != 0) { "Required attribute breadcrumbLayoutId is not set" }
 
-        adapter = BreadcrumbsAdapter(breadcrumbLayoutId, separatorDrawableResId)
+        adapter = BreadcrumbsAdapter(breadcrumbLayoutId, separatorDrawableResId) { onBreadcrumbClick(it) }
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         setAdapter(adapter)
-    }
-
-    fun setOnBreadcrumbClickListener(listener: OnBreadcrumbClickListener) {
-        adapter.onBreadcrumbClickListener = listener
     }
 
     override fun onSaveInstanceState(): Parcelable {

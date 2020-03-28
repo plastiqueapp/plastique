@@ -4,15 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.Checkable
 import android.widget.CheckedTextView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.plastique.comments.CommentThreadId
+import io.plastique.comments.OnCommentsClickListener
 import io.plastique.core.image.ImageLoader
 import io.plastique.core.image.TransformType
+import io.plastique.deviations.OnDeviationClickListener
+import io.plastique.deviations.OnFavoriteClickListener
 import io.plastique.deviations.R
-import io.plastique.users.User
+import io.plastique.users.OnUserClickListener
 
 class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
     private val titleView: TextView
@@ -22,7 +25,12 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
     private val commentsButton: TextView
     private val infoButton: View
 
-    private var author: User? = null
+    private var state: InfoViewState? = null
+
+    var onAuthorClick: OnUserClickListener = {}
+    var onCommentsClick: OnCommentsClickListener = {}
+    var onFavoriteClick: OnFavoriteClickListener = { _, _ -> }
+    var onInfoClick: OnDeviationClickListener = {}
 
     init {
         inflate(context, R.layout.view_deviation_viewer_info, this)
@@ -32,6 +40,14 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         favoriteButton = findViewById(R.id.button_favorite)
         commentsButton = findViewById(R.id.button_comments)
         infoButton = findViewById(R.id.button_info)
+
+        val onAuthorClickListener = OnClickListener { onAuthorClick(state!!.author) }
+        authorView.setOnClickListener(onAuthorClickListener)
+        avatarView.setOnClickListener(onAuthorClickListener)
+        titleView.setOnClickListener(onAuthorClickListener)
+        commentsButton.setOnClickListener { onCommentsClick(CommentThreadId.Deviation(state!!.deviationId)) }
+        favoriteButton.setOnClickListener { onFavoriteClick(state!!.deviationId, favoriteButton.isChecked) }
+        infoButton.setOnClickListener { onInfoClick(state!!.deviationId) }
     }
 
     fun render(state: InfoViewState, imageLoader: ImageLoader) {
@@ -46,7 +62,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
         commentsButton.isEnabled = state.isCommentsEnabled
         commentsButton.updateDrawablePadding()
 
-        if (author?.avatarUrl != state.author.avatarUrl) {
+        if (this.state?.author?.avatarUrl != state.author.avatarUrl) {
             imageLoader.load(state.author.avatarUrl)
                 .params {
                     fallbackDrawable = R.drawable.default_avatar_64dp
@@ -54,27 +70,7 @@ class InfoPanelView(context: Context, attrs: AttributeSet?) : ConstraintLayout(c
                 }
                 .into(avatarView)
         }
-
-        author = state.author
-    }
-
-    fun setOnAuthorClickListener(listener: (User) -> Unit) {
-        val onClickListener = OnClickListener { listener(author!!) }
-        authorView.setOnClickListener(onClickListener)
-        avatarView.setOnClickListener(onClickListener)
-        titleView.setOnClickListener(onClickListener)
-    }
-
-    fun setOnFavoriteClickListener(listener: (View, isChecked: Boolean) -> Unit) {
-        favoriteButton.setOnClickListener { listener(it, (it as Checkable).isChecked) }
-    }
-
-    fun setOnCommentsClickListener(listener: (View) -> Unit) {
-        commentsButton.setOnClickListener(listener)
-    }
-
-    fun setOnInfoClickListener(listener: (View) -> Unit) {
-        infoButton.setOnClickListener(listener)
+        this.state = state
     }
 
     private fun Int.formatCount(): String {

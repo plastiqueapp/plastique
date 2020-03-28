@@ -3,7 +3,6 @@ package io.plastique.feed.settings
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.recyclerview.widget.RecyclerView
 import com.github.technoir42.android.extensions.inflate
 import com.google.android.material.switchmaterial.SwitchMaterial
 import io.plastique.core.lists.BaseListAdapter
@@ -30,7 +29,7 @@ internal class OptionsAdapter(
         onOptionCheckedChanged(buttonView.tag as String, isChecked)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : BaseListAdapter.ViewHolder<OptionItem>(itemView) {
         val optionView: SwitchMaterial = itemView.findViewById(R.id.option)
     }
 }

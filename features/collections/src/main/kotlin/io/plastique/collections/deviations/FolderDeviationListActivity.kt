@@ -23,7 +23,7 @@ class FolderDeviationListActivity : BaseActivity(R.layout.activity_collection_fo
         val folderId = intent.getParcelableExtra<CollectionFolderId>(EXTRA_FOLDER_ID)!!
         val folderName = intent.getStringExtra(EXTRA_FOLDER_NAME)!!
 
-        initToolbar(folderId.username, folderName)
+        initToolbar(folderId.owner, folderName)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()

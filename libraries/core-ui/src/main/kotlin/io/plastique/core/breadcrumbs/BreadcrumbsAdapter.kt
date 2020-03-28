@@ -10,19 +10,18 @@ import com.github.technoir42.android.extensions.inflate
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import io.plastique.core.lists.BaseAdapterDelegate
 import io.plastique.core.lists.ListItem
-import io.plastique.core.lists.OnViewHolderClickListener
 import io.plastique.core.lists.calculateDiff
 
 private class BreadcrumbItemDelegate(
     private val layoutId: Int,
-    private val onClickListener: OnViewHolderClickListener
+    private val onBreadcrumbClick: OnBreadcrumbClickListener
 ) : BaseAdapterDelegate<BreadcrumbItem, ListItem, BreadcrumbItemDelegate.ViewHolder>() {
 
     override fun isForViewType(item: ListItem): Boolean = item is BreadcrumbItem
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = parent.inflate(layoutId)
-        return ViewHolder(view, onClickListener)
+        return ViewHolder(view, onBreadcrumbClick)
     }
 
     override fun onBindViewHolder(item: BreadcrumbItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -31,16 +30,12 @@ private class BreadcrumbItemDelegate(
 
     class ViewHolder(
         itemView: View,
-        private val onClickListener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        onBreadcrumbClick: OnBreadcrumbClickListener
+    ) : BaseAdapterDelegate.ViewHolder<BreadcrumbItem>(itemView) {
         val textView: TextView = itemView.findViewById(android.R.id.text1)
 
         init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            onClickListener.onViewHolderClick(this, view)
+            itemView.setOnClickListener { onBreadcrumbClick(item.breadcrumb) }
         }
     }
 }
@@ -62,30 +57,22 @@ private class SeparatorItemDelegate(
     override fun onBindViewHolder(item: SeparatorItem, holder: ViewHolder, position: Int, payloads: List<Any>) {
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(itemView: View) : BaseAdapterDelegate.ViewHolder<SeparatorItem>(itemView)
 }
 
 internal class BreadcrumbsAdapter(
     layoutId: Int,
-    separatorDrawableResId: Int
-) : ListDelegationAdapter<List<ListItem>>(), OnViewHolderClickListener {
-    var onBreadcrumbClickListener: OnBreadcrumbClickListener? = null
+    separatorDrawableResId: Int,
+    onBreadcrumbClick: OnBreadcrumbClickListener
+) : ListDelegationAdapter<List<ListItem>>() {
 
     init {
-        delegatesManager.addDelegate(BreadcrumbItemDelegate(layoutId, this))
+        delegatesManager.addDelegate(BreadcrumbItemDelegate(layoutId, onBreadcrumbClick))
         delegatesManager.addDelegate(SeparatorItemDelegate(separatorDrawableResId))
     }
 
     fun update(items: List<ListItem>) {
         val updateData = calculateDiff(this.items, items)
         updateData.applyTo(this)
-    }
-
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            val item = items[position] as BreadcrumbItem
-            onBreadcrumbClickListener?.invoke(item.breadcrumb)
-        }
     }
 }

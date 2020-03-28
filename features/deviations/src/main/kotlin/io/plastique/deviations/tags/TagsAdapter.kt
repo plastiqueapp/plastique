@@ -1,6 +1,5 @@
 package io.plastique.deviations.tags
 
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.Px
@@ -8,14 +7,13 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.plastique.core.lists.BaseListAdapter
-import io.plastique.core.lists.OnViewHolderClickListener
 
 internal class TagsAdapter(
     private val tagBackgroundResId: Int,
     private val tagTextAppearance: Int,
-    @Px private val tagMargin: Int
-) : BaseListAdapter<Tag, TagsAdapter.ViewHolder>(), OnViewHolderClickListener {
-    var onTagClickListener: OnTagClickListener? = null
+    @Px private val tagMargin: Int,
+    private val onTagClick: OnTagClickListener
+) : BaseListAdapter<Tag, TagsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutParams = (parent as RecyclerView).layoutManager!!.generateDefaultLayoutParams()
@@ -25,30 +23,19 @@ internal class TagsAdapter(
         view.setBackgroundResource(tagBackgroundResId)
         view.layoutParams = layoutParams
         TextViewCompat.setTextAppearance(view, tagTextAppearance)
-        return ViewHolder(view, this)
+        return ViewHolder(view, onTagClick)
     }
 
     override fun onBindViewHolder(item: Tag, holder: ViewHolder, position: Int) {
         holder.textView.text = item.text
     }
 
-    override fun onViewHolderClick(holder: RecyclerView.ViewHolder, view: View) {
-        val position = holder.adapterPosition
-        if (position != RecyclerView.NO_POSITION) {
-            onTagClickListener?.onTagClick(items[position])
-        }
-    }
-
     class ViewHolder(
         val textView: TextView,
-        private val listener: OnViewHolderClickListener
-    ) : RecyclerView.ViewHolder(textView), View.OnClickListener {
+        onTagClick: OnTagClickListener
+    ) : BaseListAdapter.ViewHolder<Tag>(textView) {
         init {
-            textView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            listener.onViewHolderClick(this, view)
+            textView.setOnClickListener { onTagClick(item) }
         }
     }
 }

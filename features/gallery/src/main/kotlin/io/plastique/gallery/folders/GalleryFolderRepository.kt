@@ -218,9 +218,8 @@ private fun FolderDto.toFolderEntity(): FolderEntity {
 }
 
 private fun FolderEntity.toFolder(owner: String, own: Boolean): Folder = Folder(
-    id = id,
+    id = GalleryFolderId(id = id, owner = owner),
     name = name,
-    owner = owner,
     size = size,
     thumbnailUrl = thumbnailUrl,
     isDeletable = own && name != Folder.FEATURED)

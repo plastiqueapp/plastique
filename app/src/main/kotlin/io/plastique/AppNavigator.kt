@@ -56,8 +56,8 @@ class AppNavigator @Inject constructor(private val context: Context) : BaseNavig
         navigateTo(CategoryListActivity.route(context, requestCode, selectedCategory))
     }
 
-    override fun openCollectionFolder(username: String?, folderId: String, folderName: String) {
-        navigateTo(CollectionFolderDeviationListActivity.route(context, CollectionFolderId(folderId, username), folderName))
+    override fun openCollectionFolder(folderId: CollectionFolderId, folderName: String) {
+        navigateTo(CollectionFolderDeviationListActivity.route(context, folderId, folderName))
     }
 
     override fun openComments(threadId: CommentThreadId) {

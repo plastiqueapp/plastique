@@ -19,6 +19,7 @@ class DeviationViewerModel @Inject constructor(
             val content = deviation.toDeviationContent()
 
             val infoViewState = InfoViewState(
+                deviationId = deviation.id,
                 title = deviation.title,
                 author = deviation.author,
                 favoriteCount = deviation.stats.favorites,

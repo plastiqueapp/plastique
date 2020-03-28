@@ -84,9 +84,9 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
             .attach(commentsView)
 
         composeView = view.findViewById(R.id.compose)
-        composeView.onPostCommentListener = { text -> viewModel.dispatch(PostCommentEvent(text)) }
-        composeView.onSignInClickListener = { navigator.openSignIn() }
-        composeView.onCancelReplyClickListener = { viewModel.dispatch(CancelReplyClickEvent) }
+        composeView.onPostComment = { text -> viewModel.dispatch(PostCommentEvent(text)) }
+        composeView.onSignInClick = { navigator.openSignIn() }
+        composeView.onCancelReplyClick = { viewModel.dispatch(CancelReplyClickEvent) }
 
         refreshLayout = view.findViewById(R.id.refresh)
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
@@ -96,7 +96,7 @@ class CommentListFragment : BaseFragment(R.layout.fragment_comment_list), Scroll
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

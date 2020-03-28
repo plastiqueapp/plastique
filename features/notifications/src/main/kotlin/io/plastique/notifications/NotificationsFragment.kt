@@ -68,11 +68,11 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         snackbarController = SnackbarController(this, refreshLayout)
-        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
+        snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteMessageEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
@@ -107,11 +107,11 @@ class NotificationsFragment : BaseFragment(R.layout.fragment_notifications), Mai
         return NotificationsAdapter(
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            onOpenCollection = { username, folderId, folderName -> navigator.openCollectionFolder(username, folderId, folderName) },
-            onOpenComment = { /* TODO */ },
-            onOpenDeviation = { navigator.openDeviation(it) },
-            onOpenStatus = { navigator.openStatus(it) },
-            onOpenUserProfile = { navigator.openUserProfile(it) })
+            onCollectionFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
+            onCommentClick = { /* TODO */ },
+            onDeviationClick = { navigator.openDeviation(it) },
+            onStatusClick = { navigator.openStatus(it) },
+            onUserClick = { navigator.openUserProfile(it) })
     }
 
     private fun initSwipe() {

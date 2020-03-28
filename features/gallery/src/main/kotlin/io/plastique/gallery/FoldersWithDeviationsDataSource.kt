@@ -12,7 +12,6 @@ import io.plastique.gallery.deviations.GalleryDeviationParams
 import io.plastique.gallery.folders.Folder
 import io.plastique.gallery.folders.FolderLoadParams
 import io.plastique.gallery.folders.FoldersDataSource
-import io.plastique.gallery.folders.GalleryFolderId
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -77,7 +76,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun getDeviationItems(params: FolderLoadParams, featuredFolder: Folder): Observable<ItemsData> {
         val folderParams = GalleryDeviationParams(
-            folderId = GalleryFolderId(id = featuredFolder.id, username = params.username),
+            folderId = featuredFolder.id,
             showMatureContent = params.matureContent)
         return deviationDataSource.getData(folderParams)
             .map { pagedData ->
@@ -87,7 +86,7 @@ class FoldersWithDeviationsDataSource @Inject constructor(
 
     private fun createDeviationItems(folder: Folder, deviations: List<Deviation>): List<ListItem> {
         return if (deviations.isNotEmpty()) {
-            listOf(HeaderItem(folderId = folder.id, title = folder.name)) +
+            listOf(HeaderItem(folderId = folder.id.id, title = folder.name)) +
                     deviations.mapIndexed { index, deviation -> deviationItemFactory.create(deviation, index) }
         } else {
             emptyList()

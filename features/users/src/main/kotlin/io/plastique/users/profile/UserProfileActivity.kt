@@ -85,7 +85,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         realNameView = findViewById(R.id.user_real_name)
 
         statisticsView = findViewById(R.id.statistics)
-        statisticsView.setOnWatchersClickListener(View.OnClickListener { navigator.openWatchers(username) })
+        statisticsView.onWatchersClick = { navigator.openWatchers(username) }
 
         watchButton = findViewById(R.id.button_watch)
         watchButton.setOnCheckedChangeListener(this)
@@ -96,7 +96,7 @@ class UserProfileActivity : BaseActivity(R.layout.activity_user_profile), Compou
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(username)
         viewModel.state

@@ -49,10 +49,10 @@ class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
         }
 
         breadcrumbsView = findViewById(R.id.breadcrumbs)
-        breadcrumbsView.setOnBreadcrumbClickListener { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }
+        breadcrumbsView.onBreadcrumbClick = { breadcrumb -> viewModel.dispatch(BreadcrumbClickEvent(breadcrumb)) }
 
         adapter = CategoryListAdapter(
-            onItemClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
+            onCategoryClick = { item -> viewModel.dispatch(ItemClickEvent(item)) })
         categoriesView = findViewById(R.id.categories)
         categoriesView.layoutManager = LinearLayoutManager(this)
         categoriesView.adapter = adapter
@@ -62,7 +62,7 @@ class CategoryListActivity : BaseActivity(R.layout.activity_category_list) {
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         viewModel.init(parentCategory)
         viewModel.state

@@ -1,9 +1,8 @@
 package io.plastique.collections.folders
 
 data class Folder(
-    val id: String,
+    val id: CollectionFolderId,
     val name: String,
-    val owner: String,
     val size: Int,
     val thumbnailUrl: String?,
     val isDeletable: Boolean
@@ -16,9 +15,8 @@ data class Folder(
 }
 
 fun FolderEntity.toFolder(owner: String, own: Boolean = false): Folder = Folder(
-    id = id,
+    id = CollectionFolderId(id = id, owner = owner),
     name = name,
-    owner = owner,
     size = size,
     thumbnailUrl = thumbnailUrl,
     isDeletable = own && name != Folder.FEATURED)

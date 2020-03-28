@@ -101,11 +101,9 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
         adapter = CollectionsAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { item -> navigator.openCollectionFolder(item.folder.owner, item.folder.id, item.folder.name) },
-            onFolderLongClick = { item, itemView ->
-                if (item.folder.isDeletable) {
-                    showFolderPopupMenu(item.folder, itemView)
-                }
+            onFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
+            onFolderLongClick = { folder, itemView ->
+                showFolderPopupMenu(folder, itemView)
                 true
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
@@ -126,12 +124,12 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
-        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
+        snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
@@ -192,6 +190,8 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
     }
 
     private fun showFolderPopupMenu(folder: Folder, itemView: View) {
+        if (!folder.isDeletable) return
+
         val popup = PopupMenu(requireContext(), itemView)
         popup.inflate(R.menu.collections_folder_popup)
         popup.setOnMenuItemClickListener { item ->
@@ -200,7 +200,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
                     if (folder.isNotEmpty) {
                         showDeleteFolderDialog(folder)
                     } else {
-                        viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
+                        viewModel.dispatch(DeleteFolderEvent(folder.id.id, folder.name))
                     }
                     true
                 }
@@ -227,7 +227,7 @@ class CollectionsFragment : BaseFragment(R.layout.fragment_collections),
             positiveButtonTextId = R.string.common_button_delete,
             negativeButtonTextInt = R.string.common_button_cancel
         ).apply {
-            putString(ARG_DIALOG_FOLDER_ID, folder.id)
+            putString(ARG_DIALOG_FOLDER_ID, folder.id.id)
             putString(ARG_DIALOG_FOLDER_NAME, folder.name)
         })
         dialog.show(childFragmentManager, DIALOG_DELETE_FOLDER)

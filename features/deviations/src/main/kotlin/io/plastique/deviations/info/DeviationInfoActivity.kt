@@ -63,7 +63,7 @@ class DeviationInfoActivity : BaseActivity(R.layout.activity_deviation_info) {
         tagsView = findViewById(R.id.deviation_tags)
         publishDateView = findViewById(R.id.publish_date)
         emptyView = findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         tagListAdapter = TagListAdapter(onTagClick = { tag -> navigator.openTag(tag) })
         tagsView.adapter = tagListAdapter

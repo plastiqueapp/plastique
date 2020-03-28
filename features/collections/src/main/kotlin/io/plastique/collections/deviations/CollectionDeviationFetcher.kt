@@ -44,7 +44,7 @@ class CollectionDeviationFetcher @Inject constructor(
     override fun fetch(params: CollectionDeviationParams, cursor: OffsetCursor?): Single<FetchResult<OffsetCursor>> {
         val offset = cursor?.offset ?: 0
         return collectionService.getFolderContents(
-            username = params.folderId.username,
+            username = params.folderId.owner,
             folderId = params.folderId.id,
             matureContent = params.showMatureContent,
             offset = offset,

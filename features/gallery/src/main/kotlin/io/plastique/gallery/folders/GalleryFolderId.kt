@@ -11,6 +11,6 @@ data class GalleryFolderId(
     @Json(name = "id")
     val id: String,
 
-    @Json(name = "username")
-    val username: String?
+    @Json(name = "owner")
+    val owner: String?
 ) : Parcelable

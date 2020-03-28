@@ -52,7 +52,6 @@ import io.plastique.gallery.GalleryEvent.RetryClickEvent
 import io.plastique.gallery.GalleryEvent.SnackbarShownEvent
 import io.plastique.gallery.GalleryEvent.UndoDeleteFolderEvent
 import io.plastique.gallery.folders.Folder
-import io.plastique.gallery.folders.GalleryFolderId
 import io.plastique.inject.getComponent
 import io.plastique.main.MainPage
 import io.plastique.util.Size
@@ -102,13 +101,9 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         adapter = GalleryAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { item ->
-                navigator.openGalleryFolder(GalleryFolderId(id = item.folder.id, username = item.folder.owner), item.folder.name)
-            },
-            onFolderLongClick = { item, itemView ->
-                if (item.folder.isDeletable) {
-                    showFolderPopupMenu(item.folder, itemView)
-                }
+            onFolderClick = { folderId, folderName -> navigator.openGalleryFolder(folderId, folderName) },
+            onFolderLongClick = { folder, itemView ->
+                showFolderPopupMenu(folder, itemView)
                 true
             },
             onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
@@ -129,12 +124,12 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, refreshLayout)
-        snackbarController.onActionClickListener = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
+        snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
     }
 
@@ -195,6 +190,8 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
     }
 
     private fun showFolderPopupMenu(folder: Folder, itemView: View) {
+        if (!folder.isDeletable) return
+
         val popup = PopupMenu(requireContext(), itemView)
         popup.inflate(R.menu.gallery_folder_popup)
         popup.setOnMenuItemClickListener { item ->
@@ -203,7 +200,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
                     if (folder.isNotEmpty) {
                         showDeleteFolderDialog(folder)
                     } else {
-                        viewModel.dispatch(DeleteFolderEvent(folder.id, folder.name))
+                        viewModel.dispatch(DeleteFolderEvent(folder.id.id, folder.name))
                     }
                     true
                 }
@@ -230,7 +227,7 @@ class GalleryFragment : BaseFragment(R.layout.fragment_gallery),
             positiveButtonTextId = R.string.common_button_delete,
             negativeButtonTextInt = R.string.common_button_cancel
         ).apply {
-            putString(ARG_DIALOG_FOLDER_ID, folder.id)
+            putString(ARG_DIALOG_FOLDER_ID, folder.id.id)
             putString(ARG_DIALOG_FOLDER_NAME, folder.name)
         })
         dialog.show(childFragmentManager, DIALOG_DELETE_FOLDER)

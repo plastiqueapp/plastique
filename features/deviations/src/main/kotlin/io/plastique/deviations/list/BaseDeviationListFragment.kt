@@ -43,17 +43,13 @@ import io.plastique.deviations.list.DeviationListEvent.RefreshEvent
 import io.plastique.deviations.list.DeviationListEvent.RetryClickEvent
 import io.plastique.deviations.list.DeviationListEvent.SetFavoriteEvent
 import io.plastique.deviations.list.DeviationListEvent.SnackbarShownEvent
-import io.plastique.deviations.tags.OnTagClickListener
 import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
-abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(R.layout.fragment_deviations),
-    OnTagClickListener,
-    ScrollableToTop {
-
+abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(R.layout.fragment_deviations), ScrollableToTop {
     @Inject lateinit var navigator: DeviationsNavigator
 
     private val viewModel: DeviationListViewModel by viewModel()
@@ -65,7 +61,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
     private lateinit var contentStateController: ContentStateController
     private lateinit var progressDialogController: ProgressDialogController
     private lateinit var snackbarController: SnackbarController
-    private lateinit var adapter: DeviationsAdapter
+    private lateinit var adapter: DeviationListAdapter
     private lateinit var onScrollListener: EndlessScrollListener
 
     protected lateinit var params: ParamsType
@@ -97,7 +93,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         refreshLayout.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
 
         emptyView = view.findViewById(android.R.id.empty)
-        emptyView.setOnButtonClickListener { viewModel.dispatch(RetryClickEvent) }
+        emptyView.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, R.id.refresh, android.R.id.progress, android.R.id.empty)
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
@@ -117,7 +113,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             itemSpacing = resources.getDimensionPixelOffset(R.dimen.deviations_grid_spacing))
 
         val imageLoader = ImageLoader.from(this)
-        adapter = DeviationsAdapter(
+        adapter = DeviationListAdapter(
             imageLoader = imageLoader,
             layoutModeProvider = { fixedLayoutMode ?: layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
@@ -200,7 +196,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
         deviationsView.scrollToPosition(0)
     }
 
-    override fun onTagClick(tag: Tag) {
+    open fun onTagClick(tag: Tag) {
     }
 
     protected fun updateParams(params: ParamsType) {
@@ -209,7 +205,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
 
     private fun initTags() {
         tagManager?.setTags(tags, false)
-        tagManager?.onTagClickListener = this
+        tagManager?.onTagClick = { onTagClick(it) }
     }
 
     private fun initLayoutMode(layoutMode: LayoutMode) {

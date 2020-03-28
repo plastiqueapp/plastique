@@ -12,7 +12,7 @@ import io.plastique.deviations.R
 
 internal abstract class DeviationContentView(stub: ViewStub, @LayoutRes layoutId: Int) {
     protected val rootView: View = stub.apply { layoutResource = layoutId }.inflate()
-    var onTapListener: (() -> Unit)? = null
+    var onTapListener: () -> Unit = {}
 
     abstract fun render(content: DeviationContent)
 }
@@ -30,7 +30,7 @@ private class ImageContentView(
     private val imageView: PhotoView = rootView.findViewById(R.id.deviation_image)
 
     init {
-        imageView.setOnPhotoTapListener { _, _, _ -> onTapListener?.invoke() }
+        imageView.setOnPhotoTapListener { _, _, _ -> onTapListener() }
     }
 
     override fun render(content: DeviationContent) {
