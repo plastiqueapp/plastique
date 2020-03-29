@@ -1,6 +1,6 @@
 # Plastique
 [![CircleCI](https://circleci.com/gh/plastiqueapp/plastique.svg?style=svg&circle-token=7d60ca7b56d6385cc628847c599e0c3db42728f8)](https://circleci.com/gh/plastiqueapp/plastique)
-![GitHub CI](https://github.com/plastiqueapp/plastique/workflows/CI/badge.svg?branch=dev)
+![GitHub CI](https://github.com/plastiqueapp/plastique/workflows/Build/badge.svg?branch=dev)
 
 Plastique in a work-in-progress open-source app for [DeviantArt](https://www.deviantart.com).
 
