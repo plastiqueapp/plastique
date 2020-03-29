@@ -57,6 +57,11 @@ gradleEnterprise {
             if (pullRequestUrl != null) {
                 link "Pull Request", pullRequestUrl
             }
+
+            def runId = System.getenv("GITHUB_RUN_ID")
+            if (runId != null) {
+                link "Build", "https://github.com/plastiqueapp/plastique/actions/runs/$runId"
+            }
         } else {
             tag "Local"
         }
