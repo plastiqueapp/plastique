@@ -51,7 +51,7 @@ jobs:
             maven-local-
 
       - name: Build
-        run: ./gradlew :app:assembleDevDebug :app:assembleDevDebugAndroidTest :app:lintDevDebug testDebug detekt
+        run: ./gradlew -w :app:assembleDevDebug :app:assembleDevDebugAndroidTest :app:lintDevDebug testDebug detekt
 
       - name: Upload detekt reports
         if: always()
