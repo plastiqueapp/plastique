@@ -61,10 +61,6 @@ class BrowseDeviationsFragment : BaseFragment(),
         pagerAdapter = FragmentListPagerAdapter(this, PAGES)
         binding.pager.adapter = pagerAdapter
         binding.pager.pageMargin = resources.getDimensionPixelOffset(R.dimen.deviations_browse_page_spacing)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.layoutMode
             .subscribe { layoutMode ->

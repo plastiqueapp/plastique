@@ -41,10 +41,6 @@ class ProfileFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.signIn.setOnClickListener { navigator.openSignIn() }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.state
             .observeOn(AndroidSchedulers.mainThread())

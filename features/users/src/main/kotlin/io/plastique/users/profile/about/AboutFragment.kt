@@ -36,10 +36,7 @@ class AboutFragment : BaseFragment(), ScrollableToTop {
         binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, binding.content, binding.progress, binding.empty)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         val username = requireArguments().getString(ARG_USERNAME)!!
         viewModel.init(username)
         viewModel.state

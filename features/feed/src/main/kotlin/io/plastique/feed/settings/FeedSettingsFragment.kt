@@ -67,10 +67,6 @@ class FeedSettingsFragment : BottomSheetDialogFragment(),
         binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 
         contentStateController = ContentStateController(this, binding.options, binding.progress, binding.empty)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.state
             .pairwiseWithPrevious()

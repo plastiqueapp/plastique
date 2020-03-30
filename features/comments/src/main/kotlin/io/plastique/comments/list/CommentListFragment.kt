@@ -98,10 +98,6 @@ class CommentListFragment : BaseFragment(), ScrollableToTop {
         contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         val threadId = requireArguments().getParcelable<CommentThreadId>(ARG_THREAD_ID)!!
         viewModel.init(threadId)

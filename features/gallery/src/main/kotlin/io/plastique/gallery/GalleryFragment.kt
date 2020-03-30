@@ -130,10 +130,6 @@ class GalleryFragment : BaseFragment(),
         snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onActionClick = { actionData -> viewModel.dispatch(UndoDeleteFolderEvent(actionData as String)) }
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         val username = arguments?.getString(ARG_USERNAME)
         viewModel.init(username)

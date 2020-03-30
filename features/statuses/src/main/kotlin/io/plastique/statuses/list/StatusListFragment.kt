@@ -81,10 +81,6 @@ class StatusListFragment : BaseFragment(), ScrollableToTop {
         contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
         snackbarController = SnackbarController(this, view)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         val username = requireArguments().getString(ARG_USERNAME)!!
         viewModel.init(username)

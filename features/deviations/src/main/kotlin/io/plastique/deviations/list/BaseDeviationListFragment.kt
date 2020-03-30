@@ -89,18 +89,6 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
-        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
-
-        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
-        progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
-        snackbarController = SnackbarController(this, binding.refresh)
-        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
         val displayMetrics = DisplayMetrics()
         requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
 
@@ -128,6 +116,14 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             disableChangeAnimations()
         }
         fixedLayoutMode?.let { initLayoutMode(it) }
+
+        binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
+        binding.refresh.setOnRefreshListener { viewModel.dispatch(RefreshEvent) }
+
+        contentStateController = ContentStateController(this, binding.refresh, binding.progress, binding.empty)
+        progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
+        snackbarController = SnackbarController(this, binding.refresh)
+        snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         @Suppress("UNCHECKED_CAST")
         params = savedInstanceState?.getParcelable(STATE_PARAMS) ?: defaultParams

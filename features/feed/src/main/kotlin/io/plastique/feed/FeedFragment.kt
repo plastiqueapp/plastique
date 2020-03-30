@@ -115,10 +115,6 @@ class FeedFragment : BaseFragment(),
         progressDialogController = ProgressDialogController(requireContext(), childFragmentManager)
         snackbarController = SnackbarController(this, binding.refresh)
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.state
             .pairwiseWithPrevious()

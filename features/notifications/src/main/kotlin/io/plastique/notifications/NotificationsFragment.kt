@@ -80,10 +80,7 @@ class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
         snackbarController.onSnackbarShown = { viewModel.dispatch(SnackbarShownEvent) }
 
         initSwipe()
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.init()
         viewModel.state
             .pairwiseWithPrevious()
