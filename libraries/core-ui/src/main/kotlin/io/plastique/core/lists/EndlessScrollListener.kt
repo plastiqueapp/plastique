@@ -4,10 +4,11 @@ import androidx.recyclerview.widget.RecyclerView
 
 class EndlessScrollListener(
     var loadMoreThreshold: Int,
-    var isEnabled: Boolean = false,
-    private val onLoadMore: () -> Unit
+    private val onLoadMore: OnLoadMoreListener
 ) : RecyclerView.OnScrollListener() {
     private var scrollStateReset = true
+
+    var isEnabled: Boolean = false
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         if (!isEnabled) {
@@ -33,3 +34,5 @@ class EndlessScrollListener(
         }
     }
 }
+
+typealias OnLoadMoreListener = () -> Unit
