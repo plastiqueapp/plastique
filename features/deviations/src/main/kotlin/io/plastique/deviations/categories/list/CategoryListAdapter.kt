@@ -59,4 +59,4 @@ internal class CategoryListAdapter(
     }
 }
 
-private typealias OnCategoryClickListener = (CategoryItem) -> Unit
+internal typealias OnCategoryClickListener = (CategoryItem) -> Unit
