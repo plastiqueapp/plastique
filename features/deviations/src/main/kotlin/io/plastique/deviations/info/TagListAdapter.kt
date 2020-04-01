@@ -34,4 +34,4 @@ internal class TagListAdapter(
     }
 }
 
-private typealias OnTagClickListener = (tag: String) -> Unit
+internal typealias OnTagClickListener = (tag: String) -> Unit
