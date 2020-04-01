@@ -72,4 +72,4 @@ internal class LicensesAdapter(
     }
 }
 
-private typealias OnLicenseClickListener = (License) -> Unit
+internal typealias OnLicenseClickListener = (License) -> Unit
