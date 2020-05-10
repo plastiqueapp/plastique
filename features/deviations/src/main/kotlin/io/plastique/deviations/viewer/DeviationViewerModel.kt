@@ -4,12 +4,14 @@ import io.plastique.core.session.SessionManager
 import io.plastique.core.session.userIdChanges
 import io.plastique.deviations.Deviation
 import io.plastique.deviations.DeviationRepository
+import io.plastique.util.InstantAppHelper
 import io.reactivex.Observable
 import javax.inject.Inject
 
 class DeviationViewerModel @Inject constructor(
     private val deviationRepository: DeviationRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val instantAppHelper: InstantAppHelper
 ) {
     fun getDeviationById(deviationId: String): Observable<DeviationLoadResult> {
         return Observable.combineLatest(
@@ -30,7 +32,7 @@ class DeviationViewerModel @Inject constructor(
 
             val menuState = MenuState(
                 deviationUrl = deviation.url,
-                showDownload = deviation.properties.isDownloadable,
+                showDownload = deviation.properties.isDownloadable && !instantAppHelper.isInstantApp,
                 downloadFileSize = deviation.properties.downloadFileSize)
 
             DeviationLoadResult(deviationContent = content, infoViewState = infoViewState, menuState = menuState)

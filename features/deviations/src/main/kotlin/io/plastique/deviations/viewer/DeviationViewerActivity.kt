@@ -32,17 +32,13 @@ import io.plastique.deviations.viewer.DeviationViewerEvent.SnackbarShownEvent
 import io.plastique.inject.getComponent
 import io.plastique.util.Animations
 import io.plastique.util.ByteCountFormatter
-import io.plastique.util.InstantAppHelper
 import io.plastique.util.SystemUiController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
-import javax.inject.Inject
 
 @RuntimePermissions
 class DeviationViewerActivity : BaseActivity() {
-    @Inject lateinit var instantAppHelper: InstantAppHelper
-
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationViewerViewModel by viewModel()
 
@@ -186,7 +182,7 @@ class DeviationViewerActivity : BaseActivity() {
     private fun Menu.update(menuState: MenuState) {
         findItem(R.id.deviations_viewer_action_download).apply {
             title = getString(R.string.deviations_viewer_action_download, ByteCountFormatter.format(menuState.downloadFileSize))
-            isVisible = menuState.showDownload && !instantAppHelper.isInstantApp
+            isVisible = menuState.showDownload
         }
     }
 
