@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.content.EmptyState
+import io.plastique.settings.SettingsNavigator
 import io.plastique.settings.licenses.LicensesEvent.RetryClickEvent
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
@@ -15,7 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 class LicensesViewModelTest {
     private val licenseRepository = mock<LicenseRepository>()
     private val errorMessageProvider = mock<ErrorMessageProvider>()
-    private val viewModel = LicensesViewModel(LicensesStateReducer(errorMessageProvider), LicensesEffectHandler(licenseRepository))
+    private val settingsNavigator = mock<SettingsNavigator>()
+    private val viewModel = LicensesViewModel(LicensesStateReducer(errorMessageProvider), LicensesEffectHandler(licenseRepository), settingsNavigator)
 
     @Test
     fun `Load success`() {
