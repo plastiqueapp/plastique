@@ -64,7 +64,6 @@ class GalleryFragment : BaseFragment(),
     OnInputDialogResultListener {
 
     private val viewModel: GalleryViewModel by viewModel()
-    private val navigator: GalleryNavigator get() = viewModel.navigator
 
     private lateinit var binding: FragmentGalleryBinding
     private lateinit var galleryAdapter: GalleryAdapter
@@ -75,7 +74,7 @@ class GalleryFragment : BaseFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,12 +101,12 @@ class GalleryFragment : BaseFragment(),
         galleryAdapter = GalleryAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = GalleryItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { folderId, folderName -> navigator.openGalleryFolder(folderId, folderName) },
+            onFolderClick = { folderId, folderName -> viewModel.navigator.openGalleryFolder(folderId, folderName) },
             onFolderLongClick = { folder, itemView ->
                 showFolderPopupMenu(folder, itemView)
                 true
             },
-            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
+            onDeviationClick = { deviationId -> viewModel.navigator.openDeviation(deviationId) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
 

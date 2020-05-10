@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     stateReducer: ProfileStateReducer,
+    val navigator: ProfileNavigator,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {
 

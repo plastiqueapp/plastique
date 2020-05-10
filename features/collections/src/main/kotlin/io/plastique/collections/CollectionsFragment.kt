@@ -64,7 +64,6 @@ class CollectionsFragment : BaseFragment(),
     OnInputDialogResultListener {
 
     private val viewModel: CollectionsViewModel by viewModel()
-    private val navigator: CollectionsNavigator get() = viewModel.navigator
 
     private lateinit var binding: FragmentCollectionsBinding
     private lateinit var collectionsAdapter: CollectionsAdapter
@@ -75,7 +74,7 @@ class CollectionsFragment : BaseFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,12 +101,12 @@ class CollectionsFragment : BaseFragment(),
         collectionsAdapter = CollectionsAdapter(
             imageLoader = imageLoader,
             itemSizeCallback = CollectionsItemSizeCallback(folderGridParams, deviationGridParams),
-            onFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
+            onFolderClick = { folderId, folderName -> viewModel.navigator.openCollectionFolder(folderId, folderName) },
             onFolderLongClick = { folder, itemView ->
                 showFolderPopupMenu(folder, itemView)
                 true
             },
-            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) })
+            onDeviationClick = { deviationId -> viewModel.navigator.openDeviation(deviationId) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD_ROWS * deviationGridParams.columnCount) { viewModel.dispatch(LoadMoreEvent) }
 

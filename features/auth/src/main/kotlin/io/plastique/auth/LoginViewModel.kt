@@ -23,6 +23,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     stateReducer: LoginStateReducer,
     effectHandler: LoginEffectHandler,
+    val navigator: AuthNavigator,
     private val authenticator: Authenticator
 ) : BaseViewModel() {
 

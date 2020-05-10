@@ -14,7 +14,6 @@ import com.github.technoir42.kotlin.extensions.plus
 import com.github.technoir42.rxjava2.extensions.pairwiseWithPrevious
 import io.plastique.comments.CommentThreadId
 import io.plastique.comments.CommentsFragmentComponent
-import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.R
 import io.plastique.comments.databinding.FragmentCommentListBinding
 import io.plastique.comments.list.CommentListEvent.CancelReplyClickEvent
@@ -44,7 +43,6 @@ import javax.inject.Inject
 
 class CommentListFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
-    @Inject lateinit var navigator: CommentsNavigator
 
     private val viewModel: CommentListViewModel by viewModel()
 
@@ -56,7 +54,7 @@ class CommentListFragment : BaseFragment(), ScrollableToTop {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,7 +69,7 @@ class CommentListFragment : BaseFragment(), ScrollableToTop {
             elapsedTimeFormatter = elapsedTimeFormatter,
             onReplyClick = { commentId -> viewModel.dispatch(ReplyClickEvent(commentId)) },
             onReplyingToClick = { commentId -> scrollToComment(commentId) },
-            onUserClick = { user -> navigator.openUserProfile(user) })
+            onUserClick = { user -> viewModel.navigator.openUserProfile(user) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -88,7 +86,7 @@ class CommentListFragment : BaseFragment(), ScrollableToTop {
 
         binding.compose.apply {
             onPostCommentClick = { text -> viewModel.dispatch(PostCommentEvent(text)) }
-            onSignInClick = { navigator.openSignIn() }
+            onSignInClick = { viewModel.navigator.openSignIn() }
             onCancelReplyClick = { viewModel.dispatch(CancelReplyClickEvent) }
         }
 

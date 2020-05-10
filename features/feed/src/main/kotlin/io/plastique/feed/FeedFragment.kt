@@ -52,7 +52,6 @@ class FeedFragment : BaseFragment(),
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
     private val viewModel: FeedViewModel by viewModel()
-    private val navigator: FeedNavigator get() = viewModel.navigator
 
     private lateinit var binding: FragmentFeedBinding
     private lateinit var feedAdapter: FeedAdapter
@@ -68,7 +67,7 @@ class FeedFragment : BaseFragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,13 +88,13 @@ class FeedFragment : BaseFragment(),
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
             gridItemSizeCallback = SimpleGridItemSizeCallback(deviationParams),
-            onCollectionFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
-            onCommentsClick = { threadId -> navigator.openComments(threadId) },
-            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
+            onCollectionFolderClick = { folderId, folderName -> viewModel.navigator.openCollectionFolder(folderId, folderName) },
+            onCommentsClick = { threadId -> viewModel.navigator.openComments(threadId) },
+            onDeviationClick = { deviationId -> viewModel.navigator.openDeviation(deviationId) },
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, !favorite)) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) },
-            onStatusClick = { statusId -> navigator.openStatus(statusId) },
-            onUserClick = { user -> navigator.openUserProfile(user) })
+            onShareClick = { shareObjectId -> viewModel.navigator.openPostStatus(shareObjectId) },
+            onStatusClick = { statusId -> viewModel.navigator.openStatus(statusId) },
+            onUserClick = { user -> viewModel.navigator.openUserProfile(user) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 
@@ -131,7 +130,7 @@ class FeedFragment : BaseFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.feed_action_settings -> {
-            navigator.showFeedSettingsDialog(DIALOG_FEED_SETTINGS)
+            viewModel.navigator.showFeedSettingsDialog(DIALOG_FEED_SETTINGS)
             true
         }
         else -> super.onOptionsItemSelected(item)

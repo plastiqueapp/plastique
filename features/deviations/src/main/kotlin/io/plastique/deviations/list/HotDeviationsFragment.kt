@@ -21,7 +21,7 @@ class HotDeviationsFragment : BaseDeviationListFragment<HotParams>() {
     }
 
     override fun onTagClick(tag: Tag) {
-        navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
+        viewModel.navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
     }
 
     override fun injectDependencies() {

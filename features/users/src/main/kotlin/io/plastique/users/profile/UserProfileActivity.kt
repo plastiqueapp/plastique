@@ -26,7 +26,6 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.inject.getComponent
 import io.plastique.users.R
 import io.plastique.users.UsersActivityComponent
-import io.plastique.users.UsersNavigator
 import io.plastique.users.databinding.ActivityUserProfileBinding
 import io.plastique.users.profile.UserProfileEvent.CopyProfileLinkClickEvent
 import io.plastique.users.profile.UserProfileEvent.OpenInBrowserEvent
@@ -42,7 +41,6 @@ class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListen
 
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: UserProfileViewModel by viewModel()
-    private val navigator: UsersNavigator get() = viewModel.navigator
 
     private lateinit var binding: ActivityUserProfileBinding
     private lateinit var contentStateController: ContentStateController
@@ -62,7 +60,7 @@ class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
 
         binding = ActivityUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -72,7 +70,7 @@ class UserProfileActivity : BaseActivity(), CompoundButton.OnCheckedChangeListen
         }
         initTabs()
 
-        binding.statistics.onWatchersClick = { navigator.openWatchers(username) }
+        binding.statistics.onWatchersClick = { viewModel.navigator.openWatchers(username) }
         binding.watch.setOnCheckedChangeListener(this)
         binding.empty.onButtonClick = { viewModel.dispatch(RetryClickEvent) }
 

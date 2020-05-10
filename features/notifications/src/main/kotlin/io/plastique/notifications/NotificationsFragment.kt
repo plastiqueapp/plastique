@@ -42,7 +42,6 @@ class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
 
     private val viewModel: NotificationsViewModel by viewModel()
-    private val navigator: NotificationsNavigator get() = viewModel.navigator
 
     private lateinit var binding: FragmentNotificationsBinding
     private lateinit var notificationsAdapter: NotificationsAdapter
@@ -52,7 +51,7 @@ class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,11 +103,11 @@ class NotificationsFragment : BaseFragment(), MainPage, ScrollableToTop {
         return NotificationsAdapter(
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            onCollectionFolderClick = { folderId, folderName -> navigator.openCollectionFolder(folderId, folderName) },
+            onCollectionFolderClick = { folderId, folderName -> viewModel.navigator.openCollectionFolder(folderId, folderName) },
             onCommentClick = { /* TODO */ },
-            onDeviationClick = { navigator.openDeviation(it) },
-            onStatusClick = { navigator.openStatus(it) },
-            onUserClick = { navigator.openUserProfile(it) })
+            onDeviationClick = { viewModel.navigator.openDeviation(it) },
+            onStatusClick = { viewModel.navigator.openStatus(it) },
+            onUserClick = { viewModel.navigator.openUserProfile(it) })
     }
 
     private fun initSwipe() {

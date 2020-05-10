@@ -34,7 +34,6 @@ import io.plastique.core.lists.calculateDiff
 import io.plastique.core.mvvm.viewModel
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
-import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.R
 import io.plastique.deviations.databinding.FragmentDeviationsBinding
@@ -48,12 +47,9 @@ import io.plastique.deviations.tags.Tag
 import io.plastique.deviations.tags.TagManager
 import io.plastique.deviations.tags.TagManagerProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragment(), ScrollableToTop {
-    @Inject lateinit var navigator: DeviationsNavigator
-
-    private val viewModel: DeviationListViewModel by viewModel()
+    protected val viewModel: DeviationListViewModel by viewModel()
 
     private lateinit var binding: FragmentDeviationsBinding
     private lateinit var deviationListAdapter: DeviationListAdapter
@@ -80,7 +76,7 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,10 +98,10 @@ abstract class BaseDeviationListFragment<ParamsType : FetchParams> : BaseFragmen
             imageLoader = imageLoader,
             layoutModeProvider = { fixedLayoutMode ?: layoutMode },
             itemSizeCallback = SimpleGridItemSizeCallback(gridParams),
-            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
-            onCommentsClick = { threadId -> navigator.openComments(threadId) },
+            onDeviationClick = { deviationId -> viewModel.navigator.openDeviation(deviationId) },
+            onCommentsClick = { threadId -> viewModel.navigator.openComments(threadId) },
             onFavoriteClick = { deviationId, favorite -> viewModel.dispatch(SetFavoriteEvent(deviationId, favorite)) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
+            onShareClick = { shareObjectId -> viewModel.navigator.openPostStatus(shareObjectId) })
 
         preloaderFactory = DeviationsPreloaderFactory(imageLoader, binding.deviations, deviationListAdapter)
         onScrollListener = EndlessScrollListener(Int.MAX_VALUE) { viewModel.dispatch(LoadMoreEvent) }

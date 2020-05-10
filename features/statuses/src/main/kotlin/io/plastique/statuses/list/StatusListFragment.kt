@@ -25,7 +25,6 @@ import io.plastique.core.snackbar.SnackbarController
 import io.plastique.core.time.ElapsedTimeFormatter
 import io.plastique.inject.getComponent
 import io.plastique.statuses.StatusesFragmentComponent
-import io.plastique.statuses.StatusesNavigator
 import io.plastique.statuses.databinding.FragmentStatusListBinding
 import io.plastique.statuses.list.StatusListEvent.LoadMoreEvent
 import io.plastique.statuses.list.StatusListEvent.RefreshEvent
@@ -36,7 +35,6 @@ import javax.inject.Inject
 
 class StatusListFragment : BaseFragment(), ScrollableToTop {
     @Inject lateinit var elapsedTimeFormatter: ElapsedTimeFormatter
-    @Inject lateinit var navigator: StatusesNavigator
 
     private val viewModel: StatusListViewModel by viewModel()
 
@@ -48,7 +46,7 @@ class StatusListFragment : BaseFragment(), ScrollableToTop {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,10 +58,10 @@ class StatusListFragment : BaseFragment(), ScrollableToTop {
         statusesAdapter = StatusListAdapter(
             imageLoader = ImageLoader.from(this),
             elapsedTimeFormatter = elapsedTimeFormatter,
-            onDeviationClick = { deviationId -> navigator.openDeviation(deviationId) },
-            onStatusClick = { statusId -> navigator.openStatus(statusId) },
-            onCommentsClick = { threadId -> navigator.openComments(threadId) },
-            onShareClick = { shareObjectId -> navigator.openPostStatus(shareObjectId) })
+            onDeviationClick = { deviationId -> viewModel.navigator.openDeviation(deviationId) },
+            onStatusClick = { statusId -> viewModel.navigator.openStatus(statusId) },
+            onCommentsClick = { threadId -> viewModel.navigator.openComments(threadId) },
+            onShareClick = { shareObjectId -> viewModel.navigator.openPostStatus(shareObjectId) })
 
         onScrollListener = EndlessScrollListener(LOAD_MORE_THRESHOLD) { viewModel.dispatch(LoadMoreEvent) }
 

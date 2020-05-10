@@ -13,6 +13,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
+import io.plastique.users.UsersNavigator
 import io.plastique.users.profile.UserProfileRepository
 import io.plastique.users.profile.about.AboutEffect.LoadEffect
 import io.plastique.users.profile.about.AboutEvent.LoadErrorEvent
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 class AboutViewModel @Inject constructor(
     stateReducer: AboutStateReducer,
-    effectHandlerFactory: AboutEffectHandlerFactory
+    effectHandlerFactory: AboutEffectHandlerFactory,
+    val navigator: UsersNavigator
 ) : BaseViewModel() {
 
     lateinit var state: Observable<AboutViewState>

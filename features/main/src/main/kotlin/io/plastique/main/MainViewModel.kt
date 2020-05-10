@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     stateReducer: MainStateReducer,
+    val navigator: MainNavigator,
     private val sessionManager: SessionManager,
     private val userRepository: UserRepository
 ) : BaseViewModel() {

@@ -31,7 +31,6 @@ class MainActivity : BaseActivity(),
     BottomNavigationView.OnNavigationItemReselectedListener {
 
     @Inject lateinit var mainPageProvider: MainPageProvider
-    @Inject lateinit var navigator: MainNavigator
     @Inject lateinit var instantAppHelper: InstantAppHelper
 
     private val imageLoader = ImageLoader.from(this)
@@ -50,7 +49,7 @@ class MainActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -84,11 +83,11 @@ class MainActivity : BaseActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
-            currentUser?.let { navigator.openUserProfile(it) }
+            currentUser?.let { viewModel.navigator.openUserProfile(it) }
             true
         }
         R.id.main_action_settings -> {
-            navigator.openSettings()
+            viewModel.navigator.openSettings()
             true
         }
         R.id.main_action_install_full_version -> {

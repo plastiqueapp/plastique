@@ -8,25 +8,21 @@ import io.plastique.core.navigation.Route
 import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.deviations.DeviationsActivityComponent
-import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.info.DeviationInfoEvent.RetryClickEvent
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class DeviationInfoActivity : BaseActivity() {
-    @Inject lateinit var navigator: DeviationsNavigator
-
     private val viewModel: DeviationInfoViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
 
         val view = DeviationInfoView(
             this,
             onRetryClick = { viewModel.dispatch(RetryClickEvent) },
-            onTagClick = { tag -> navigator.openTag(tag) })
+            onTagClick = { tag -> viewModel.navigator.openTag(tag) })
 
         val deviationId = intent.getStringExtra(EXTRA_DEVIATION_ID)!!
         viewModel.init(deviationId)

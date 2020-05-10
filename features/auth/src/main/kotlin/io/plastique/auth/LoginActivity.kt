@@ -12,20 +12,18 @@ import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class LoginActivity : BaseActivity(), OnCancelDialogListener {
     private val viewModel: LoginViewModel by viewModel()
-    @Inject lateinit var navigator: AuthNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
 
         val view = LoginView(
             this,
             onRedirect = { viewModel.onRedirect(it) },
-            onOpenUrl = { navigator.openUrl(it) })
+            onOpenUrl = { viewModel.navigator.openUrl(it) })
 
         viewModel.state
             .observeOn(AndroidSchedulers.mainThread())

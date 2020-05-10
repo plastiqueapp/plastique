@@ -10,6 +10,7 @@ import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.mvvm.BaseViewModel
 import io.plastique.core.text.RichTextFormatter
 import io.plastique.core.text.SpannedWrapper
+import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.info.DeviationInfoEffect.LoadInfoEffect
 import io.plastique.deviations.info.DeviationInfoEvent.DeviationInfoChangedEvent
 import io.plastique.deviations.info.DeviationInfoEvent.LoadErrorEvent
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 class DeviationInfoViewModel @Inject constructor(
     stateReducer: DeviationInfoStateReducer,
-    effectHandler: DeviationInfoEffectHandler
+    effectHandler: DeviationInfoEffectHandler,
+    val navigator: DeviationsNavigator
 ) : BaseViewModel() {
 
     lateinit var state: Observable<DeviationInfoViewState>

@@ -14,6 +14,7 @@ import io.plastique.comments.Comment
 import io.plastique.comments.CommentDataSource
 import io.plastique.comments.CommentSender
 import io.plastique.comments.CommentThreadId
+import io.plastique.comments.CommentsNavigator
 import io.plastique.comments.R
 import io.plastique.comments.list.CommentListEffect.LoadCommentsEffect
 import io.plastique.comments.list.CommentListEffect.LoadMoreEffect
@@ -67,6 +68,7 @@ import javax.inject.Inject
 class CommentListViewModel @Inject constructor(
     stateReducer: CommentListStateReducer,
     effectHandlerFactory: CommentListEffectHandlerFactory,
+    val navigator: CommentsNavigator,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val sessionManager: SessionManager
 ) : BaseViewModel() {

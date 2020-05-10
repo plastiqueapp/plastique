@@ -22,7 +22,6 @@ import io.plastique.core.navigation.activityRoute
 import io.plastique.core.navigation.navigationContext
 import io.plastique.core.snackbar.SnackbarController
 import io.plastique.deviations.DeviationsActivityComponent
-import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.R
 import io.plastique.deviations.databinding.ActivityDeviationViewerBinding
 import io.plastique.deviations.viewer.DeviationViewerEvent.CopyLinkClickEvent
@@ -46,7 +45,6 @@ class DeviationViewerActivity : BaseActivity() {
 
     private val imageLoader = ImageLoader.from(this)
     private val viewModel: DeviationViewerViewModel by viewModel()
-    private val navigator: DeviationsNavigator get() = viewModel.navigator
 
     private lateinit var binding: ActivityDeviationViewerBinding
     private lateinit var contentStateController: ContentStateController
@@ -64,7 +62,7 @@ class DeviationViewerActivity : BaseActivity() {
         setActionBar(binding.toolbar) {
             setDisplayHomeAsUpEnabled(true)
         }
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
 
         systemUiController.isVisible = true
         systemUiController.setVisibilityChangeListener { visible ->
@@ -78,10 +76,10 @@ class DeviationViewerActivity : BaseActivity() {
         }
 
         binding.infoPanel.apply {
-            onAuthorClick = { user -> navigator.openUserProfile(user) }
-            onCommentsClick = { threadId -> navigator.openComments(threadId) }
+            onAuthorClick = { user -> viewModel.navigator.openUserProfile(user) }
+            onCommentsClick = { threadId -> viewModel.navigator.openComments(threadId) }
             onFavoriteClick = { _, isFavorite -> viewModel.dispatch(SetFavoriteEvent(!isFavorite)) }
-            onInfoClick = { deviationId -> navigator.openDeviationInfo(deviationId) }
+            onInfoClick = { deviationId -> viewModel.navigator.openDeviationInfo(deviationId) }
         }
 
         binding.content.setOnApplyWindowInsetsListener { _, insets ->
@@ -132,7 +130,7 @@ class DeviationViewerActivity : BaseActivity() {
                 true
             }
             R.id.deviations_viewer_action_open_in_browser -> {
-                navigator.openUrl(menuState!!.deviationUrl)
+                viewModel.navigator.openUrl(menuState!!.deviationUrl)
                 true
             }
             else -> super.onOptionsItemSelected(item)

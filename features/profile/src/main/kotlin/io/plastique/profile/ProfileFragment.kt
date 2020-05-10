@@ -15,18 +15,15 @@ import io.plastique.core.navigation.navigationContext
 import io.plastique.inject.getComponent
 import io.plastique.profile.databinding.FragmentProfileBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
-import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
-    @Inject lateinit var navigator: ProfileNavigator
-
     private val viewModel: ProfileViewModel by viewModel()
 
     private lateinit var binding: FragmentProfileBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        navigator.attach(navigationContext)
+        viewModel.navigator.attach(navigationContext)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +37,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.signIn.setOnClickListener { navigator.openSignIn() }
+        binding.signIn.setOnClickListener { viewModel.navigator.openSignIn() }
 
         viewModel.state
             .observeOn(AndroidSchedulers.mainThread())
@@ -55,7 +52,7 @@ class ProfileFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.profile_action_view_watchers -> {
-            navigator.openWatchers(null)
+            viewModel.navigator.openWatchers(null)
             true
         }
         else -> super.onOptionsItemSelected(item)

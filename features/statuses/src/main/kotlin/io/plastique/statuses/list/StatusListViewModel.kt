@@ -24,6 +24,7 @@ import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
 import io.plastique.statuses.R
 import io.plastique.statuses.StatusListLoadParams
+import io.plastique.statuses.StatusesNavigator
 import io.plastique.statuses.list.StatusListEffect.LoadMoreEffect
 import io.plastique.statuses.list.StatusListEffect.LoadStatusesEffect
 import io.plastique.statuses.list.StatusListEffect.RefreshEffect
@@ -48,6 +49,7 @@ import javax.inject.Inject
 class StatusListViewModel @Inject constructor(
     stateReducer: StatusListStateReducer,
     effectHandlerFactory: StatusListEffectHandlerFactory,
+    val navigator: StatusesNavigator,
     private val sessionManager: SessionManager,
     private val contentSettings: ContentSettings
 ) : BaseViewModel() {

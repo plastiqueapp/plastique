@@ -9,6 +9,7 @@ import com.sch.neon.timber.TimberLogger
 import io.plastique.common.ErrorMessageProvider
 import io.plastique.core.lists.ListItem
 import io.plastique.core.mvvm.BaseViewModel
+import io.plastique.settings.SettingsNavigator
 import io.plastique.settings.licenses.LicensesEffect.LoadLicensesEffect
 import io.plastique.settings.licenses.LicensesEvent.LoadErrorEvent
 import io.plastique.settings.licenses.LicensesEvent.LoadFinishedEvent
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 class LicensesViewModel @Inject constructor(
     stateReducer: LicensesStateReducer,
-    effectHandler: LicensesEffectHandler
+    effectHandler: LicensesEffectHandler,
+    val navigator: SettingsNavigator
 ) : BaseViewModel() {
 
     private val loop = MainLoop(

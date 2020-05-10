@@ -24,6 +24,7 @@ import io.plastique.core.network.NetworkConnectivityChecker
 import io.plastique.core.network.NetworkConnectivityMonitor
 import io.plastique.core.snackbar.SnackbarState
 import io.plastique.deviations.ContentSettings
+import io.plastique.deviations.DeviationsNavigator
 import io.plastique.deviations.FetchParams
 import io.plastique.deviations.HotParams
 import io.plastique.deviations.PopularParams
@@ -62,6 +63,7 @@ import javax.inject.Inject
 class DeviationListViewModel @Inject constructor(
     stateReducer: DeviationListStateReducer,
     effectHandlerFactory: DeviationListEffectHandlerFactory,
+    val navigator: DeviationsNavigator,
     private val connectivityMonitor: NetworkConnectivityMonitor,
     private val contentSettings: ContentSettings,
     private val tagFactory: TagFactory

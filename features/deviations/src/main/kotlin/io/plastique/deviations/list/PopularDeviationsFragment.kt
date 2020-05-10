@@ -23,8 +23,8 @@ class PopularDeviationsFragment : BaseDeviationListFragment<PopularParams>(), On
 
     override fun onTagClick(tag: Tag) {
         when (tag.type) {
-            Tag.TYPE_CATEGORY -> navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
-            Tag.TYPE_TIME_RANGE -> navigator.showTimeRangeDialog(DIALOG_TIME_RANGE)
+            Tag.TYPE_CATEGORY -> viewModel.navigator.openCategoryList(tag.payload as Category, REQUEST_CODE_SELECT_CATEGORY)
+            Tag.TYPE_TIME_RANGE -> viewModel.navigator.showTimeRangeDialog(DIALOG_TIME_RANGE)
         }
     }
 
