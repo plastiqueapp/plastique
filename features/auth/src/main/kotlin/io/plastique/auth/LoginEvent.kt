@@ -9,5 +9,5 @@ sealed class LoginEvent : Event() {
 
     object AuthSuccessEvent : LoginEvent()
     data class AuthErrorEvent(val error: Throwable) : LoginEvent()
-    object ErrorDialogDismissedEvent : LoginEvent()
+    object ErrorDialogClosedEvent : LoginEvent()
 }

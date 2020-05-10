@@ -3,6 +3,7 @@ package io.plastique.inject.modules
 import dagger.Binds
 import dagger.Module
 import io.plastique.AppNavigator
+import io.plastique.auth.AuthNavigator
 import io.plastique.collections.CollectionsNavigator
 import io.plastique.comments.CommentsNavigator
 import io.plastique.deviations.DeviationsNavigator
@@ -18,6 +19,9 @@ import io.plastique.watch.WatchNavigator
 
 @Module
 interface NavigationModule {
+    @Binds
+    fun bindAuthNavigator(impl: AppNavigator): AuthNavigator
+
     @Binds
     fun bindCollectionsNavigator(impl: AppNavigator): CollectionsNavigator
 

@@ -1,6 +1,7 @@
 package io.plastique
 
 import android.content.Context
+import io.plastique.auth.AuthNavigator
 import io.plastique.auth.LoginActivity
 import io.plastique.collections.CollectionsNavigator
 import io.plastique.collections.folders.CollectionFolderId
@@ -39,6 +40,7 @@ import io.plastique.collections.deviations.FolderDeviationListActivity as Collec
 import io.plastique.gallery.deviations.FolderDeviationListActivity as GalleryFolderDeviationListActivity
 
 class AppNavigator @Inject constructor(private val context: Context) : BaseNavigator(),
+    AuthNavigator,
     CollectionsNavigator,
     CommentsNavigator,
     DeviationsNavigator,

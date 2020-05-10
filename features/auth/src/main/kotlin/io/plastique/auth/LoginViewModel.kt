@@ -13,7 +13,7 @@ import io.plastique.auth.LoginEvent.AuthErrorEvent
 import io.plastique.auth.LoginEvent.AuthRedirectEvent
 import io.plastique.auth.LoginEvent.AuthSuccessEvent
 import io.plastique.auth.LoginEvent.AuthUrlGeneratedEvent
-import io.plastique.auth.LoginEvent.ErrorDialogDismissedEvent
+import io.plastique.auth.LoginEvent.ErrorDialogClosedEvent
 import io.plastique.core.mvvm.BaseViewModel
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.ofType
@@ -77,7 +77,7 @@ class LoginStateReducer @Inject constructor() : StateReducer<LoginEvent, LoginVi
         is AuthRedirectEvent ->
             next(LoginViewState.InProgress, AuthenticateEffect(event.redirectUri))
 
-        ErrorDialogDismissedEvent ->
+        ErrorDialogClosedEvent ->
             next(state, GenerateAuthUrlEffect)
 
         AuthSuccessEvent ->
