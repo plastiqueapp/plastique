@@ -51,10 +51,10 @@ class ImageRequest internal constructor(
             request = request.error(params.errorDrawable)
         }
         if (params.fallbackDrawable != 0) {
-            request = request.fallback(fallbackDrawable)
+            request = request.fallback(params.fallbackDrawable)
         }
         if (params.placeholderDrawable != 0) {
-            request = request.placeholder(placeholderDrawable)
+            request = request.placeholder(params.placeholderDrawable)
         }
         params.thumbnailUrls?.let {
             request = request.thumbnail(createThumbnailRequest(it))
